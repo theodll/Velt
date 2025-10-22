@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36616.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sandbox", "Sandbox\Sandbox.vcxproj", "{D541607A-B101-4F94-85A8-E2167C7278C4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lumen", "Lumen\Lumen.vcxproj", "{AAE7D2BC-91DE-4DF7-A758-A035B9D46CDD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lavendel", "Lavendel\Lavendel.vcxproj", "{AAE7D2BC-91DE-4DF7-A758-A035B9D46CDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

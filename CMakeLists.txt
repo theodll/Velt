@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(Lumen LANGUAGES CXX)
+project(Lavendel LANGUAGES CXX)
 
 # === GLOBAL SETTINGS ===
 set(CMAKE_CXX_STANDARD 20)
@@ -23,15 +23,15 @@ endif()
 
 # === PLATFORM MACROS ===
 if(WIN32)
-    add_compile_definitions(LM_PLATFORM_WINDOWS)
+    add_compile_definitions(LV_PLATFORM_WINDOWS)
 elseif(APPLE)
-    add_compile_definitions(LM_PLATFORM_OSX)
+    add_compile_definitions(LV_PLATFORM_OSX)
 elseif(UNIX)
-    add_compile_definitions(LM_PLATFORM_LINUX)
+    add_compile_definitions(LV_PLATFORM_LINUX)
 endif()
 
 # === CONFIGURATION MACROS ===
-# Diese Defines hängen vom Build-Typ ab (Debug / Release / Dist)
+# Diese Defines hï¿½ngen vom Build-Typ ab (Debug / Release / Dist)
 add_compile_definitions(
     $<$<CONFIG:Debug>:LM_DEBUG>
     $<$<CONFIG:Release>:LM_RELEASE>
@@ -40,12 +40,12 @@ add_compile_definitions(
 
 # === COMPILER WARNINGS & FLAGS ===
 if(MSVC)
-    add_compile_options(/W4 /permissive- )
+    add_compile_options(/W4 /permissive- /UTF-8)
 else()
-    add_compile_options(-Wall -Wextra -Wpedantic /UTF-8)
+    add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 # === SUBDIRECTORIES ===
-add_subdirectory(Lumen)
+add_subdirectory(Lavendel)
 add_subdirectory(Sandbox)
 

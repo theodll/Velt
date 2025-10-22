@@ -5,9 +5,9 @@
 #include <sstream>
 
 
-namespace Lumen 
+namespace Lavendel
 {
-	class LUMEN_API KeyEvent : public Event
+	class LAVENDEL_API KeyEvent : public Event
 	{
 	public: 
 		inline int GetKeyCode() const { return m_KeyCode; }
@@ -19,7 +19,7 @@ namespace Lumen
 		int m_KeyCode;
 	};
 
-	class LUMEN_API KeyPressedEvent : public KeyEvent
+	class LAVENDEL_API KeyPressedEvent : public KeyEvent
 	{
 	public: 
 		KeyPressedEvent(int keycode, int repeatCount) : KeyEvent(keycode), m_RepeatCount(repeatCount) {}
@@ -37,7 +37,7 @@ namespace Lumen
 		int m_RepeatCount;
 	}
 
-	class LUMEN_API KeyReleasedEvent : public KeyEvent
+	class LAVENDEL_API KeyReleasedEvent : public KeyEvent
 	{
 	public:
 

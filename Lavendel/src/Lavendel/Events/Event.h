@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Lumen/Core.h"
+#include "Lavendel/Core.h"
 
 #include <string>
 #include <functional>
@@ -12,7 +12,7 @@
 #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
 
 
-namespace Lumen {
+namespace Lavendel {
 
 	// Events right now are blocking, meaning when an event occurs it immediately gets dispatched and must be dealt with right then and there.
 
@@ -36,7 +36,7 @@ namespace Lumen {
 	};
 
 
-	class LUMEN_API Event
+	class LAVENDEL_API Event
 	{
 		friend class EventDispatcher;
 	public: 
@@ -53,7 +53,7 @@ namespace Lumen {
 	};
 	
 
-	class LUMEN_API EventDispatcher
+	class LAVENDEL_API EventDispatcher
 	{
 		template<typename T>
 		using EventFn = std::function<bool(T&)>;

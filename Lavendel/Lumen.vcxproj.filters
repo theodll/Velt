@@ -15,39 +15,39 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Lumen\Application.h">
+    <ClInclude Include="src\Lavendel\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Lumen\Core.h">
+    <ClInclude Include="src\Lavendel\Core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Lumen.h">
+    <ClInclude Include="src\Lavendel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Lumen\Entrypoint.h">
+    <ClInclude Include="src\Lavendel\Entrypoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Lumen\Log\Log.h">
+    <ClInclude Include="src\Lavendel\Log\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Lumen\Events\Event.h">
+    <ClInclude Include="src\Lavendel\Events\Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Lumen\Events\KeyEvent.h">
+    <ClInclude Include="src\Lavendel\Events\KeyEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Lumen\Events\ApplicationEvent.h">
+    <ClInclude Include="src\Lavendel\Events\ApplicationEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Lumen\Events\MouseEvent.h">
+    <ClInclude Include="src\Lavendel\Events\MouseEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Lumen\Application.cpp">
+    <ClCompile Include="src\Lavendel\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Lumen\Log\Log.cpp">
+    <ClCompile Include="src\Lavendel\Log\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

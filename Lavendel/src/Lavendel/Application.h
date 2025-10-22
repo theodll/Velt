@@ -1,10 +1,10 @@
 #pragma once
 #include "Core.h"
 
-namespace Lumen 
+namespace Lavendel
 {
 
-	class LUMEN_API Application
+	class LAVENDEL_API Application
 	{
 		public:
 			Application();

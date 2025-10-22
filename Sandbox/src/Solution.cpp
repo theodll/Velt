@@ -1,6 +1,6 @@
-#include <Lumen.h>
+#include <Lavendel.h>
 
-class Sandbox : public Lumen::Application
+class Sandbox : public Lavendel::Application
 {
 public: 
 		Sandbox() {}
@@ -8,7 +8,7 @@ public:
 };
 
 
-Lumen::Application* Lumen::CreateApplication()
+Lavendel::Application* Lavendel::CreateApplication()
 {
 	return new Sandbox();
 }

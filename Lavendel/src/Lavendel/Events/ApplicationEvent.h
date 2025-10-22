@@ -5,8 +5,8 @@
 
 #include "sstream"
 
-namespace Lumen {
-	class LUMEN_API WindowResizeEvent : public Event
+namespace Lavendel {
+	class LAVENDEL_API WindowResizeEvent : public Event
 	{
 
 		public:
@@ -31,7 +31,7 @@ namespace Lumen {
 
 	};
 
-	class LUMEN_API WindowCloseEvent : public Event
+	class LAVENDEL_API WindowCloseEvent : public Event
 	{
 		public:
 			WindowCloseEvent() {};
@@ -40,7 +40,7 @@ namespace Lumen {
 			EVENT_CLASS_CATEGORY(EventCategoryApplication);
 	};
 
-	class LUMEN_API AppTickEvent : public Event
+	class LAVENDEL_API AppTickEvent : public Event
 	{
 		public:
 			AppTickEvent() {};
@@ -49,7 +49,7 @@ namespace Lumen {
 			EVENT_CLASS_CATEGORY(EventCategoryApplication);
 	};
 
-	class LUMEN_API AppUpdateEvent : public Event
+	class LAVENDEL_API AppUpdateEvent : public Event
 	{
 		public:
 			AppUpdateEvent() {};
@@ -58,7 +58,7 @@ namespace Lumen {
 			EVENT_CLASS_CATEGORY(EventCategoryApplication);
 	};
 
-	class LUMEN_API AppRenderEvent : public Event
+	class LAVENDEL_API AppRenderEvent : public Event
 	{
 		public:
 			AppRenderEvent() {};

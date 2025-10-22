@@ -1,13 +1,13 @@
 #pragma once
 
 // ====== CORE INCLUDES ====== //
-#include "Lumen/Core.h"
+#include "Lavendel/Core.h"
 
 // ====== APPLICATION INCLUDES ====== //
-#include "Lumen/Application.h"
+#include "Lavendel/Application.h"
 
 // ====== LOG INCLUDES ====== //
-#include "Lumen/Log/Log.h"
+#include "Lavendel/Log/Log.h"
 
 // ====== ENTRYPOINT INCLUDES ====== //
-#include "Lumen/Entrypoint.h"
+#include "Lavendel/Entrypoint.h"

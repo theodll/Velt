@@ -1,5 +1,14 @@
-.vs
+/.vs
+/.idea
 *.user
 bin
 bin-int
 ./x64
+outgit
+status
+
+
+.DS_Store
+
+Lavendel/vendor/spdlog
+cmake-build-debug
