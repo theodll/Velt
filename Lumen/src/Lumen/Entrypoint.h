@@ -1,13 +1,17 @@
 #pragma once
-#include <stdio.h>
-
+#include "Log/Log.h"
 #ifdef LM_PLATFORM_WINDOWS
 
 extern Lumen::Application* Lumen::CreateApplication();
 
 int main(int argc, char** argv)
 {
-	printf("Starting Lumen Application...\n");
+	
+	Lumen::Log::Init();
+	LM_CORE_INFO("Core Log Initialized!");
+	LM_INFO("Client Log Initialized!");
+
+
 	auto app = Lumen::CreateApplication();
 	app->Run();
 	delete app;
@@ -22,7 +26,7 @@ extern Lumen::Application* Lumen::CreateApplication();
 
 int main(int argc, char** argv)
 {
-	printf("Starting Lumen Application...\n");
+	Lumen::Log::Init();
 	auto app = Lumen::CreateApplication();
 	app->Run();
 	delete app;
@@ -36,7 +40,7 @@ extern Lumen::Application* Lumen::CreateApplication();
 
 int main(int argc, char** argv)
 {
-	printf("Starting Lumen Application...\n");
+	Lumen::Log::Init();
 	auto app = Lumen::CreateApplication();
 	app->Run();
 	delete app;
