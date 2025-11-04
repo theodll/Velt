@@ -1,0 +1,20 @@
+# ninja log v6
+14	49	7839596001548458	Lavendel/CMakeFiles/Lavendel.dir/src/Lavendel/Application.cpp.obj.ddi	6c000fd64eb691f2
+21	138	7839596001632432	Lavendel/CMakeFiles/Lavendel.dir/src/Lavendel/Renderer/Renderer.cpp.obj.ddi	19fc1d1e100e26db
+31	293	7839596001727871	Sandbox/CMakeFiles/Sandbox.dir/src/Solution.cpp.obj.ddi	eaabf9eb4969ac28
+26	303	7839596001678166	Lavendel/CMakeFiles/Lavendel.dir/src/Lavendel/Log.cpp.obj.ddi	75f7e932943a59c
+294	325	7839596004616475	Sandbox/CMakeFiles/Sandbox.dir/CXX.dd	b3a761019eb7c566
+294	325	7839596004616475	C:/Dev/Lavendel/out/build/x64-Debug/Sandbox/CMakeFiles/Sandbox.dir/CXXModules.json	b3a761019eb7c566
+294	325	7839596004616475	Sandbox/CMakeFiles/Sandbox.dir/src/Solution.cpp.obj.modmap	b3a761019eb7c566
+304	337	7839596004741696	Lavendel/CMakeFiles/Lavendel.dir/CXX.dd	c1743252ba67397f
+304	337	7839596004741696	C:/Dev/Lavendel/out/build/x64-Debug/Lavendel/CMakeFiles/Lavendel.dir/CXXModules.json	c1743252ba67397f
+304	337	7839596004741696	Lavendel/CMakeFiles/Lavendel.dir/src/Lavendel/Application.cpp.obj.modmap	c1743252ba67397f
+304	337	7839596004741696	Lavendel/CMakeFiles/Lavendel.dir/src/Lavendel/Renderer/Renderer.cpp.obj.modmap	c1743252ba67397f
+304	337	7839596004741696	Lavendel/CMakeFiles/Lavendel.dir/src/Lavendel/Log.cpp.obj.modmap	c1743252ba67397f
+338	382	7839596004800114	Lavendel/CMakeFiles/Lavendel.dir/src/Lavendel/Application.cpp.obj	37ba03e2d86e7f3a
+343	751	7839596004846845	Lavendel/CMakeFiles/Lavendel.dir/src/Lavendel/Renderer/Renderer.cpp.obj	8d1fd419f23e5fec
+325	2631	7839596004673885	Sandbox/CMakeFiles/Sandbox.dir/src/Solution.cpp.obj	6c80d9befd869098
+348	2784	7839596004892398	Lavendel/CMakeFiles/Lavendel.dir/src/Lavendel/Log.cpp.obj	930dd57f509fa0ca
+2784	3473	7839596035804511	bin/Lavendel.dll	2a010b4a56954651
+2784	3473	7839596035804511	bin/Lavendel.lib	2a010b4a56954651
+3473	3839	7839596036144925	bin/Sandbox.exe	f31df89967ffd486

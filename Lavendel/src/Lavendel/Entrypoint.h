@@ -1,5 +1,5 @@
 #pragma once
-#include "Log/Log.h"
+#include "Log.h"
 
 
 extern Lavendel::Application* Lavendel::CreateApplication();

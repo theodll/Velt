@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "Lavendel\\CMakeFiles\\Lavendel.dir\\src\\Lavendel\\Log.cpp.obj",
+            "outputs": [
+                "C:\\Dev\\Lavendel\\out\\build\\x64-Debug\\vc140.pdb",
+                "Lavendel\\CMakeFiles\\Lavendel.dir\\src\\Lavendel\\Log.cpp.obj.ddi"
+            ],
+            "requires": []
+        }
+    ]
+}

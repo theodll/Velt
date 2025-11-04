@@ -1,0 +1,7 @@
+ninja_dyndep_version = 1.0
+build Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Application.cpp.obj: dyndep
+
+build Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Renderer.cpp.obj: dyndep
+
+build Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Log.cpp.obj: dyndep
+

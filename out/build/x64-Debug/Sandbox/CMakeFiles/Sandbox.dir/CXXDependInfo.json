@@ -1,0 +1,36 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "MSVC",
+	"compiler-id" : "MSVC",
+	"compiler-simulate-id" : "",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "C:/Dev/Lavendel/out/build/x64-Debug/Sandbox",
+	"dir-cur-src" : "C:/Dev/Lavendel/Sandbox",
+	"dir-top-bld" : "C:/Dev/Lavendel/out/build/x64-Debug",
+	"dir-top-src" : "C:/Dev/Lavendel",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"C:\\Dev\\Lavendel\\Sandbox\\src",
+		"C:\\Dev\\Lavendel\\Lavendel\\src",
+		"C:\\Dev\\Lavendel\\vendor\\spdlog\\include",
+		"C:\\Dev\\Lavendel\\Lavendel\\include",
+		"C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\include",
+		"C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include",
+		"C:\\Dev\\Lavendel\\Lavendel\\vendor\\glm"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "C:/Dev/Lavendel/out/build/x64-Debug/Sandbox/CMakeFiles/Sandbox.dir",
+	"sources" : 
+	{
+		"Sandbox/CMakeFiles/Sandbox.dir/src/Solution.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Dev/Lavendel/Sandbox/src/Solution.cpp"
+		}
+	}
+}

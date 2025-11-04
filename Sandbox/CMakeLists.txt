@@ -30,6 +30,3 @@ endif()
 
 target_link_libraries(Sandbox PRIVATE Lavendel)
 
-set_target_properties(Sandbox PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>"
-)

@@ -1,0 +1,206 @@
+[
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DLM_DEBUG -DLV_BUILD_DLL -DLV_DEBUG -DLV_PLATFORM_WINDOWS -DLavendel_EXPORTS -IC:\\VulkanSDK\\1.4.328.1\\Include -IC:\\Dev\\Lavendel\\Lavendel\\include -IC:\\Dev\\Lavendel\\Lavendel\\src -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glm /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /utf-8 /UTF-8 @Lavendel\\CMakeFiles\\Lavendel.dir\\src\\Lavendel\\Application.cpp.obj.modmap /FoLavendel\\CMakeFiles\\Lavendel.dir\\src\\Lavendel\\Application.cpp.obj /FdLavendel\\CMakeFiles\\Lavendel.dir\\ /FS -c C:\\Dev\\Lavendel\\Lavendel\\src\\Lavendel\\Application.cpp",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\src\\Lavendel\\Application.cpp",
+  "output": "Lavendel\\CMakeFiles\\Lavendel.dir\\src\\Lavendel\\Application.cpp.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DLM_DEBUG -DLV_BUILD_DLL -DLV_DEBUG -DLV_PLATFORM_WINDOWS -DLavendel_EXPORTS -IC:\\VulkanSDK\\1.4.328.1\\Include -IC:\\Dev\\Lavendel\\Lavendel\\include -IC:\\Dev\\Lavendel\\Lavendel\\src -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glm /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /utf-8 /UTF-8 @Lavendel\\CMakeFiles\\Lavendel.dir\\src\\Lavendel\\Renderer\\Renderer.cpp.obj.modmap /FoLavendel\\CMakeFiles\\Lavendel.dir\\src\\Lavendel\\Renderer\\Renderer.cpp.obj /FdLavendel\\CMakeFiles\\Lavendel.dir\\ /FS -c C:\\Dev\\Lavendel\\Lavendel\\src\\Lavendel\\Renderer\\Renderer.cpp",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\src\\Lavendel\\Renderer\\Renderer.cpp",
+  "output": "Lavendel\\CMakeFiles\\Lavendel.dir\\src\\Lavendel\\Renderer\\Renderer.cpp.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DLM_DEBUG -DLV_BUILD_DLL -DLV_DEBUG -DLV_PLATFORM_WINDOWS -DLavendel_EXPORTS -IC:\\VulkanSDK\\1.4.328.1\\Include -IC:\\Dev\\Lavendel\\Lavendel\\include -IC:\\Dev\\Lavendel\\Lavendel\\src -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glm /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /utf-8 /UTF-8 @Lavendel\\CMakeFiles\\Lavendel.dir\\src\\Lavendel\\Log.cpp.obj.modmap /FoLavendel\\CMakeFiles\\Lavendel.dir\\src\\Lavendel\\Log.cpp.obj /FdLavendel\\CMakeFiles\\Lavendel.dir\\ /FS -c C:\\Dev\\Lavendel\\Lavendel\\src\\Lavendel\\Log.cpp",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\src\\Lavendel\\Log.cpp",
+  "output": "Lavendel\\CMakeFiles\\Lavendel.dir\\src\\Lavendel\\Log.cpp.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\include /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /utf-8 /UTF-8 /Zc:__cplusplus /FoLavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\src\\spdlog.cpp.obj /FdLavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\spdlog.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\src\\spdlog.cpp",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\src\\spdlog.cpp",
+  "output": "Lavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\src\\spdlog.cpp.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\include /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /utf-8 /UTF-8 /Zc:__cplusplus /FoLavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\src\\stdout_sinks.cpp.obj /FdLavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\spdlog.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\src\\stdout_sinks.cpp",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\src\\stdout_sinks.cpp",
+  "output": "Lavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\src\\stdout_sinks.cpp.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\include /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /utf-8 /UTF-8 /Zc:__cplusplus /FoLavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\src\\color_sinks.cpp.obj /FdLavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\spdlog.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\src\\color_sinks.cpp",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\src\\color_sinks.cpp",
+  "output": "Lavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\src\\color_sinks.cpp.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\include /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /utf-8 /UTF-8 /Zc:__cplusplus /FoLavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\src\\file_sinks.cpp.obj /FdLavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\spdlog.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\src\\file_sinks.cpp",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\src\\file_sinks.cpp",
+  "output": "Lavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\src\\file_sinks.cpp.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\include /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /utf-8 /UTF-8 /Zc:__cplusplus /FoLavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\src\\async.cpp.obj /FdLavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\spdlog.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\src\\async.cpp",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\src\\async.cpp",
+  "output": "Lavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\src\\async.cpp.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\include /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /utf-8 /UTF-8 /Zc:__cplusplus /FoLavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\src\\cfg.cpp.obj /FdLavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\spdlog.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\src\\cfg.cpp",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\src\\cfg.cpp",
+  "output": "Lavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\src\\cfg.cpp.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DSPDLOG_COMPILED_LIB -DSPDLOG_FWRITE_UNLOCKED -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\include /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /utf-8 /UTF-8 /Zc:__cplusplus /FoLavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\src\\bundled_fmtlib_format.cpp.obj /FdLavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\spdlog.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\src\\bundled_fmtlib_format.cpp",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\src\\bundled_fmtlib_format.cpp",
+  "output": "Lavendel\\vendor\\spdlog\\CMakeFiles\\spdlog.dir\\src\\bundled_fmtlib_format.cpp.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\context.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\context.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\context.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\context.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\init.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\init.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\init.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\init.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\input.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\input.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\input.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\input.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\monitor.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\monitor.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\monitor.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\monitor.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\platform.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\platform.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\platform.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\platform.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\vulkan.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\vulkan.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\vulkan.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\vulkan.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\window.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\window.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\window.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\window.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\egl_context.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\egl_context.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\egl_context.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\egl_context.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\osmesa_context.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\osmesa_context.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\osmesa_context.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\osmesa_context.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\null_init.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\null_init.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\null_init.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\null_init.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\null_monitor.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\null_monitor.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\null_monitor.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\null_monitor.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\null_window.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\null_window.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\null_window.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\null_window.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\null_joystick.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\null_joystick.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\null_joystick.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\null_joystick.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\win32_module.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\win32_module.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\win32_module.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\win32_module.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\win32_time.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\win32_time.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\win32_time.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\win32_time.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\win32_thread.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\win32_thread.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\win32_thread.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\win32_thread.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\win32_init.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\win32_init.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\win32_init.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\win32_init.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\win32_joystick.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\win32_joystick.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\win32_joystick.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\win32_joystick.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\win32_monitor.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\win32_monitor.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\win32_monitor.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\win32_monitor.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\win32_window.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\win32_window.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\win32_window.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\win32_window.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src -IC:\\Dev\\Lavendel\\out\\build\\x64-Debug\\Lavendel\\vendor\\glfw\\src /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /W3 /FoLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\wgl_context.c.obj /FdLavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\glfw.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\wgl_context.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\src\\wgl_context.c",
+  "output": "Lavendel\\vendor\\glfw\\src\\CMakeFiles\\glfw.dir\\wgl_context.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\volk -IC:\\VulkanSDK\\1.4.328.1\\Include /DWIN32 /D_WINDOWS /Ob0 /Od /RTC1 -MDd -Zi /utf-8 /UTF-8 /FoLavendel\\vendor\\volk\\CMakeFiles\\volk.dir\\volk.c.obj /FdLavendel\\vendor\\volk\\CMakeFiles\\volk.dir\\volk.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\volk\\volk.c",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\volk\\volk.c",
+  "output": "Lavendel\\vendor\\volk\\CMakeFiles\\volk.dir\\volk.c.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DLM_DEBUG -DLV_BUILD_DLL -DLV_PLATFORM_WINDOWS -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glm /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++17 -MDd -Zi /utf-8 /UTF-8 /Za /fp:precise /FoLavendel\\vendor\\glm\\glm\\CMakeFiles\\glm.dir\\detail\\glm.cpp.obj /FdLavendel\\vendor\\glm\\glm\\CMakeFiles\\glm.dir\\glm.pdb /FS -c C:\\Dev\\Lavendel\\Lavendel\\vendor\\glm\\glm\\detail\\glm.cpp",
+  "file": "C:\\Dev\\Lavendel\\Lavendel\\vendor\\glm\\glm\\detail\\glm.cpp",
+  "output": "Lavendel\\vendor\\glm\\glm\\CMakeFiles\\glm.dir\\detail\\glm.cpp.obj"
+},
+{
+  "directory": "C:/Dev/Lavendel/out/build/x64-Debug",
+  "command": "C:\\PROGRA~1\\MICROS~2\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1438~1.331\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DLM_DEBUG -DLV_PLATFORM_WINDOWS -IC:\\Dev\\Lavendel\\Sandbox\\src -IC:\\Dev\\Lavendel\\Lavendel\\src -IC:\\Dev\\Lavendel\\vendor\\spdlog\\include -IC:\\Dev\\Lavendel\\Lavendel\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include -IC:\\Dev\\Lavendel\\Lavendel\\vendor\\glm /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /utf-8 /UTF-8 @Sandbox\\CMakeFiles\\Sandbox.dir\\src\\Solution.cpp.obj.modmap /FoSandbox\\CMakeFiles\\Sandbox.dir\\src\\Solution.cpp.obj /FdSandbox\\CMakeFiles\\Sandbox.dir\\ /FS -c C:\\Dev\\Lavendel\\Sandbox\\src\\Solution.cpp",
+  "file": "C:\\Dev\\Lavendel\\Sandbox\\src\\Solution.cpp",
+  "output": "Sandbox\\CMakeFiles\\Sandbox.dir\\src\\Solution.cpp.obj"
+}
+]

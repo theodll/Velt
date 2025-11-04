@@ -7,7 +7,7 @@
 #include "Lavendel/Application.h"
 
 // ====== LOG INCLUDES ====== //
-#include "Lavendel/Log/Log.h"
+#include "Lavendel/Log.h"
 
 // ====== ENTRYPOINT INCLUDES ====== //
 #include "Lavendel/Entrypoint.h"

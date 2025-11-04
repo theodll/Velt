@@ -1,0 +1,316 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "bin/Lavendel.dll"
+		},
+		{
+			"path" : "bin/Lavendel.lib"
+		},
+		{
+			"path" : "bin/Lavendel.pdb"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"target_link_libraries",
+			"add_compile_options",
+			"add_compile_definitions",
+			"target_compile_definitions",
+			"target_include_directories"
+		],
+		"files" : 
+		[
+			"Lavendel/CMakeLists.txt",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 1,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 30,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 12,
+				"parent" : 3
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 46,
+				"parent" : 3
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 39,
+				"parent" : 3
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 16,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 39,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 30,
+				"parent" : 3
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 29,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 33,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 46,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi"
+				},
+				{
+					"backtrace" : 4,
+					"fragment" : "/utf-8"
+				},
+				{
+					"backtrace" : 5,
+					"fragment" : "/UTF-8"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 6,
+					"define" : "LM_DEBUG"
+				},
+				{
+					"backtrace" : 7,
+					"define" : "LV_BUILD_DLL"
+				},
+				{
+					"backtrace" : 8,
+					"define" : "LV_DEBUG"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "LV_PLATFORM_WINDOWS"
+				},
+				{
+					"define" : "Lavendel_EXPORTS"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 10,
+					"path" : "C:/VulkanSDK/1.4.328.1/Include"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "C:/Dev/Lavendel/Lavendel/include"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "C:/Dev/Lavendel/Lavendel/src"
+				},
+				{
+					"backtrace" : 12,
+					"path" : "C:/Dev/Lavendel/Lavendel/vendor/spdlog/include"
+				},
+				{
+					"backtrace" : 12,
+					"path" : "C:/Dev/Lavendel/Lavendel/vendor/glfw/include"
+				},
+				{
+					"backtrace" : 12,
+					"path" : "C:/Dev/Lavendel/Lavendel/vendor/glm"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "20"
+			},
+			"sourceIndexes" : 
+			[
+				2,
+				5,
+				7
+			]
+		}
+	],
+	"id" : "Lavendel::@b7e08ea0ce050dc16edf",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "/machine:x64 /debug /INCREMENTAL",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "/DEF:Lavendel\\CMakeFiles\\Lavendel.dir\\.\\exports.def",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "C:\\VulkanSDK\\1.4.328.1\\Lib\\vulkan-1.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "Lavendel",
+	"nameOnDisk" : "Lavendel.dll",
+	"paths" : 
+	{
+		"build" : "Lavendel",
+		"source" : "Lavendel"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				3,
+				4,
+				6,
+				8,
+				9,
+				10,
+				11
+			]
+		},
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				2,
+				5,
+				7
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"path" : "Lavendel/src/Lavendel/Core.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Lavendel/src/Lavendel/Application.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Lavendel/src/Lavendel/Application.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Lavendel/src/Lavendel/Entrypoint.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Lavendel/src/Lavendel/Renderer/Renderer.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Lavendel/src/Lavendel/Renderer/Renderer.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Lavendel/src/Lavendel/Log.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Lavendel/src/Lavendel/Log.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Lavendel/src/Lavendel/Events/ApplicationEvent.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Lavendel/src/Lavendel/Events/Event.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Lavendel/src/Lavendel/Events/KeyEvent.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Lavendel/src/Lavendel/Events/MouseEvent.h",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "SHARED_LIBRARY"
+}

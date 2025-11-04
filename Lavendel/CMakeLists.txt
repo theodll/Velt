@@ -5,8 +5,8 @@ add_library(Lavendel SHARED
         "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Entrypoint.h"
         "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Renderer/Renderer.h"
         "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Renderer/Renderer.cpp"
-        "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Log/Log.h"
-        "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Log/Log.cpp"
+        "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Log.h"
+        "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Log.cpp"
         "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Events/ApplicationEvent.h"
         "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Events/Event.h"
         "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Events/KeyEvent.h"
@@ -35,11 +35,6 @@ target_include_directories(Lavendel PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-set_target_properties(Lavendel PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-)
 
 target_compile_definitions(Lavendel PRIVATE
         $<$<CONFIG:Debug>:LV_DEBUG>
@@ -55,5 +50,9 @@ target_include_directories(Lavendel
         ${CMAKE_SOURCE_DIR}/Lavendel/vendor/glm/
         ${CMAKE_SOURCE_DIR}/Lavendel/src/
 )
+
+message(STATUS "LV_BUILD_DLL is defined: ${LV_BUILD_DLL}")
+get_target_property(COMPILE_DEFS Lavendel COMPILE_DEFINITIONS)
+message(STATUS "Lavendel compile definitions: ${COMPILE_DEFS}")
 
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")

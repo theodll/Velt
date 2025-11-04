@@ -1,0 +1,45 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "MSVC",
+	"compiler-id" : "MSVC",
+	"compiler-simulate-id" : "",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "C:/Dev/Lavendel/out/build/x64-Debug/Lavendel",
+	"dir-cur-src" : "C:/Dev/Lavendel/Lavendel",
+	"dir-top-bld" : "C:/Dev/Lavendel/out/build/x64-Debug",
+	"dir-top-src" : "C:/Dev/Lavendel",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"C:\\VulkanSDK\\1.4.328.1\\Include",
+		"C:\\Dev\\Lavendel\\Lavendel\\include",
+		"C:\\Dev\\Lavendel\\Lavendel\\src",
+		"C:\\Dev\\Lavendel\\Lavendel\\vendor\\spdlog\\include",
+		"C:\\Dev\\Lavendel\\Lavendel\\vendor\\glfw\\include",
+		"C:\\Dev\\Lavendel\\Lavendel\\vendor\\glm"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "C:/Dev/Lavendel/out/build/x64-Debug/Lavendel/CMakeFiles/Lavendel.dir",
+	"sources" : 
+	{
+		"Lavendel/CMakeFiles/Lavendel.dir/src/Lavendel/Application.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Dev/Lavendel/Lavendel/src/Lavendel/Application.cpp"
+		},
+		"Lavendel/CMakeFiles/Lavendel.dir/src/Lavendel/Log.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Dev/Lavendel/Lavendel/src/Lavendel/Log.cpp"
+		},
+		"Lavendel/CMakeFiles/Lavendel.dir/src/Lavendel/Renderer/Renderer.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Dev/Lavendel/Lavendel/src/Lavendel/Renderer/Renderer.cpp"
+		}
+	}
+}

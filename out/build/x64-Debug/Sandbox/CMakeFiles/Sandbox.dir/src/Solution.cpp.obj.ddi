@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "Sandbox\\CMakeFiles\\Sandbox.dir\\src\\Solution.cpp.obj",
+            "outputs": [
+                "C:\\Dev\\Lavendel\\out\\build\\x64-Debug\\vc140.pdb",
+                "Sandbox\\CMakeFiles\\Sandbox.dir\\src\\Solution.cpp.obj.ddi"
+            ],
+            "requires": []
+        }
+    ]
+}
