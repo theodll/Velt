@@ -6,6 +6,7 @@ bin-int
 ./x64
 outgit
 status
+out
 
 .DS_Store
 
