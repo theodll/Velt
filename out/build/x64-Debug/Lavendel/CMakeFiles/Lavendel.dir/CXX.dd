@@ -5,3 +5,5 @@ build Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Renderer.cpp.obj: d
 
 build Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Log.cpp.obj: dyndep
 
+build Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Window.cpp.obj: dyndep
+

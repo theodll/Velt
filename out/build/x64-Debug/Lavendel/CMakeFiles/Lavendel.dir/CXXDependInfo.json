@@ -40,6 +40,11 @@
 		{
 			"language" : "CXX",
 			"source" : "C:/Dev/Lavendel/Lavendel/src/Lavendel/Renderer/Renderer.cpp"
+		},
+		"Lavendel/CMakeFiles/Lavendel.dir/src/Lavendel/Renderer/Window.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Dev/Lavendel/Lavendel/src/Lavendel/Renderer/Window.cpp"
 		}
 	}
 }

@@ -11,7 +11,7 @@ add_library(Lavendel SHARED
         "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Events/Event.h"
         "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Events/KeyEvent.h"
         "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Events/MouseEvent.h"
-)
+ "src/Lavendel/Renderer/Window.cpp" "src/Lavendel/Renderer/Window.h")
 
 target_compile_definitions(Lavendel PRIVATE LV_BUILD_DLL)
 add_definitions(-DLV_BUILD_DLL)
@@ -50,6 +50,8 @@ target_include_directories(Lavendel
         ${CMAKE_SOURCE_DIR}/Lavendel/vendor/glm/
         ${CMAKE_SOURCE_DIR}/Lavendel/src/
 )
+
+target_link_libraries(Lavendel PRIVATE glfw)
 
 message(STATUS "LV_BUILD_DLL is defined: ${LV_BUILD_DLL}")
 get_target_property(COMPILE_DEFS Lavendel COMPILE_DEFINITIONS)

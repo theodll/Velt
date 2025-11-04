@@ -1,0 +1,321 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						9
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.31"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "Lavendel",
+					"childIndexes" : 
+					[
+						2,
+						3,
+						6,
+						7
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-Lavendel-Debug-27c02da638b6301cfe25.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.31"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "Lavendel",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "Lavendel/vendor/spdlog",
+					"jsonFile" : "directory-Lavendel.vendor.spdlog-Debug-8096350da5539383b9af.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 1,
+					"source" : "Lavendel/vendor/spdlog",
+					"targetIndexes" : 
+					[
+						4
+					]
+				},
+				{
+					"build" : "Lavendel/vendor/glfw",
+					"childIndexes" : 
+					[
+						4,
+						5
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-Lavendel.vendor.glfw-Debug-201861e7ba028db59ee2.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 2,
+					"source" : "Lavendel/vendor/glfw",
+					"targetIndexes" : 
+					[
+						5
+					]
+				},
+				{
+					"build" : "Lavendel/vendor/glfw/src",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-Lavendel.vendor.glfw.src-Debug-2c7c1c8a3a9705cd949c.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 3,
+					"projectIndex" : 2,
+					"source" : "Lavendel/vendor/glfw/src",
+					"targetIndexes" : 
+					[
+						2,
+						6
+					]
+				},
+				{
+					"build" : "Lavendel/vendor/glfw/docs",
+					"jsonFile" : "directory-Lavendel.vendor.glfw.docs-Debug-56a4b390b64451eb945b.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 3,
+					"projectIndex" : 2,
+					"source" : "Lavendel/vendor/glfw/docs"
+				},
+				{
+					"build" : "Lavendel/vendor/volk",
+					"jsonFile" : "directory-Lavendel.vendor.volk-Debug-9df2251375eee16fe708.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 3,
+					"source" : "Lavendel/vendor/volk",
+					"targetIndexes" : 
+					[
+						7
+					]
+				},
+				{
+					"build" : "Lavendel/vendor/glm",
+					"childIndexes" : 
+					[
+						8
+					],
+					"jsonFile" : "directory-Lavendel.vendor.glm-Debug-81803c61ed72d7a47fdc.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 4,
+					"source" : "Lavendel/vendor/glm"
+				},
+				{
+					"build" : "Lavendel/vendor/glm/glm",
+					"jsonFile" : "directory-Lavendel.vendor.glm.glm-Debug-c583d3538d4be45ca82b.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"parentIndex" : 7,
+					"projectIndex" : 4,
+					"source" : "Lavendel/vendor/glm/glm",
+					"targetIndexes" : 
+					[
+						3
+					]
+				},
+				{
+					"build" : "Sandbox",
+					"jsonFile" : "directory-Sandbox-Debug-5f4392a0e5eaed8a8ee6.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.31"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "Sandbox",
+					"targetIndexes" : 
+					[
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3,
+						4
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						9
+					],
+					"name" : "Lavendel",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2
+					],
+					"name" : "spdlog",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						4
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						3,
+						4,
+						5
+					],
+					"name" : "GLFW",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						2,
+						5,
+						6
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						6
+					],
+					"name" : "volk",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						7
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						7,
+						8
+					],
+					"name" : "glm",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "Lavendel::@b7e08ea0ce050dc16edf",
+					"jsonFile" : "target-Lavendel-Debug-35a853034f5ab0ae7bb2.json",
+					"name" : "Lavendel",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "Sandbox::@df4fa095c2a3dbacf8fe",
+					"jsonFile" : "target-Sandbox-Debug-b39b92945e784ce394e4.json",
+					"name" : "Sandbox",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "glfw::@5514832d58b1d8121557",
+					"jsonFile" : "target-glfw-Debug-d90124d05823bc2bc40c.json",
+					"name" : "glfw",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "glm::@7d1343c2d5ace2ce772e",
+					"jsonFile" : "target-glm-Debug-02c423cdf1fff5d3aafb.json",
+					"name" : "glm",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "spdlog::@ae529da97cbba26142fa",
+					"jsonFile" : "target-spdlog-Debug-d15d6700e5ea2ffd91dd.json",
+					"name" : "spdlog",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "uninstall::@9114f9e46f2e54312b56",
+					"jsonFile" : "target-uninstall-Debug-52f5221a120cebe7368e.json",
+					"name" : "uninstall",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "update_mappings::@5514832d58b1d8121557",
+					"jsonFile" : "target-update_mappings-Debug-67d5c365b9e5c31eb7ce.json",
+					"name" : "update_mappings",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "volk::@d96977a3ed11a56e775b",
+					"jsonFile" : "target-volk-Debug-306a42bb9e331e226bad.json",
+					"name" : "volk",
+					"projectIndex" : 3
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Dev/Lavendel/out/build/x64-Debug",
+		"source" : "C:/Dev/Lavendel"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 8
+	}
+}

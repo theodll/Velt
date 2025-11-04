@@ -105,7 +105,7 @@ build install\local: phony CMakeFiles\install\local.util
 #############################################
 # Order-only phony target for Lavendel
 
-build cmake_object_order_depends_target_Lavendel: phony || .
+build cmake_object_order_depends_target_Lavendel: phony || cmake_object_order_depends_target_glfw
 
 build Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Application.cpp.obj.ddi: CXX_SCAN__Lavendel_Debug C$:\Dev\Lavendel\Lavendel\src\Lavendel\Application.cpp || cmake_object_order_depends_target_Lavendel
   DEFINES = -DLM_DEBUG -DLV_BUILD_DLL -DLV_DEBUG -DLV_PLATFORM_WINDOWS -DLavendel_EXPORTS
@@ -167,7 +167,27 @@ build Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Log.cpp.obj: CXX_COMPILER__L
   TARGET_PDB = bin\Lavendel.pdb
   dyndep = Lavendel/CMakeFiles/Lavendel.dir/CXX.dd
 
-build Lavendel\CMakeFiles\Lavendel.dir\CXX.dd | C$:\Dev\Lavendel\out\build\x64-Debug\Lavendel\CMakeFiles\Lavendel.dir\CXXModules.json Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Application.cpp.obj.modmap Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Renderer.cpp.obj.modmap Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Log.cpp.obj.modmap: CXX_DYNDEP__Lavendel_Debug Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Application.cpp.obj.ddi Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Renderer.cpp.obj.ddi Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Log.cpp.obj.ddi | C$:\Dev\Lavendel\out\build\x64-Debug\Lavendel\CMakeFiles\Lavendel.dir\CXXDependInfo.json
+build Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Window.cpp.obj.ddi: CXX_SCAN__Lavendel_Debug C$:\Dev\Lavendel\Lavendel\src\Lavendel\Renderer\Window.cpp || cmake_object_order_depends_target_Lavendel
+  DEFINES = -DLM_DEBUG -DLV_BUILD_DLL -DLV_DEBUG -DLV_PLATFORM_WINDOWS -DLavendel_EXPORTS
+  DEP_FILE = Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Window.cpp.obj.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Window.cpp.obj.ddi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /utf-8 /UTF-8
+  INCLUDES = -IC:\VulkanSDK\1.4.328.1\Include -IC:\Dev\Lavendel\Lavendel\include -IC:\Dev\Lavendel\Lavendel\src -IC:\Dev\Lavendel\Lavendel\vendor\spdlog\include -IC:\Dev\Lavendel\Lavendel\vendor\glfw\include -IC:\Dev\Lavendel\Lavendel\vendor\glm
+  OBJ_FILE = Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Window.cpp.obj
+  PREPROCESSED_OUTPUT_FILE = Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Window.cpp.obj.ddi.i
+
+build Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Window.cpp.obj: CXX_COMPILER__Lavendel_scanned_Debug C$:\Dev\Lavendel\Lavendel\src\Lavendel\Renderer\Window.cpp | Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Window.cpp.obj.modmap || cmake_object_order_depends_target_Lavendel Lavendel\CMakeFiles\Lavendel.dir\CXX.dd
+  DEFINES = -DLM_DEBUG -DLV_BUILD_DLL -DLV_DEBUG -DLV_PLATFORM_WINDOWS -DLavendel_EXPORTS
+  DYNDEP_MODULE_MAP_FILE = Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Window.cpp.obj.modmap
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi /utf-8 /UTF-8
+  INCLUDES = -IC:\VulkanSDK\1.4.328.1\Include -IC:\Dev\Lavendel\Lavendel\include -IC:\Dev\Lavendel\Lavendel\src -IC:\Dev\Lavendel\Lavendel\vendor\spdlog\include -IC:\Dev\Lavendel\Lavendel\vendor\glfw\include -IC:\Dev\Lavendel\Lavendel\vendor\glm
+  OBJECT_DIR = Lavendel\CMakeFiles\Lavendel.dir
+  OBJECT_FILE_DIR = Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer
+  TARGET_COMPILE_PDB = Lavendel\CMakeFiles\Lavendel.dir\
+  TARGET_PDB = bin\Lavendel.pdb
+  dyndep = Lavendel/CMakeFiles/Lavendel.dir/CXX.dd
+
+build Lavendel\CMakeFiles\Lavendel.dir\CXX.dd | C$:\Dev\Lavendel\out\build\x64-Debug\Lavendel\CMakeFiles\Lavendel.dir\CXXModules.json Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Application.cpp.obj.modmap Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Renderer.cpp.obj.modmap Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Log.cpp.obj.modmap Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Window.cpp.obj.modmap: CXX_DYNDEP__Lavendel_Debug Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Application.cpp.obj.ddi Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Renderer.cpp.obj.ddi Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Log.cpp.obj.ddi Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Window.cpp.obj.ddi | C$:\Dev\Lavendel\out\build\x64-Debug\Lavendel\CMakeFiles\Lavendel.dir\CXXDependInfo.json
 
 
 # =============================================================================
@@ -177,10 +197,10 @@ build Lavendel\CMakeFiles\Lavendel.dir\CXX.dd | C$:\Dev\Lavendel\out\build\x64-D
 #############################################
 # Link the shared library bin\Lavendel.dll
 
-build bin\Lavendel.dll bin\Lavendel.lib: CXX_SHARED_LIBRARY_LINKER__Lavendel_Debug Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Application.cpp.obj Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Renderer.cpp.obj Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Log.cpp.obj | C$:\VulkanSDK\1.4.328.1\Lib\vulkan-1.lib
+build bin\Lavendel.dll bin\Lavendel.lib: CXX_SHARED_LIBRARY_LINKER__Lavendel_Debug Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Application.cpp.obj Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Renderer.cpp.obj Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Log.cpp.obj Lavendel\CMakeFiles\Lavendel.dir\src\Lavendel\Renderer\Window.cpp.obj | C$:\VulkanSDK\1.4.328.1\Lib\vulkan-1.lib bin\glfw3.lib || bin\glfw3.lib
   LANGUAGE_COMPILE_FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -MDd -Zi
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL  /DEF:Lavendel\CMakeFiles\Lavendel.dir\.\exports.def
-  LINK_LIBRARIES = C:\VulkanSDK\1.4.328.1\Lib\vulkan-1.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
+  LINK_LIBRARIES = C:\VulkanSDK\1.4.328.1\Lib\vulkan-1.lib  bin\glfw3.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
   OBJECT_DIR = Lavendel\CMakeFiles\Lavendel.dir
   POST_BUILD = cd .
   PRE_LINK = C:\WINDOWS\system32\cmd.exe /C ""C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E __create_def C:\Dev\Lavendel\out\build\x64-Debug\Lavendel\CMakeFiles\Lavendel.dir\.\exports.def C:\Dev\Lavendel\out\build\x64-Debug\Lavendel\CMakeFiles\Lavendel.dir\.\exports.def.objs && cd C:\Dev\Lavendel\out\build\x64-Debug"

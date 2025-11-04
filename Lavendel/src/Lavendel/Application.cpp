@@ -1,5 +1,5 @@
 #include "Application.h"
-
+#include "Renderer/Window.h"
 
 // CONSTRUCTOR 
 
@@ -15,6 +15,12 @@ Lavendel::Application::~Application()
 
 void Lavendel::Application::Run()
 {
-	while (true);
+
+	Lavendel::Window window(1280, 720, "Lavendel Engine");
+	
+	while (!window.ShouldClose())
+	{
+		window.PollEvents();
+	}
 }
 
