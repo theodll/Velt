@@ -1,5 +1,5 @@
 #include "Application.h"
-#include "Renderer/Setup/Window.h"
+#include "Renderer/Window.h"
 
 // CONSTRUCTOR 
 
@@ -16,11 +16,10 @@ Lavendel::Application::~Application()
 void Lavendel::Application::Run()
 {
 	// 1st and 2nd param are width and height, 3rd is title, 4th is resizable bool
-	Lavendel::RendererAPI::Window window(1280, 720, "Lavendel Engine", false);
 	
-	while (!window.ShouldClose())
+	while (!m_Window.ShouldClose())
 	{
-		window.PollEvents();
+		m_Window.PollEvents();
 	}
 }
 

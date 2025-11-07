@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Core.h"
+#include "../Window.h"
 #include <vulkan/vulkan.h>
 #include <string>
 #include <vector>
@@ -99,7 +100,7 @@ namespace Lavendel {
             VkInstance m_Instance;
             VkDebugUtilsMessengerEXT m_DebugMessenger;
             VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
-            Window& m_Window;
+            Lavendel::RendererAPI::Window& m_Window;
             VkCommandPool m_CommandPool;
 
             VkDevice m_Device;

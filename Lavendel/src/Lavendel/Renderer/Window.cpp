@@ -1,7 +1,7 @@
 #include "Window.h"
-#include "Device.h"
-#include "Pipeline.h"
-#include "../../Log.h"
+#include "Setup/Device.h"
+#include "Setup/Pipeline.h"
+#include "../Log.h"
 
 namespace Lavendel {
 	namespace RendererAPI {

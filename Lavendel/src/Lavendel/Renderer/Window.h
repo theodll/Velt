@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Core.h"
+#include "../Core.h"
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 #include <string>

@@ -14,7 +14,18 @@ namespace Lavendel {
 
 		struct PipelineConfigInfo
 		{
-
+			VkViewport viewport;
+			VkRect2D scissor;
+			VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
+			VkPipelineViewportStateCreateInfo viewportInfo;
+			VkPipelineRasterizationStateCreateInfo rasterizationInfo;
+			VkPipelineMultisampleStateCreateFlags multisampleInfo;
+			VkPipelineColorBlendAttachmentState colorBlendAttachment;
+			VkPipelineColorBlendStateCreateInfo colorBlendInfo;
+			VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
+			VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
+			VkRenderPass renderPass = VK_NULL_HANDLE;
+			uint32_t subpass = 0;
 
 		};
 		class LAVENDEL_API Pipeline

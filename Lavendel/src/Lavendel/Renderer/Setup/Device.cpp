@@ -1,6 +1,7 @@
 #include "Device.h"
 
 // std headers
+#include "../Window.h"
 #include "../../Log.h"
 #include <GLFW/glfw3.h>
 #include <cstring>

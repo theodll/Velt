@@ -11,7 +11,7 @@ add_library(Lavendel SHARED
         "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Events/Event.h"
         "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Events/KeyEvent.h"
         "${CMAKE_SOURCE_DIR}/Lavendel/src/Lavendel/Events/MouseEvent.h"
- "src/Lavendel/Renderer/Setup/Window.cpp" "src/Lavendel/Renderer/Setup/Window.h" "src/Lavendel/Renderer/Setup/Pipeline.h" 
+ "src/Lavendel/Renderer/Window.cpp" "src/Lavendel/Renderer/Window.h" "src/Lavendel/Renderer/Setup/Pipeline.h" 
 "src/Lavendel/Renderer/Setup/Pipeline.cpp" "src/Lavendel/Renderer/Setup/Device.cpp" "src/Lavendel/Renderer/Setup/Device.h")
 
 target_compile_definitions(Lavendel PRIVATE LV_BUILD_DLL)
@@ -27,7 +27,7 @@ add_subdirectory(vendor/glm)
 find_package(Vulkan REQUIRED)
 if (Vulkan_FOUND)
     message(STATUS "Vulkan include dir: ${Vulkan_INCLUDE_DIRS}")
-    target_include_directories(Lavendel PRIVATE ${Vulkan_INCLUDE_DIRS})
+    target_include_directories(Lavendel PUBLIC ${Vulkan_INCLUDE_DIRS})
     target_link_libraries(Lavendel PRIVATE ${Vulkan_LIBRARIES})
 endif()
 
