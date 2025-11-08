@@ -26,7 +26,15 @@ namespace Lavendel {
 			VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
 			VkRenderPass renderPass = VK_NULL_HANDLE;
 			uint32_t subpass = 0;
+		};
 
+		struct ProjectileInfo
+		{
+			float speed = 10.0f;
+			float damage = 10.0f;
+			float range = 100.0f;
+			bool isExplosive = false;
+			bool isLaser = false;
 		};
 		class LAVENDEL_API Pipeline
 		{
