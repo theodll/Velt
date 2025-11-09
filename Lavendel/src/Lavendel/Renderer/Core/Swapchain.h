@@ -8,16 +8,16 @@
 namespace Lavendel {
     namespace RenderAPI {
 
-        class MyEngineSwapChain
+        class SwapChain
         {
         public:
             static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-            MyEngineSwapChain(MyEngineDevice& deviceRef, VkExtent2D windowExtent);
-            ~MyEngineSwapChain();
+            SwapChain(GPUDevice& deviceRef, VkExtent2D windowExtent);
+            ~SwapChain();
 
-            MyEngineSwapChain(const MyEngineSwapChain&) = delete;
-            void operator=(const MyEngineSwapChain&) = delete;
+            SwapChain(const SwapChain&) = delete;
+            void operator=(const SwapChain&) = delete;
 
             VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
             VkRenderPass getRenderPass() { return renderPass; }

@@ -21,11 +21,14 @@ namespace Lavendel {
             Window(int width, int height, const std::string& title, bool bResizable);
             ~Window();
 
+            Window(const Window&) = delete;
+            void operator=(const Window&) = delete;
+
             void PollEvents() const { glfwPollEvents(); };
             bool ShouldClose() const { return glfwWindowShouldClose(m_Window); };
             void* GetNativeHandle() const { return m_Window; };
             void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
-
+			VkExtent2D getExtent() const { return { static_cast<uint32_t>(m_Width), static_cast<uint32_t>(m_Height) }; }
 
         private:
             void Init(int width, int height, const std::string& title, bool bResizable);
