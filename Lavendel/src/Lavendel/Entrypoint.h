@@ -8,6 +8,7 @@ int main(int argc, char** argv)
 {
 	
 	Lavendel::Log::Init();
+
 	LV_CORE_INFO("Core Log Initialized!");
 	LV_INFO("Client Log Initialized!");
 

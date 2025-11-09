@@ -4,6 +4,7 @@
 #include "Renderer/Core/Device.h"
 #include "Renderer/Pipeline/Pipeline.h"
 #include "Renderer/Core/Swapchain.h"
+#include "Renderer/Renderer.h" 
 #include "Log.h"
 // std
 #include <memory>
@@ -12,8 +13,11 @@
 #include <stdexcept>
 
 namespace Lavendel
-{
-
+{	
+	namespace RenderAPI {
+		class Renderer;
+	}
+		
 	class LAVENDEL_API Application
 	{
 		public:
@@ -27,20 +31,12 @@ namespace Lavendel
 			static constexpr int HEIGHT = 1280;
 			std::string TITLE{ "Lavendel Engine" };
 
+			static RenderAPI::Window& getWindow() { return m_Window; };
+
 
 	private:
-		void createPipelineLayout();
-		void createPipeline();
-		void createCommandBuffers();
-		void drawFrame();
-
-		RenderAPI::Window m_Window{1280, 720, "Lavendel Window", false };
-		RenderAPI::GPUDevice m_Device{m_Window };
-//		RenderAPI::Pipeline m_Pipeline{ m_Device, "shaders/shader.vert.spv", "shaders/shader.frag.spv", Lavendel::RenderAPI::Pipeline::defaultPipelineConfigInfo(WIDTH, HEIGHT) };
-		RenderAPI::SwapChain m_SwapChain{ m_Device, m_Window.getExtent() };
-		std::unique_ptr<RenderAPI::Pipeline> m_Pipeline;
-		VkPipelineLayout m_PipelineLayout;
-		std::vector<VkCommandBuffer> m_CommandBuffers;
+		inline static RenderAPI::Window m_Window{ 1280, 720, "Lavendel Window", false };
+		RenderAPI::Renderer* m_Renderer;
 	};
 
 	// MUST BE DEFINED IN CLIENT
