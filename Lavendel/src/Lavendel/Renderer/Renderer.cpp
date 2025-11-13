@@ -50,11 +50,10 @@ namespace Lavendel {
 
 		void Renderer::loadModels()
 		{
-			std::vector<Model::Vertex> vertices =
-			{
-				{{0.0f, -1.0f}},
-				{{1.0f, 1.0f}},
-				{{-1.0f, 1.0f}}
+			std::vector<Model::Vertex> vertices = {
+				{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+				{{ -0.5f, 0.5f }, {0.0f, 1.0f, 0.0f}},
+				{{0.5f, 0.5f},  {0.0f, 0.0f, 1.0f}}
 			};
 			m_Model = std::make_shared<Model>(*m_Device, vertices);
 		}

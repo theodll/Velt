@@ -1,73 +1,82 @@
 #include "Window.h"
 #include "../Log.h"
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_vulkan.h>
+#include <stdexcept>
 
 namespace Lavendel {
-	namespace RenderAPI {
+    namespace RenderAPI {
 
-		static bool s_GLFWInitialized = false;
+        static bool s_SDLInitialized = false;
 
-		Window::Window(int width, int height, const std::string& title, bool bResizable) 
-			: m_Width(width), m_Height(height), m_Title(title), m_Resizable(bResizable)
-		{
-			Init(width, height, title, bResizable);
-		}
+        Window::Window(int width, int height, const std::string& title, bool bResizable)
+            : m_Width(width), m_Height(height), m_Title(title), m_Resizable(bResizable)
+        {
+            Init(width, height, title, bResizable);
+        }
 
-		Window::~Window()
-		{
-			Shutdown();
-		}
+        Window::~Window()
+        {
+            Shutdown();
+        }
 
-		void Window::Init(int width, int height, const std::string& title, bool bResizable)
-		{
-			m_Width = width;
-			m_Height = height;
-			m_Title = title;
-			m_Resizable = bResizable;
+        void Window::Init(int width, int height, const std::string& title, bool bResizable)
+        {
+            m_Width = width;
+            m_Height = height;
+            m_Title = title;
+            m_Resizable = bResizable;
 
-			if (!s_GLFWInitialized)
-			{
-				if (!glfwInit())
-				{
-					LV_CORE_ERROR("Failed to initialize GLFW!");
-					return;
-				}
+            if (!s_SDLInitialized)
+            {
+                if (!SDL_Init(SDL_INIT_VIDEO))
+                {
+                    LV_CORE_ERROR("Failed to initialize SDL: {}", SDL_GetError());
+                    return;
+                }
+                s_SDLInitialized = true;
+            }
 
-				s_GLFWInitialized = true;
-			}
+            Uint32 windowFlags = SDL_WINDOW_VULKAN;
+            if (bResizable)
+                windowFlags |= SDL_WINDOW_RESIZABLE;
 
-			if (!bResizable)
-			{
-				glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-			}
+            m_Window = SDL_CreateWindow(title.c_str(), width, height, windowFlags);
+            if (!m_Window)
+            {
+                LV_CORE_ERROR("Failed to create SDL window: {}", SDL_GetError());
+                return;
+            }
+        }
 
-			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        void Window::Shutdown()
+        {
+            if (m_Window)
+            {
+                SDL_DestroyWindow(m_Window);
+                m_Window = nullptr;
+            }
+        }
 
-			m_Window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+        void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
+        {
+            if (!SDL_Vulkan_CreateSurface(m_Window, instance, nullptr, surface))
+            {
+                LV_CORE_ERROR("Failed to create Vulkan surface: {}", SDL_GetError());
+                throw std::runtime_error("failed to create window surface!");
+            }
+        }
 
-			if (!m_Window)
-			{
-				LV_CORE_ERROR("Failed to create GLFW window!");
-				return;
-			}
-		}
+        bool Window::ShouldClose()
+        {
+            SDL_Event event;
+            while (SDL_PollEvent(&event))
+            {
+                if (event.type == SDL_EVENT_QUIT)
+                    return true;
+            }
+            return false;
+        }
 
-		void Window::Shutdown()
-		{
-			if (m_Window)
-			{
-				glfwDestroyWindow(m_Window);
-				m_Window = nullptr;
-			}
-		}
-
-		void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
-		{
-			if (glfwCreateWindowSurface(instance, m_Window, nullptr, surface) != VK_SUCCESS)
-			{
-				LV_CORE_ERROR("Failed to create window surface!");
-				throw std::runtime_error("failed to create window surface!");
-			}
-		}
-
-	}
+    }
 }

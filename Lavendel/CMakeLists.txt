@@ -26,13 +26,15 @@ add_subdirectory(vendor/spdlog)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/volk)
 add_subdirectory(vendor/glm)
+add_subdirectory(vendor/sdl3)
 
 
 find_package(Vulkan REQUIRED)
 if (Vulkan_FOUND)
     message(STATUS "Vulkan include dir: ${Vulkan_INCLUDE_DIRS}")
     target_include_directories(Lavendel PUBLIC ${Vulkan_INCLUDE_DIRS})
-    target_link_libraries(Lavendel PRIVATE ${Vulkan_LIBRARIES})
+    target_link_libraries(Lavendel PRIVATE ${Vulkan_LIBRARIES}
+                                   SDL3::SDL3)
 endif()
 
 target_include_directories(Lavendel PUBLIC

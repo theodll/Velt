@@ -3,7 +3,8 @@
 // std headers
 #include "../Window.h"
 #include "../../Log.h"
-#include <GLFW/glfw3.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_vulkan.h>
 #include <cstring>
 #include <iostream>
 #include <set>
@@ -69,7 +70,7 @@ namespace Lavendel {
         GPUDevice::GPUDevice(Window& window) : m_Window{ window }
         {
             createInstance();
-			setupDebugMessenger(); // vallidation layers
+			setupDebugMessenger(); // validation layers
             createSurface();
 			pickPhysicalDevice(); // select GPU
             createLogicalDevice();
@@ -139,7 +140,7 @@ namespace Lavendel {
 				LV_CORE_ERROR("Failed to create Vulkan instance!");
             }
 
-            hasGflwRequiredInstanceExtensions();
+            hasSDLRequiredInstanceExtensions();
         }
 
         void GPUDevice::pickPhysicalDevice()
@@ -323,15 +324,19 @@ namespace Lavendel {
 
         std::vector<const char*> GPUDevice::getRequiredExtensions()
         {
-            uint32_t glfwExtensionCount = 0;
-            const char** glfwExtensions;
-            glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+            // Get SDL3 required Vulkan instance extensions
+            uint32_t sdlExtensionCount = 0;
+            const char* const* sdlExtensions = SDL_Vulkan_GetInstanceExtensions(&sdlExtensionCount);
 
-            std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+            std::vector<const char*> extensions;
+            if (sdlExtensions != nullptr && sdlExtensionCount > 0)
+            {
+                extensions.assign(sdlExtensions, sdlExtensions + sdlExtensionCount);
+            }
+
 #ifdef LV_PLATFORM_OSX
             extensions.push_back("VK_KHR_portability_enumeration");
 #endif
-
 
             if (enableValidationLayers)
             {
@@ -341,7 +346,7 @@ namespace Lavendel {
             return extensions;
         }
 
-        void GPUDevice::hasGflwRequiredInstanceExtensions()
+        void GPUDevice::hasSDLRequiredInstanceExtensions()
         {
             uint32_t extensionCount = 0;
             vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
@@ -363,8 +368,8 @@ namespace Lavendel {
 				LV_CORE_INFO("\t {}", required);
                 if (available.find(required) == available.end())
                 {
-                    throw std::runtime_error("Missing required glfw extension");
-					LV_CORE_ERROR("Missing required glfw extension: {}", required);
+                    throw std::runtime_error("Missing required SDL extension");
+					LV_CORE_ERROR("Missing required SDL extension: {}", required);
                 }
             }
         }
