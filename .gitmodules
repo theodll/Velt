@@ -1,9 +1,6 @@
 [submodule "Lavendel/vendor/spdlog"]
 	path = Lavendel/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
-[submodule "Lavendel/vendor/glfw"]
-	path = Lavendel/vendor/glfw
-	url = https://github.com/glfw/glfw.git
 [submodule "Lavendel/vendor/sdl3"]
 	path = Lavendel/vendor/sdl3
 	url = https://github.com/libsdl-org/SDL
