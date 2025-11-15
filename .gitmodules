@@ -7,3 +7,6 @@
 [submodule "Lavendel/vendor/sdl3"]
 	path = Lavendel/vendor/sdl3
 	url = https://github.com/libsdl-org/SDL
+[submodule "Lavendel/vendor/glm"]
+	path = Lavendel/vendor/glm
+	url = https://www.github.com/g-truc/glm
