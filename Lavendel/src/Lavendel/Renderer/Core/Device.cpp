@@ -1,14 +1,8 @@
+#include "lvpch.h"
 #include "Device.h"
-
-// std headers
 #include "../Window.h"
-#include "../../Log.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_vulkan.h>
-#include <cstring>
-#include <iostream>
-#include <set>
-#include <unordered_set>
 
 namespace Lavendel {
 

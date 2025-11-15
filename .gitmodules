@@ -7,3 +7,6 @@
 [submodule "Lavendel/vendor/glm"]
 	path = Lavendel/vendor/glm
 	url = https://www.github.com/g-truc/glm
+[submodule "Lavendel/vendor/volk"]
+	path = Lavendel/vendor/volk
+	url = https://www.github.com/zeux/volk

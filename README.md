@@ -4,7 +4,7 @@
 
 Currently its just me working on Lavendel but everyone can Contribute for now. Lavendel right now is Licensed under BSD-3 Clause but I might switch to another License
 
-## Roadmap - [Lavendel.tech/Roadmapp](lavendel.tech/roadmap)
+## Roadmap - [Lavendel.tech/Roadmap](lavendel.tech/roadmap)
 ### Lavendel is currently in very early Development but it definitly have:
 ECS based on entt,
 2D and 3D Vulkan Renderer Backend,

@@ -1,18 +1,11 @@
 #pragma once
-
-#include "../Core.h"
+#include "lvpch.h"
 #include "Window.h"
 #include "Core/Device.h"
 #include "Pipeline/Pipeline.h"
 #include "Core/Swapchain.h"
-#include "../Log.h"
 #include "Model/Model.h"
 
-// std
-#include <memory>
-#include <string>
-#include <vector>
-#include <stdexcept>
 
 namespace Lavendel
 {

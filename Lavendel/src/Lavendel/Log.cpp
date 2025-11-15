@@ -1,5 +1,4 @@
-#include "Log.h"
-
+#include "lvpch.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
 namespace Lavendel {

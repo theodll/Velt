@@ -1,7 +1,6 @@
+#include "lvpch.h"
 #include "Application.h"
 #include "Renderer/Renderer.h"
-
-#include <array>
 
 // CONSTRUCTOR 
 namespace Lavendel {

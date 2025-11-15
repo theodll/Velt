@@ -1,9 +1,5 @@
+#include "lvpch.h"
 #include "Model.h"
-#include "../../Log.h"
-
-#include <cassert>
-#include <cstring>
-#include <vulkan/vulkan.h>
 
 namespace Lavendel
 {

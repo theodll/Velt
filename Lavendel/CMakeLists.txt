@@ -15,7 +15,9 @@ add_library(Lavendel SHARED
 "src/Lavendel/Renderer/Pipeline/Pipeline.cpp" "src/Lavendel/Renderer/Core/Device.cpp" "src/Lavendel/Renderer/Core/Device.h"
 "src/Lavendel/Renderer/Core/Swapchain.cpp" "src/Lavendel/Renderer/Core/Swapchain.h" "src/Lavendel/Renderer/Renderer.h" "src/Lavendel/Renderer/Renderer.cpp"
         src/Lavendel/Renderer/Model/Model.cpp
-        src/Lavendel/Renderer/Model/Model.h)
+        src/Lavendel/Renderer/Model/Model.h
+        src/lvpch.cpp
+        src/lvpch.h)
 
 if(WIN32)
     target_compile_definitions(Lavendel PRIVATE LV_BUILD_DLL)
@@ -23,7 +25,6 @@ if(WIN32)
 endif()
 
 add_subdirectory(vendor/spdlog)
-add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/volk)
 add_subdirectory(vendor/glm)
 add_subdirectory(vendor/sdl3)
@@ -40,6 +41,7 @@ endif()
 target_include_directories(Lavendel PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/sdl3/include
 )
 
 
@@ -58,7 +60,7 @@ target_include_directories(Lavendel
         ${CMAKE_SOURCE_DIR}/Lavendel/src/
 )
 
-target_link_libraries(Lavendel PRIVATE glfw)
+target_precompile_headers(Lavendel PUBLIC ${CMAKE_SOURCE_DIR}/Lavendel/src/lvpch.h)
 
 message(STATUS "LV_BUILD_DLL is defined: ${LV_BUILD_DLL}")
 get_target_property(COMPILE_DEFS Lavendel COMPILE_DEFINITIONS)

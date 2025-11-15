@@ -1,13 +1,5 @@
+#include "lvpch.h"
 #include "Swapchain.h"
-#include "../../Log.h"
-#include <array>
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
-#include <limits>
-#include <set>
-#include <stdexcept>
-#include <cassert>
 
 namespace Lavendel {
     namespace RenderAPI {
@@ -426,7 +418,7 @@ namespace Lavendel {
                 }
             }
 
-            std::cout << "Present mode: V-Sync" << std::endl;
+            LV_CORE_INFO("Present mode: V-Sync");
             return VK_PRESENT_MODE_FIFO_KHR;
         }
 
