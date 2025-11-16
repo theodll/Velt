@@ -62,6 +62,14 @@ namespace Lavendel {
 
 			vkDeviceWaitIdle(m_Device->device());
 
+			// Shutdown ImGui before recreating swap chain
+			bool wasImGuiInitialized = m_ImGuiInitialized;
+			if (m_ImGuiInitialized)
+			{
+				m_ImGuiRenderer.Shutdown();
+				m_ImGuiInitialized = false;
+			}
+
 			if (m_SwapChain == nullptr)
 			{
 				m_SwapChain = std::make_shared<SwapChain>(*m_Device, extent);
@@ -78,6 +86,12 @@ namespace Lavendel {
 				}
 			}
 			createPipeline();
+
+			// Reinitialize ImGui after swap chain is ready
+			if (wasImGuiInitialized)
+			{
+				initImGui();
+			}
 		}
 
 		void Renderer::loadModels()
@@ -224,8 +238,15 @@ namespace Lavendel {
 
 		void Renderer::beginImGuiFrame()
 		{
-			if (m_ImGuiInitialized)
+			if (m_ImGuiInitialized) {
+				// Ensure display size is valid before ImGui frame
+				auto extent = m_SwapChain->getSwapChainExtent();
+				ImGui::GetIO().DisplaySize = ImVec2(
+					static_cast<float>(extent.width),
+					static_cast<float>(extent.height)
+				);
 				m_ImGuiRenderer.Begin();
+			}
 		}
 
 		void Renderer::endImGuiFrame()

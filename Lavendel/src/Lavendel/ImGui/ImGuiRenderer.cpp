@@ -18,15 +18,13 @@ namespace Lavendel {
 		// Create descriptor pool for ImGui
 		VkDescriptorPoolSize pool_sizes[] =
 		{
-			{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, IMGUI_IMPL_VULKAN_MINIMUM_IMAGE_SAMPLER_POOL_SIZE },
+			{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100 },
 		};
 
 		VkDescriptorPoolCreateInfo pool_info = {};
 		pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-		pool_info.maxSets = 0;
-		for (VkDescriptorPoolSize& pool_size : pool_sizes)
-			pool_info.maxSets += pool_size.descriptorCount;
+		pool_info.maxSets = 100;
 		pool_info.poolSizeCount = (uint32_t)std::size(pool_sizes);
 		pool_info.pPoolSizes = pool_sizes;
 
@@ -59,7 +57,6 @@ namespace Lavendel {
 	void ImGuiRenderer::Begin()
 	{
 		ImGui_ImplVulkan_NewFrame();
-		ImGui_ImplSDL3_NewFrame();
 		ImGui::NewFrame();
 	}
 
@@ -77,7 +74,6 @@ namespace Lavendel {
 	void ImGuiRenderer::Shutdown()
 	{
 		ImGui_ImplVulkan_Shutdown();
-		ImGui_ImplSDL3_Shutdown();
 		ImGui::DestroyContext();
 
 		LV_CORE_INFO("ImGui Renderer shutdown");
