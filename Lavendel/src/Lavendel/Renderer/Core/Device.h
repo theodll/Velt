@@ -53,6 +53,8 @@ namespace Lavendel {
             VkPhysicalDevice getPhysicalDevice() { return m_PhysicalDevice; }
             VkQueue getGraphicsQueue() { return m_GraphicsQueue; }
             uint32_t getQueueFamilyIndex() { return findPhysicalQueueFamilies().graphicsFamily; }
+            // Access underlying window
+            RenderAPI::Window& getWindow() { return m_Window; }
             
             SwapChainSupportDetails getSwapChainSupport() { return querySwapChainSupport(m_PhysicalDevice); }
             uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);

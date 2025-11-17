@@ -67,6 +67,9 @@ namespace Lavendel {
 			throw std::runtime_error("Failed to initialize ImGui Vulkan backend!");
 		}
 
+		// The backend will create / upload fonts automatically on the first NewFrame
+		// call when needed (the imgui_impl_vulkan backend handles font atlas upload),
+		// so there's no need to manually create font textures here.
 		LV_CORE_INFO("ImGuiRenderer initialized");
 	}
 
@@ -102,6 +105,17 @@ namespace Lavendel {
 		ImDrawData* draw_data = ImGui::GetDrawData();
 		if (draw_data != nullptr)
 		{
+			// Log draw data stats for debugging: number of command lists and total vertices
+			int total_vtx = draw_data->TotalVtxCount;
+			int total_idx = draw_data->TotalIdxCount;
+			if (total_vtx == 0)
+			{
+				LV_CORE_INFO("ImGui draw data empty: vtx=0 idx=0");
+			}
+			else
+			{
+				LV_CORE_INFO("ImGui draw data: lists=%d verts=%d idx=%d", draw_data->CmdListsCount, total_vtx, total_idx);
+			}
 			ImGui_ImplVulkan_RenderDrawData(draw_data, commandBuffer);
 		}
 	}

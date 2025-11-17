@@ -1,10 +1,16 @@
 #pragma once
 
 #include "lvpch.h"
-#include "imgui.h"
+// ImGui headers - rely on the project's include paths to find ImGui. The
+// CMake target that builds Lavendel should already add the vendor ImGui
+// include directory to the compiler search path.
+#include "SDL3/imgui.h"
 #include "Lavendel/Renderer/Core/Swapchain.h"
-#include "backends/imgui_impl_vulkan.h"
-#include "backends/imgui_impl_sdl3.h"
+// Use the SDL3-specific ImGui headers located in vendor/ImGui/SDL3
+// CMake adds ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui to the include
+// directories, so we include the SDL3 path here.
+#include "SDL3/imgui_impl_vulkan.h"
+#include "SDL3/imgui_impl_sdl3.h"
 
 struct VkDescriptorPool_T;
 struct VkCommandBuffer_T;

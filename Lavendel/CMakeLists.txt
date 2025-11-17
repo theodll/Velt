@@ -85,18 +85,18 @@ if(WIN32)
 endif()
 
 set(IMGUI_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui/imgui.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui/imgui_draw.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui/imgui_widgets.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui/imgui_tables.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui/imgui_demo.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui/backends/imgui_impl_sdl3.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui/backends/imgui_impl_vulkan.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/SDL3/imgui.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/SDL3/imgui_draw.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/SDL3/imgui_widgets.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/SDL3/imgui_tables.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/SDL3/imgui_demo.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/SDL3/imgui_impl_sdl3.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/SDL3/imgui_impl_vulkan.cpp
 )
 
 target_sources(Lavendel PRIVATE ${IMGUI_SRC})
 
 target_include_directories(Lavendel PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui
-    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui/backends
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/backends
 )

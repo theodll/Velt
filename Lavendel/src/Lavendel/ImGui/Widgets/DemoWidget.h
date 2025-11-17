@@ -1,6 +1,6 @@
 #pragma once
 
-#include "imgui.h"
+#include "SDL3/imgui.h"
 #include <string>
 
 namespace Lavendel {

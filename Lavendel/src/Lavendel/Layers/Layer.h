@@ -13,6 +13,11 @@ namespace Lavendel
         virtual void OnDetach() {};
         virtual void OnUpdate() {};
         virtual void OnEvent(Event& event) {};
+        
+        // Optional: Called during rendering phase, useful for layers that need to render
+        // graphics directly to the command buffer. This is called after scene rendering
+        // and respects the layer stack order, so layers added later will render on top.
+        virtual void OnRender(void* commandBuffer) {};
 
         inline const std::string& GetName() const {  return m_DebugName;   }
 

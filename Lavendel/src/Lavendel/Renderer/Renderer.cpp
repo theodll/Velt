@@ -2,6 +2,16 @@
 #include "Renderer.h"
 #include "Pipeline/Pipeline.h"
 #include "Lavendel/ImGui/ImGuiLayer.h"
+#include "Lavendel/Layers/LayerStack.h"
+#include "Lavendel/Layers/Layer.h"
+
+// Define static members declared in Renderer.h. These must have a single
+// definition in a .cpp file to satisfy the linker. They are used to provide
+// global-ish access to the GPU device, swapchain and pipeline owned by the
+// renderer instance.
+std::shared_ptr<Lavendel::RenderAPI::GPUDevice> Lavendel::RenderAPI::Renderer::m_Device = nullptr;
+std::shared_ptr<Lavendel::RenderAPI::SwapChain> Lavendel::RenderAPI::Renderer::m_SwapChain = nullptr;
+std::shared_ptr<Lavendel::RenderAPI::Pipeline> Lavendel::RenderAPI::Renderer::m_Pipeline = nullptr;
 
 namespace Lavendel {
 	namespace RenderAPI {
@@ -153,15 +163,22 @@ namespace Lavendel {
 			vkCmdSetViewport(m_CommandBuffers[imageIndex], 0, 1, &viewport);
 			vkCmdSetScissor(m_CommandBuffers[imageIndex], 0, 1, &scissor);
 
-			// Render scene
+			// Render scene - bind pipeline and draw the model
 			m_Pipeline->bind(m_CommandBuffers[imageIndex]);
 			m_Model->bind(m_CommandBuffers[imageIndex]);
 			m_Model->draw(m_CommandBuffers[imageIndex]);
 
-			// Render ImGui on top of scene if layer is set
-			if (m_ImGuiLayer != nullptr)
+			// Render layers in stack order. This respects the layer stack and ensures
+			// that ImGui (typically added as the last layer via PushLayer) renders on top.
+			// Each layer's OnRender() method is called in order, allowing layers like ImGuiLayer
+			// to render their graphics to the command buffer at the appropriate depth.
+			if (m_LayerStack != nullptr)
 			{
-				m_ImGuiLayer->GetRenderer().Render(m_CommandBuffers[imageIndex]);
+				for (Layer* layer : *m_LayerStack)
+				{
+					// Pass the command buffer as a void* to avoid including Vulkan headers in Layer.h
+					layer->OnRender(reinterpret_cast<void*>(m_CommandBuffers[imageIndex]));
+				}
 			}
 
 			vkCmdEndRenderPass(m_CommandBuffers[imageIndex]);
@@ -205,6 +222,19 @@ namespace Lavendel {
 			}
 		}
 
+		void Renderer::renderImGui(VkCommandBuffer commandBuffer)
+		{
+			// This method is called during recordCommandBuffer when rendering the ImGuiLayer.
+			// By separating ImGui rendering into its own method and calling it from the layer
+			// iteration process, we ensure ImGui respects the layer stack order and renders
+			// on top of previous layers (like the scene triangle).
+			
+			if (m_ImGuiLayer != nullptr)
+			{
+				// Render the ImGui draw data that was prepared during ImGuiLayer::OnUpdate()
+				m_ImGuiLayer->GetRenderer().Render(commandBuffer);
+			}
+		}
 
 	}  // namespace RenderAPI
 }  // namespace Lavendel

@@ -5,7 +5,9 @@
 #include <string>
 #include <functional>
 
-#define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::##type; }\
+// Macro to implement event type helpers inside event subclasses.
+// Do NOT use token-pasting (##) here; simply refer to the enum member.
+#define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::type; }\
 								virtual EventType GetEventType() const override { return GetStaticType(); }\
 								virtual const char* GetName() const override { return #type; }
 

@@ -9,6 +9,7 @@
 #include "Lavendel/Renderer/Renderer.h"
 
 struct SDL_Window;
+union SDL_Event;
 
 namespace Lavendel {
 	class ImGuiLayer : public Layer
@@ -24,6 +25,15 @@ namespace Lavendel {
 		virtual void OnDetach() override;
 		virtual void OnEvent(Event& event) override;
 		virtual void OnUpdate() override;
+		
+		// OnRender: Called during the rendering phase after all scene geometry has been rendered.
+		// This is where ImGui actually renders its prepared draw data to the command buffer.
+		// By using the layer system's OnRender, ImGui respects the layer stack order and
+		// renders on top of everything that was rendered before it in the stack.
+		virtual void OnRender(void* commandBuffer) override;
+
+		// Process a raw SDL event through ImGui's SDL backend (implemented in .cpp)
+		static void ProcessSDLEvent(const SDL_Event* event);
 
 		void Begin();
 		void End();
@@ -33,8 +43,8 @@ namespace Lavendel {
 
 	private:
 		std::shared_ptr<ImGuiRenderer> m_Renderer;
-		
-		std::shared_ptr<RenderAPI::GPUDevice>& m_Device;
+
+		std::shared_ptr<RenderAPI::GPUDevice> m_Device;
 
 		DemoWidget m_DemoWidget;
 
