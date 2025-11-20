@@ -32,3 +32,4 @@
 // self
 #include "Lavendel/Log.h"
 #include "Lavendel/Core.h"
+#include "Lavendel/Utils/Profiling/Instrumentor.h"

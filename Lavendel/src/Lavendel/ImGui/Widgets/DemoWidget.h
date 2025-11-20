@@ -4,7 +4,7 @@
 #include <string>
 
 namespace Lavendel {
-	class DemoWidget {
+	class LAVENDEL_API DemoWidget {
 	public:
 		DemoWidget(const std::string& name = "Demo Widget");
 		~DemoWidget() = default;

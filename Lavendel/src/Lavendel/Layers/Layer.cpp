@@ -10,11 +10,11 @@ namespace Lavendel
 {
     Layer::Layer(const std::string& debugName) : m_DebugName(debugName)
     {
-
+        LV_PROFILE_FUNCTION();
     }
 
     Layer::~Layer()
     {
-
+        LV_PROFILE_FUNCTION();
     }
 }

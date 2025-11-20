@@ -9,10 +9,12 @@ namespace Lavendel {
 	ImGuiRenderer::ImGuiRenderer(std::shared_ptr<RenderAPI::SwapChain> swapchain, std::shared_ptr<RenderAPI::GPUDevice> device, SDL_Window* window)
 		: m_Swapchain(swapchain), m_Device(device), m_Window(window)
 	{
+		LV_PROFILE_FUNCTION();
 	}
 
 	void ImGuiRenderer::Init()
 	{
+		LV_PROFILE_FUNCTION();
 
 		// Initialize ImGui SDL3 backend first
 		if (!ImGui_ImplSDL3_InitForVulkan(m_Window))
@@ -75,6 +77,7 @@ namespace Lavendel {
 
 	void ImGuiRenderer::Shutdown()
 	{
+		LV_PROFILE_FUNCTION();
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplSDL3_Shutdown();
 		
@@ -90,6 +93,7 @@ namespace Lavendel {
 
 	void ImGuiRenderer::Begin()
 	{
+		LV_PROFILE_FUNCTION();
 		ImGui_ImplSDL3_NewFrame();
 		ImGui_ImplVulkan_NewFrame();
 		ImGui::NewFrame();
@@ -97,11 +101,13 @@ namespace Lavendel {
 
 	void ImGuiRenderer::End()
 	{
+		LV_PROFILE_FUNCTION();
 		ImGui::Render();
 	}
 
 	void ImGuiRenderer::Render(VkCommandBuffer& commandBuffer)
 	{
+		LV_PROFILE_FUNCTION();
 		ImDrawData* draw_data = ImGui::GetDrawData();
 		if (draw_data != nullptr)
 		{

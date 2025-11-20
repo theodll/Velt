@@ -12,7 +12,7 @@ struct SDL_Window;
 union SDL_Event;
 
 namespace Lavendel {
-	class ImGuiLayer : public Layer
+	class LAVENDEL_API ImGuiLayer : public Layer
 	{
 	public:
 		ImGuiLayer();

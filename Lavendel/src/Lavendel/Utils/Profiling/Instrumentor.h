@@ -13,6 +13,7 @@
 // You will probably want to macro-fy this, to switch on/off easily and use things like __FUNCSIG__ for the profile name.
 //
 #pragma once
+#include "lvpch.h"
 
 #include <string>
 #include <chrono>
@@ -33,7 +34,7 @@ struct InstrumentationSession
     std::string Name;
 };
 
-class Instrumentor
+class LAVENDEL_API Instrumentor
 {
 private:
     InstrumentationSession* m_CurrentSession;
@@ -133,3 +134,14 @@ private:
     std::chrono::time_point<std::chrono::high_resolution_clock> m_StartTimepoint;
     bool m_Stopped;
 };
+
+
+
+
+    #define LV_PROFILE_BEGIN_SESSION(name, filepath) ::Instrumentor::Get().BeginSession(name, filepath)
+    #define LV_PROFILE_END_SESSION() ::Instrumentor::Get().EndSession()
+    // Two-level macro to ensure __LINE__ is expanded before token pasting on all compilers
+    #define LV_CONCAT_INTERNAL(x, y) x##y
+    #define LV_CONCAT(x, y) LV_CONCAT_INTERNAL(x, y)
+    #define LV_PROFILE_SCOPE(name) ::InstrumentationTimer LV_CONCAT(timer, __LINE__)(name)
+    #define LV_PROFILE_FUNCTION() LV_PROFILE_SCOPE(__FUNCSIG__)

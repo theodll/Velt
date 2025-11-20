@@ -15,6 +15,7 @@ namespace Lavendel {
             const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
             void* pUserData)
         {
+            LV_PROFILE_FUNCTION();
             // Safety check: logger might not be initialized yet during early callbacks
             auto coreLogger = ::Lavendel::Log::GetCoreLogger();
             if (coreLogger && coreLogger.get() != nullptr) {
@@ -33,6 +34,7 @@ namespace Lavendel {
             const VkAllocationCallbacks* pAllocator,
             VkDebugUtilsMessengerEXT* pDebugMessenger)
         {
+            LV_PROFILE_FUNCTION();
             auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
                 instance,
                 "vkCreateDebugUtilsMessengerEXT");
@@ -51,6 +53,7 @@ namespace Lavendel {
             VkDebugUtilsMessengerEXT debugMessenger,
             const VkAllocationCallbacks* pAllocator)
         {
+            LV_PROFILE_FUNCTION();
             auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
                 instance,
                 "vkDestroyDebugUtilsMessengerEXT");
@@ -63,6 +66,7 @@ namespace Lavendel {
         // class member functions
         GPUDevice::GPUDevice(Window& window) : m_Window{ window }
         {
+            LV_PROFILE_FUNCTION();
             LV_CORE_INFO("Creating GPUDevice...");
             createInstance();
 			setupDebugMessenger(); // validation layers
@@ -74,6 +78,7 @@ namespace Lavendel {
 
         GPUDevice::~GPUDevice()
         {
+            LV_PROFILE_FUNCTION();
             vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
             vkDestroyDevice(m_Device, nullptr);
 
@@ -88,6 +93,7 @@ namespace Lavendel {
 
         void GPUDevice::createInstance()
         {
+            LV_PROFILE_FUNCTION();
             if (enableValidationLayers && !checkValidationLayerSupport())
             {
                 throw std::runtime_error("validation layers requested, but not available!");
@@ -140,6 +146,7 @@ namespace Lavendel {
 
         void GPUDevice::pickPhysicalDevice()
         {
+            LV_PROFILE_FUNCTION();
             uint32_t deviceCount = 0;
             vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
             if (deviceCount == 0)
@@ -171,6 +178,7 @@ namespace Lavendel {
 
         void GPUDevice::createLogicalDevice()
         {
+            LV_PROFILE_FUNCTION();
             QueueFamilyIndices indices = findQueueFamilies(m_PhysicalDevice);
 
             std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -224,6 +232,7 @@ namespace Lavendel {
 
         void GPUDevice::createCommandPool()
         {
+            LV_PROFILE_FUNCTION();
             QueueFamilyIndices queueFamilyIndices = findPhysicalQueueFamilies();
 
             VkCommandPoolCreateInfo poolInfo = {};
@@ -239,10 +248,11 @@ namespace Lavendel {
             }
         }
 
-        void GPUDevice::createSurface() { m_Window.createWindowSurface(m_Instance, &m_Surface); }
+        void GPUDevice::createSurface() { LV_PROFILE_FUNCTION(); m_Window.createWindowSurface(m_Instance, &m_Surface); }
 
         bool GPUDevice::isDeviceSuitable(VkPhysicalDevice device)
         {
+            LV_PROFILE_FUNCTION();
             QueueFamilyIndices indices = findQueueFamilies(device);
 
             bool extensionsSupported = checkDeviceExtensionSupport(device);
@@ -264,6 +274,7 @@ namespace Lavendel {
         void GPUDevice::populateDebugMessengerCreateInfo(
             VkDebugUtilsMessengerCreateInfoEXT& createInfo)
         {
+            LV_PROFILE_FUNCTION();
             createInfo = {};
             createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
             createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
@@ -277,6 +288,7 @@ namespace Lavendel {
 
         void GPUDevice::setupDebugMessenger()
         {
+            LV_PROFILE_FUNCTION();
             if (!enableValidationLayers) return;
             VkDebugUtilsMessengerCreateInfoEXT createInfo;
             populateDebugMessengerCreateInfo(createInfo);
@@ -289,6 +301,7 @@ namespace Lavendel {
 
         bool GPUDevice::checkValidationLayerSupport()
         {
+            LV_PROFILE_FUNCTION();
             uint32_t layerCount;
             vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
@@ -319,6 +332,7 @@ namespace Lavendel {
 
         std::vector<const char*> GPUDevice::getRequiredExtensions()
         {
+            LV_PROFILE_FUNCTION();
             // Get SDL3 required Vulkan instance extensions
             uint32_t sdlExtensionCount = 0;
             const char* const* sdlExtensions = SDL_Vulkan_GetInstanceExtensions(&sdlExtensionCount);
@@ -343,6 +357,7 @@ namespace Lavendel {
 
         void GPUDevice::hasSDLRequiredInstanceExtensions()
         {
+            LV_PROFILE_FUNCTION();
             uint32_t extensionCount = 0;
             vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
             std::vector<VkExtensionProperties> extensions(extensionCount);
@@ -352,7 +367,7 @@ namespace Lavendel {
             std::unordered_set<std::string> available;
             for (const auto& extension : extensions)
             {
-                LV_CORE_INFO("\t {}", extension.extensionName);
+				LV_CORE_INFO("\t {}", extension.extensionName);
                 available.insert(extension.extensionName);
             }
 
@@ -371,6 +386,7 @@ namespace Lavendel {
 
         bool GPUDevice::checkDeviceExtensionSupport(VkPhysicalDevice device)
         {
+            LV_PROFILE_FUNCTION();
             uint32_t extensionCount;
             vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
 
@@ -393,6 +409,7 @@ namespace Lavendel {
 
         QueueFamilyIndices GPUDevice::findQueueFamilies(VkPhysicalDevice device)
         {
+            LV_PROFILE_FUNCTION();
             QueueFamilyIndices indices;
 
             uint32_t queueFamilyCount = 0;
@@ -429,6 +446,7 @@ namespace Lavendel {
 
         SwapChainSupportDetails GPUDevice::querySwapChainSupport(VkPhysicalDevice device)
         {
+            LV_PROFILE_FUNCTION();
             SwapChainSupportDetails details;
             vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, m_Surface, &details.capabilities);
 
@@ -459,6 +477,7 @@ namespace Lavendel {
         VkFormat GPUDevice::findSupportedFormat(
             const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
         {
+            LV_PROFILE_FUNCTION();
             for (VkFormat format : candidates)
             {
                 VkFormatProperties props;
@@ -479,6 +498,7 @@ namespace Lavendel {
 
         uint32_t GPUDevice::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
         {
+            LV_PROFILE_FUNCTION();
             VkPhysicalDeviceMemoryProperties memProperties;
             vkGetPhysicalDeviceMemoryProperties(m_PhysicalDevice, &memProperties);
             for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
@@ -501,6 +521,7 @@ namespace Lavendel {
             VkBuffer& buffer,
             VkDeviceMemory& bufferMemory)
         {
+            LV_PROFILE_FUNCTION();
             VkBufferCreateInfo bufferInfo{};
             bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
             bufferInfo.size = size;
@@ -532,6 +553,7 @@ namespace Lavendel {
 
         VkCommandBuffer GPUDevice::beginSingleTimeCommands()
         {
+            LV_PROFILE_FUNCTION();
             VkCommandBufferAllocateInfo allocInfo{};
             allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
             allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -551,6 +573,7 @@ namespace Lavendel {
 
         void GPUDevice::endSingleTimeCommands(VkCommandBuffer commandBuffer)
         {
+            LV_PROFILE_FUNCTION();
             vkEndCommandBuffer(commandBuffer);
 
             VkSubmitInfo submitInfo{};
@@ -566,6 +589,7 @@ namespace Lavendel {
 
         void GPUDevice::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
         {
+            LV_PROFILE_FUNCTION();
             VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
             VkBufferCopy copyRegion{};
@@ -580,6 +604,7 @@ namespace Lavendel {
         void GPUDevice::copyBufferToImage(
             VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount)
         {
+            LV_PROFILE_FUNCTION();
             VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
             VkBufferImageCopy region{};
@@ -611,6 +636,7 @@ namespace Lavendel {
             VkImage& image,
             VkDeviceMemory& imageMemory)
         {
+            LV_PROFILE_FUNCTION();
             if (vkCreateImage(m_Device, &imageInfo, nullptr, &image) != VK_SUCCESS)
             {
                 throw std::runtime_error("failed to create image!");

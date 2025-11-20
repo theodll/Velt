@@ -7,6 +7,7 @@ namespace Lavendel {
         SwapChain::SwapChain(GPUDevice& deviceRef, VkExtent2D windowExtent)
             : m_Device{ deviceRef }, windowExtent{ windowExtent }, m_OldSwapchain{ nullptr }
         {
+            LV_PROFILE_FUNCTION();
             LV_CORE_INFO("Creating Swapchain...");
             init();
         }
@@ -14,6 +15,7 @@ namespace Lavendel {
         SwapChain::SwapChain(GPUDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<SwapChain> previous)
             : m_Device{ deviceRef }, windowExtent{ windowExtent }, m_OldSwapchain{ previous }
         {
+            LV_PROFILE_FUNCTION();
             LV_CORE_INFO("Creating Swapchain with old SwapChain...");
             init();
 			m_OldSwapchain = nullptr;
@@ -21,6 +23,7 @@ namespace Lavendel {
 
         void SwapChain::init()
         {
+            LV_PROFILE_FUNCTION();
             createSwapChain();
             createImageViews();
             createRenderPass();
@@ -31,6 +34,7 @@ namespace Lavendel {
 
         SwapChain::~SwapChain()
         {
+            LV_PROFILE_FUNCTION();
             for (auto imageView : swapChainImageViews)
             {
                 vkDestroyImageView(m_Device.device(), imageView, nullptr);
@@ -67,6 +71,7 @@ namespace Lavendel {
 
         VkResult SwapChain::acquireNextImage(uint32_t &imageIndex)
         {
+            LV_PROFILE_FUNCTION();
             vkWaitForFences(
                 m_Device.device(),
                 1,
@@ -88,6 +93,7 @@ namespace Lavendel {
         VkResult SwapChain::submitCommandBuffers(
             const VkCommandBuffer* buffers, uint32_t* imageIndex)
         {
+            LV_PROFILE_FUNCTION();
             if (imagesInFlight[*imageIndex] != VK_NULL_HANDLE)
             {
                 vkWaitForFences(m_Device.device(), 1, &imagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
@@ -137,6 +143,7 @@ namespace Lavendel {
 
         void SwapChain::createSwapChain()
         {
+            LV_PROFILE_FUNCTION();
             SwapChainSupportDetails swapChainSupport = m_Device.getSwapChainSupport();
 
             VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
@@ -200,6 +207,7 @@ namespace Lavendel {
 
         void SwapChain::createImageViews()
         {
+            LV_PROFILE_FUNCTION();
             swapChainImageViews.resize(swapChainImages.size());
             for (size_t i = 0; i < swapChainImages.size(); i++)
             {
@@ -224,6 +232,7 @@ namespace Lavendel {
 
         void SwapChain::createRenderPass()
         {
+            LV_PROFILE_FUNCTION();
             VkAttachmentDescription depthAttachment{};
             depthAttachment.format = findDepthFormat();
             depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -287,6 +296,7 @@ namespace Lavendel {
 
         void SwapChain::createFramebuffers()
         {
+            LV_PROFILE_FUNCTION();
             swapChainFramebuffers.resize(imageCount());
             for (size_t i = 0; i < imageCount(); i++)
             {
@@ -315,6 +325,7 @@ namespace Lavendel {
 
         void SwapChain::createDepthResources()
         {
+            LV_PROFILE_FUNCTION();
             VkFormat depthFormat = findDepthFormat();
             VkExtent2D swapChainExtent = getSwapChainExtent();
 
@@ -366,6 +377,7 @@ namespace Lavendel {
 
         void SwapChain::createSyncObjects()
         {
+            LV_PROFILE_FUNCTION();
             imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
             renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
             inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
@@ -394,6 +406,7 @@ namespace Lavendel {
         VkSurfaceFormatKHR SwapChain::chooseSwapSurfaceFormat(
             const std::vector<VkSurfaceFormatKHR>& availableFormats)
         {
+            LV_PROFILE_FUNCTION();
             for (const auto& availableFormat : availableFormats)
             {
                 if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
@@ -409,6 +422,7 @@ namespace Lavendel {
         VkPresentModeKHR SwapChain::chooseSwapPresentMode(
             const std::vector<VkPresentModeKHR>& availablePresentModes)
         {
+            LV_PROFILE_FUNCTION();
             /*for (const auto& availablePresentMode : availablePresentModes)
             {
                 if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
@@ -424,6 +438,7 @@ namespace Lavendel {
 
         VkExtent2D SwapChain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)
         {
+            LV_PROFILE_FUNCTION();
             if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
             {
                 return capabilities.currentExtent;
@@ -444,6 +459,7 @@ namespace Lavendel {
 
         VkFormat SwapChain::findDepthFormat()
         {
+            LV_PROFILE_FUNCTION();
             return m_Device.findSupportedFormat(
                 { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
                 VK_IMAGE_TILING_OPTIMAL,

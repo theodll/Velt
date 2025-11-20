@@ -5,7 +5,7 @@ namespace Lavendel {
 	namespace RenderAPI {
 
 		// Forward declaration to break circular dependency
-		class GPUDevice;
+		class LAVENDEL_API GPUDevice;
 
 		struct PipelineConfigInfo
 		{
@@ -31,7 +31,7 @@ namespace Lavendel {
 			bool isExplosive = false;
 			bool isLaser = false;
 		};
-		class LAVENDEL_API Pipeline
+		class LAVENDEL_API LAVENDEL_API Pipeline
 		{
 		public:
 			Pipeline(GPUDevice& device,

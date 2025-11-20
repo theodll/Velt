@@ -18,6 +18,7 @@ namespace Lavendel {
 
 		Renderer::Renderer(Window& window) : m_Window(window)
 		{
+			LV_PROFILE_FUNCTION();
 			LV_CORE_INFO("Initializing Renderer...");
 
 			m_Device = std::make_shared<GPUDevice>(m_Window);
@@ -29,11 +30,13 @@ namespace Lavendel {
 
 		Renderer::~Renderer()
 		{
+			LV_PROFILE_FUNCTION();
 			vkDestroyPipelineLayout(m_Device->device(), m_PipelineLayout, nullptr);
 		}
 
 		void Renderer::createPipelineLayout()
 		{
+			LV_PROFILE_FUNCTION();
 			VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 			pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 			pipelineLayoutInfo.setLayoutCount = 0;
@@ -49,6 +52,7 @@ namespace Lavendel {
 
 		void Renderer::createPipeline()
 		{
+			LV_PROFILE_FUNCTION();
 			PipelineConfigInfo pipelineConfig{};
 			Lavendel::RenderAPI::Pipeline::defaultPipelineConfigInfo(pipelineConfig);
 			pipelineConfig.renderPass = m_SwapChain->getRenderPass();
@@ -62,6 +66,7 @@ namespace Lavendel {
 
 		void Renderer::recreateSwapChain()
 		{
+			LV_PROFILE_FUNCTION();
 			auto extent = m_Window.getExtent();
 			while (extent.width == 0 || extent.height == 0)
 			{
@@ -91,6 +96,7 @@ namespace Lavendel {
 
 		void Renderer::loadModels()
 		{
+			LV_PROFILE_FUNCTION();
 			std::vector<Model::Vertex> vertices = {
 				{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
 				{{ -0.5f, 0.5f }, {0.0f, 1.0f, 0.0f}},
@@ -101,6 +107,7 @@ namespace Lavendel {
 
 		void Renderer::createCommandBuffers()
 		{
+			LV_PROFILE_FUNCTION();
 			m_CommandBuffers.resize(m_SwapChain->imageCount());
 
 			VkCommandBufferAllocateInfo allocInfo{};
@@ -118,6 +125,7 @@ namespace Lavendel {
 
 		void Renderer::freeCommandBuffers()
 		{
+			LV_PROFILE_FUNCTION();
 			vkFreeCommandBuffers(
 				m_Device->device(),
 				m_Device->getCommandPool(),
@@ -128,6 +136,7 @@ namespace Lavendel {
 
 		void Renderer::recordCommandBuffer(int imageIndex)
 		{
+			LV_PROFILE_FUNCTION();
 			VkCommandBufferBeginInfo beginInfo{};
 			beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 			if (vkBeginCommandBuffer(m_CommandBuffers[imageIndex], &beginInfo) != VK_SUCCESS)
@@ -176,6 +185,7 @@ namespace Lavendel {
 			{
 				for (Layer* layer : *m_LayerStack)
 				{
+					LV_PROFILE_SCOPE("Layer::OnRender Call");
 					// Pass the command buffer as a void* to avoid including Vulkan headers in Layer.h
 					layer->OnRender(reinterpret_cast<void*>(m_CommandBuffers[imageIndex]));
 				}
@@ -191,6 +201,7 @@ namespace Lavendel {
 
 		void Renderer::drawFrame()
 		{
+			LV_PROFILE_FUNCTION();
 			uint32_t imageIndex;
 			auto result = m_SwapChain->acquireNextImage(imageIndex);
 
@@ -224,6 +235,7 @@ namespace Lavendel {
 
 		void Renderer::renderImGui(VkCommandBuffer commandBuffer)
 		{
+			LV_PROFILE_FUNCTION();
 			// This method is called during recordCommandBuffer when rendering the ImGuiLayer.
 			// By separating ImGui rendering into its own method and calling it from the layer
 			// iteration process, we ensure ImGui respects the layer stack order and renders

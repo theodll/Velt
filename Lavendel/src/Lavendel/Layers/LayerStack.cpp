@@ -9,10 +9,12 @@ namespace Lavendel
 {
     LayerStack::LayerStack() : m_LayerInsertIndex(0)
     {
+        LV_PROFILE_FUNCTION();
     }
 
     LayerStack::~LayerStack()
     {
+        LV_PROFILE_FUNCTION();
         for (Layer* layer : m_Layers)
         {
             delete layer;
@@ -21,6 +23,7 @@ namespace Lavendel
 
     void LayerStack::PushLayer(Layer* layer)
     {
+        LV_PROFILE_FUNCTION();
         m_LayerInsertIndex = m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer) - m_Layers.begin();
         ++m_LayerInsertIndex;
         layer->OnAttach();
@@ -28,12 +31,14 @@ namespace Lavendel
 
     void LayerStack::PushOverlay(Layer* overlay)
     {
+        LV_PROFILE_FUNCTION();
         m_Layers.emplace_back(overlay);
         overlay->OnAttach();
     }
 
     void LayerStack::PopLayer(Layer* layer)
     {
+        LV_PROFILE_FUNCTION();
         auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
         if (it != m_Layers.end()) {
             const auto index = it - m_Layers.begin();
@@ -47,6 +52,7 @@ namespace Lavendel
 
     void LayerStack::PopOverlay(Layer* overlay)
     {
+        LV_PROFILE_FUNCTION();
         auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);
         if (it != m_Layers.end()) {
             overlay->OnDetach();

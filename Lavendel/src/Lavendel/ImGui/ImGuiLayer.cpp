@@ -15,16 +15,19 @@ namespace Lavendel {
 	
 	ImGuiLayer::ImGuiLayer()
 	{
+		LV_PROFILE_FUNCTION();
 	}
 
 	ImGuiLayer::~ImGuiLayer()
 	{
+		LV_PROFILE_FUNCTION();
 		if (m_Renderer)
 			m_Renderer->Shutdown();
 	}
 
 	void ImGuiLayer::OnAttach()
 	{
+		LV_PROFILE_FUNCTION();
 		// Use static accessors from Renderer to get device and swapchain
 		auto swapchain = Lavendel::RenderAPI::Renderer::getSwapChain();
 		auto device = Lavendel::RenderAPI::Renderer::getDevice();
@@ -61,6 +64,7 @@ namespace Lavendel {
 
 	void ImGuiLayer::OnDetach()
 	{
+		LV_PROFILE_FUNCTION();
 		if (m_Renderer)
 			m_Renderer->Shutdown();
 		ImGui::DestroyContext();
@@ -69,6 +73,7 @@ namespace Lavendel {
 
 	void ImGuiLayer::OnEvent(Event& event)
 	{
+		LV_PROFILE_FUNCTION();
 		// Handle ImGui input events forwarded from Application via engine Events.
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		// We rely on the SDL backend to process raw SDL events; engine Events may be
@@ -77,12 +82,14 @@ namespace Lavendel {
 
 	void ImGuiLayer::ProcessSDLEvent(const SDL_Event* event)
 	{
+		LV_PROFILE_FUNCTION();
 		// Forward raw SDL event to ImGui SDL3 backend
 		ImGui_ImplSDL3_ProcessEvent(reinterpret_cast<SDL_Event*>(const_cast<SDL_Event*>(event)));
 	}
 
 	void ImGuiLayer::OnUpdate()
 	{
+		LV_PROFILE_FUNCTION();
 		// Begin ImGui frame
 		m_Renderer->Begin();
 
@@ -95,6 +102,7 @@ namespace Lavendel {
 
 	void ImGuiLayer::OnRender(void* commandBuffer)
 	{
+		LV_PROFILE_FUNCTION();
 		// This method is called during the rendering phase after all scene geometry has been rendered.
 		// It takes the VkCommandBuffer that was passed through the layer system and renders the ImGui
 		// draw data that was prepared in OnUpdate(). This ensures ImGui renders on top of everything
@@ -102,6 +110,7 @@ namespace Lavendel {
 		
 		if (commandBuffer != nullptr)
 		{
+			LV_PROFILE_SCOPE("ImGuiLayer::OnRender Render");
 			VkCommandBuffer cmd = reinterpret_cast<VkCommandBuffer>(commandBuffer);
 			m_Renderer->Render(cmd);
 		}
@@ -109,11 +118,13 @@ namespace Lavendel {
 
 	void ImGuiLayer::Begin()
 	{
+		LV_PROFILE_FUNCTION();
 		m_Renderer->Begin();
 	}
 
 	void ImGuiLayer::End()
 	{
+		LV_PROFILE_FUNCTION();
 		m_Renderer->End();
 	}
 }

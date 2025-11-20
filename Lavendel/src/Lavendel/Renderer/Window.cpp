@@ -13,17 +13,20 @@ namespace Lavendel {
         Window::Window(int width, int height, const std::string& title, bool bResizable)
             : m_Width(width), m_Height(height), m_Title(title), m_bResizable(bResizable)
         {
+            LV_PROFILE_FUNCTION();
             LV_CORE_INFO("Creating Window...");
             Init(width, height, title, bResizable);
         }
 
         Window::~Window()
         {
+            LV_PROFILE_FUNCTION();
             Shutdown();
         }
 
         void Window::Init(int width, int height, const std::string& title, bool bResizable)
         {
+            LV_PROFILE_FUNCTION();
             m_Width = width;
             m_Height = height;
             m_Title = title;
@@ -57,6 +60,7 @@ namespace Lavendel {
 
         void Window::Shutdown()
         {
+            LV_PROFILE_FUNCTION();
             if (m_Window)
             {
                 SDL_DestroyWindow(m_Window);
@@ -66,6 +70,7 @@ namespace Lavendel {
 
         void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
         {
+            LV_PROFILE_FUNCTION();
             if (!SDL_Vulkan_CreateSurface(m_Window, instance, nullptr, surface))
             {
                 LV_CORE_ERROR("Failed to create Vulkan surface: {}", SDL_GetError());
@@ -75,17 +80,19 @@ namespace Lavendel {
 
         bool Window::ShouldClose()
         {
+            LV_PROFILE_FUNCTION();
             SDL_Event event;
             while (SDL_PollEvent(&event))
             {
+                LV_PROFILE_SCOPE("Window::ShouldClose PollEvent Loop");
                 if (event.type == SDL_EVENT_QUIT)
                     return true;
 
                 if (event.type == SDL_EVENT_WINDOW_RESIZED)
                 {
-					m_bFrameBufferResized = true;
-					m_Width = event.window.data1;
-					m_Height = event.window.data2;
+				m_bFrameBufferResized = true;
+				m_Width = event.window.data1;
+				m_Height = event.window.data2;
                 }
 
                 if (event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED)

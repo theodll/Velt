@@ -5,15 +5,18 @@ namespace Lavendel {
 	DemoWidget::DemoWidget(const std::string& name)
 		: m_Name(name)
 	{
+		LV_PROFILE_FUNCTION();
 	}
 
 	void DemoWidget::OnRender()
 	{
+		LV_PROFILE_FUNCTION();
 		if (!m_IsVisible)
 			return;
 
 		if (ImGui::Begin(m_Name.c_str(), &m_IsVisible, ImGuiWindowFlags_AlwaysAutoResize))
 		{
+			LV_PROFILE_SCOPE("DemoWidget::OnRender UI");
 			ImGui::Text("Hello from Lavendel ImGui Demo Widget!");
 			ImGui::Separator();
 

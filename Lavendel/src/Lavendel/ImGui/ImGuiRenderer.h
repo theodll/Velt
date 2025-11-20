@@ -18,7 +18,7 @@ struct VkRenderPass_T;
 struct VkFramebuffer_T;
 
 namespace Lavendel {
-	class ImGuiRenderer {
+	class LAVENDEL_API ImGuiRenderer {
 	public:
 		ImGuiRenderer(std::shared_ptr<RenderAPI::SwapChain> swapchain, std::shared_ptr<RenderAPI::GPUDevice> device, SDL_Window* window);
 		~ImGuiRenderer() = default;

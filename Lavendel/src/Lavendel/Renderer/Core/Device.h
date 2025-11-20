@@ -8,7 +8,7 @@ namespace Lavendel {
     namespace RenderAPI {
 
         // Forward declaration to break circular dependency
-        class Window;
+        class LAVENDEL_API Window;
 
         struct SwapChainSupportDetails
         {

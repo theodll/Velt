@@ -8,6 +8,7 @@ namespace Lavendel {
 
     void Log::Init()
     {
+        LV_PROFILE_FUNCTION();
         spdlog::set_pattern("%^[%T] %n: %v%$");
         s_CoreLogger = spdlog::stdout_color_mt("LAVENDEL");
         s_CoreLogger->set_level(spdlog::level::trace);

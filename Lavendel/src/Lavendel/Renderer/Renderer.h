@@ -16,7 +16,7 @@ namespace Lavendel
 
 	namespace RenderAPI
 	{
-		class LAVENDEL_API Renderer
+		class LAVENDEL_API LAVENDEL_API Renderer
 		{
 		public:
 			Renderer(Window& window);

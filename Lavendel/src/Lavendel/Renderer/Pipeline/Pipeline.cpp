@@ -13,6 +13,7 @@ namespace Lavendel {
 
 		Pipeline::~Pipeline()
 		{
+			LV_PROFILE_FUNCTION();
 			
 			vkDestroyShaderModule(m_Device.device(), fragShaderModule, nullptr);
 			vkDestroyShaderModule(m_Device.device(), vertShaderModule, nullptr);
@@ -22,23 +23,26 @@ namespace Lavendel {
 		Pipeline::Pipeline(GPUDevice& device, const std::string& vertFilepath, const std::string& fragFilePath, const PipelineConfigInfo& configInfo) 
 			: m_Device{ device }
 		{
+			LV_PROFILE_FUNCTION();
 			LV_CORE_INFO("Creating Pipeline...");
 			createGraphicsPipeline(vertFilepath, fragFilePath, configInfo);
 		}
 
 		void Pipeline::bind(VkCommandBuffer commandBuffer)
 		{
+			LV_PROFILE_FUNCTION();
 			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 		}
 
 		std::vector<char> Pipeline::readFile(const std::string& filepath)
 		{
-			std::ifstream file(filepath, std::ios::ate | std::ios::binary);
+			LV_PROFILE_FUNCTION();
+			auto file = std::ifstream(filepath, std::ios::ate | std::ios::binary);
 
 			if (!file)
 			{
 				LV_CORE_ERROR("Failed to open file: {}", filepath);
-				throw std::runtime_error("Failed to open file: " + filepath);  
+				throw std::runtime_error("Failed to open file: " + filepath);
 			}
 
 			size_t fileSize = (size_t)file.tellg();
@@ -53,6 +57,7 @@ namespace Lavendel {
 
 		void Pipeline::createGraphicsPipeline(const std::string& vertShaderPath, const std::string& fragShaderPath, const PipelineConfigInfo& configInfo)
 		{
+			LV_PROFILE_FUNCTION();
 			auto vertCode = readFile(vertShaderPath);
 			auto fragCode = readFile(fragShaderPath);
 			
@@ -121,6 +126,7 @@ namespace Lavendel {
 
 		void Pipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule) 
 		{
+			LV_PROFILE_FUNCTION();
 			VkShaderModuleCreateInfo createInfo{};
 			createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 			createInfo.codeSize = code.size();
@@ -135,6 +141,7 @@ namespace Lavendel {
 
 		void Pipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo)
 		{
+			LV_PROFILE_FUNCTION();
 			// Input Assembly
 
 			configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;

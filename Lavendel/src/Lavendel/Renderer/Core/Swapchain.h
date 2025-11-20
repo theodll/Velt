@@ -5,7 +5,7 @@
 namespace Lavendel {
     namespace RenderAPI {
 
-        class SwapChain
+        class LAVENDEL_API SwapChain
         {
         public:
             static constexpr int MAX_FRAMES_IN_FLIGHT = 2;

@@ -11,7 +11,7 @@ namespace  Lavendel
 {
     namespace RenderAPI
     {
-        class Model
+        class LAVENDEL_API Model
         {
 
 

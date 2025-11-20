@@ -28,7 +28,7 @@ add_library(Lavendel SHARED
         "src/Lavendel/ImGui/ImGuiRenderer.cpp"
         "src/Lavendel/ImGui/Widgets/DemoWidget.h"
         "src/Lavendel/ImGui/Widgets/DemoWidget.cpp"
-        "src/Lavendel/Core/Profiling/Instrumentor.h"
+        "src/Lavendel/Utils/Profiling/Instrumentor.h"
 )
 
 if(WIN32)
