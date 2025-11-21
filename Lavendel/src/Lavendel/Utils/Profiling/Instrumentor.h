@@ -135,13 +135,15 @@ private:
     bool m_Stopped;
 };
 
+#ifdef __FUNCSIG__
+#define __FUNCSIG__ __PRETTY_FUNCTION__
+#endif
 
 
 
-    #define LV_PROFILE_BEGIN_SESSION(name, filepath) ::Instrumentor::Get().BeginSession(name, filepath)
-    #define LV_PROFILE_END_SESSION() ::Instrumentor::Get().EndSession()
-    // Two-level macro to ensure __LINE__ is expanded before token pasting on all compilers
-    #define LV_CONCAT_INTERNAL(x, y) x##y
-    #define LV_CONCAT(x, y) LV_CONCAT_INTERNAL(x, y)
-    #define LV_PROFILE_SCOPE(name) ::InstrumentationTimer LV_CONCAT(timer, __LINE__)(name)
-    #define LV_PROFILE_FUNCTION() LV_PROFILE_SCOPE(__FUNCSIG__)
+#define LV_PROFILE_BEGIN_SESSION(name, filepath) ::Instrumentor::Get().BeginSession(name, filepath)
+#define LV_PROFILE_END_SESSION() ::Instrumentor::Get().EndSession()
+#define LV_CONCAT_INTERNAL(x, y) x##y
+#define LV_CONCAT(x, y) LV_CONCAT_INTERNAL(x, y)
+#define LV_PROFILE_SCOPE(name) ::InstrumentationTimer LV_CONCAT(timer, __LINE__)(name)
+#define LV_PROFILE_FUNCTION() LV_PROFILE_SCOPE(__PRETTY_FUNCTION__)
