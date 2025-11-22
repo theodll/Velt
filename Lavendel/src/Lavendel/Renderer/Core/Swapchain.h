@@ -8,7 +8,7 @@ namespace Lavendel {
         class LAVENDEL_API SwapChain
         {
         public:
-            static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
+            static constexpr int MAX_FRAMES_IN_FLIGHT = 3;
 
             SwapChain(GPUDevice& deviceRef, VkExtent2D windowExtent);
             SwapChain(GPUDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<SwapChain> previous);

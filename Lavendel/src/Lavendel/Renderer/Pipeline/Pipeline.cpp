@@ -14,7 +14,9 @@ namespace Lavendel {
 		Pipeline::~Pipeline()
 		{
 			LV_PROFILE_FUNCTION();
-			
+
+			vkDeviceWaitIdle(m_Device.device());
+
 			vkDestroyShaderModule(m_Device.device(), fragShaderModule, nullptr);
 			vkDestroyShaderModule(m_Device.device(), vertShaderModule, nullptr);
 			vkDestroyPipeline(m_Device.device(), graphicsPipeline, nullptr);

@@ -35,6 +35,9 @@ namespace Lavendel {
         SwapChain::~SwapChain()
         {
             LV_PROFILE_FUNCTION();
+
+            vkDeviceWaitIdle(m_Device.device());
+
             for (auto imageView : swapChainImageViews)
             {
                 vkDestroyImageView(m_Device.device(), imageView, nullptr);

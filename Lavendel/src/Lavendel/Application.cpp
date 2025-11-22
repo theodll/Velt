@@ -111,6 +111,19 @@ namespace Lavendel {
 			LV_PROFILE_SCOPE("Renderer drawFrame");
 			m_Renderer->drawFrame();
 		}
+		Shutdown();
+	}
+
+	void Application::Shutdown()
+	{
+		if (RenderAPI::Renderer::getDevice) {
+			vkDeviceWaitIdle(RenderAPI::Renderer::getDevice()->device());
+		}
+
+		if (m_ImGuiLayer) {
+			m_ImGuiLayer = nullptr;
+		}
+
 	}
 
 }

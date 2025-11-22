@@ -14,6 +14,7 @@ namespace Lavendel
         Model::~Model()
         {
             LV_PROFILE_FUNCTION();
+		    vkDeviceWaitIdle(m_Device.device());
             vkDestroyBuffer(m_Device.device(), m_VertexBuffer, nullptr);
             vkFreeMemory(m_Device.device(), m_VertexBufferMemory, nullptr);
 		}

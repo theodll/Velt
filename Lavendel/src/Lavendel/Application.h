@@ -18,6 +18,7 @@ namespace Lavendel
 			Application();
 			virtual ~Application();
 			void Run();
+			void Shutdown();
 
 			void OnEvent(Event& e);
 			void operator=(const Application&) = delete;

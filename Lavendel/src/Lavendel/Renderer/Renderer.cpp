@@ -40,6 +40,7 @@ namespace Lavendel {
 		Renderer::~Renderer()
 		{
 			LV_PROFILE_FUNCTION();
+			vkDeviceWaitIdle(m_Device->device());
 			vkDestroyPipelineLayout(m_Device->device(), m_PipelineLayout, nullptr);
 		}
 
