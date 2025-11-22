@@ -21,6 +21,8 @@ namespace Lavendel {
 	{
 		LV_PROFILE_FUNCTION();
 	
+		m_Renderer->shutdown();
+
 	}
 
 	void Application::OnEvent(Event& e)

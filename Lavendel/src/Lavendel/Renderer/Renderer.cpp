@@ -40,8 +40,6 @@ namespace Lavendel {
 		Renderer::~Renderer()
 		{
 			LV_PROFILE_FUNCTION();
-			vkDeviceWaitIdle(m_Device->device());
-			vkDestroyPipelineLayout(m_Device->device(), m_PipelineLayout, nullptr);
 		}
 
 		void Renderer::createPipelineLayout()
@@ -78,6 +76,23 @@ namespace Lavendel {
 				"shaders/shader.vert.spv",
 				"shaders/shader.frag.spv",
 				pipelineConfig);
+		}
+
+		void Renderer::shutdown() 
+		{
+			LV_PROFILE_FUNCTION();
+			LV_CORE_INFO("Renderer shutdown");
+
+			if (m_Device)
+			{
+				vkDeviceWaitIdle(m_Device->device());
+			}
+
+			m_Pipeline = nullptr;   
+			m_SwapChain = nullptr;       
+			m_Device = nullptr;         
+
+			LV_CORE_INFO("Renderer shutdown complete");
 		}
 
 		void Renderer::recreateSwapChain()

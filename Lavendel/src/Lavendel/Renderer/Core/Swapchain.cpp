@@ -36,11 +36,15 @@ namespace Lavendel {
         {
             LV_PROFILE_FUNCTION();
 
-            vkDeviceWaitIdle(m_Device.device());
+            if (m_Device.device() == nullptr) {
+                LV_CORE_ERROR("device is null");
+            }
+
+            vkDeviceWaitIdle(m_Device.device());  // <-- hier crasht es
 
             for (auto imageView : swapChainImageViews)
             {
-                vkDestroyImageView(m_Device.device(), imageView, nullptr);
+                vkDestroyImageView(m_Device.device(), imageView, nullptr); // <-- hier auch wenn man das oben weg macht
             }
             swapChainImageViews.clear();
 
@@ -100,6 +104,7 @@ namespace Lavendel {
             return result;
         }
 
+
         VkResult SwapChain::submitCommandBuffers(
             const VkCommandBuffer* buffers, uint32_t* imageIndex)
         {
@@ -113,7 +118,6 @@ namespace Lavendel {
             VkSubmitInfo submitInfo = {};
             submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-            // Wait on the semaphore that was signaled when acquiring this image (indexed by currentFrame)
             VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
             VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
             submitInfo.waitSemaphoreCount = 1;
@@ -123,21 +127,18 @@ namespace Lavendel {
             submitInfo.commandBufferCount = 1;
             submitInfo.pCommandBuffers = buffers;
 
-            // Signal with semaphore indexed by currentFrame (will be waited on by presentation)
             VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
             submitInfo.signalSemaphoreCount = 1;
             submitInfo.pSignalSemaphores = signalSemaphores;
 
             vkResetFences(m_Device.device(), 1, &inFlightFences[currentFrame]);
-            if (vkQueueSubmit(m_Device.graphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]) !=
-                VK_SUCCESS)
+            if (vkQueueSubmit(m_Device.graphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS)
             {
                 throw std::runtime_error("failed to submit draw command buffer!");
             }
 
             VkPresentInfoKHR presentInfo = {};
             presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-
             presentInfo.waitSemaphoreCount = 1;
             presentInfo.pWaitSemaphores = signalSemaphores;
 
@@ -147,6 +148,8 @@ namespace Lavendel {
             presentInfo.pImageIndices = imageIndex;
 
             auto result = vkQueuePresentKHR(m_Device.presentQueue(), &presentInfo);
+
+            vkQueueWaitIdle(m_Device.presentQueue());
 
             currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 
