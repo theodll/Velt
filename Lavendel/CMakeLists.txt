@@ -29,7 +29,7 @@ add_library(Lavendel SHARED
         "src/Lavendel/ImGui/Widgets/DemoWidget.h"
         "src/Lavendel/ImGui/Widgets/DemoWidget.cpp"
         "src/Lavendel/Utils/Profiling/Instrumentor.h"
- "src/Lavendel/Renderer/Model/GameObject.cpp" "src/Lavendel/Renderer/Model/GameObject.h")
+ "src/Lavendel/Renderer/Model/GameObject.cpp" "src/Lavendel/Renderer/Model/GameObject.h" "src/Lavendel/Plattform/WindowsWindow.h" "src/Lavendel/Plattform/WindowsWindow.cpp")
 
 if(WIN32 OR UNIX)
     set(SHADER_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders)

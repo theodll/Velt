@@ -90,23 +90,12 @@ namespace Lavendel {
 	void ImGuiLayer::OnUpdate()
 	{
 		LV_PROFILE_FUNCTION();
-		// Begin ImGui frame
-		m_Renderer->Begin();
 
-		// Render demo widget
-		m_DemoWidget.OnRender();
-
-		// End ImGui frame (prepares draw data)
-		m_Renderer->End();
 	}
 
 	void ImGuiLayer::OnRender(void* commandBuffer)
 	{
 		LV_PROFILE_FUNCTION();
-		// This method is called during the rendering phase after all scene geometry has been rendered.
-		// It takes the VkCommandBuffer that was passed through the layer system and renders the ImGui
-		// draw data that was prepared in OnUpdate(). This ensures ImGui renders on top of everything
-		// in the correct layer order.
 		
 		if (commandBuffer != nullptr)
 		{
@@ -120,6 +109,7 @@ namespace Lavendel {
 	{
 		LV_PROFILE_FUNCTION();
 		m_Renderer->Begin();
+		m_DemoWidget.OnRender();
 	}
 
 	void ImGuiLayer::End()

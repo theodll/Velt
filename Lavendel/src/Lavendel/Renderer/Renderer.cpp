@@ -228,10 +228,7 @@ namespace Lavendel {
 				m_Model->draw(m_CommandBuffers[imageIndex]);
 			}
 
-			// Render layers in stack order. This respects the layer stack and ensures
-			// that ImGui (typically added as the last layer via PushLayer) renders on top.
-			// Each layer's OnRender() method is called in order, allowing layers like ImGuiLayer
-			// to render their graphics to the command buffer at the appropriate depth.
+
 			if (m_LayerStack != nullptr)
 			{
 				for (Layer* layer : *m_LayerStack)

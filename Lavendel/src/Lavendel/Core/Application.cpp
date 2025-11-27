@@ -58,7 +58,21 @@ namespace Lavendel {
 			m_ImGuiLayer = imgui;
 	}
 
-	void Lavendel::Application::Run()
+	void Application::RenderImGui()
+	{
+		LV_PROFILE_FUNCTION();
+	
+		m_ImGuiLayer->Begin();
+		{
+			LV_PROFILE_SCOPE("LayerStack OnImGuiRender");
+
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
+		}
+		m_ImGuiLayer->End();
+	}
+
+	void Application::Run()
 	{
 		LV_PROFILE_FUNCTION();
 		bool running = true;
@@ -122,6 +136,8 @@ namespace Lavendel {
 			LV_PROFILE_SCOPE("Layer OnUpdate Loop");
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
+
+			RenderImGui();
 
 			LV_PROFILE_SCOPE("Renderer drawFrame");
 			m_Renderer->drawFrame();

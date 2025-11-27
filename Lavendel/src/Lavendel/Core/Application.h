@@ -23,8 +23,11 @@ namespace Lavendel
 			void OnEvent(Event& e);
 			void operator=(const Application&) = delete;
 
+			
 			static constexpr int WIDTH = 1280;
 			static constexpr int HEIGHT = 1280;
+
+
 			std::string TITLE{ "Lavendel Engine" };
 
 			static RenderAPI::Window& getWindow() { return m_Window; };
@@ -33,9 +36,10 @@ namespace Lavendel
 
 			void PushLayer(Layer* layer);
 			void PushOverlay(Layer* overlay);
+			void RenderImGui();
 
 	private:
-		inline static RenderAPI::Window m_Window{ 800, 600, "Lavendel Window", true };
+		inline static RenderAPI::Window = nullptr;
 		std::shared_ptr<RenderAPI::Renderer> m_Renderer;
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer = nullptr;
