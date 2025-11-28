@@ -6,7 +6,7 @@
 
 namespace Lavendel {
 
-	ImGuiRenderer::ImGuiRenderer(const Scope<RenderAPI::SwapChain>& swapchain, const Scope<RenderAPI::GPUDevice>& device, SDL_Window* window)
+	ImGuiRenderer::ImGuiRenderer(RenderAPI::SwapChain* swapchain, RenderAPI::GPUDevice* device, SDL_Window* window)
 		: m_Swapchain(swapchain), m_Device(device), m_Window(window)
 	{
 		LV_PROFILE_FUNCTION();

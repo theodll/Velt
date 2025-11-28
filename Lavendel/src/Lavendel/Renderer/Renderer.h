@@ -32,9 +32,9 @@ namespace Lavendel
 			void renderImGui(VkCommandBuffer commandBuffer);
 			static void Shutdown();
 
-			inline static const Scope<GPUDevice>& getDevice() { return m_Device; }
-			inline static const Scope<SwapChain>& getSwapChain()  { return m_SwapChain; }
-			inline static const Scope<Pipeline>& getPipeline() { return m_Pipeline; }
+			inline static GPUDevice* getDevice() { return m_Device; }
+			inline static SwapChain* getSwapChain()  { return m_SwapChain; }
+			inline static Pipeline* getPipeline() { return m_Pipeline; }
 
 		private:
 			void loadModels();
@@ -47,9 +47,9 @@ namespace Lavendel
 			
 
 			Window& m_Window;
-			static Scope<GPUDevice> m_Device;
-			static Scope<SwapChain> m_SwapChain;
-			static Scope<RenderAPI::Pipeline> m_Pipeline;
+			static GPUDevice* m_Device;
+			static SwapChain* m_SwapChain;
+			static Pipeline* m_Pipeline;
 			std::shared_ptr<Model> m_Model;
 			std::vector<VkCommandBuffer> m_CommandBuffers;
 			VkPipelineLayout m_PipelineLayout;

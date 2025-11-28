@@ -29,8 +29,8 @@ namespace Lavendel {
 	{
 		LV_PROFILE_FUNCTION();
 		// Use static accessors from Renderer to get device and swapchain
-		auto& swapchain = Lavendel::RenderAPI::Renderer::getSwapChain();
-		auto& device = Lavendel::RenderAPI::Renderer::getDevice();
+		auto* swapchain = Lavendel::RenderAPI::Renderer::getSwapChain();
+		auto* device = Lavendel::RenderAPI::Renderer::getDevice();
 		SDL_Window* window = nullptr;
 		if (device)
 		{
