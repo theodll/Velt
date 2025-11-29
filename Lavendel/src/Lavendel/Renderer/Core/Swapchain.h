@@ -11,7 +11,7 @@ namespace Lavendel {
             static constexpr int MAX_FRAMES_IN_FLIGHT = 3;
 
             SwapChain(GPUDevice& deviceRef, VkExtent2D windowExtent);
-            SwapChain(GPUDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<SwapChain> previous);
+            SwapChain(GPUDevice& deviceRef, VkExtent2D windowExtent, SwapChain* previous);
             ~SwapChain();
 
             SwapChain(const SwapChain&) = delete;
@@ -66,7 +66,7 @@ namespace Lavendel {
             VkExtent2D windowExtent;
 
             VkSwapchainKHR m_Swapchain;
-            std::shared_ptr<SwapChain> m_OldSwapchain;
+            SwapChain* m_OldSwapchain;
 
             std::vector<VkSemaphore> imageAvailableSemaphores;
             std::vector<VkSemaphore> renderFinishedSemaphores;

@@ -12,7 +12,7 @@ namespace Lavendel {
             init();
         }
 
-        SwapChain::SwapChain(GPUDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<SwapChain> previous)
+        SwapChain::SwapChain(GPUDevice& deviceRef, VkExtent2D windowExtent, SwapChain* previous)
             : m_Device{ deviceRef }, windowExtent{ windowExtent }, m_OldSwapchain{ previous }
         {
             LV_PROFILE_FUNCTION();

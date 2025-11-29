@@ -4,10 +4,13 @@
 #include "Log.h"
 #include <SDL3/SDL.h>
 #include "ImGui/ImGuiLayer.h"
-#include "Events/ApplicationEvent.h" // Import WindowCloseEvent / WindowResizeEvent
+#include "Events/ApplicationEvent.h" 
 #include <cassert>
 
-// CONSTRUCTOR 
+
+bool Lavendel::Application::s_ShutdownRequested = false;
+
+
 namespace Lavendel {
 
 	Application::Application()
@@ -21,8 +24,6 @@ namespace Lavendel {
 	Application::~Application()
 	{
 		LV_PROFILE_FUNCTION();
-	
-
 	}
 
 	void Application::OnEvent(Event& e)
@@ -37,8 +38,6 @@ namespace Lavendel {
 				break;
 		}
 	}
-
-
 
 	void Application::PushLayer(Layer* layer)
 	{
@@ -58,7 +57,7 @@ namespace Lavendel {
 			m_ImGuiLayer = imgui;
 	}
 
-	void Lavendel::Application::Run()
+	void Application::Run()
 	{
 		LV_PROFILE_FUNCTION();
 		bool running = true;
@@ -69,6 +68,7 @@ namespace Lavendel {
 			SDL_Event event;
 			while (SDL_PollEvent(&event))
 			{
+
 				LV_PROFILE_SCOPE("SDL PollEvent Loop");
 				
 				if (m_Renderer->getDevice() == nullptr)
@@ -81,29 +81,22 @@ namespace Lavendel {
 					assert("Device (VkDevice) is null");
 				}
 
-				// First, give ImGui a chance to process the raw SDL event. ImGui's
-				// backend will update its IO state (mouse/keyboard) and set capture
-				// flags so widgets become interactive.
+				// pass raw sdl events NOT GOOD HAVE TO FIX
 				if (m_ImGuiLayer)
 					ImGuiLayer::ProcessSDLEvent(&event);
-
-
-				// Then translate a small subset of SDL events into the engine's
-				// Event classes so other layers can react (window close / resize).
 				switch (event.type)
 				{
 				case SDL_EVENT_QUIT:
-					// User requested app quit (e.g. clicking close button)
 					running = false;
 					{
 						LV_PROFILE_SCOPE("WindowClose Event");
+						Shutdown();
 						WindowCloseEvent e; // defined in Events/ApplicationEvent.h
 						OnEvent(e); // dispatch to layers
 					}
 					break;
 				case SDL_EVENT_WINDOW_RESIZED:
 				case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
-					// Window size changed; notify layers with width/height
 					{
 						LV_PROFILE_SCOPE("WindowResize Event");
 						uint16_t w = (uint16_t)event.window.data1;
@@ -113,8 +106,6 @@ namespace Lavendel {
 					}
 					break;
 				default:
-					// Other events are left for ImGui (processed above) or can be
-					// translated later if you want engine-level mouse/keyboard events.
 					break;
 				}
 			}
@@ -125,8 +116,17 @@ namespace Lavendel {
 
 			LV_PROFILE_SCOPE("Renderer drawFrame");
 			m_Renderer->drawFrame();
+
+
+			if (s_ShutdownRequested)
+			{
+				LV_CORE_TRACE(";AJSLDKJALKJDLAJSD");
+				vkDeviceWaitIdle(RenderAPI::Renderer::getDevice()->device());
+				Shutdown();
+				break;
+
+			}
 		}
-		Shutdown();
 	}
 
 	void Application::Shutdown()

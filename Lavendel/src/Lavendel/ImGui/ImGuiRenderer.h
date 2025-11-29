@@ -20,7 +20,7 @@ struct VkFramebuffer_T;
 namespace Lavendel {
 	class LAVENDEL_API ImGuiRenderer {
 	public:
-		ImGuiRenderer(const Scope<RenderAPI::SwapChain>& swapchain, const Scope<RenderAPI::GPUDevice>& device, SDL_Window* window);
+		ImGuiRenderer(RenderAPI::SwapChain* swapchain, RenderAPI::GPUDevice* device, SDL_Window* window);
 		~ImGuiRenderer() = default;
 
 		
@@ -31,8 +31,8 @@ namespace Lavendel {
 		void End();
 		
 	private:
-		const Scope<RenderAPI::SwapChain>& m_Swapchain;
-		const Scope<RenderAPI::GPUDevice>& m_Device;
+		RenderAPI::SwapChain* m_Swapchain;
+		RenderAPI::GPUDevice* m_Device;
 		VkDescriptorPool_T* m_DescriptorPool = nullptr;
 		SDL_Window* m_Window = nullptr;
 

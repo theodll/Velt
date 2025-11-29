@@ -45,7 +45,7 @@ namespace Lavendel {
 
 			if (ImGui::Button("Shutdown", ImVec2(120, 0))) 
 			{
-				RenderAPI::Renderer::Shutdown();
+				RenderAPI::Renderer::requestShutdown();
 			}
 			// Buttons
 			ImGui::Separator();

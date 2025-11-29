@@ -8,17 +8,15 @@
 #include "Lavendel/ImGui/ImGuiLayer.h"
 #include "Lavendel/Layers/LayerStack.h"
 #include "Lavendel/Layers/Layer.h"
+#include "Lavendel/Application.h"
 
-// Define static members declared in Renderer.h. These must have a single
-// definition in a .cpp file to satisfy the linker. They are used to provide
-// global-ish access to the GPU device, swapchain and pipeline owned by the
-// renderer instance.
-std::unique_ptr<Lavendel::RenderAPI::GPUDevice> Lavendel::RenderAPI::Renderer::m_Device = nullptr;
-std::unique_ptr<Lavendel::RenderAPI::SwapChain> Lavendel::RenderAPI::Renderer::m_SwapChain = nullptr;
-std::unique_ptr<Lavendel::RenderAPI::Pipeline> Lavendel::RenderAPI::Renderer::m_Pipeline = nullptr;
 
 namespace Lavendel {
 	namespace RenderAPI {
+
+		GPUDevice* Renderer::m_Device = nullptr;
+		SwapChain* Renderer::m_SwapChain = nullptr;
+		Pipeline* Renderer::m_Pipeline = nullptr;
 
 		struct SimplePushConstantData
 		{
@@ -32,7 +30,7 @@ namespace Lavendel {
 			LV_PROFILE_FUNCTION();
 			LV_CORE_INFO("Initializing Renderer...");
 
-			m_Device = CreateScope<GPUDevice>(m_Window);
+			m_Device = new GPUDevice(m_Window);
 			loadModels();
 			createPipelineLayout();
 			recreateSwapChain();
@@ -42,6 +40,18 @@ namespace Lavendel {
 		Renderer::~Renderer()
 		{
 			LV_PROFILE_FUNCTION();
+			//
+			// vkDeviceWaitIdle(m_Device->device());
+			//
+			// delete m_SwapChain,
+			// delete m_Pipeline;
+			// delete m_Device;
+			//
+			// m_SwapChain = nullptr;
+			// m_Pipeline = nullptr;
+			// m_Device = nullptr;
+
+
 		}
 
 		void Renderer::createPipelineLayout()
@@ -73,25 +83,11 @@ namespace Lavendel {
 			Lavendel::RenderAPI::Pipeline::defaultPipelineConfigInfo(pipelineConfig);
 			pipelineConfig.renderPass = m_SwapChain->getRenderPass();
 			pipelineConfig.pipelineLayout = m_PipelineLayout;
-			m_Pipeline = CreateScope<Lavendel::RenderAPI::Pipeline>(
+			m_Pipeline = new Pipeline(
 				*m_Device,
 				"shaders/shader.vert.spv",
 				"shaders/shader.frag.spv",
 				pipelineConfig);
-		}
-
-		void Renderer::Shutdown() 
-		{
-			LV_PROFILE_FUNCTION();
-			LV_CORE_INFO("Renderer shutdown");
-
-			vkDeviceWaitIdle(m_Device->device());
-
-			m_Pipeline = nullptr;   
-			m_SwapChain = nullptr;       
-			m_Device = nullptr;         
-
-			LV_CORE_INFO("Renderer shutdown complete");
 		}
 
 		void Renderer::recreateSwapChain()
@@ -108,12 +104,12 @@ namespace Lavendel {
 
 			if (m_SwapChain == nullptr)
 			{
-				m_SwapChain = CreateScope<SwapChain>(*m_Device, extent);
+				m_SwapChain = new SwapChain(*m_Device, extent);
 			}
 			else
 			{
-				std::shared_ptr<SwapChain> oldSwapChain = std::move(m_SwapChain);
-				m_SwapChain = CreateScope<SwapChain>(*m_Device, extent, oldSwapChain);
+				SwapChain* oldSwapChain = m_SwapChain;
+				m_SwapChain = new SwapChain(*m_Device, extent, oldSwapChain);
 
 				if (m_SwapChain->imageCount() != m_CommandBuffers.size())
 				{
@@ -298,6 +294,29 @@ namespace Lavendel {
 				m_ImGuiLayer->GetRenderer().Render(commandBuffer);
 			}
 		}
+
+
+		void Renderer::Shutdown()
+		{
+			LV_PROFILE_FUNCTION();
+			LV_CORE_INFO("Renderer shutdown");
+
+			vkDeviceWaitIdle(m_Device->device());
+
+			m_Pipeline = nullptr;
+			m_SwapChain = nullptr;
+			m_Device = nullptr;
+
+			LV_CORE_INFO("Renderer shutdown complete");
+		}
+
+		void Renderer::requestShutdown()
+		{
+			Application::s_ShutdownRequested = true;
+		}
+
+
+
 
 	}  // namespace RenderAPI
 }  // namespace Lavendel

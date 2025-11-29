@@ -11,7 +11,6 @@ target_include_directories(Sandbox PRIVATE
     ${CMAKE_SOURCE_DIR}/vendor/spdlog/include
 )
 
-# Define the platform so Entrypoint.h includes main()
 if (WIN32)
     target_compile_definitions(Sandbox PRIVATE LV_PLATFORM_WINDOWS)
 elseif (UNIX AND NOT APPLE)
@@ -20,10 +19,6 @@ elseif (APPLE)
     target_compile_definitions(Sandbox PRIVATE LV_PLATFORM_OSX)
 endif()
 
-# Ensure the Lavendel target exists. If the Lavendel project defines the target
-# in Lavendel/CMakeLists.txt, add that subdirectory so the target is created
-# and exported for linking. If your top-level CMakeLists already does this,
-# this conditional will do nothing.
 if (NOT TARGET Lavendel)
     add_subdirectory("${CMAKE_SOURCE_DIR}/Lavendel")
 endif()

@@ -28,8 +28,8 @@ namespace Lavendel
 			std::string TITLE{ "Lavendel Engine" };
 
 			static RenderAPI::Window& getWindow() { return m_Window; };
-
-	
+			static bool s_ShutdownRequested;
+		
 
 			void PushLayer(Layer* layer);
 			void PushOverlay(Layer* overlay);
