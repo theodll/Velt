@@ -2,7 +2,7 @@
 
 namespace Lavendel {
 
-	class EditorLayer : public Layer
+	class EditorLayer : public Lavendel::Layer
 	{
 	public:
 		EditorLayer();

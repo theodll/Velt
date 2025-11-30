@@ -30,6 +30,7 @@ namespace Lavendel
 			static RenderAPI::Window& getWindow() { return m_Window; };
 			static bool s_ShutdownRequested;
 		
+			void RenderImGui();
 
 			void PushLayer(Layer* layer);
 			void PushOverlay(Layer* overlay);

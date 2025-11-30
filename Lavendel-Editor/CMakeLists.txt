@@ -6,7 +6,7 @@ add_executable(LavendelEditor
 )
 
 target_include_directories(LavendelEditor PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/Lavendel/src
     ${CMAKE_SOURCE_DIR}/vendor/spdlog/include
 )

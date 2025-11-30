@@ -25,5 +25,15 @@ namespace Lavendel {
 		LV_PROFILE_FUNCTION();
 	}
 
+	void EditorLayer::OnUpdate()
+	{
+		LV_PROFILE_FUNCTION();
+	}
+
+	void EditorLayer::OnImGuiRender()
+	{
+		LV_PROFILE_FUNCTION();
+	}
+
 
 }

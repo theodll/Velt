@@ -13,6 +13,7 @@ namespace Lavendel
         virtual void OnDetach() {};
         virtual void OnUpdate() {};
         virtual void OnEvent(Event& event) {};
+        virtual void OnImGuiRender() {};
         
         // Optional: Called during rendering phase, useful for layers that need to render
         // graphics directly to the command buffer. This is called after scene rendering

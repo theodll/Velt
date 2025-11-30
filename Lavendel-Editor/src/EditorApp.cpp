@@ -23,6 +23,6 @@ namespace Lavendel {
 	Lavendel::Application* Lavendel::CreateApplication()
 	{
 		LV_PROFILE_FUNCTION();
-		return new EditorLayer();
+		return new LavendelEditor();
 	}
 }
