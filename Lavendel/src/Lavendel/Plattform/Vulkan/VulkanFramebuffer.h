@@ -27,7 +27,7 @@ struct FramebufferTextureSpecification {
       : TextureFormat(format) {}
 };
 
-class VulkanFramebuffer : public Framebuffer {
+class LAVENDEL_API VulkanFramebuffer : public Framebuffer {
 public:
   VulkanFramebuffer(GPUDevice *device, const FramebufferSpecification &spec);
 

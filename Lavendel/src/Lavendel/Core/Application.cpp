@@ -119,8 +119,10 @@ namespace Lavendel {
 
 			if (s_ShutdownRequested)
 			{
+
 				vkDeviceWaitIdle(RenderAPI::Renderer::getDevice()->device());
 				Shutdown();
+				Lavendel::Log::Flush();
 				break;
 
 			}
