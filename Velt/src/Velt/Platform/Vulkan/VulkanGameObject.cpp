@@ -1,8 +1,6 @@
 
 
-
-namespace Velt {
-
-
+namespace Velt
+{
 
 }

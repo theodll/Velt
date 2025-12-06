@@ -9,5 +9,4 @@
 
 #include "Velt/Core/Entrypoint.h"
 
-
 #include "Velt/ImGui/ImGuiLayer.h"

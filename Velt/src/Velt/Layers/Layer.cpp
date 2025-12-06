@@ -5,10 +5,9 @@
 #include "vtpch.h"
 #include "Layer.h"
 
-
 namespace Velt
 {
-    Layer::Layer(const std::string& debugName) : m_DebugName(debugName)
+    Layer::Layer(const std::string &debugName) : m_DebugName(debugName)
     {
         VT_PROFILE_FUNCTION();
     }

@@ -17,4 +17,3 @@ namespace Velt::Renderer
 	// blatanlty stole from hazel :D
 
 }
-

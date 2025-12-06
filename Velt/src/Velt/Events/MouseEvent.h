@@ -2,7 +2,6 @@
 #include "vtpch.h"
 #include "Event.h"
 
-
 namespace Velt
 {
     class VELT_API MouseMovedEvent : public Event
@@ -52,7 +51,6 @@ namespace Velt
         EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 
     protected:
-
         int m_Button;
     };
 

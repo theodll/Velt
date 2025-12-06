@@ -1,5 +1,5 @@
 #include "VulkanRenderPass.h"
 
-namespace Velt::Renderer::Vulkan 
+namespace Velt::Renderer::Vulkan
 {
 }

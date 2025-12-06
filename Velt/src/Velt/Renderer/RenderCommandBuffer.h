@@ -1,13 +1,12 @@
 #pragma once
 #include "Velt/Core/Core.h"
 
-namespace Velt::Renderer {
+namespace Velt::Renderer
+{
 
 	class VELT_API RenderCommandBuffer
 	{
 	public:
-
 	};
-
 
 }

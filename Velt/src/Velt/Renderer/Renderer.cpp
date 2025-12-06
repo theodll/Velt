@@ -10,13 +10,14 @@
 #include "Velt/Layers/Layer.h"
 #include "Velt/Core/Application.h"
 
+namespace Velt
+{
+	namespace RenderAPI
+	{
 
-namespace Velt {
-	namespace RenderAPI {
-
-		GPUDevice* Renderer::m_Device = nullptr;
-		SwapChain* Renderer::m_SwapChain = nullptr;
-		Pipeline* Renderer::m_Pipeline = nullptr;
+		GPUDevice *Renderer::m_Device = nullptr;
+		SwapChain *Renderer::m_SwapChain = nullptr;
+		Pipeline *Renderer::m_Pipeline = nullptr;
 
 		struct SimplePushConstantData
 		{
@@ -25,7 +26,7 @@ namespace Velt {
 			alignas(16) glm::vec4 color;
 		};
 
-		Renderer::Renderer(Window& window) : m_Window(window)
+		Renderer::Renderer(Window &window) : m_Window(window)
 		{
 			VT_PROFILE_FUNCTION();
 			VT_CORE_INFO("Initializing Renderer...");
@@ -50,14 +51,12 @@ namespace Velt {
 			// m_SwapChain = nullptr;
 			// m_Pipeline = nullptr;
 			// m_Device = nullptr;
-
-
 		}
 
 		void Renderer::createPipelineLayout()
 		{
 			VT_PROFILE_FUNCTION();
-		
+
 			VkPushConstantRange pushConstantRange{};
 			pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
 			pushConstantRange.offset = 0;
@@ -108,12 +107,12 @@ namespace Velt {
 			}
 			else
 			{
-				SwapChain* oldSwapChain = m_SwapChain;
+				SwapChain *oldSwapChain = m_SwapChain;
 				m_SwapChain = new SwapChain(*m_Device, extent, oldSwapChain);
 
 				if (m_SwapChain->imageCount() != m_CommandBuffers.size())
 				{
-					freeCommandBuffers(); 
+					freeCommandBuffers();
 					createCommandBuffers();
 				}
 			}
@@ -125,9 +124,8 @@ namespace Velt {
 			VT_PROFILE_FUNCTION();
 			std::vector<Model::Vertex> vertices = {
 				{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-				{{ -0.5f, 0.5f }, {0.0f, 1.0f, 0.0f}},
-				{{0.5f, 0.5f},  {0.0f, 0.0f, 1.0f}}
-			};
+				{{-0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+				{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
 			m_Model = std::make_shared<Model>(*m_Device, vertices);
 		}
 
@@ -163,8 +161,8 @@ namespace Velt {
 		void Renderer::recordCommandBuffer(int imageIndex)
 		{
 			VT_PROFILE_FUNCTION();
-		
-			static int frame = 0; 
+
+			static int frame = 0;
 			frame = (frame + 1) % 1000;
 
 			VkCommandBufferBeginInfo beginInfo{};
@@ -180,12 +178,12 @@ namespace Velt {
 			renderPassInfo.renderPass = m_SwapChain->getRenderPass();
 			renderPassInfo.framebuffer = m_SwapChain->getFrameBuffer(imageIndex);
 
-			renderPassInfo.renderArea.offset = { 0, 0 };
+			renderPassInfo.renderArea.offset = {0, 0};
 			renderPassInfo.renderArea.extent = m_SwapChain->getSwapChainExtent();
 
 			std::array<VkClearValue, 2> clearValues{};
-			clearValues[0].color = { {0.01f, 0.01f, 0.01f, 1.0f} };
-			clearValues[1].depthStencil = { 1.0f, 0 };
+			clearValues[0].color = {{0.01f, 0.01f, 0.01f, 1.0f}};
+			clearValues[1].depthStencil = {1.0f, 0};
 			renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
 			renderPassInfo.pClearValues = clearValues.data();
 
@@ -198,10 +196,9 @@ namespace Velt {
 			viewport.height = static_cast<float>(m_SwapChain->getSwapChainExtent().height);
 			viewport.minDepth = 0.0f;
 			viewport.maxDepth = 1.0f;
-			VkRect2D scissor{ {0, 0}, m_SwapChain->getSwapChainExtent()};
+			VkRect2D scissor{{0, 0}, m_SwapChain->getSwapChainExtent()};
 			vkCmdSetViewport(m_CommandBuffers[imageIndex], 0, 1, &viewport);
 			vkCmdSetScissor(m_CommandBuffers[imageIndex], 0, 1, &scissor);
-
 
 			// Render scene - bind pipeline and draw the model
 			m_Pipeline->bind(m_CommandBuffers[imageIndex]);
@@ -210,8 +207,8 @@ namespace Velt {
 			for (int j = 0; j < 4; j++)
 			{
 				SimplePushConstantData push{};
-				push.offset = { -0.5f + frame * 0.002f, -0.4f * j * 0.25 };
-				push.color = { 0.0f, 0.0f, 0.2f + 0.2f * j, 1 };
+				push.offset = {-0.5f + frame * 0.002f, -0.4f * j * 0.25};
+				push.color = {0.0f, 0.0f, 0.2f + 0.2f * j, 1};
 
 				vkCmdPushConstants(
 					m_CommandBuffers[imageIndex],
@@ -230,11 +227,11 @@ namespace Velt {
 			// to render their graphics to the command buffer at the appropriate depth.
 			if (m_LayerStack != nullptr)
 			{
-				for (Layer* layer : *m_LayerStack)
+				for (Layer *layer : *m_LayerStack)
 				{
 					VT_PROFILE_SCOPE("Layer::OnRender Call");
 					// Pass the command buffer as a void* to avoid including Vulkan headers in Layer.h
-					layer->OnRender(reinterpret_cast<void*>(m_CommandBuffers[imageIndex]));
+					layer->OnRender(reinterpret_cast<void *>(m_CommandBuffers[imageIndex]));
 				}
 			}
 
@@ -287,14 +284,13 @@ namespace Velt {
 			// By separating ImGui rendering into its own method and calling it from the layer
 			// iteration process, we ensure ImGui respects the layer stack order and renders
 			// on top of previous layers (like the scene triangle).
-			
+
 			if (m_ImGuiLayer != nullptr)
 			{
 				// Render the ImGui draw data that was prepared during ImGuiLayer::OnUpdate()
 				m_ImGuiLayer->GetRenderer().Render(commandBuffer);
 			}
 		}
-
 
 		void Renderer::Shutdown()
 		{
@@ -315,8 +311,5 @@ namespace Velt {
 			Application::s_ShutdownRequested = true;
 		}
 
-
-
-
-	}  // namespace RenderAPI
-}  // namespace Velt
+	} // namespace RenderAPI
+} // namespace Velt

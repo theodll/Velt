@@ -4,9 +4,10 @@
 #include <vulkan/vulkan.h>
 #include <SDL3/SDL.h>
 
-namespace Velt {
+namespace Velt
+{
 
-	ImGuiRenderer::ImGuiRenderer(RenderAPI::SwapChain* swapchain, RenderAPI::GPUDevice* device, SDL_Window* window)
+	ImGuiRenderer::ImGuiRenderer(RenderAPI::SwapChain *swapchain, RenderAPI::GPUDevice *device, SDL_Window *window)
 		: m_Swapchain(swapchain), m_Device(device), m_Window(window)
 	{
 		VT_PROFILE_FUNCTION();
@@ -25,18 +26,17 @@ namespace Velt {
 
 		// Create descriptor pool for ImGui
 		VkDescriptorPoolSize pool_sizes[] = {
-			{ VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
-			{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
-			{ VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000 },
-			{ VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 },
-			{ VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 },
-			{ VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 },
-			{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 },
-			{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 },
-			{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 },
-			{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 },
-			{ VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000 }
-		};
+			{VK_DESCRIPTOR_TYPE_SAMPLER, 1000},
+			{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000},
+			{VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000},
+			{VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000},
+			{VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000},
+			{VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000},
+			{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000},
+			{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000},
+			{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000},
+			{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000},
+			{VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000}};
 
 		VkDescriptorPoolCreateInfo pool_info = {};
 		pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
@@ -80,7 +80,7 @@ namespace Velt {
 		VT_PROFILE_FUNCTION();
 		ImGui_Impvtulkan_Shutdown();
 		ImGui_ImplSDL3_Shutdown();
-		
+
 		if (m_DescriptorPool != nullptr)
 		{
 			// Get device handle from ImGui Vulkan backend or store it
@@ -105,10 +105,10 @@ namespace Velt {
 		ImGui::Render();
 	}
 
-	void ImGuiRenderer::Render(VkCommandBuffer& commandBuffer)
+	void ImGuiRenderer::Render(VkCommandBuffer &commandBuffer)
 	{
 		VT_PROFILE_FUNCTION();
-		ImDrawData* draw_data = ImGui::GetDrawData();
+		ImDrawData *draw_data = ImGui::GetDrawData();
 		if (draw_data != nullptr)
 		{
 			// Log draw data stats for debugging: number of command lists and total vertices
@@ -116,11 +116,11 @@ namespace Velt {
 			int total_idx = draw_data->TotalIdxCount;
 			if (total_vtx == 0)
 			{
-				//VT_CORE_INFO("ImGui draw data empty: vtx=0 idx=0");
+				// VT_CORE_INFO("ImGui draw data empty: vtx=0 idx=0");
 			}
 			else
 			{
-				//VT_CORE_INFO("ImGui draw data: lists=%d verts=%d idx=%d", draw_data->CmdListsCount, total_vtx, total_idx);
+				// VT_CORE_INFO("ImGui draw data: lists=%d verts=%d idx=%d", draw_data->CmdListsCount, total_vtx, total_idx);
 			}
 			ImGui_Impvtulkan_RenderDrawData(draw_data, commandBuffer);
 		}

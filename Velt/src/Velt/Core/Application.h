@@ -7,43 +7,44 @@
 #include "ImGui/ImGuiLayer.h"
 
 namespace Velt
-{	
-	namespace RenderAPI {
+{
+	namespace RenderAPI
+	{
 		class Renderer;
 	}
-		
+
 	class VELT_API Application
 	{
-		public:
-			Application();
-			virtual ~Application();
-			void Run();
-			void Shutdown();
+	public:
+		Application();
+		virtual ~Application();
+		void Run();
+		void Shutdown();
 
-			void OnEvent(Event& e);
-			void operator=(const Application&) = delete;
+		void OnEvent(Event &e);
+		void operator=(const Application &) = delete;
 
-			static constexpr int WIDTH = 1280;
-			static constexpr int HEIGHT = 1280;
-			std::string TITLE{ "Velt Engine" };
+		static constexpr int WIDTH = 1280;
+		static constexpr int HEIGHT = 1280;
+		std::string TITLE{"Velt Engine"};
 
-			static RenderAPI::Window& getWindow() { return m_Window; };
-			static bool s_ShutdownRequested;
-		
-			void RenderImGui();
+		static RenderAPI::Window &getWindow() { return m_Window; };
+		static bool s_ShutdownRequested;
 
-			void PushLayer(Layer* layer);
-			void PushOverlay(Layer* overlay);
+		void RenderImGui();
+
+		void PushLayer(Layer *layer);
+		void PushOverlay(Layer *overlay);
 
 	private:
-		inline static RenderAPI::Window m_Window{ 800, 600, "Velt Window", true };
+		inline static RenderAPI::Window m_Window{800, 600, "Velt Window", true};
 		std::shared_ptr<RenderAPI::Renderer> m_Renderer;
 		LayerStack m_LayerStack;
-		ImGuiLayer* m_ImGuiLayer = nullptr;
+		ImGuiLayer *m_ImGuiLayer = nullptr;
 	};
 
 	// MUST BE DEFINED IN CLIENT
 
-	Application* CreateApplication();
+	Application *CreateApplication();
 
 }

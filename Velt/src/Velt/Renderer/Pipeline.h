@@ -7,7 +7,6 @@ namespace Velt::Renderer
 	class VELT_API Pipeline
 	{
 	public:
-
 	};
 
 }

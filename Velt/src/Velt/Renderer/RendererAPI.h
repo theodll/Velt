@@ -8,16 +8,14 @@ namespace Velt::RenderAPI
 		METAL = 3
 	};
 
-
 	class RendererAPI
 	{
 	public:
 		virtual ~RendererAPI() = default;
 		virtual void Init() = 0;
 
-
-
 		static API GetAPI() { return s_API; }
+
 	private:
 		static API s_API;
 	};

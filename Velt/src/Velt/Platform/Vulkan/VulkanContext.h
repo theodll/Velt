@@ -3,7 +3,6 @@
 #include "Velt/Core/Core.h"
 #include "Velt/Renderer/RenderContext.h"
 
-
 namespace Velt::Renderer::Vulkan
 {
 
@@ -19,5 +18,3 @@ namespace Velt::Renderer::Vulkan
 		static VulkanDevice s_Device;
 	};
 }
-
-

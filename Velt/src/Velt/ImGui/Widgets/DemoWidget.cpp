@@ -2,8 +2,9 @@
 #include "Renderer/Renderer.h"
 #include "DemoWidget.h"
 
-namespace Velt {
-	DemoWidget::DemoWidget(const std::string& name)
+namespace Velt
+{
+	DemoWidget::DemoWidget(const std::string &name)
 		: m_Name(name)
 	{
 		VT_PROFILE_FUNCTION();
@@ -42,8 +43,7 @@ namespace Velt {
 			// Text input
 			ImGui::InputText("Text Input", m_TextBuffer, sizeof(m_TextBuffer));
 
-
-			if (ImGui::Button("Shutdown", ImVec2(120, 0))) 
+			if (ImGui::Button("Shutdown", ImVec2(120, 0)))
 			{
 				RenderAPI::Renderer::requestShutdown();
 			}

@@ -7,8 +7,6 @@ namespace Velt::Renderer
 	class VELT_API Model
 	{
 	public:
-
 	};
 
 }
-

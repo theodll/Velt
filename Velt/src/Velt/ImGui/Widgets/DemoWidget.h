@@ -3,10 +3,12 @@
 #include "imgui.h"
 #include <string>
 
-namespace Velt {
-	class VELT_API DemoWidget {
+namespace Velt
+{
+	class VELT_API DemoWidget
+	{
 	public:
-		DemoWidget(const std::string& name = "Demo Widget");
+		DemoWidget(const std::string &name = "Demo Widget");
 		~DemoWidget() = default;
 
 		void OnRender();

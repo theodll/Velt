@@ -17,24 +17,25 @@ struct VkCommandBuffer_T;
 struct VkRenderPass_T;
 struct VkFramebuffer_T;
 
-namespace Velt {
-	class VELT_API ImGuiRenderer {
+namespace Velt
+{
+	class VELT_API ImGuiRenderer
+	{
 	public:
-		ImGuiRenderer(RenderAPI::SwapChain* swapchain, RenderAPI::GPUDevice* device, SDL_Window* window);
+		ImGuiRenderer(RenderAPI::SwapChain *swapchain, RenderAPI::GPUDevice *device, SDL_Window *window);
 		~ImGuiRenderer() = default;
 
-		
 		void Init();
-		void Render(VkCommandBuffer& commandBuffer);
+		void Render(VkCommandBuffer &commandBuffer);
 		void Shutdown();
 		void Begin();
 		void End();
-		
+
 	private:
-		RenderAPI::SwapChain* m_Swapchain;
-		RenderAPI::GPUDevice* m_Device;
-		VkDescriptorPool_T* m_DescriptorPool = nullptr;
-		SDL_Window* m_Window = nullptr;
+		RenderAPI::SwapChain *m_Swapchain;
+		RenderAPI::GPUDevice *m_Device;
+		VkDescriptorPool_T *m_DescriptorPool = nullptr;
+		SDL_Window *m_Window = nullptr;
 
 		float m_Time = 0.0f;
 	};

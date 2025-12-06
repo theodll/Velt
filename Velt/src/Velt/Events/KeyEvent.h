@@ -3,24 +3,23 @@
 #include "vtpch.h"
 #include "Event.h"
 
-
 namespace Velt
 {
 	class VELT_API KeyEvent : public Event
 	{
-	public: 
+	public:
 		inline int GetKeyCode() const { return m_KeyCode; }
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 	protected:
 		KeyEvent(int keycode)
 			: m_KeyCode(keycode) {}
-		
+
 		int m_KeyCode;
 	};
 
 	class VELT_API KeyPressedEvent : public KeyEvent
 	{
-	public: 
+	public:
 		KeyPressedEvent(int keycode, int repeatCount) : KeyEvent(keycode), m_RepeatCount(repeatCount) {}
 		inline int GetRepeatCount() const { return m_RepeatCount; }
 
@@ -48,8 +47,5 @@ namespace Velt
 			return ss.str();
 		}
 		EVENT_CLASS_TYPE(KeyReleased)
-
-
-
 	};
 }
