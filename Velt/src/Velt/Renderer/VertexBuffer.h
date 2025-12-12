@@ -6,9 +6,16 @@ namespace Velt::Renderer
 
     struct VertexBufferElement
     {
+        void* data;
         u32 Size;
-        float *Data;
     };
+
+    struct Vertex
+    {
+        glm::vec2 position;
+        glm::vec3 color;
+    };
+
 
     class VertexBuffer
     {

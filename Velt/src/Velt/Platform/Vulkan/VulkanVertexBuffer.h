@@ -25,6 +25,6 @@ namespace Velt::Renderer::Vulkan
     private:
         u32 m_RendererID{};
         const VulkanDevice* m_Device = nullptr;
-        VertexBufferElement elements;
+        VertexBufferElement m_Elements;
     };
  }
