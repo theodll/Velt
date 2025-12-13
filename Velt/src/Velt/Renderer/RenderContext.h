@@ -10,6 +10,7 @@ namespace Velt::Renderer
 		virtual ~RendererContext() = default;
 
 		virtual void Init() = 0;
+		virtual void Shutdown() = 0;
 
 		static Ref<RendererContext> Create();
 	};

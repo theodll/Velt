@@ -1,5 +1,6 @@
 #pragma once
 #include "vtpch.h"
+#include <vulkan/vulkan.h>
 #include "Velt/Core/Core.h"
 #include "Velt/Platform/Vulkan/VulkanDevice.h"
 #include "Velt/Renderer/RenderContext.h"
@@ -16,13 +17,14 @@ namespace Velt::Renderer::Vulkan
 		VulkanContext();
 		virtual ~VulkanContext() = default;
 		virtual void Init() override;
-		static std::weak_ptr<VulkanDevice> getDevice() { return s_Device; }
-		static std::weak_ptr<VulkanSwapchain> getSwapchain() { return s_Swapchain; }
-		static std::weak_ptr<VulkanPipeline> getPipeline() { return s_Pipeline; }
+		virtual void Shutdown() override;
+		static VulkanDevice* getDevice() { return s_Device; }
+		static VulkanSwapchain* getSwapchain() { return s_Swapchain; }
+		static VulkanPipeline* getPipeline() { return s_Pipeline; }
 		
 	private:
-		static VulkanDevice* s_Device = nullptr;
-		static VulkanSwapchain* s_Swapchain = nullptr;
-		static VulkanPipeline* s_Pipeline = nullptr;
+		static VulkanDevice* s_Device;
+		static VulkanSwapchain* s_Swapchain;
+		static VulkanPipeline* s_Pipeline;
 	};
 }

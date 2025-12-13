@@ -18,15 +18,6 @@ namespace  Velt::Renderer::Vulkan
 
         public:
 
-            struct Vertex
-            {
-                glm::vec2 position;
-				glm::vec3 color;
-
-                static std::vector<VkVertexInputBindingDescription> getBindingDescription();
-                static std::vector<VkVertexInputAttributeDescription> getAttributeDescription();
-            };
-
             Model(VulkanDevice &device, const std::vector<Model::Vertex> &vertices);
             ~Model();
 

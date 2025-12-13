@@ -57,7 +57,7 @@ namespace Velt::Renderer::Vulkan {
             virtual u32 FindMemoryType(u32 typeFilter, u32 properties) override { return findMemoryType(typeFilter, properties); }
 
             VkCommandPool getCommandPool() { return m_CommandPool; }
-            VkDevice device() { return m_Device; }
+            VkDevice* device() { return m_Device; }
             VkSurfaceKHR surface() { return m_Surface; }
             VkQueue graphicsQueue() { return m_GraphicsQueue; }
             VkQueue presentQueue() { return m_PresentQueue; }
@@ -119,7 +119,7 @@ namespace Velt::Renderer::Vulkan {
             VulkanWindow m_VulkanWindow;
             VkCommandPool m_CommandPool;
 
-            VkDevice m_Device;
+            VkDevice* m_Device;
             VkSurfaceKHR m_Surface;
             VkQueue m_GraphicsQueue;
             VkQueue m_PresentQueue;
