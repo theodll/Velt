@@ -5,18 +5,18 @@
 namespace Velt::Renderer::Vulkan
 {
     VulkanVertexBuffer::VulkanVertexBuffer(
-        const void* vertexData,
-        u32 vertexCount,
-        VkDeviceSize vertexStride
+        const void* vertexData, // data
+        u32 vertexCount, // count 
+        VkDeviceSize vertexStride // size 
     ) :   m_VertexCount(vertexCount),
           m_VertexStride(vertexStride)
     {
         VT_PROFILE_FUNCTION();
         VT_CORE_TRACE("Creating Vulkan Vertex Buffer");
 
-      //  VT_CORE_ASSERT(vertexData, "Vertex data must not be null");
-      //  VT_CORE_ASSERT(vertexCount > 0, "Vertex count must be > 0");
-      //  VT_CORE_ASSERT(vertexStride > 0, "Vertex stride must be > 0");
+        VT_CORE_ASSERT(vertexData, "Vertex data must not be null");
+        VT_CORE_ASSERT(vertexCount > 0, "Vertex count must be > 0");
+        VT_CORE_ASSERT(vertexStride > 0, "Vertex stride must be > 0");
 
         CreateBuffer(vertexData);
     }
