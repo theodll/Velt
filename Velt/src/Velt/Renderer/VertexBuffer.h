@@ -28,6 +28,6 @@ namespace Velt::Renderer
         virtual void Unbind() const = 0;
         
 
-		static VertexBuffer* Create(const void* vertexData, u64 vertexCount, u64 vertexStride);
+		static std::shared_ptr<VertexBuffer> Create(const void* vertexData, u64 vertexCount, u64 vertexStride);
     }
 } 

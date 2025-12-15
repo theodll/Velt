@@ -3,7 +3,7 @@ namespace Velt::Renderer
 	enum class API
 	{
 		None = 0,
-		VULKAN = 1,
+		Vulkan = 1,
 		D3D12 = 2,
 		METAL = 3
 	};
