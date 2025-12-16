@@ -17,6 +17,7 @@
 
 #define VT_ENABLE_VERIFY
 
+#define VT_ENABLE_ASSERTS 1
 #ifdef VT_ENABLE_ASSERTS
 #ifdef VT_COMPILER_CLANG
 #define VT_CORE_ASSERT_MESSAGE_INTERNAL(...)  ::Velt::Log::PrintAssertMessage(::Velt::Log::Type::Core, "Assertion Failed", ##__VA_ARGS__)

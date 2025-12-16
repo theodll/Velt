@@ -26,7 +26,7 @@ namespace Velt::Renderer::Vulkan
             {
                 VT_CORE_ERROR("Vertex Count must be at least 3");
             }
-            assert(m_VertexCount >= 3 && "Vertex count must be at least 3");
+            VT_CORE_ASSERT(m_VertexCount >= 3, "Vertex count must be at least 3");
 
             VkDeviceSize bufferSize = sizeof(vertecies[0]) * m_VertexCount;
             m_Device.createBuffer(
