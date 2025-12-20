@@ -11,8 +11,8 @@ add_library(Velt SHARED
         "src/Velt/Events/Event.h"
         "src/Velt/Events/KeyEvent.h"
         "src/Velt/Events/MouseEvent.h"
-        "src/Velt/Renderer/Window.cpp"
-        "src/Velt/Renderer/Window.h"
+        
+        
         "src/Velt/Platform/Vulkan/VulkanPipeline.h"
         "src/Velt/Platform/Vulkan/VulkanPipeline.cpp"
         "src/Velt/Platform/Vulkan/VulkanDevice.cpp"

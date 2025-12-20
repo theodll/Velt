@@ -1,8 +1,7 @@
 #pragma once
 #include "vtpch.h"
 
-#include "Renderer/Window.h"
-#include "Renderer/Renderer.h"
+#include "Window.h"
 #include "Layers/LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
 
@@ -27,7 +26,6 @@ namespace Velt
 			static constexpr int HEIGHT = 1280;
 			std::string TITLE{ "Velt Engine" };
 
-			static RenderAPI::Window& getWindow() { return m_Window; };
 			static bool s_ShutdownRequested;
 		
 			void RenderImGui();
@@ -36,8 +34,7 @@ namespace Velt
 			void PushOverlay(Layer* overlay);
 
 	private:
-		inline static RenderAPI::Window m_Window{ 800, 600, "Velt Window", true };
-		std::shared_ptr<RenderAPI::Renderer> m_Renderer;
+		std::unique_ptr<Window> m_Window;
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer = nullptr;
 	};

@@ -19,16 +19,9 @@
 
 #define VT_ENABLE_ASSERTS 1
 #ifdef VT_ENABLE_ASSERTS
-#ifdef VT_COMPILER_CLANG
-#define VT_CORE_ASSERT_MESSAGE_INTERNAL(...)  ::Velt::Log::PrintAssertMessage(::Velt::Log::Type::Core, "Assertion Failed", ##__VA_ARGS__)
-#define VT_ASSERT_MESSAGE_INTERNAL(...)  ::Velt::Log::PrintAssertMessage(::Velt::Log::Type::Client, "Assertion Failed", ##__VA_ARGS__)
-#else
-#define VT_CORE_ASSERT_MESSAGE_INTERNAL(...)  ::Velt::Log::PrintAssertMessage(::Velt::Log::Type::Core, "Assertion Failed" __VA_OPT__(,) __VA_ARGS__)
-#define VT_ASSERT_MESSAGE_INTERNAL(...)  ::Velt::Log::PrintAssertMessage(::Velt::Log::Type::Client, "Assertion Failed" __VA_OPT__(,) __VA_ARGS__)
-#endif
 
-#define VT_CORE_ASSERT(condition, ...) { if(!(condition)) { VT_CORE_ASSERT_MESSAGE_INTERNAL(__VA_ARGS__); VT_DEBUG_BREAK; } }
-#define VT_ASSERT(condition, ...) { if(!(condition)) { VT_ASSERT_MESSAGE_INTERNAL(__VA_ARGS__); VT_DEBUG_BREAK; } }
+#define VT_CORE_ASSERT(condition, ...) { if(!(condition)) { VT_CORE_ERROR(__VA_ARGS__); VT_DEBUG_BREAK; } }
+#define VT_ASSERT(condition, ...) { if(!(condition)) { VT_ERROR(__VA_ARGS__); VT_DEBUG_BREAK; } }
 #else
 #define VT_CORE_ASSERT(condition, ...)
 #define VT_ASSERT(condition, ...)
