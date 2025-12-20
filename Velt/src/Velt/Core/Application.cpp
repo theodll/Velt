@@ -16,9 +16,9 @@ namespace Velt {
 	Application::Application()
 	{
 		VT_PROFILE_FUNCTION();
-		m_Renderer = std::make_shared<RenderAPI::Renderer>(m_Window);
-		
-		m_Renderer->setLayerStack(&m_LayerStack);
+	
+		m_Window = std::unique_ptr<Window>(Window::Create());
+
 	}
 
 	Application::~Application()
@@ -85,18 +85,9 @@ namespace Velt {
 			{
 
 				VT_PROFILE_SCOPE("SDL PollEvent Loop");
-				
-				if (m_Renderer->getDevice() == nullptr)
-				{
-					assert("Device (GPUDevice in class Renderer) is null");
-				}
 
-				if (m_Renderer->getDevice()->device() == nullptr)
-				{
-					assert("Device (VkDevice) is null");
-				}
+				// TODO: dont pass raw sdl events
 
-				// pass raw sdl events NOT GOOD HAVE TO FIX
 				if (m_ImGuiLayer)
 					ImGuiLayer::ProcessSDLEvent(&event);
 				switch (event.type)
@@ -104,9 +95,9 @@ namespace Velt {
 				case SDL_EVENT_QUIT:
 					{
 						VT_PROFILE_SCOPE("WindowClose Event");
-						RenderAPI::Renderer::requestShutdown();
-						WindowCloseEvent e; // defined in Events/ApplicationEvent.h
-						OnEvent(e); // dispatch to layers
+						Renderer::Renderer::requestShutdown();
+						WindowCloseEvent e; 
+						OnEvent(e); 
 					}
 					break;
 				case SDL_EVENT_WINDOW_RESIZED:
@@ -136,8 +127,7 @@ namespace Velt {
 
 			if (s_ShutdownRequested)
 			{
-
-				vkDeviceWaitIdle(RenderAPI::Renderer::getDevice()->device());
+				
 				Shutdown();
 				Velt::Log::Flush();
 				break;
@@ -148,7 +138,6 @@ namespace Velt {
 
 	void Application::Shutdown()
 	{
-		////////////////////////////////
 		VT_PROFILE_FUNCTION();
 		if (RenderAPI::Renderer::getDevice) {
 			vkDeviceWaitIdle(RenderAPI::Renderer::getDevice()->device());

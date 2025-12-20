@@ -20,7 +20,7 @@ namespace Velt::Windows
 		void setVsync(bool enable) const override;
 		void setResizable(bool enable) const override;
 	private:
-		SDL_Window* m_Window;
+		SDL_Window* m_Window = nullptr;
 		
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();
