@@ -37,7 +37,7 @@ namespace Velt
 		virtual void setVsync(bool enable) const = 0;
 		virtual void setResizable(bool enable) const = 0; 
 
-		static Window* Create(const WindowProps& props = WindowProps())
+		static Window* Create(const WindowProps& props = WindowProps());
 
 	};
 

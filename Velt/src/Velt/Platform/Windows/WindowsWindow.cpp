@@ -1,5 +1,7 @@
 #include "WindowsWindow.h"
+#include "Core/Application.h"
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_vulkan.h>
 
 namespace Velt 
 {
@@ -96,5 +98,21 @@ namespace Velt::Windows
 	{
 		VT_PROFILE_FUNCTION();
 	}
+
+	void WindowsWindow::createWindowSurface(void* instance, void* surface)
+	{
+		VT_PROFILE_FUNCTION();
+
+		switch (Renderer::Renderer::GetAPI())
+		{
+		case Renderer::RendererAPI::Vulkan:
+			if (!SDL_Vulkan_CreateSurface(static_cast<SDL_Window*>(Aplication::Get.getWindow.GetNativeHandle()), static_cast<VkInstance>(instance), nullptr, static_cast<VkSurfaceKHR*>(surface)))
+			{
+				VT_CORE_ERROR("Failed to create window surface: {}", SDL_GetError());
+			}
+		}
+	}
+
+ 
 
 }

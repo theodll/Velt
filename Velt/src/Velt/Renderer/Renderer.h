@@ -1,6 +1,5 @@
 #pragma once
 #include "vtpch.h"
-#include "Window.h"
 #include "RenderCommandBuffer.h"
 #include "RenderPass.h"
 
