@@ -2,8 +2,6 @@
 
 #include "vtpch.h"
 #include "Velt/Core/Core.h"
-#include "Velt/Renderer/Window.h"
-#include "VulkanWindow.h"
 #include "VulkanCommandBuffer.h"
 
 namespace Velt::Renderer::Vulkan {
@@ -35,7 +33,7 @@ namespace Velt::Renderer::Vulkan {
 		const bool enableValidationLayers = true;
 #endif
 
-		VulkanDevice(RenderAPI::Window& window);
+		VulkanDevice();
 		~VulkanDevice();
 
 		VulkanDevice(const VulkanDevice&) = delete;
@@ -52,8 +50,7 @@ namespace Velt::Renderer::Vulkan {
 		VkPhysicalDevice getPhysicalDevice() { return m_PhysicalDevice; }
 		VkQueue getGraphicsQueue() { return m_GraphicsQueue; }
 		u32 getQueueFamilyIndex() { return findPhysicalQueueFamilies().graphicsFamily; }
-		RenderAPI::Window& getWindow() { return m_Window; }
-
+		
 		SwapChainSupportDetails getSwapChainSupport() { return querySwapChainSupport(m_PhysicalDevice); }
 		u32 findMemoryType(u32 typeFilter, VkMemoryPropertyFlags properties);
 		QueueFamilyIndices findPhysicalQueueFamilies() { return findQueueFamilies(m_PhysicalDevice); }
@@ -102,8 +99,6 @@ namespace Velt::Renderer::Vulkan {
 		VkInstance m_Instance;
 		VkDebugUtilsMessengerEXT m_DebugMessenger;
 		VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
-		Velt::RenderAPI::Window& m_Window;
-		VulkanWindow m_VulkanWindow;
 		VkCommandPool m_CommandPool;
 
 		VkDevice m_Device;

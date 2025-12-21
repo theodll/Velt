@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/Window.h"
+#include "Core/Application.h"
 #include <SDL3/SDL.h>
 
 namespace Velt::Windows 
@@ -19,6 +20,10 @@ namespace Velt::Windows
 		void setEventCallback(const EventCallbackFn& callback) override;
 		void setVsync(bool enable) const override;
 		void setResizable(bool enable) const override;
+
+		void createWindowSurface(void* instance, void* surface);
+		u32 getExtent() const
+		{	return { static_cast<u32>(Application::Get.getWindow.getWidth(), Application::Get.getWindow.getHeight()) };	}
 	private:
 		SDL_Window* m_Window = nullptr;
 		

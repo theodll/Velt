@@ -45,7 +45,7 @@ namespace Velt {
 
 			if (ImGui::Button("Shutdown", ImVec2(120, 0))) 
 			{
-				RenderAPI::Renderer::requestShutdown();
+				Renderer::Renderer::requestShutdown();
 			}
 			// Buttons
 			ImGui::Separator();

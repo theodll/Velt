@@ -16,9 +16,13 @@ namespace Velt {
 	Application::Application()
 	{
 		VT_PROFILE_FUNCTION();
-	
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		s_Instance = this;
 
+		m_WindowProps.m_Width = WIDTH;
+		m_WindowProps.m_Height = HEIGHT;
+		m_WindowProps.m_Title = TITLE;
+		
+		m_Window = std::unique_ptr<Window>(Window::Create(m_WindowProps));
 	}
 
 	Application::~Application()
@@ -44,7 +48,6 @@ namespace Velt {
 		VT_PROFILE_FUNCTION();
 		m_LayerStack.PushLayer(layer);
 
-		// Todo: make events ja genau 
 		if (auto imgui = dynamic_cast<ImGuiLayer*>(layer))
 			m_ImGuiLayer = imgui;
 	}
@@ -78,7 +81,7 @@ namespace Velt {
 		bool running = true;
 		while (running)
 		{
-
+			
 			VT_PROFILE_SCOPE("Application::Run Loop");
 			SDL_Event event;
 			while (SDL_PollEvent(&event))
@@ -122,12 +125,10 @@ namespace Velt {
 			RenderImGui();
 
 			VT_PROFILE_SCOPE("Renderer drawFrame");
-			m_Renderer->drawFrame();
 
 
 			if (s_ShutdownRequested)
 			{
-				
 				Shutdown();
 				Velt::Log::Flush();
 				break;
@@ -139,10 +140,5 @@ namespace Velt {
 	void Application::Shutdown()
 	{
 		VT_PROFILE_FUNCTION();
-		if (RenderAPI::Renderer::getDevice) {
-			vkDeviceWaitIdle(RenderAPI::Renderer::getDevice()->device());
-		}
-
-		RenderAPI::Renderer::Shutdown();
 	}
 }

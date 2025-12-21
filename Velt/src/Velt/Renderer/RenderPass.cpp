@@ -12,10 +12,10 @@ namespace Velt::Renderer {
 	Ref<RenderPass> RenderPass::Create(const RenderPassSpecification& spec)
 	{
 		VT_PROFILE_FUNCTION();
-		switch (RendererAPI::Current())
+		switch (Renderer::GetAPI())
 		{
-			case RendererAPIType::None:    assert(false, "RendererAPI::None is currently not supported!"); return nullptr;
-			case RendererAPIType::Vulkan:  return Ref<VulkanRenderPass>::Create(spec);
+			case RendererAPI::None:    assert(false, "RendererAPI::None is currently not supported!"); return nullptr;
+			case RendererAPI::Vulkan:  return Ref<VulkanRenderPass>::Create(spec);
 		}
 
 		assert(false, "Unknown RendererAPI!");
