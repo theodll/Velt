@@ -1,5 +1,6 @@
 #pragma once
 #include "Velt/Core/Core.h"
+#include "Buffer.h"
 
 namespace Velt::Renderer
 {
@@ -22,7 +23,9 @@ namespace Velt::Renderer
     public:
         virtual ~VertexBuffer() {};
 
-//        virtual void SetData(const void* data, u32 size) = 0;
+        virtual void setLayout(const BufferLayout& layout) = 0;
+        virtual BufferLayout getLayout() const = 0; 
+
 
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;

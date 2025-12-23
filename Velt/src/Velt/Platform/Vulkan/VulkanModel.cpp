@@ -1,3 +1,5 @@
+#if COMPILE_GARABAGE
+
 #include "vtpch.h"
 #include "VulkanModel.h"
 
@@ -85,3 +87,5 @@ namespace Velt::Renderer::Vulkan
             return attributeDescriptions;
         }
 }
+
+#endif

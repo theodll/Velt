@@ -4,6 +4,7 @@
 #include "Log.h"
 #include <SDL3/SDL.h>
 #include "ImGui/ImGuiLayer.h"
+#include "Renderer/Buffer.h"
 #include "Events/ApplicationEvent.h" 
 #include <cassert>
 
@@ -12,6 +13,27 @@ bool Velt::Application::s_ShutdownRequested = false;
 
 
 namespace Velt {
+
+
+
+	VkFormat ShaderDataTypeToVulkanBaseType(Renderer::ShaderDataType type) {
+		switch(type) {
+			case Renderer::ShaderDataType::Float:   return VK_FORMAT_R32_SFLOAT;
+			case Renderer::ShaderDataType::Float2:  return VK_FORMAT_R32G32_SFLOAT;
+			case Renderer::ShaderDataType::Float3:  return VK_FORMAT_R32G32B32_SFLOAT;
+			case Renderer::ShaderDataType::Float4:  return VK_FORMAT_R32G32B32A32_SFLOAT;
+			case Renderer::ShaderDataType::Mat3:    return VK_FORMAT_R32G32B32_SFLOAT; 
+			case Renderer::ShaderDataType::Mat4:    return VK_FORMAT_R32G32B32A32_SFLOAT;
+			case Renderer::ShaderDataType::Int:     return VK_FORMAT_R32_SINT;
+			case Renderer::ShaderDataType::Int2:    return VK_FORMAT_R32G32_SINT;
+			case Renderer::ShaderDataType::Int3:    return VK_FORMAT_R32G32B32_SINT;
+			case Renderer::ShaderDataType::Int4:    return VK_FORMAT_R32G32B32A32_SINT;
+			case Renderer::ShaderDataType::Bool:    return VK_FORMAT_R8_UINT;
+		}
+		VT_CORE_ASSERT(false, "Unknown Shader Data Type");
+
+		return VK_FORMAT_UNDEFINED; 
+	}
 
 	Application::Application()
 	{
