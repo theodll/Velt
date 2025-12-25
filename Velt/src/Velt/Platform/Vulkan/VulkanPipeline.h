@@ -47,10 +47,11 @@ namespace Velt::Renderer::Vulkan
 			void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 
 			PipelineSpecification m_Specification;
-
-			VkPipeline vulkanPipeline;
-			VkShaderModule vertexShaderModule;
-			VkShaderModule fragmentShaderModule;
+			BufferLayout m_Layout;
+			VulkanPipelineConfigInfo m_ConfigInfo;
+			VkPipeline m_VulkanPipeline;
+			VkShaderModule m_VertexShaderModule;
+			VkShaderModule m_FragmentShaderModule;
 		};
 }
 
