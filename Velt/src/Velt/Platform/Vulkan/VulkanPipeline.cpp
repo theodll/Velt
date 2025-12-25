@@ -86,14 +86,12 @@ namespace Velt::Renderer::Vulkan {
 		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescs.size());
 		vertexInputInfo.pVertexAttributeDescriptions = attributeDescs.data();
 
-		// --- Pipeline Create ---
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
 		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 		pipelineInfo.stageCount = 2;
 		pipelineInfo.pStages = shaderStages;
 		pipelineInfo.pVertexInputState = &vertexInputInfo;
 
-		// ... (restliche ConfigInfo Zuweisungen wie gehabt)
 		pipelineInfo.pInputAssemblyState = &m_ConfigInfo.inputAssemblyInfo;
 		pipelineInfo.pViewportState = &m_ConfigInfo.viewportInfo;
 		pipelineInfo.pRasterizationState = &m_ConfigInfo.rasterizationInfo;
@@ -110,7 +108,6 @@ namespace Velt::Renderer::Vulkan {
 			VT_CORE_ASSERT(false, "")
 		}
 
-		// Shader-Module können nach dem Erstellen der Pipeline gelöscht werden
 		vkDestroyShaderModule(*VulkanContext::getDevice()->device(), vertModule, nullptr);
 		vkDestroyShaderModule(*VulkanContext::getDevice()->device(), fragModule, nullptr);
 	}
