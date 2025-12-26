@@ -1,7 +1,6 @@
 #pragma once
 #include "vtpch.h"
 #include "RenderCommandBuffer.h"
-#include "RenderPass.h"
 
 
 namespace Velt::Renderer
@@ -33,8 +32,8 @@ namespace Velt::Renderer
 		static void requestShutdown();
 		static void Shutdown();
 
-		static void BeginRenderPass(Ref<RenderCommandBuffer> renderCommandbuffer, Ref<RenderPass> renderPass, bool explicitClear = false);
-		static void EndRenderPass(Ref<RenderCommandBuffer> renderCommandbuffer);
+		// static void BeginRenderPass(Ref<RenderCommandBuffer> renderCommandbuffer, Ref<RenderPass> renderPass, bool explicitClear = false);
+		// static void EndRenderPass(Ref<RenderCommandBuffer> renderCommandbuffer);
 
 		inline static RendererAPI GetAPI() { return s_API; };
 

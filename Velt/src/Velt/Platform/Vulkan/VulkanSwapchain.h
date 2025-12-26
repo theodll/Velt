@@ -20,6 +20,24 @@ namespace Velt::Renderer::Vulkan {
         bool VSync; 
     };
 
+	struct SwapchainCommandBuffer
+	{
+		VkCommandBuffer CommandBuffer = nullptr;
+		VkCommandPool CommandPool = nullptr;
+	};
+
+    struct SwapchainImage
+    {
+        VkImage Image = nullptr;
+        VkImageView ImageView = nullptr;
+    };
+
+	struct DepthStencilImage
+	{
+		VkImage DepthImage = nullptr;
+        VkDeviceMemory DepthImageMemory = nullptr;
+		VkImageView DepthImageView = nullptr;
+	};
 
     class VELT_API VulkanSwapchain
     {
@@ -41,15 +59,25 @@ namespace Velt::Renderer::Vulkan {
         void BeginFrame();
         void Present(); 
 
-        inline VkFramebuffer GetCurrentFramebuffer() { return GetFrameBuffer(m_CurrentFrameIndex); }
-        inline VkFramebuffer GetFrameBuffer(int index) { VT_CORE_ASSERT(index < m_Framebuffers.size); return m_Framebuffers[index]; }
-		inline u32 GetWidth() const { return m_Width; }
+        inline u32 GetWidth() const { return m_Width; }
 		inline u32 GetHeight() const { return m_Height; }
-        inline u32 GetImageCount() const { return (u32)m_SwapChainImages.size(); } 
+        inline u32 GetImageCount() const { return (u32)m_SwapchainImages.size(); } 
         inline float GetAspectRatio() const { return (float)m_Width / (float)m_Height; }
         inline VkRenderPass GetRenderPass() { return m_RenderPass; }
-		inline VkImageView GetImageView(int index) { return m_SwapChainImageViews[index]; }
-        inline SwapchainExtent GetwapchainExtent() { return m_SwapchainExtent; }
+		inline VkImageView GetImageView(int index) { return m_SwapchainImages[index].ImageView; }
+        inline VkFramebuffer GetCurrentFramebuffer() { return GetFrameBuffer(m_CurrentFrameIndex); }
+
+        inline VkFramebuffer GetFrameBuffer(u32 index) 
+        { 
+            VT_CORE_ASSERT(index < m_Framebuffers.size); 
+            return m_Framebuffers[index]; 
+        }
+
+        inline VkCommandBuffer GetDrawCommandBuffer(u32 index) 
+        { 
+            VT_CORE_ASSERT(index < m_CommandBuffers.size); 
+            return m_Commandbuffers[index].CommandBuffer; 
+        }
         
 
         VkFormat findDepthFormat();
@@ -70,33 +98,34 @@ namespace Velt::Renderer::Vulkan {
         VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
         VkFormat m_SwapChainImageFormat;
 
+        VkInstance m_Instance = nullptr;
+        VulkanDevice* m_Device;
+        
+        VkFormat m_ColorFormat;
+        VkColorSpaceKHR m_ColorSpace;
+
+
+		std::vector<SwapchainCommandBuffer> m_Commandbuffers;
+
         std::vector<VkFramebuffer> m_Framebuffers;
-        VkRenderPass m_RenderPass;
+        VkRenderPass m_RenderPass = nullptr;
 
-        std::vector<VkImage> m_DepthImages;
-        std::vector<VkDeviceMemory> m_DepthImageMemorys;
-        std::vector<VkImageView> m_DepthImageViews;
-        std::vector<VkImage> m_SwapChainImages;
-        std::vector<VkImageView> m_SwapChainImageViews;
-
-        VulkanDevice& m_Device;
-        VkExtent2D windowExtent;
-
+        std::vector<DepthStencilImage> m_DepthStencil;
+        std::vector<SwapchainImage> m_SwapchainImages;
+      
         VkSwapchainKHR m_Swapchain;
-        VulkanSwapchain* m_OldSwapchain;
-
-        std::vector<VkSemaphore> imageAvailableSemaphores;
-        std::vector<VkSemaphore> renderFinishedSemaphores;
-        std::vector<VkFence> inFlightFences;
-        std::vector<VkFence> imagesInFlight;
+        
+        std::vector<VkSemaphore> m_ImageAvailableSemaphores;
+        std::vector<VkSemaphore> m_RenderFinishedSemaphores;
+        std::vector<VkFence> m_InFlightFences;
+        std::vector<VkFence> m_ImagesInFlight;
 
         u32 m_Width;
         u32 m_Height;
-
-        SwapchainExtent m_SwapchainExtent;
-
-        size_t m_CurrentFrame = 0;
-        u32 m_CurrentFrameIndex = 0;
+        bool m_VSync = false; 
+        
+        u32 m_CurrentImageIndex = 0; // Frame currently displayed
+        u32 m_CurrentFrameIndex = 0; // Frame that is being worked on
     };
     
 }
