@@ -7,7 +7,7 @@ namespace Velt::Renderer::Vulkan {
 
 	VulkanPipeline::~VulkanPipeline()
 	{
-		VkDevice device = *VulkanContext::getDevice()->device();
+		VkDevice device = VulkanContext::GetDevice()->device();
 		vkDestroyPipeline(device, m_VulkanPipeline, nullptr);
 	}
 
@@ -24,6 +24,9 @@ namespace Velt::Renderer::Vulkan {
 		case ShaderDataType::Int3:   return VK_FORMAT_R32G32B32_SINT;
 		case ShaderDataType::Int4:   return VK_FORMAT_R32G32B32A32_SINT;
 		case ShaderDataType::Bool:   return VK_FORMAT_R8_UINT;
+		default:
+			VT_CORE_ASSERT(false, "Unknown ShaderDataType!");
+			return VK_FORMAT_UNDEFINED;
 		}
 		return VK_FORMAT_UNDEFINED;
 	}
@@ -103,12 +106,12 @@ namespace Velt::Renderer::Vulkan {
 		pipelineInfo.renderPass = m_ConfigInfo.renderPass;
 		pipelineInfo.subpass = m_ConfigInfo.subpass;
 
-		if (vkCreateGraphicsPipelines(*VulkanContext::getDevice()->device(), nullptr, 1, &pipelineInfo, nullptr, &m_VulkanPipeline) != VK_SUCCESS)
+		if (vkCreateGraphicsPipelines(VulkanContext::GetDevice()->device(), nullptr, 1, &pipelineInfo, nullptr, &m_VulkanPipeline) != VK_SUCCESS)
 		{
 			VT_CORE_ASSERT(false, "")
 		}
 
-		vkDestroyShaderModule(*VulkanContext::getDevice()->device(), vertModule, nullptr);
-		vkDestroyShaderModule(*VulkanContext::getDevice()->device(), fragModule, nullptr);
+		vkDestroyShaderModule(VulkanContext::GetDevice()->device(), vertModule, nullptr);
+		vkDestroyShaderModule(VulkanContext::GetDevice()->device(), fragModule, nullptr);
 	}
 }

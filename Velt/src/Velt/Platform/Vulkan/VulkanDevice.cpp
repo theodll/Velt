@@ -2,8 +2,11 @@
 #include "VulkanDevice.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_vulkan.h>
+#include "Core/Application.h"
 
 namespace Velt::Renderer::Vulkan {
+
+    class Application;
 
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
         VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -252,9 +255,9 @@ namespace Velt::Renderer::Vulkan {
     void VulkanDevice::createSurface()
     {
         VT_PROFILE_FUNCTION();
-        VkWindow VulkanWindow = Application::Get.getWindow();
+        auto window = Application::Get().getWindow();
 
-            VulkanWindow.createWindowSurface(m_Instance, &m_Surface);
+        window.createWindowSurface(m_Instance, &m_Surface);
     }
 
     bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device)

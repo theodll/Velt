@@ -52,7 +52,7 @@ namespace Velt::Renderer::Vulkan {
 		std::vector<std::vector<float>> m_ExecutionGPUTimes;
 
 		u32 m_PipelineQueryCount = 0;
-		std::vector<PipelineStatistics> m_PipelineStatisticsQueryResults;
+		// std::vector<PipelineStatistics> m_PipelineStatisticsQueryResults;
 	};
 
 }

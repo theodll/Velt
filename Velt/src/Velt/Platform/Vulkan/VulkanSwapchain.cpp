@@ -461,7 +461,7 @@ namespace Velt::Renderer::Vulkan
         VkPhysicalDevice physicalDevice = m_Device->getPhysicalDevice();
 
         // Create surface using SDL instead of GLFW
-        if (!SDL_Vulkan_CreateSurface(windowHandle, m_Instance, &m_Surface))
+        if (!SDL_Vulkan_CreateSurface(windowHandle, m_Instance, nullptr, &m_Surface))
         {
             VT_CORE_ASSERT(false, "Failed to create SDL Vulkan surface:  {0}", SDL_GetError());
             return;
@@ -528,5 +528,54 @@ namespace Velt::Renderer::Vulkan
 
         FindImageFormatAndColorSpace();
     }
+
+
+    // credit to the hazel engine (stole this function (: )
+
+    void VulkanSwapchain::FindImageFormatAndColorSpace()
+	{
+		VkPhysicalDevice physicalDevice = m_Device->getPhysicalDevice();
+
+		// Get list of supported surface formats
+		uint32_t formatCount;
+		vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, m_Surface, &formatCount, NULL);
+		VT_CORE_ASSERT(formatCount > 0, "No surface formats found.");
+
+		std::vector<VkSurfaceFormatKHR> surfaceFormats(formatCount);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, m_Surface, &formatCount, surfaceFormats.data());
+
+		// If the surface format list only includes one entry with VK_FORMAT_UNDEFINED,
+		// there is no preferered format, so we assume VK_FORMAT_B8G8R8A8_UNORM
+		if ((formatCount == 1) && (surfaceFormats[0].format == VK_FORMAT_UNDEFINED))
+		{
+			m_ColorFormat = VK_FORMAT_B8G8R8A8_UNORM;
+			m_ColorSpace = surfaceFormats[0].colorSpace;
+		}
+		else
+		{
+			// iterate over the list of available surface format and
+			// check for the presence of VK_FORMAT_B8G8R8A8_UNORM
+			bool found_B8G8R8A8_UNORM = false;
+			for (auto&& surfaceFormat : surfaceFormats)
+			{
+				if (surfaceFormat.format == VK_FORMAT_B8G8R8A8_UNORM)
+				{
+					m_ColorFormat = surfaceFormat.format;
+					m_ColorSpace = surfaceFormat.colorSpace;
+					found_B8G8R8A8_UNORM = true;
+					break;
+				}
+			}
+
+			// in case VK_FORMAT_B8G8R8A8_UNORM is not available
+			// select the first available color format
+			if (!found_B8G8R8A8_UNORM)
+			{
+				m_ColorFormat = surfaceFormats[0].format;
+				m_ColorSpace = surfaceFormats[0].colorSpace;
+			}
+		}
+
+	}
 
 }

@@ -24,6 +24,7 @@ namespace Velt::Renderer
 		case ShaderDataType::Int3:     return 4 * 3;
 		case ShaderDataType::Int4:     return 4 * 4;
 		case ShaderDataType::Bool:     return 4; 
+		case ShaderDataType::None:     return 0;
 		}
 		VT_CORE_ASSERT(false, "Unknown ShaderDataType");
 		return 0;
@@ -54,8 +55,11 @@ namespace Velt::Renderer
 				case ShaderDataType::Int2:		return 2;
 				case ShaderDataType::Int3:		return 3;
 				case ShaderDataType::Int4:		return 4;
-				case ShaderDataType::Bool:		return 1;		
+				case ShaderDataType::Bool:		return 1;	
+				case ShaderDataType::None:		return 0;	
 			}
+
+			return 0;
 		}
 	};
 

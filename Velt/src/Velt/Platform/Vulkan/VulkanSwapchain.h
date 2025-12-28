@@ -71,13 +71,13 @@ namespace Velt::Renderer::Vulkan {
 
         inline VkFramebuffer GetFrameBuffer(u32 index) 
         { 
-            VT_CORE_ASSERT(index < m_Framebuffers.size); 
+            VT_CORE_ASSERT(index < m_Framebuffers.size(), "Framebuffer index out of bounds"); 
             return m_Framebuffers[index]; 
         }
 
         inline VkCommandBuffer GetDrawCommandBuffer(u32 index) 
         { 
-            VT_CORE_ASSERT(index < m_CommandBuffers.size); 
+            VT_CORE_ASSERT(index < m_Commandbuffers.size(), "Command buffer index out of bounds"); 
             return m_Commandbuffers[index].CommandBuffer; 
         }
         
@@ -91,6 +91,7 @@ namespace Velt::Renderer::Vulkan {
         VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
         VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
         VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+        void FindImageFormatAndColorSpace();
         VkFormat m_SwapChainImageFormat;
 
         VkInstance m_Instance = nullptr;
@@ -99,6 +100,7 @@ namespace Velt::Renderer::Vulkan {
         VkFormat m_ColorFormat;
         VkColorSpaceKHR m_ColorSpace;
 
+        VkSurfaceKHR m_Surface; 
 
 		std::vector<SwapchainCommandBuffer> m_Commandbuffers;
 
@@ -117,7 +119,8 @@ namespace Velt::Renderer::Vulkan {
 
         VkExtent2D m_WindowExtent;
 
-        bool m_VSync = false; 
+        bool m_VSync = false;
+        u32 m_QueueNodeIndex = UINT32_MAX; 
         
         u32 m_CurrentImageIndex = 0; // Frame currently displayed
         u32 m_CurrentFrameIndex = 0; // Frame that is being worked on
