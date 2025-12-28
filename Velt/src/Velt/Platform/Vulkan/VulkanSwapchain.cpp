@@ -1,6 +1,8 @@
 #include "vtpch.h"
 #include "VulkanSwapchain.h"
 #include "VulkanContext.h"
+#include <SDL3/SDL_vulkan.h>
+#include <SDL3/SDL.h>
 
 namespace Velt::Renderer::Vulkan
 {
@@ -9,8 +11,7 @@ namespace Velt::Renderer::Vulkan
     {
         VT_PROFILE_FUNCTION();
 
-        m_Instance = createInfo.Instance; 
-        
+        m_Instance = createInfo.Instance;
     }
 
     void VulkanSwapchain::Destroy()
@@ -28,7 +29,7 @@ namespace Velt::Renderer::Vulkan
 
         for (auto image : m_SwapchainImages)
         {
-            vkDestroyImageView(m_Device->device(), image.ImageView, nullptr); 
+            vkDestroyImageView(m_Device->device(), image.ImageView, nullptr);
         }
         m_SwapchainImages.clear();
 
@@ -200,7 +201,7 @@ namespace Velt::Renderer::Vulkan
         vkGetSwapchainImagesKHR(m_Device->device(), m_Swapchain, &imageCount, &m_SwapchainImages.data()->Image);
 
         m_SwapChainImageFormat = surfaceFormat.format;
-        m_WindowExtent = extent;            
+        m_WindowExtent = extent;
 
         for (size_t i = 0; i < m_SwapchainImages.size(); i++)
         {
@@ -314,7 +315,6 @@ namespace Velt::Renderer::Vulkan
         VkExtent2D swapChainExtent = m_WindowExtent;
 
         m_DepthStencilImages.resize(imageCount);
-     
 
         for (int i = 0; i < m_DepthStencilImages.size(); i++)
         {
@@ -381,10 +381,7 @@ namespace Velt::Renderer::Vulkan
                 throw std::runtime_error("failed to create synchronization objects for a frame!");
             }
         }
-
     }
-
-
 
     VkSurfaceFormatKHR VulkanSwapchain::chooseSwapSurfaceFormat(
         const std::vector<VkSurfaceFormatKHR> &availableFormats)
@@ -424,7 +421,7 @@ namespace Velt::Renderer::Vulkan
         VT_PROFILE_FUNCTION();
 
         if (capabilities.currentExtent.width != std::numeric_limits<u32>::max())
-        {   
+        {
             return capabilities.currentExtent;
         }
         else
@@ -449,4 +446,87 @@ namespace Velt::Renderer::Vulkan
             VK_IMAGE_TILING_OPTIMAL,
             VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
     }
+
+    void VulkanSwapchain::Present()
+    {
+        VT_PROFILE_FUNCTION();
+        u32 imageIndex = m_CurrentImageIndex;
+        VkCommandBuffer commandBuffers[] = {GetDrawCommandBuffer(m_CurrentFrameIndex)};
+
+        SubmitCommandBuffers(commandBuffers, &imageIndex);
+    };
+
+    void VulkanSwapchain::InitSurface(SDL_Window *windowHandle)
+    {
+        VkPhysicalDevice physicalDevice = m_Device->getPhysicalDevice();
+
+        // Create surface using SDL instead of GLFW
+        if (!SDL_Vulkan_CreateSurface(windowHandle, m_Instance, &m_Surface))
+        {
+            VT_CORE_ASSERT(false, "Failed to create SDL Vulkan surface:  {0}", SDL_GetError());
+            return;
+        }
+
+        // Get available queue family properties
+        u32 queueCount;
+        vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueCount, nullptr);
+        VT_CORE_ASSERT(queueCount >= 1, "No queue families found!");
+
+        std::vector<VkQueueFamilyProperties> queueProps(queueCount);
+        vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueCount, queueProps.data());
+
+        // Iterate over each queue to learn whether it supports presenting:
+        // Find a queue with present support
+        // Will be used to present the swap chain images to the windowing system
+        std::vector<VkBool32> supportsPresent(queueCount);
+        for (uint32_t i = 0; i < queueCount; i++)
+        {
+            vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, m_Surface, &supportsPresent[i]);
+        }
+
+        // Search for a graphics and a present queue in the array of queue
+        // families, try to find one that supports both
+        u32 graphicsQueueNodeIndex = UINT32_MAX;
+        u32 presentQueueNodeIndex = UINT32_MAX;
+
+        for (u32 i = 0; i < queueCount; i++)
+        {
+            if ((queueProps[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0)
+            {
+                if (graphicsQueueNodeIndex == UINT32_MAX)
+                {
+                    graphicsQueueNodeIndex = i;
+                }
+
+                if (supportsPresent[i] == VK_TRUE)
+                {
+                    graphicsQueueNodeIndex = i;
+                    presentQueueNodeIndex = i;
+                    break;
+                }
+            }
+        }
+
+        if (presentQueueNodeIndex == UINT32_MAX)
+        {
+            // If there's no queue that supports both present and graphics
+            // try to find a separate present queue
+            for (u32 i = 0; i < queueCount; ++i)
+            {
+                if (supportsPresent[i] == VK_TRUE)
+                {
+                    presentQueueNodeIndex = i;
+                    break;
+                }
+            }
+        }
+
+        VT_CORE_ASSERT(graphicsQueueNodeIndex != UINT32_MAX, "No graphics queue family found!");
+        VT_CORE_ASSERT(presentQueueNodeIndex != UINT32_MAX, "No present queue family found!");
+
+        m_QueueNodeIndex = graphicsQueueNodeIndex;
+
+        FindImageFormatAndColorSpace();
+    }
+
 }

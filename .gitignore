@@ -9,6 +9,8 @@ status
 out
 build
 
+.vscode/
+
 .DS_Store
 
 lazygit.exe
