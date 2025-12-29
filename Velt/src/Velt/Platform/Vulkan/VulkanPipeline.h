@@ -23,7 +23,7 @@ namespace Velt::Renderer::Vulkan
 			u32 subpass = 0;
 		};
 
-		class VELT_API VulkanPipeline : public Renderer::Pipeline
+		class VELT_API VulkanPipeline : public Pipeline
 		{
 		public:
 			VulkanPipeline(PipelineSpecification& specs); 

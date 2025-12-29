@@ -2,6 +2,7 @@
 #include "VulkanIndexBuffer.h"
 #include "VulkanContext.h"
 #include <vulkan/vulkan.h>
+#include "Core/Log.h"
 
 namespace Velt::Renderer::Vulkan
 {
@@ -27,17 +28,17 @@ namespace Velt::Renderer::Vulkan
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("VulkanIndexBuffer destructed");
 
-		auto device = VulkanContext::getDevice();
+		auto device = VulkanContext::GetDevice();
 
 		if (m_IndexBuffer != VK_NULL_HANDLE)
 		{
-			vkDestroyBuffer(*device->device(), m_IndexBuffer, nullptr);
+			vkDestroyBuffer(device->device(), m_IndexBuffer, nullptr);
 			m_IndexBuffer = VK_NULL_HANDLE;
 		}
 
 		if (m_IndexBufferMemory != VK_NULL_HANDLE)
 		{
-			vkFreeMemory(*device->device(), m_IndexBufferMemory, nullptr);
+			vkFreeMemory(device->device(), m_IndexBufferMemory, nullptr);
 			m_IndexBufferMemory = VK_NULL_HANDLE;
 		}
 	}
@@ -57,7 +58,7 @@ namespace Velt::Renderer::Vulkan
 		VT_CORE_ASSERT(data != nullptr, "Index buffer data is null!");
 		VT_CORE_ASSERT(offset + size <= m_Size, "Data size exceeds buffer size!");
 
-		auto device = VulkanContext::getDevice();
+		auto device = VulkanContext::GetDevice();
 
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingBufferMemory;
@@ -71,9 +72,9 @@ namespace Velt::Renderer::Vulkan
 		);
 
 		void* mappedData = nullptr;
-		vkMapMemory(*device->device(), stagingBufferMemory, 0, size, 0, &mappedData);
+		vkMapMemory(device->device(), stagingBufferMemory, 0, size, 0, &mappedData);
 		memcpy(mappedData, data, static_cast<size_t>(size));
-		vkUnmapMemory(*device->device(), stagingBufferMemory);
+		vkUnmapMemory(device->device(), stagingBufferMemory);
 
 		VkCommandBuffer commandBuffer = device->beginSingleTimeCommands();
 
@@ -85,8 +86,8 @@ namespace Velt::Renderer::Vulkan
 
 		device->endSingleTimeCommands(commandBuffer);
 
-		vkDestroyBuffer(*device->device(), stagingBuffer, nullptr);
-		vkFreeMemory(*device->device(), stagingBufferMemory, nullptr);
+		vkDestroyBuffer(device->device(), stagingBuffer, nullptr);
+		vkFreeMemory(device->device(), stagingBufferMemory, nullptr);
 	}
 
 	void VulkanIndexBuffer::CreateBuffer(void* data, u64 size)
@@ -94,7 +95,7 @@ namespace Velt::Renderer::Vulkan
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("VulkanIndexBuffer::CreateBuffer (size: {0})", size);
 
-		auto device = VulkanContext::getDevice();
+		auto device = VulkanContext::GetDevice();
 
 		device->createBuffer(
 			size,
@@ -114,7 +115,7 @@ namespace Velt::Renderer::Vulkan
 	{
 		VT_PROFILE_FUNCTION();
 
-		auto device = VulkanContext::getDevice();
+		auto device = VulkanContext::GetDevice();
 		VkCommandBuffer commandBuffer = device->beginSingleTimeCommands();
 
 

@@ -16,7 +16,7 @@ namespace Velt::Renderer
         virtual u64 GetSize() const;
         virtual u32 GetRendererID() const;
 
-        static Ref<IndexBuffer> Create(u64 size);
-        static Ref<IndexBuffer> Create(void* data, u64 size = 0);
+        static std::shared_ptr<IndexBuffer> Create(u64 size);
+        static std::shared_ptr<IndexBuffer> Create(void* data, u64 size = 0);
     };
 } 

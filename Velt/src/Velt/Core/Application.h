@@ -29,6 +29,7 @@ namespace Velt
 			void RenderImGui();
 			void PushLayer(Layer* layer);
 			void PushOverlay(Layer* overlay);
+			Window& GetWindow() { return *m_Window; }
 		
 			// VARS
 			static bool s_ShutdownRequested;
@@ -41,7 +42,7 @@ namespace Velt
 		WindowProps m_WindowProps;
 		std::unique_ptr<Window> m_Window;
 		LayerStack m_LayerStack;
-		ImGuiLayer* m_ImGuiLayer = nullptr;
+		// ImGuiLayer* m_ImGuiLayer = nullptr;
 	};
 
 	Application* CreateApplication();

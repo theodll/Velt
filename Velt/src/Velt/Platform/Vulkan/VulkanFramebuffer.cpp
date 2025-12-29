@@ -1,3 +1,4 @@
+/*
 #include "vtpch.h"
 #include "VulkanFramebuffer.h"
 #include <stdexcept>
@@ -26,19 +27,15 @@ VkFormat VulkanFramebuffer::FramebufferTextureFormatToVulkan(
 
 bool VulkanFramebuffer::IsDepthFormat(FramebufferTextureFormat format) {
   switch (format) {
-    VT_PROFILE_FUNCTION();
-  case FramebufferTextureFormat::DEPTH24STENCIL8:
-  case FramebufferTextureFormat::DEPTH32F:
-    return true;
-  default:
-    return false;
+    case FramebufferTextureFormat::DEPTH24STENCIL8:
+    case FramebufferTextureFormat::DEPTH32F:
+      return true;
+    default:
+      return false;
   }
 }
 
-VulkanFramebuffer::VulkanFramebuffer(VulkanDevice *device,
-                                     const FramebufferSpecification &spec)
- VT_PROFILE_FUNCTION();
-    : m_Device(device), m_Specification(spec),
+VulkanFramebuffer::VulkanFramebuffer(VulkanDevice *device, const FramebufferSpecification &spec): m_Device(device), m_Specification(spec),
       m_DepthAttachmentSpecification(FramebufferTextureFormat::None) {
 
   m_ColorAttachmentSpecifications.push_back(
@@ -477,3 +474,4 @@ u32 VulkanFramebuffer::FindMemoryType(u32 typeFilter,
   throw std::runtime_error("Failed to find suitable memory type!");
 }
 } // namespace Velt::RenderAPI
+*/

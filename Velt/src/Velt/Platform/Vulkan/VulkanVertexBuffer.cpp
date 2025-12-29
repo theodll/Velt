@@ -4,7 +4,7 @@
 
 namespace Velt::Renderer::Vulkan
 {
-    VulkanVertexBuffer::VulkanVertexBuffer( const void* vertexData, u32 vertexCount, u64 vertexStride ) :   m_VertexCount(vertexCount), m_VertexStride(vertexStride)
+    VulkanVertexBuffer::VulkanVertexBuffer(const void* vertexData, u32 vertexCount, u64 vertexStride ) :   m_VertexCount(vertexCount), m_VertexStride(vertexStride), m_Device(VulkanContext::GetDevice())
     {
         VT_PROFILE_FUNCTION();
         VT_CORE_TRACE("Creating Vulkan Vertex Buffer");

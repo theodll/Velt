@@ -1,10 +1,11 @@
 #pragma once
+#include "Core/Assert.h"
 #include "Core/Core.h"
 
 namespace Velt::Renderer
 {
 
-	enum class ShaderDataType : u8
+	enum class ShaderDataType : uint8_t
 	{
 		None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool
 	};

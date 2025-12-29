@@ -32,5 +32,5 @@ namespace Velt::Renderer
         
 
 		static std::shared_ptr<VertexBuffer> Create(const void* vertexData, u64 vertexCount, u64 vertexStride);
-    }
+    };
 } 

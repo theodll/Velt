@@ -6,7 +6,6 @@
 namespace Velt::Renderer
 {
 	class Application;
-	class ImGuiLayer;
 	class LayerStack;
 
 	enum class RendererAPI
@@ -26,7 +25,7 @@ namespace Velt::Renderer
 
 		virtual void drawFrame();
 
-		virtual void setImGuiLayer(ImGuiLayer* layer) = 0;
+		// virtual void setImGuiLayer(ImGuiLayer* layer) = 0;
 		virtual void setLayerStack(LayerStack* layerStack) = 0;
 		
 		static void requestShutdown();

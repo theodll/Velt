@@ -34,8 +34,11 @@ namespace Velt
 		virtual bool isVsync() const = 0; 
 
 		virtual void setEventCallback(const EventCallbackFn& callback) = 0; 
-		virtual void setVsync(bool enable) const = 0;
-		virtual void setResizable(bool enable) const = 0; 
+		virtual void setVsync(bool enable) = 0;
+		virtual void setResizable(bool enable) = 0; 
+		virtual void CreateWindowSurface(void* instance, void* surface) = 0;
+
+		virtual void* GetNativeHandle() const = 0;
 
 		static Window* Create(const WindowProps& props = WindowProps());
 

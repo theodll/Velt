@@ -1,10 +1,11 @@
 #pragma once
 #include "Core/Core.h"
+#include "Velt/Renderer/IndexBuffer.h"
 #include <vulkan/vulkan.h>
 
 namespace Velt::Renderer::Vulkan
 {
-	class VulkanIndexBuffer
+	class VulkanIndexBuffer : public IndexBuffer
 	{
 	public:
 		VulkanIndexBuffer(u64 size);

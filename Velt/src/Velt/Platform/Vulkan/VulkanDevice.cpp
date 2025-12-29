@@ -255,9 +255,9 @@ namespace Velt::Renderer::Vulkan {
     void VulkanDevice::createSurface()
     {
         VT_PROFILE_FUNCTION();
-        auto window = Application::Get().getWindow();
+        auto& window = Velt::Application::Get().GetWindow();
 
-        window.createWindowSurface(m_Instance, &m_Surface);
+        window.CreateWindowSurface(m_Instance, &m_Surface);
     }
 
     bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device)

@@ -1,6 +1,7 @@
 #pragma once
 #include "Velt/Core/Core.h"
 
+/*
 namespace Velt::Renderer {
 
 struct FramebufferSpecification 
@@ -27,3 +28,4 @@ public:
 	static Ref<Framebuffer> Create(const FramebufferSpecification& specs);
 };
 }
+*/
