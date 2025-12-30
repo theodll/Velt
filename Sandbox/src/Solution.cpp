@@ -21,7 +21,7 @@ class ExampleLayer : public Velt::Layer
 		VT_PROFILE_FUNCTION();
 		//VT_CORE_INFO("ExampleLayer::OnRender");
 
-		ImGui::Begin("Hello from ExampleLayer");
+//		ImGui::Begin("Hello from ExampleLayer");
 
 	}
 }; 
@@ -35,7 +35,7 @@ public:
 		{
 			VT_PROFILE_FUNCTION();
 			PushLayer(new ExampleLayer());
-			PushOverlay(new Velt::ImGuiLayer());
+		//	PushOverlay(new Velt::ImGuiLayer());
 
 		}
 

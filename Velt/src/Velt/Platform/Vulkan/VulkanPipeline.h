@@ -26,7 +26,7 @@ namespace Velt::Renderer::Vulkan
 		class VELT_API VulkanPipeline : public Pipeline
 		{
 		public:
-			VulkanPipeline(PipelineSpecification& specs); 
+			VulkanPipeline(const PipelineSpecification& specs); 
 			~VulkanPipeline();
 
 			VulkanPipeline(const VulkanPipeline&) = delete;
@@ -37,6 +37,12 @@ namespace Velt::Renderer::Vulkan
 			void Bind(VkCommandBuffer commandBuffer);
 
 			static void defaultVulkanPipelineConfigInfo(VulkanPipelineConfigInfo& configInfo);
+
+
+			PipelineSpecification& GetSpecification() override;
+
+
+			const PipelineSpecification& GetSpecification() const override;
 
 		private:
 			static std::vector<char> readFile(const std::string& filepath);

@@ -11,7 +11,7 @@ namespace Velt::Renderer::Vulkan
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("VulkanIndexBuffer constructed (uninitialized, size: {0})", size);
-		CreateBuffer(nullptr, size);
+		// CreateBuffer(nullptr, size);
 	}
 
 	VulkanIndexBuffer::VulkanIndexBuffer(void* data, u64 size)

@@ -114,4 +114,47 @@ namespace Velt::Renderer::Vulkan {
 		vkDestroyShaderModule(VulkanContext::GetDevice()->device(), vertModule, nullptr);
 		vkDestroyShaderModule(VulkanContext::GetDevice()->device(), fragModule, nullptr);
 	}
+
+	VulkanPipeline::VulkanPipeline(const PipelineSpecification& specs) : m_Specification(specs)
+	{
+		VT_PROFILE_FUNCTION();
+		VT_CORE_TRACE("Create Pipeline");
+		Invalidate();
+	}
+
+	void VulkanPipeline::Bind(VkCommandBuffer commandBuffer)
+	{
+
+	}
+
+	void VulkanPipeline::defaultVulkanPipelineConfigInfo(VulkanPipelineConfigInfo& configInfo)
+	{
+
+	}
+
+	std::vector<char> VulkanPipeline::readFile(const std::string& filepath)
+	{
+
+	}
+
+	void VulkanPipeline::createGraphicsVulkanPipeline(const std::string& vertShaderPath, const std::string& fragShaderPath, const VulkanPipelineConfigInfo& configInfo)
+	{
+
+	}
+
+	void VulkanPipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule)
+	{
+
+	}
+
+	Velt::Renderer::PipelineSpecification& VulkanPipeline::GetSpecification()
+	{
+		throw std::logic_error("The method or operation is not implemented.");
+	}
+
+	const Velt::Renderer::PipelineSpecification& VulkanPipeline::GetSpecification() const
+	{
+		throw std::logic_error("The method or operation is not implemented.");
+	}
+
 }

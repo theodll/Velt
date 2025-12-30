@@ -4,8 +4,6 @@
 namespace Velt::Renderer::Vulkan
 {
 	VulkanDevice* VulkanContext::s_Device = nullptr;
-	VulkanSwapchain* VulkanContext::s_Swapchain = nullptr;
-	VulkanPipeline* VulkanContext::s_Pipeline = nullptr;
 	
 	VulkanContext::VulkanContext()
 	{
@@ -25,8 +23,8 @@ namespace Velt::Renderer::Vulkan
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Shutting down Vulkan Context");
-		delete s_Pipeline;
 		delete s_Swapchain;
 		delete s_Device;
 	}
+
 }

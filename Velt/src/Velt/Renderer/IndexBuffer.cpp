@@ -8,7 +8,7 @@ namespace Velt::Renderer
 {
 
 
-	std::shared_ptr<IndexBuffer> Create(u64 size)
+	std::shared_ptr<IndexBuffer> IndexBuffer::Create(u64 size)
 	{
 		VT_PROFILE_FUNCTION();
 		switch (Renderer::GetAPI())
@@ -20,7 +20,7 @@ namespace Velt::Renderer
 		return nullptr;
 	}
 	
-	std::shared_ptr<IndexBuffer> Create(void* data, u64 size = 0)
+	std::shared_ptr<IndexBuffer> IndexBuffer::Create(void* data, u64 size = 0)
 	{
 		VT_PROFILE_FUNCTION();
 		switch (Renderer::GetAPI())

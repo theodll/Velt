@@ -25,5 +25,45 @@ namespace Velt::Renderer {
 		Velt::Application::s_ShutdownRequested = true;
 	};
 
+	Renderer::Renderer()
+	{
+
+	}
+
+	Renderer::~Renderer()
+	{
+
+	}
+
+	void Renderer::drawFrame()
+	{
+
+	}
+
+	void Renderer::setLayerStack(LayerStack* layerStack)
+	{
+
+	}
+
+	void Renderer::Shutdown()
+	{
+
+	}
+
+	void Renderer::loadModels()
+	{
+
+	}
+
+	void Renderer::createPipelineLayout()
+	{
+
+	}
+
+	void Renderer::createPipeline()
+	{
+
+	}
+
 
 }

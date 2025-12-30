@@ -12,11 +12,11 @@ namespace Velt::Renderer::Vulkan
 		VulkanIndexBuffer(void* data, u64 size);
 		~VulkanIndexBuffer();
 
-		void Bind() const;
+		virtual void Bind() const override;
 		void SetData(void* data, u64 size, u64 offset = 0);
 
-		VkBuffer GetBuffer() const { return m_IndexBuffer; }
-		u64 GetSize() const { return m_Size; }
+		virtual VkBuffer GetBuffer() const { return m_IndexBuffer; }
+		u64 GetSize() const override { return m_Size; }		
 
 	private:
 		void CreateBuffer(void* data, u64 size);

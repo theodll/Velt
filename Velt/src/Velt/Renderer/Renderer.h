@@ -40,7 +40,7 @@ namespace Velt::Renderer
 		virtual void loadModels() = 0;
 		virtual void createPipelineLayout() = 0;
 		virtual void createPipeline() = 0;
-		static RendererAPI s_API; 
+		static RendererAPI s_API;
 
 
 	};

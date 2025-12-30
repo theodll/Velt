@@ -48,6 +48,7 @@ add_library(Velt SHARED
         "src/Velt/Platform/Vulkan/VulkanRenderer.h" 
         "src/Velt/Platform/Vulkan/VulkanRenderer.cpp" 
         "src/Velt/Platform/Vulkan/VulkanContext.h" 
+        "src/Velt/Platform/Vulkan/VulkanContext.cpp" 
         "src/Velt/Renderer/RenderCommandBuffer.h"
         "src/Velt/Renderer/RenderCommandBuffer.cpp" 
         "Velt.h" 
@@ -61,6 +62,7 @@ add_library(Velt SHARED
         "src/Velt/Renderer/IndexBuffer.cpp"
         "src/Velt/Renderer/VertexBuffer.h"
         "src/Velt/Renderer/VertexBuffer.cpp"
+        
 
  "src/Velt/Core/Window.h" "src/Velt/Platform/Windows/WindowsWindow.h" "src/Velt/Platform/Windows/WindowsWindow.cpp")
 

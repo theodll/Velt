@@ -12,6 +12,8 @@
 bool Velt::Application::s_ShutdownRequested = false;
 
 
+Velt::Application* Velt::Application::s_Instance;
+
 namespace Velt {
 
 
@@ -81,6 +83,7 @@ namespace Velt {
 		//if (auto imgui = dynamic_cast<ImGuiLayer*>(layer))
 		//	m_ImGuiLayer = imgui;
 	}
+
 
 	void Application::RenderImGui()
 	{
