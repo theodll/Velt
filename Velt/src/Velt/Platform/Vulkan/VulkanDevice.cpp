@@ -3,54 +3,20 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_vulkan.h>
 #include "Core/Application.h"
+#include "VulkanContext.h"
 
-namespace Velt::Renderer::Vulkan {
+namespace Velt::Renderer::Vulkan
+{
 
     class Application;
 
 
 
-    VkResult CreateDebugUtilsMessengerEXT(
-        VkInstance instance,
-        const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
-        const VkAllocationCallbacks* pAllocator,
-        VkDebugUtilsMessengerEXT* pDebugMessenger)
-    {
-        VT_PROFILE_FUNCTION();
-        auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
-            instance,
-            "vkCreateDebugUtilsMessengerEXT");
-        if (func != nullptr)
-        {
-            return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
-        }
-        else
-        {
-            return VK_ERROR_EXTENSION_NOT_PRESENT;
-        }
-    }
-
-    void DestroyDebugUtilsMessengerEXT(
-        VkInstance instance,
-        VkDebugUtilsMessengerEXT debugMessenger,
-        const VkAllocationCallbacks* pAllocator)
-    {
-        VT_PROFILE_FUNCTION();
-        auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
-            instance,
-            "vkDestroyDebugUtilsMessengerEXT");
-        if (func != nullptr)
-        {
-            func(instance, debugMessenger, pAllocator);
-        }
-    }
-
-    VulkanDevice::VulkanDevice()
+    VulkanDevice::VulkanDevice() : m_Instance(VulkanContext::GetInstance())
     {
         VT_PROFILE_FUNCTION();
         VT_CORE_INFO("Creating VulkanDevice...");
-        
-        createSurface();
+
         pickPhysicalDevice();
         createLogicalDevice();
         createCommandPool();
@@ -64,16 +30,7 @@ namespace Velt::Renderer::Vulkan {
         vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
         vkDestroyDevice(m_Device, nullptr);
 
-        if (enableValidationLayers)
-        {
-            DestroyDebugUtilsMessengerEXT(m_Instance, m_DebugMessenger, nullptr);
-        }
-
-        vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
-        vkDestroyInstance(m_Instance, nullptr);
     }
-
-
 
     void VulkanDevice::pickPhysicalDevice()
     {
@@ -89,7 +46,7 @@ namespace Velt::Renderer::Vulkan {
         std::vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
 
-        for (const auto& device : devices)
+        for (const auto &device : devices)
         {
             if (isDeviceSuitable(device))
             {
@@ -110,10 +67,10 @@ namespace Velt::Renderer::Vulkan {
     void VulkanDevice::createLogicalDevice()
     {
         VT_PROFILE_FUNCTION();
-        QueueFamilyIndices indices = findQueueFamilies(m_PhysicalDevice);
+        QueueFamilyIndices indices = FindQueueFamilies(m_PhysicalDevice);
 
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-        std::set<u32> uniqueQueueFamilies = { indices.graphicsFamily, indices.presentFamily };
+        std::set<u32> uniqueQueueFamilies = {indices.graphicsFamily, indices.presentFamily};
 
         float queuePriority = 1.0f;
         for (u32 queueFamily : uniqueQueueFamilies)
@@ -141,7 +98,8 @@ namespace Velt::Renderer::Vulkan {
 
         // might not really be necessary anymore because device specific validation layers
         // have been deprecated
-        if (enableValidationLayers)
+        std::vector<const char*> validationLayers = VulkanContext::GetValidationLayers();
+        if (!validationLayers.empty())
         {
             createInfo.enabledLayerCount = static_cast<u32>(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
@@ -164,7 +122,7 @@ namespace Velt::Renderer::Vulkan {
     void VulkanDevice::createCommandPool()
     {
         VT_PROFILE_FUNCTION();
-        QueueFamilyIndices queueFamilyIndices = findPhysicalQueueFamilies();
+        QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(m_PhysicalDevice);
 
         VkCommandPoolCreateInfo poolInfo = {};
         poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -179,25 +137,19 @@ namespace Velt::Renderer::Vulkan {
         }
     }
 
-    void VulkanDevice::createSurface()
-    {
-        VT_PROFILE_FUNCTION();
-        auto& window = Velt::Application::Get().GetWindow();
 
-        window.CreateWindowSurface(m_Instance, &m_Surface);
-    }
 
     bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device)
     {
         VT_PROFILE_FUNCTION();
-        QueueFamilyIndices indices = findQueueFamilies(device);
+        QueueFamilyIndices indices = FindQueueFamilies(device);
 
-        bool extensionsSupported = checkDeviceExtensionSupport(device);
+        bool extensionsSupported = CheckDeviceExtensionSupport(device);
 
         bool swapChainAdequate = false;
         if (extensionsSupported)
         {
-            SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
+            SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(device);
             swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
         }
 
@@ -205,38 +157,10 @@ namespace Velt::Renderer::Vulkan {
         vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
 
         return indices.isComplete() && extensionsSupported && swapChainAdequate &&
-            supportedFeatures.samplerAnisotropy;
+               supportedFeatures.samplerAnisotropy;
     }
 
-    void VulkanDevice::populateDebugMessengerCreateInfo(
-        VkDebugUtilsMessengerCreateInfoEXT& createInfo)
-    {
-        VT_PROFILE_FUNCTION();
-        createInfo = {};
-        createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-        createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-            VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-        createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
-            VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
-            VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-        createInfo.pfnUserCallback = debugCallback;
-        createInfo.pUserData = nullptr;  // Optional
-    }
-
-    void VulkanDevice::setupDebugMessenger()
-    {
-        VT_PROFILE_FUNCTION();
-        if (!enableValidationLayers) return;
-        VkDebugUtilsMessengerCreateInfoEXT createInfo;
-        populateDebugMessengerCreateInfo(createInfo);
-        if (CreateDebugUtilsMessengerEXT(m_Instance, &createInfo, nullptr, &m_DebugMessenger) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to set up debug messenger!");
-            VT_CORE_ERROR("Failed to set up debug messenger!");
-        }
-    }
-   
-    QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice device)
+    QueueFamilyIndices VulkanDevice::FindQueueFamilies(VkPhysicalDevice device)
     {
         VT_PROFILE_FUNCTION();
         QueueFamilyIndices indices;
@@ -248,7 +172,7 @@ namespace Velt::Renderer::Vulkan {
         vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
 
         int i = 0;
-        for (const auto& queueFamily : queueFamilies)
+        for (const auto &queueFamily : queueFamilies)
         {
             if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
             {
@@ -273,7 +197,30 @@ namespace Velt::Renderer::Vulkan {
         return indices;
     }
 
-    SwapChainSupportDetails VulkanDevice::querySwapChainSupport(VkPhysicalDevice device)
+    bool VulkanDevice::CheckDeviceExtensionSupport(VkPhysicalDevice device)
+    {
+        VT_PROFILE_FUNCTION();
+        uint32_t extensionCount;
+        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+
+        std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+        vkEnumerateDeviceExtensionProperties(
+            device,
+            nullptr,
+            &extensionCount,
+            availableExtensions.data());
+
+        std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
+
+        for (const auto &extension : availableExtensions)
+        {
+            requiredExtensions.erase(extension.extensionName);
+        }
+
+        return requiredExtensions.empty();
+    }
+
+    SwapChainSupportDetails VulkanDevice::QuerySwapChainSupport(VkPhysicalDevice device)
     {
         VT_PROFILE_FUNCTION();
         SwapChainSupportDetails details;
@@ -303,8 +250,8 @@ namespace Velt::Renderer::Vulkan {
         return details;
     }
 
-    VkFormat VulkanDevice::findSupportedFormat(
-        const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
+    VkFormat VulkanDevice::FindSupportedFormat(
+        const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
     {
         VT_PROFILE_FUNCTION();
         for (VkFormat format : candidates)
@@ -322,10 +269,11 @@ namespace Velt::Renderer::Vulkan {
                 return format;
             }
         }
-        throw std::runtime_error("failed to find supported format!");
+        VT_CORE_ASSERT(false, "Failed to find supported format!");
+        return VK_FORMAT_UNDEFINED;
     }
 
-    u32 VulkanDevice::findMemoryType(u32 typeFilter, VkMemoryPropertyFlags properties)
+    u32 VulkanDevice::FindMemoryType(u32 typeFilter, VkMemoryPropertyFlags properties)
     {
         VT_PROFILE_FUNCTION();
         VkPhysicalDeviceMemoryProperties memProperties;
@@ -347,8 +295,8 @@ namespace Velt::Renderer::Vulkan {
         VkDeviceSize size,
         VkBufferUsageFlags usage,
         VkMemoryPropertyFlags properties,
-        VkBuffer& buffer,
-        VkDeviceMemory& bufferMemory)
+        VkBuffer &buffer,
+        VkDeviceMemory &bufferMemory)
     {
         VT_PROFILE_FUNCTION();
         VkBufferCreateInfo bufferInfo{};
@@ -369,7 +317,7 @@ namespace Velt::Renderer::Vulkan {
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
-        allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
+        allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
 
         if (vkAllocateMemory(m_Device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
         {
@@ -422,8 +370,8 @@ namespace Velt::Renderer::Vulkan {
         VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
         VkBufferCopy copyRegion{};
-        copyRegion.srcOffset = 0;  // Optional
-        copyRegion.dstOffset = 0;  // Optional
+        copyRegion.srcOffset = 0; // Optional
+        copyRegion.dstOffset = 0; // Optional
         copyRegion.size = size;
         vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
 
@@ -446,8 +394,8 @@ namespace Velt::Renderer::Vulkan {
         region.imageSubresource.baseArrayLayer = 0;
         region.imageSubresource.layerCount = layerCount;
 
-        region.imageOffset = { 0, 0, 0 };
-        region.imageExtent = { width, height, 1 };
+        region.imageOffset = {0, 0, 0};
+        region.imageExtent = {width, height, 1};
 
         vkCmdCopyBufferToImage(
             commandBuffer,
@@ -460,10 +408,10 @@ namespace Velt::Renderer::Vulkan {
     }
 
     void VulkanDevice::createImageWithInfo(
-        const VkImageCreateInfo& imageInfo,
+        const VkImageCreateInfo &imageInfo,
         VkMemoryPropertyFlags properties,
-        VkImage& image,
-        VkDeviceMemory& imageMemory)
+        VkImage &image,
+        VkDeviceMemory &imageMemory)
     {
         VT_PROFILE_FUNCTION();
         if (vkCreateImage(m_Device, &imageInfo, nullptr, &image) != VK_SUCCESS)
@@ -478,7 +426,7 @@ namespace Velt::Renderer::Vulkan {
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
-        allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
+        allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
 
         if (vkAllocateMemory(m_Device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
         {

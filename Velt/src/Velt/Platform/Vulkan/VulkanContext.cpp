@@ -1,10 +1,11 @@
 #include "vtpch.h"
 #include "VulkanContext.h"
+#include "Core/Application.h"
 #include <SDL3/SDL_vulkan.h>
 
 namespace Velt::Renderer::Vulkan
 {
-	VulkanDevice* VulkanContext::s_Device = nullptr;
+	VulkanDevice* VulkanContext::m_Device = nullptr;
 	
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 		VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -27,9 +28,12 @@ namespace Velt::Renderer::Vulkan
 		return VK_FALSE;
 	}
 
-	VulkanContext::VulkanContext()
+	VulkanContext::VulkanContext() : m_EnableValidationLayers(true)
 	{
 		VT_PROFILE_FUNCTION();
+
+		m_ValidationLayers[0] = {"VK_LAYER_KHRONOS_validation"};
+
 		Init();
 	}
 
@@ -37,16 +41,28 @@ namespace Velt::Renderer::Vulkan
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Initializing Vulkan Context");
-		s_Device = new VulkanDevice();
-		s_Swapchain = new VulkanSwapchain();
+
+		if (m_EnableValidationLayers)
+        {
+            DestroyDebugUtilsMessengerEXT(m_Instance, m_DebugMessenger, nullptr);
+        }
+
+        vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
+        vkDestroyInstance(m_Instance, nullptr);
+
+		m_Device = new VulkanDevice();
+		m_Swapchain = new VulkanSwapchain();
 	}
 
 	void VulkanContext::Shutdown()
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Shutting down Vulkan Context");
-		delete s_Swapchain;
-		delete s_Device;
+		
+		delete m_Swapchain;
+		delete m_Device;
+
+		vkDestroyInstance(m_Instance, nullptr);
 	}
 
 	bool VulkanContext::CheckValidationLayerSupport()
@@ -79,6 +95,21 @@ namespace Velt::Renderer::Vulkan
 
 		return true;
 	}
+
+	void VulkanContext::DestroyDebugUtilsMessengerEXT(
+        VkInstance instance,
+        VkDebugUtilsMessengerEXT debugMessenger,
+        const VkAllocationCallbacks *pAllocator)
+    {
+        VT_PROFILE_FUNCTION();
+        auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
+            instance,
+            "vkDestroyDebugUtilsMessengerEXT");
+        if (func != nullptr)
+        {
+            func(instance, debugMessenger, pAllocator);
+        }
+    }
 
 	void VulkanContext::CreateInstance() 
 	{
@@ -126,7 +157,7 @@ namespace Velt::Renderer::Vulkan
 			createInfo.pNext = nullptr;
 		}
 
-		if (vkCreateInstance(&createInfo, nullptr, &s_Instance) != VK_SUCCESS)
+		if (vkCreateInstance(&createInfo, nullptr, &m_Instance) != VK_SUCCESS)
 		{
 			VT_CORE_ERROR("Failed to create Vulkan instance!");
 		}
@@ -149,39 +180,42 @@ namespace Velt::Renderer::Vulkan
 		createInfo.pUserData = nullptr;  // Optional
 	}
 
-	bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device)
+	void VulkanContext::SetupDebugMessenger()
 	{
 		VT_PROFILE_FUNCTION();
-		QueueFamilyIndices indices = findQueueFamilies(device);
-
-		bool extensionsSupported = m_Device->CheckDeviceExtensionSupport(device);
-
-		bool swapChainAdequate = false;
-		if (extensionsSupported)
-		{
-			SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
-			swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
-		}
-
-		VkPhysicalDeviceFeatures supportedFeatures;
-		vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
-
-		return indices.isComplete() && extensionsSupported && swapChainAdequate &&
-			supportedFeatures.samplerAnisotropy;
-	}
-
-	void VulkanDevice::setupDebugMessenger()
-	{
-		VT_PROFILE_FUNCTION();
-		if (!enableValidationLayers) return;
+		if (!m_EnableValidationLayers) return;
 		VkDebugUtilsMessengerCreateInfoEXT createInfo;
-		populateDebugMessengerCreateInfo(createInfo);
+		PopulateDebugMessengerCreateInfo(createInfo);
 		if (CreateDebugUtilsMessengerEXT(m_Instance, &createInfo, nullptr, &m_DebugMessenger) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to set up debug messenger!");
 			VT_CORE_ERROR("Failed to set up debug messenger!");
 		}
 	}
+
+	VkResult VulkanContext::CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDebugUtilsMessengerEXT *pDebugMessenger)
+    {
+        VT_PROFILE_FUNCTION();
+        auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
+            instance,
+            "vkCreateDebugUtilsMessengerEXT");
+        if (func != nullptr)
+        {
+            return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+        }
+        else
+        {
+            return VK_ERROR_EXTENSION_NOT_PRESENT;
+        }
+    }
+
+	void VulkanContext::CreateSurface()
+    {
+        VT_PROFILE_FUNCTION();
+        auto &window = Velt::Application::Get().GetWindow();
+
+        window.CreateWindowSurface(m_Instance, &m_Surface);
+    }
 
 	void VulkanContext::SDLRequiredInstanceExtensions()
 	{

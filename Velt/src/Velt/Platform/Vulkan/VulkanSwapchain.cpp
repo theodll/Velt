@@ -143,7 +143,7 @@ namespace Velt::Renderer::Vulkan
     {
         VT_PROFILE_FUNCTION();
         VT_PROFILE_FUNCTION();
-        SwapChainSupportDetails swapChainSupport = m_Device->getSwapChainSupport();
+        SwapChainSupportDetails swapChainSupport = m_Device->GetSwapChainSupport();
 
         VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
         VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
@@ -167,7 +167,7 @@ namespace Velt::Renderer::Vulkan
         createInfoVk.imageArrayLayers = 1;
         createInfoVk.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-        QueueFamilyIndices indices = m_Device->findPhysicalQueueFamilies();
+        QueueFamilyIndices indices = m_Device->FindPhysicalQueueFamilies();
         u32 queueFamilyIndices[] = {indices.graphicsFamily, indices.presentFamily};
 
         if (indices.graphicsFamily != indices.presentFamily)
@@ -441,7 +441,7 @@ namespace Velt::Renderer::Vulkan
     VkFormat VulkanSwapchain::findDepthFormat()
     {
         VT_PROFILE_FUNCTION();
-        return m_Device->findSupportedFormat(
+        return m_Device->FindSupportedFormat(
             {VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT},
             VK_IMAGE_TILING_OPTIMAL,
             VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
@@ -458,7 +458,7 @@ namespace Velt::Renderer::Vulkan
 
     void VulkanSwapchain::InitSurface(SDL_Window *windowHandle)
     {
-        VkPhysicalDevice physicalDevice = m_Device->getPhysicalDevice();
+        VkPhysicalDevice physicalDevice = m_Device->GetPhysicalDevice();
 
         // Create surface using SDL instead of GLFW
         if (!SDL_Vulkan_CreateSurface(windowHandle, m_Instance, nullptr, &m_Surface))
@@ -534,7 +534,7 @@ namespace Velt::Renderer::Vulkan
 
     void VulkanSwapchain::FindImageFormatAndColorSpace()
 	{
-		VkPhysicalDevice physicalDevice = m_Device->getPhysicalDevice();
+		VkPhysicalDevice physicalDevice = m_Device->GetPhysicalDevice();
 
 		// Get list of supported surface formats
 		uint32_t formatCount;

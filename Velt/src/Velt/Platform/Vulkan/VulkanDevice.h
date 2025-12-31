@@ -43,14 +43,14 @@ namespace Velt::Renderer::Vulkan {
 		VkQueue graphicsQueue() { return m_GraphicsQueue; }
 		VkQueue presentQueue() { return m_PresentQueue; }
 
-		VkPhysicalDevice getPhysicalDevice() { return m_PhysicalDevice; }
-		VkQueue getGraphicsQueue() { return m_GraphicsQueue; }
-		u32 getQueueFamilyIndex() { return findPhysicalQueueFamilies().graphicsFamily; }
+		VkPhysicalDevice GetPhysicalDevice() { return m_PhysicalDevice; }
+		VkQueue GetGraphicsQueue() { return m_GraphicsQueue; }
+		u32 GetQueueFamilyIndex() { return FindPhysicalQueueFamilies().graphicsFamily; }
 		
-		SwapChainSupportDetails getSwapChainSupport() { return querySwapChainSupport(m_PhysicalDevice); }
-		u32 findMemoryType(u32 typeFilter, VkMemoryPropertyFlags properties);
-		QueueFamilyIndices findPhysicalQueueFamilies() { return findQueueFamilies(m_PhysicalDevice); }
-		VkFormat findSupportedFormat(
+		SwapChainSupportDetails GetSwapChainSupport() { return QuerySwapChainSupport(m_PhysicalDevice); }
+		u32 FindMemoryType(u32 typeFilter, VkMemoryPropertyFlags properties);
+		QueueFamilyIndices FindPhysicalQueueFamilies() { return FindQueueFamilies(m_PhysicalDevice); }
+		VkFormat FindSupportedFormat(
 			const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
 		// Buffer Helper Functions
@@ -75,6 +75,9 @@ namespace Velt::Renderer::Vulkan {
 
 		VkPhysicalDeviceProperties properties;
 
+		bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
+       
+
 	private:
 		void createInstance();
 		void setupDebugMessenger();
@@ -85,10 +88,11 @@ namespace Velt::Renderer::Vulkan {
 
 		// helper functions
 		bool isDeviceSuitable(VkPhysicalDevice device);
-		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-		SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
-
+		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
+		SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
 		
+		VkInstance& m_Instance;
+
 		VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
 		VkCommandPool m_CommandPool;
 
