@@ -16,10 +16,9 @@ namespace Velt::Renderer::Vulkan {
 
     struct SwapchainCreateInfo 
     {
-        SwapchainExtent extent;
+        u32 Width;
+        u32 Height;
         bool VSync; 
-        VkInstance Instance; 
-        VulkanDevice Device;
     };
 
 	struct SwapchainCommandBuffer

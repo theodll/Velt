@@ -79,9 +79,6 @@ namespace Velt::Renderer::Vulkan {
        
 
 	private:
-		void createInstance();
-		void setupDebugMessenger();
-		void createSurface();
 		void pickPhysicalDevice();
 		void createLogicalDevice();
 		void createCommandPool();
@@ -97,7 +94,7 @@ namespace Velt::Renderer::Vulkan {
 		VkCommandPool m_CommandPool;
 
 		VkDevice m_Device;
-		VkSurfaceKHR m_Surface;
+		VkSurfaceKHR& m_Surface;
 		VkQueue m_GraphicsQueue;
 		VkQueue m_PresentQueue;
 

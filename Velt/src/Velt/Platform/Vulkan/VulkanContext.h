@@ -11,7 +11,7 @@
 namespace Velt::Renderer::Vulkan
 {
 
-	class VELT_API VulkanContext : public RendererContext
+	class VELT_API VulkanContext : public Context
 	{
 	public:
 		VulkanContext();
@@ -24,7 +24,6 @@ namespace Velt::Renderer::Vulkan
 		static VkInstance& GetInstance() { return m_Instance; }
 		static VkSurfaceKHR& GetSurface() { return m_Surface; }
 
-		static std::vector<const char*> GetValidationLayers();
 
 
 	private:
@@ -40,13 +39,16 @@ namespace Velt::Renderer::Vulkan
 		VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo, const VkAllocationCallbacks *pAllocator, VkDebugUtilsMessengerEXT *pDebugMessenger);
 		void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
 
-		static std::vector<const char*> m_ValidationLayers;
-
 		VkDebugUtilsMessengerEXT m_DebugMessenger;
 		static VkInstance m_Instance; 
 		static VulkanDevice* m_Device;
 		static VkSurfaceKHR m_Surface;
 		VulkanSwapchain* m_Swapchain;
+
+		const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
+		
+
+
 		
 	};
 }

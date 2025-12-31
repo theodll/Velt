@@ -47,6 +47,7 @@ namespace Velt {
 		m_WindowProps.m_Title = TITLE;
 		
 		m_Window = std::unique_ptr<Window>(Window::Create(m_WindowProps));
+		m_Context = std::unique_ptr<Renderer::Context>(Renderer::Context::Create());
 	}
 
 	Application::~Application()

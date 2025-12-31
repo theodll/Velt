@@ -3,9 +3,12 @@
 #include "Core/Application.h"
 #include <SDL3/SDL_vulkan.h>
 
+
 namespace Velt::Renderer::Vulkan
 {
 	VulkanDevice* VulkanContext::m_Device = nullptr;
+	VkInstance VulkanContext::m_Instance; 
+	VkSurfaceKHR VulkanContext::m_Surface;
 	
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 		VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -32,7 +35,6 @@ namespace Velt::Renderer::Vulkan
 	{
 		VT_PROFILE_FUNCTION();
 
-		m_ValidationLayers[0] = {"VK_LAYER_KHRONOS_validation"};
 
 		Init();
 	}
@@ -42,16 +44,21 @@ namespace Velt::Renderer::Vulkan
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Initializing Vulkan Context");
 
-		if (m_EnableValidationLayers)
-        {
-            DestroyDebugUtilsMessengerEXT(m_Instance, m_DebugMessenger, nullptr);
-        }
+		auto window = Application::Get().GetWindow();
 
-        vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
-        vkDestroyInstance(m_Instance, nullptr);
+		CreateInstance();
+		SetupDebugMessenger();
+		CreateSurface();
 
 		m_Device = new VulkanDevice();
 		m_Swapchain = new VulkanSwapchain();
+
+		SwapchainCreateInfo createInfo;
+
+		createInfo.VSync = true; 
+		createInfo.Width = 
+
+		m_Swapchain->Init(createInfo);
 	}
 
 	void VulkanContext::Shutdown()
@@ -59,9 +66,15 @@ namespace Velt::Renderer::Vulkan
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Shutting down Vulkan Context");
 		
+		if (m_EnableValidationLayers)
+		{
+			DestroyDebugUtilsMessengerEXT(m_Instance, m_DebugMessenger, nullptr);
+		}
+
 		delete m_Swapchain;
 		delete m_Device;
 
+		vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
 		vkDestroyInstance(m_Instance, nullptr);
 	}
 
@@ -165,7 +178,7 @@ namespace Velt::Renderer::Vulkan
 		SDLRequiredInstanceExtensions();
 	}
 
-	void PopulateDebugMessengerCreateInfo(
+	void VulkanContext::PopulateDebugMessengerCreateInfo(
 		VkDebugUtilsMessengerCreateInfoEXT& createInfo)
 	{
 		VT_PROFILE_FUNCTION();

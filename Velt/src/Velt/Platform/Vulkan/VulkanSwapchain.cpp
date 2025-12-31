@@ -10,8 +10,9 @@ namespace Velt::Renderer::Vulkan
     void VulkanSwapchain::Init(SwapchainCreateInfo &createInfo)
     {
         VT_PROFILE_FUNCTION();
-
-        m_Instance = createInfo.Instance;
+        VT_CORE_TRACE("Swapchain Created");
+        Create(createInfo);
+        m_Instance = VulkanContext::GetInstance();
     }
 
     void VulkanSwapchain::Destroy()

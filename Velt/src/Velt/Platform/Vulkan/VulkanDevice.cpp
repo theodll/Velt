@@ -12,10 +12,12 @@ namespace Velt::Renderer::Vulkan
 
 
 
-    VulkanDevice::VulkanDevice() : m_Instance(VulkanContext::GetInstance())
+    VulkanDevice::VulkanDevice() : m_Instance(VulkanContext::GetInstance()), m_Surface(VulkanContext::GetSurface())
     {
         VT_PROFILE_FUNCTION();
         VT_CORE_INFO("Creating VulkanDevice...");
+
+       
 
         pickPhysicalDevice();
         createLogicalDevice();
@@ -98,7 +100,8 @@ namespace Velt::Renderer::Vulkan
 
         // might not really be necessary anymore because device specific validation layers
         // have been deprecated
-        std::vector<const char*> validationLayers = VulkanContext::GetValidationLayers();
+		std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
+	
         if (!validationLayers.empty())
         {
             createInfo.enabledLayerCount = static_cast<u32>(validationLayers.size());
@@ -180,7 +183,7 @@ namespace Velt::Renderer::Vulkan
                 indices.graphicsFamilyHasValue = true;
             }
             VkBool32 presentSupport = false;
-            vkGetPhysicalDeviceSurfaceSupportKHR(device, i, m_Surface, &presentSupport);
+            vkGetPhysicalDeviceSurfaceSupportKHR(device, i, VulkanContext::GetSurface(), &presentSupport);
             if (queueFamily.queueCount > 0 && presentSupport)
             {
                 indices.presentFamily = i;
