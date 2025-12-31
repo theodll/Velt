@@ -31,8 +31,8 @@ namespace Velt::Renderer
 		static void requestShutdown();
 		static void Shutdown();
 
-		// static void BeginRenderPass(Ref<RenderCommandBuffer> renderCommandbuffer, Ref<RenderPass> renderPass, bool explicitClear = false);
-		// static void EndRenderPass(Ref<RenderCommandBuffer> renderCommandbuffer);
+		static void BeginRenderPass(Ref<VkCommandBuffer> renderCommandbuffer, Ref<VkRenderPass> renderPass, bool explicitClear = false);
+		static void EndRenderPass(Ref<VkCommandBuffer> renderCommandbuffer);
 
 		inline static RendererAPI GetAPI() { return s_API; };
 

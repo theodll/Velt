@@ -8,26 +8,7 @@ namespace Velt::Renderer::Vulkan {
 
     class Application;
 
-    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
-        VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-        VkDebugUtilsMessageTypeFlagsEXT messageType,
-        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-        void* pUserData)
-    {
-        VT_PROFILE_FUNCTION();
 
-        auto coreLogger = ::Velt::Log::GetCoreLogger();
-        if (coreLogger && coreLogger.get() != nullptr)
-        {
-            VT_CORE_ERROR("validation layer: {}", pCallbackData->pMessage);
-        }
-        else
-        {
-            std::cerr << "[VULKAN VALIDATION]: " << pCallbackData->pMessage << std::endl;
-        }
-
-        return VK_FALSE;
-    }
 
     VkResult CreateDebugUtilsMessengerEXT(
         VkInstance instance,
@@ -68,8 +49,7 @@ namespace Velt::Renderer::Vulkan {
     {
         VT_PROFILE_FUNCTION();
         VT_CORE_INFO("Creating VulkanDevice...");
-        createInstance();
-        setupDebugMessenger();
+        
         createSurface();
         pickPhysicalDevice();
         createLogicalDevice();
@@ -93,60 +73,7 @@ namespace Velt::Renderer::Vulkan {
         vkDestroyInstance(m_Instance, nullptr);
     }
 
-    void VulkanDevice::createInstance()
-    {
-        VT_PROFILE_FUNCTION();
-        if (enableValidationLayers && !checkValidationLayerSupport())
-        {
-            throw std::runtime_error("validation layers requested, but not available!");
-            VT_CORE_ERROR("Validation layers requested, but not available!");
-        }
 
-        VkApplicationInfo appInfo = {};
-        appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-        appInfo.pApplicationName = "Velt App";
-        appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-        appInfo.pEngineName = "Velt";
-        appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-        appInfo.apiVersion = VK_API_VERSION_1_0;
-
-        VkInstanceCreateInfo createInfo = {};
-        createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-        createInfo.pApplicationInfo = &appInfo;
-
-
-#ifdef VT_PLATFORM_OSX
-        createInfo.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
-#endif
-
-
-        auto extensions = getRequiredExtensions();
-        createInfo.enabledExtensionCount = static_cast<u32>(extensions.size());
-        createInfo.ppEnabledExtensionNames = extensions.data();
-
-        VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-        if (enableValidationLayers)
-        {
-            createInfo.enabledLayerCount = static_cast<u32>(validationLayers.size());
-            createInfo.ppEnabledLayerNames = validationLayers.data();
-
-            populateDebugMessengerCreateInfo(debugCreateInfo);
-            createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
-        }
-        else
-        {
-            createInfo.enabledLayerCount = 0;
-            createInfo.pNext = nullptr;
-        }
-
-        if (vkCreateInstance(&createInfo, nullptr, &m_Instance) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to create instance!");
-            VT_CORE_ERROR("Failed to create Vulkan instance!");
-        }
-
-        hasSDLRequiredInstanceExtensions();
-    }
 
     void VulkanDevice::pickPhysicalDevice()
     {
@@ -308,117 +235,7 @@ namespace Velt::Renderer::Vulkan {
             VT_CORE_ERROR("Failed to set up debug messenger!");
         }
     }
-
-    bool VulkanDevice::checkValidationLayerSupport()
-    {
-        VT_PROFILE_FUNCTION();
-        u32 layerCount;
-        vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-
-        std::vector<VkLayerProperties> availableLayers(layerCount);
-        vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-
-        for (const char* layerName : validationLayers)
-        {
-            bool layerFound = false;
-
-            for (const auto& layerProperties : availableLayers)
-            {
-                if (strcmp(layerName, layerProperties.layerName) == 0)
-                {
-                    layerFound = true;
-                    break;
-                }
-            }
-
-            if (!layerFound)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    std::vector<const char*> VulkanDevice::getRequiredExtensions()
-    {
-        VT_PROFILE_FUNCTION();
-        // Get SDL3 required Vulkan instance extensions
-        u32 sdlExtensionCount = 0;
-        const char* const* sdlExtensions = SDL_Vulkan_GetInstanceExtensions(&sdlExtensionCount);
-
-        std::vector<const char*> extensions;
-        if (sdlExtensions != nullptr && sdlExtensionCount > 0)
-        {
-            extensions.assign(sdlExtensions, sdlExtensions + sdlExtensionCount);
-        }
-
-#ifdef VT_PLATFORM_OSX
-        extensions.push_back("VK_KHR_portability_enumeration");
-#endif
-
-        extensions.push_back("VK_KHR_get_physical_device_properties2");
-
-        if (enableValidationLayers)
-        {
-            extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-        }
-
-        return extensions;
-    }
-
-    void VulkanDevice::hasSDLRequiredInstanceExtensions()
-    {
-        VT_PROFILE_FUNCTION();
-        u32 extensionCount = 0;
-        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-        std::vector<VkExtensionProperties> extensions(extensionCount);
-        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
-
-        VT_CORE_INFO("Available Vulkan extensions: ");
-        std::unordered_set<std::string> available;
-        for (const auto& extension : extensions)
-        {
-            VT_CORE_INFO("\t {}", extension.extensionName);
-            available.insert(extension.extensionName);
-        }
-
-        VT_CORE_INFO("Required Vulkan extensions: ");
-        auto requiredExtensions = getRequiredExtensions();
-        for (const auto& required : requiredExtensions)
-        {
-            VT_CORE_INFO("\t {}", required);
-            if (available.find(required) == available.end())
-            {
-                throw std::runtime_error("Missing required SDL extension");
-                VT_CORE_ERROR("Missing required SDL extension: {}", required);
-            }
-        }
-    }
-
-    bool VulkanDevice::checkDeviceExtensionSupport(VkPhysicalDevice device)
-    {
-        VT_PROFILE_FUNCTION();
-        u32 extensionCount;
-        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
-
-        std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-        vkEnumerateDeviceExtensionProperties(
-            device,
-            nullptr,
-            &extensionCount,
-            availableExtensions.data());
-
-        std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
-
-        for (const auto& extension : availableExtensions)
-        {
-            requiredExtensions.erase(extension.extensionName);
-        }
-
-        return requiredExtensions.empty();
-    }
-
+   
     QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice device)
     {
         VT_PROFILE_FUNCTION();

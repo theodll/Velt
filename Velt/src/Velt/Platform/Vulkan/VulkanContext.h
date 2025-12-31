@@ -19,15 +19,23 @@ namespace Velt::Renderer::Vulkan
 		virtual void Init() override;
 		virtual void Shutdown() override;
 
+		void CreateInstance();
 		static VulkanDevice* GetDevice() { return s_Device; }
 		static VkInstance GetInstance() { return s_Instance; }
 
 	private:
+		bool m_EnableValidationLayers; 
+		void SDLRequiredInstanceExtensions();
+		std::vector<const char*> GetRequiredExtensions();
+		bool CheckValidationLayerSupport();
+		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 
+		const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
+
+		VkInstance m_Instance;
+		VkDebugUtilsMessengerEXT m_DebugMessenger;
 		inline static VkInstance s_Instance; 
-
 		static VulkanDevice* s_Device;
-		
 		VulkanSwapchain* s_Swapchain;
 		
 	};
