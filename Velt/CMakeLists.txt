@@ -19,8 +19,6 @@ add_library(Velt SHARED
         "src/Velt/Platform/Vulkan/VulkanSwapchain.h"
         "src/Velt/Renderer/Renderer.h"
         "src/Velt/Renderer/Renderer.cpp"
-        "src/Velt/Platform/Vulkan/VulkanModel.cpp"
-        "src/Velt/Platform/Vulkan/VulkanModel.h"
         "src/vtpch.cpp"
         "src/vtpch.h"
         "src/Velt/Layers/Layer.cpp"
@@ -40,7 +38,7 @@ add_library(Velt SHARED
         "src/Velt/Platform/Vulkan/VulkanFramebuffer.h"
         "src/Velt/Renderer/RenderContext.h"
         "src/Velt/Renderer/RenderContext.cpp"
-        "src/Velt/Renderer/RendererAPI.h"
+        "src/Velt/Renderer/RenderAPI.h"
         "src/Velt/Renderer/Pipeline.h"
         "src/Velt/Renderer/Pipeline.cpp"  
         "src/Velt/Platform/Vulkan/VulkanRenderer.h" 
@@ -60,11 +58,15 @@ add_library(Velt SHARED
         "src/Velt/Renderer/IndexBuffer.cpp"
         "src/Velt/Renderer/VertexBuffer.h"
         "src/Velt/Renderer/VertexBuffer.cpp"
+        "src/Velt/Renderer/Buffer.h"
+        "src/Velt/Renderer/Buffer.cpp"
         "src/Velt/Core/Window.h"
         "src/Velt/Platform/Windows/WindowsWindow.h"
         "src/Velt/Platform/Windows/WindowsWindow.cpp"
         "src/Velt/Platform/Vulkan/VulkanRenderAPI.h"
         "src/Velt/Platform/Vulkan/VulkanRenderAPI.cpp"
+        "src/Velt/Renderer/RenderAPI.h"
+        "src/Velt/Renderer/RenderAPI.cpp"
 )
 
 if(WIN32 OR UNIX)

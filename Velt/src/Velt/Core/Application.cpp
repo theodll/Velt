@@ -147,7 +147,13 @@ namespace Velt {
 
 			RenderImGui();
 
-			VT_PROFILE_SCOPE("Renderer drawFrame");
+			{
+				VT_PROFILE_SCOPE("Renderer drawFrame");
+				if (m_Context)
+				{
+					m_Context->DrawFrame();
+				}
+			}
 
 
 			if (s_ShutdownRequested)

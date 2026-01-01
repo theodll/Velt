@@ -1,3 +1,4 @@
+#include "vtpch.h"
 #include "Buffer.h"
 
 namespace Velt::Renderer 
@@ -12,6 +13,6 @@ namespace Velt::Renderer
 			offset += element.Size;
 			m_Stride += element.Size;
 		}
-	};
+	}
 
 }

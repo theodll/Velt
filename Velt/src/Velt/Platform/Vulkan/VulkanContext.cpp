@@ -44,7 +44,7 @@ namespace Velt::Renderer::Vulkan
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Initializing Vulkan Context");
 
-		auto& window = Application::Get().GetWindow();
+		auto& window = ::Velt::Application::Get().GetWindow();
 
 		CreateInstance();
 		SetupDebugMessenger();
@@ -60,12 +60,17 @@ namespace Velt::Renderer::Vulkan
 		createInfo.Height = window.getHeight(); 
 
 		m_Swapchain->Init(createInfo);
+		
+		m_Renderer = new VulkanRenderer();
+		m_Renderer->Init(*m_Swapchain);
 	}
 
 	void VulkanContext::Shutdown()
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Shutting down Vulkan Context");
+		
+		delete m_Renderer;
 		
 		if (m_EnableValidationLayers)
 		{
@@ -77,6 +82,16 @@ namespace Velt::Renderer::Vulkan
 
 		vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
 		vkDestroyInstance(m_Instance, nullptr);
+	}
+
+	void VulkanContext::DrawFrame()
+	{
+		VT_PROFILE_FUNCTION();
+		
+		if (m_Renderer && m_Swapchain)
+		{
+			m_Renderer->DrawFrame(*m_Swapchain);
+		}
 	}
 
 	bool VulkanContext::CheckValidationLayerSupport()

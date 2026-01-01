@@ -6,6 +6,7 @@
 #include "Velt/Renderer/RenderContext.h"
 #include "Velt/Platform/Vulkan/VulkanSwapchain.h"
 #include "Velt/Platform/Vulkan/VulkanPipeline.h"
+#include "Velt/Platform/Vulkan/VulkanRenderer.h"
 
 
 namespace Velt::Renderer::Vulkan
@@ -18,12 +19,15 @@ namespace Velt::Renderer::Vulkan
 		virtual ~VulkanContext() = default;
 		virtual void Init() override;
 		virtual void Shutdown() override;
+		virtual void DrawFrame() override;
 
 		void CreateInstance();
+		
 		static VulkanDevice& GetDevice() { return *m_Device; }
 		static VkInstance& GetInstance() { return m_Instance; }
 		static VkSurfaceKHR& GetSurface() { return m_Surface; }
-
+		
+		VulkanSwapchain* GetSwapchain() { return m_Swapchain; }
 
 
 	private:
@@ -44,6 +48,7 @@ namespace Velt::Renderer::Vulkan
 		static VulkanDevice* m_Device;
 		static VkSurfaceKHR m_Surface;
 		VulkanSwapchain* m_Swapchain;
+		VulkanRenderer* m_Renderer = nullptr;
 
 		const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 		

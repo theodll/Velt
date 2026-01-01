@@ -40,6 +40,8 @@ namespace Velt::Renderer::Vulkan
 
 			PipelineSpecification& GetSpecification() override { return m_Specification;  };
 			const PipelineSpecification& GetSpecification() const override { return m_Specification; };
+			
+			VulkanPipelineConfigInfo& GetConfigInfo() { return m_ConfigInfo; }
 
 		private:
 			static std::vector<char> ReadFile(const std::string& filepath);
@@ -53,6 +55,9 @@ namespace Velt::Renderer::Vulkan
 			VkShaderModule m_FragmentShaderModule;
 		};
 }
+
+
+
 
 
 

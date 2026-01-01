@@ -30,6 +30,7 @@ namespace Velt::Renderer::Vulkan
 
 
         u32 GetVertexCount() const { return m_VertexCount; }
+        VkBuffer GetBuffer() const { return m_VertexBuffer; }
 
     private:
         void CreateBuffer(const void* data);

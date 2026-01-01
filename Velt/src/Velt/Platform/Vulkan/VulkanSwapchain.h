@@ -59,6 +59,9 @@ namespace Velt::Renderer::Vulkan {
 
         void BeginFrame();
         void Present(); 
+        
+        u32 AcquireNextImage();
+        u32 SubmitCommandBuffers(const VkCommandBuffer* buffers, u32* imageIndex);
 
         inline u32 GetWidth() const { return m_WindowExtent.width; }
 		inline u32 GetHeight() const { return m_WindowExtent.height; }
@@ -84,9 +87,6 @@ namespace Velt::Renderer::Vulkan {
         VkFormat findDepthFormat();
         
     private:
-		u32 AcquireNextImage();
-        u32 SubmitCommandBuffers(const VkCommandBuffer* buffers, u32* imageIndex);
-
         VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
         VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
         VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);

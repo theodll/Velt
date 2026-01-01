@@ -67,15 +67,14 @@ namespace Velt::Renderer
 	class VELT_API BufferLayout
 	{
 	public:
-		BufferLayout(std::initializer_list<BufferElement>& element)
+		BufferLayout(std::initializer_list<BufferElement> element)
 			: m_Elements(element)
 		{
-			void CalculateOffsetAndStride();	
+			CalculateOffsetAndStride();	
 		};
 
 		BufferLayout()
 		{
-			void CalculateOffsetAndStride(); 
 		};
 
 		inline const std::vector<BufferElement>& GetElements() const { return m_Elements; }
@@ -84,10 +83,13 @@ namespace Velt::Renderer
 
 		std::vector<BufferElement>::iterator begin() {  return m_Elements.begin(); }
 		std::vector<BufferElement>::iterator end() {	return m_Elements.end(); }
+		
+		std::vector<BufferElement>::const_iterator begin() const {  return m_Elements.begin(); }
+		std::vector<BufferElement>::const_iterator end() const {	return m_Elements.end(); }
 
 	private:
 		void CalculateOffsetAndStride();
 		std::vector<BufferElement> m_Elements;
-		u64 m_Stride;
+		u64 m_Stride = 0;
 	};
 }

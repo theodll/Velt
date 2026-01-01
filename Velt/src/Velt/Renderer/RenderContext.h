@@ -11,6 +11,7 @@ namespace Velt::Renderer
 
 		virtual void Init() = 0;
 		virtual void Shutdown() = 0;
+		virtual void DrawFrame() = 0;
 
 		static Context* Create();
 	};
