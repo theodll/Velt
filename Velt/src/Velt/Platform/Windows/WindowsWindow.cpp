@@ -2,6 +2,7 @@
 #include "Core/Application.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_vulkan.h>
+#include "Velt/Renderer/Renderer.h"
 
 namespace Velt 
 {
@@ -15,6 +16,11 @@ namespace Velt
 
 namespace Velt::Windows
 {
+
+	void* WindowsWindow::GetNativeHandle() const
+	{
+		return m_Window;
+	}
 
 	static bool s_SDLInitialized = false;
 
@@ -87,26 +93,26 @@ namespace Velt::Windows
 		VT_PROFILE_FUNCTION();
 	}
 
-	void WindowsWindow::setVsync(bool enable) const
+	void WindowsWindow::setVsync(bool enable)
 	{
 		VT_PROFILE_FUNCTION();
 	
 		m_Data.m_bVsync = enable;
 	}
 
-	void WindowsWindow::setResizable(bool enable) const
+	void WindowsWindow::setResizable(bool enable)
 	{
 		VT_PROFILE_FUNCTION();
 	}
 
-	void WindowsWindow::createWindowSurface(void* instance, void* surface)
+	void WindowsWindow::CreateWindowSurface(void* instance, void* surface)
 	{
 		VT_PROFILE_FUNCTION();
 
 		switch (Renderer::Renderer::GetAPI())
 		{
 		case Renderer::RendererAPI::Vulkan:
-			if (!SDL_Vulkan_CreateSurface(static_cast<SDL_Window*>(Aplication::Get.getWindow.GetNativeHandle()), static_cast<VkInstance>(instance), nullptr, static_cast<VkSurfaceKHR*>(surface)))
+			if (!SDL_Vulkan_CreateSurface(static_cast<SDL_Window*>(Application::Get().GetWindow().GetNativeHandle()), static_cast<VkInstance>(instance), nullptr, static_cast<VkSurfaceKHR*>(surface)))
 			{
 				VT_CORE_ERROR("Failed to create window surface: {}", SDL_GetError());
 			}

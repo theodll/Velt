@@ -5,6 +5,7 @@
 
 #include "VulkanContext.h"
 #include "VulkanDevice.h"
+#include "Renderer/Buffer.h"
 
 #include <vulkan/vulkan.h>
 
@@ -19,8 +20,8 @@ namespace Velt::Renderer::Vulkan
             VkDeviceSize vertexStride
         );
 
-        virtual void setLayout(const BufferLayout& layout) override {m_Layout = layout;};
-        virtual BufferLayout getLayout() const override {return m_Layout;};
+        // virtual void setLayout(const BufferLayout& layout) override {m_Layout = layout;};
+        //virtual BufferLayout getLayout() const override {return m_Layout;};
 
         virtual ~VulkanVertexBuffer() override;
 
@@ -34,12 +35,12 @@ namespace Velt::Renderer::Vulkan
         void CreateBuffer(const void* data);
 
     private:
-        VulkanDevice* m_Device = VulkanContext::getDevice();        
+        VulkanDevice& m_Device = VulkanContext::GetDevice();        
 
         VkBuffer m_VertexBuffer = VK_NULL_HANDLE;
         VkDeviceMemory m_VertexBufferMemory = VK_NULL_HANDLE;
 
-        BufferLayout m_Layout;
+        // BufferLayout m_Layout;
 
         u32 m_VertexCount = 0;
         VkDeviceSize m_VertexStride = 0;

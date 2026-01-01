@@ -1,3 +1,6 @@
+/*
+
+
 #include "vtpch.h"
 #include "ImGuiRenderer.h"
 #include "Velt/Core/Log.h"
@@ -60,10 +63,10 @@ namespace Velt {
 		init_info.Queue = m_Device->getGraphicsQueue();
 		init_info.DescriptorPool = m_DescriptorPool;
 		init_info.MinImageCount = 2;
-		init_info.ImageCount = m_Swapchain->imageCount();
-		init_info.PipelineInfoMain.RenderPass = m_Swapchain->getRenderPass();
+		init_info.ImageCount = m_Swapchain->GetImageCount();
+		init_info.PipelineInfoMain.RenderPass = m_Swapchain->GetRenderPass();
 
-		if (!ImGui_ImplVulkan_InitInfo(&init_info))
+		if (!ImGui_ImplVulkan_Init(&init_info))
 		{
 			VT_CORE_ERROR("Failed to initialize ImGui Vulkan backend!");
 			throw std::runtime_error("Failed to initialize ImGui Vulkan backend!");
@@ -78,7 +81,7 @@ namespace Velt {
 	void ImGuiRenderer::Shutdown()
 	{
 		VT_PROFILE_FUNCTION();
-		ImGui_ImplVulkan_InitInfo();
+		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplSDL3_Shutdown();
 		
 		if (m_DescriptorPool != nullptr)
@@ -95,7 +98,7 @@ namespace Velt {
 	{
 		VT_PROFILE_FUNCTION();
 		ImGui_ImplSDL3_NewFrame();
-		ImGui_ImplVulkan_InitInfo();
+		ImGui_ImplVulkan_NewFrame();
 		ImGui::NewFrame();
 	}
 
@@ -126,3 +129,4 @@ namespace Velt {
 		}
 	}
 }
+*/ 

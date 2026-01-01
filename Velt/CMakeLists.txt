@@ -11,8 +11,6 @@ add_library(Velt SHARED
         "src/Velt/Events/Event.h"
         "src/Velt/Events/KeyEvent.h"
         "src/Velt/Events/MouseEvent.h"
-        
-        
         "src/Velt/Platform/Vulkan/VulkanPipeline.h"
         "src/Velt/Platform/Vulkan/VulkanPipeline.cpp"
         "src/Velt/Platform/Vulkan/VulkanDevice.cpp"
@@ -36,8 +34,6 @@ add_library(Velt SHARED
         "src/Velt/ImGui/Widgets/DemoWidget.h"
         "src/Velt/ImGui/Widgets/DemoWidget.cpp" 
         "src/Velt/Utils/Profiling/Instrumentor.h"
-        "src/Velt/Platform/Vulkan/VulkanGameObject.cpp"
-        "src/Velt/Platform/Vulkan/VulkanGameObject.h"
         "src/Velt/Renderer/Framebuffer.h"
         "src/Velt/Renderer/Framebuffer.cpp"
         "src/Velt/Platform/Vulkan/VulkanFramebuffer.cpp"
@@ -45,19 +41,14 @@ add_library(Velt SHARED
         "src/Velt/Renderer/RenderContext.h"
         "src/Velt/Renderer/RenderContext.cpp"
         "src/Velt/Renderer/RendererAPI.h"
-        "src/Velt/Renderer/GameObject.h"
-        "src/Velt/Renderer/GameObject.cpp"
         "src/Velt/Renderer/Model.h" 
         "src/Velt/Renderer/Model.cpp"
         "src/Velt/Renderer/Pipeline.h"
-        "src/Velt/Renderer/Pipeline.cpp" 
-        "src/Velt/Platform/Vulkan/VulkanRenderPass.h" 
-        "src/Velt/Platform/Vulkan/VulkanRenderPass.cpp" 
-        "src/Velt/Renderer/RenderPass.cpp" 
-        "src/Velt/Renderer/RenderPass.h" 
+        "src/Velt/Renderer/Pipeline.cpp"  
         "src/Velt/Platform/Vulkan/VulkanRenderer.h" 
         "src/Velt/Platform/Vulkan/VulkanRenderer.cpp" 
         "src/Velt/Platform/Vulkan/VulkanContext.h" 
+        "src/Velt/Platform/Vulkan/VulkanContext.cpp" 
         "src/Velt/Renderer/RenderCommandBuffer.h"
         "src/Velt/Renderer/RenderCommandBuffer.cpp" 
         "Velt.h" 
@@ -71,6 +62,7 @@ add_library(Velt SHARED
         "src/Velt/Renderer/IndexBuffer.cpp"
         "src/Velt/Renderer/VertexBuffer.h"
         "src/Velt/Renderer/VertexBuffer.cpp"
+        
 
  "src/Velt/Core/Window.h" "src/Velt/Platform/Windows/WindowsWindow.h" "src/Velt/Platform/Windows/WindowsWindow.cpp")
 

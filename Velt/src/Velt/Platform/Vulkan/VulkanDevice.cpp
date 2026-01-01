@@ -2,72 +2,23 @@
 #include "VulkanDevice.h"
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_vulkan.h>
+#include "Core/Application.h"
+#include "VulkanContext.h"
 
-namespace Velt::Renderer::Vulkan {
+namespace Velt::Renderer::Vulkan
+{
 
-    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
-        VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-        VkDebugUtilsMessageTypeFlagsEXT messageType,
-        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-        void* pUserData)
+    class Application;
+
+
+
+    VulkanDevice::VulkanDevice() : m_Instance(VulkanContext::GetInstance()), m_Surface(VulkanContext::GetSurface())
     {
         VT_PROFILE_FUNCTION();
+        VT_CORE_TRACE("Creating VulkanDevice...");
 
-        auto coreLogger = ::Velt::Log::GetCoreLogger();
-        if (coreLogger && coreLogger.get() != nullptr)
-        {
-            VT_CORE_ERROR("validation layer: {}", pCallbackData->pMessage);
-        }
-        else
-        {
-            std::cerr << "[VULKAN VALIDATION]: " << pCallbackData->pMessage << std::endl;
-        }
+       
 
-        return VK_FALSE;
-    }
-
-    VkResult CreateDebugUtilsMessengerEXT(
-        VkInstance instance,
-        const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
-        const VkAllocationCallbacks* pAllocator,
-        VkDebugUtilsMessengerEXT* pDebugMessenger)
-    {
-        VT_PROFILE_FUNCTION();
-        auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
-            instance,
-            "vkCreateDebugUtilsMessengerEXT");
-        if (func != nullptr)
-        {
-            return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
-        }
-        else
-        {
-            return VK_ERROR_EXTENSION_NOT_PRESENT;
-        }
-    }
-
-    void DestroyDebugUtilsMessengerEXT(
-        VkInstance instance,
-        VkDebugUtilsMessengerEXT debugMessenger,
-        const VkAllocationCallbacks* pAllocator)
-    {
-        VT_PROFILE_FUNCTION();
-        auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
-            instance,
-            "vkDestroyDebugUtilsMessengerEXT");
-        if (func != nullptr)
-        {
-            func(instance, debugMessenger, pAllocator);
-        }
-    }
-
-    VulkanDevice::VulkanDevice()
-    {
-        VT_PROFILE_FUNCTION();
-        VT_CORE_INFO("Creating VulkanDevice...");
-        createInstance();
-        setupDebugMessenger();
-        createSurface();
         pickPhysicalDevice();
         createLogicalDevice();
         createCommandPool();
@@ -81,68 +32,6 @@ namespace Velt::Renderer::Vulkan {
         vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
         vkDestroyDevice(m_Device, nullptr);
 
-        if (enableValidationLayers)
-        {
-            DestroyDebugUtilsMessengerEXT(m_Instance, m_DebugMessenger, nullptr);
-        }
-
-        vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
-        vkDestroyInstance(m_Instance, nullptr);
-    }
-
-    void VulkanDevice::createInstance()
-    {
-        VT_PROFILE_FUNCTION();
-        if (enableValidationLayers && !checkValidationLayerSupport())
-        {
-            throw std::runtime_error("validation layers requested, but not available!");
-            VT_CORE_ERROR("Validation layers requested, but not available!");
-        }
-
-        VkApplicationInfo appInfo = {};
-        appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-        appInfo.pApplicationName = "Velt App";
-        appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-        appInfo.pEngineName = "Velt";
-        appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-        appInfo.apiVersion = VK_API_VERSION_1_0;
-
-        VkInstanceCreateInfo createInfo = {};
-        createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-        createInfo.pApplicationInfo = &appInfo;
-
-
-#ifdef VT_PLATFORM_OSX
-        createInfo.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
-#endif
-
-
-        auto extensions = getRequiredExtensions();
-        createInfo.enabledExtensionCount = static_cast<u32>(extensions.size());
-        createInfo.ppEnabledExtensionNames = extensions.data();
-
-        VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-        if (enableValidationLayers)
-        {
-            createInfo.enabledLayerCount = static_cast<u32>(validationLayers.size());
-            createInfo.ppEnabledLayerNames = validationLayers.data();
-
-            populateDebugMessengerCreateInfo(debugCreateInfo);
-            createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
-        }
-        else
-        {
-            createInfo.enabledLayerCount = 0;
-            createInfo.pNext = nullptr;
-        }
-
-        if (vkCreateInstance(&createInfo, nullptr, &m_Instance) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to create instance!");
-            VT_CORE_ERROR("Failed to create Vulkan instance!");
-        }
-
-        hasSDLRequiredInstanceExtensions();
     }
 
     void VulkanDevice::pickPhysicalDevice()
@@ -159,7 +48,7 @@ namespace Velt::Renderer::Vulkan {
         std::vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
 
-        for (const auto& device : devices)
+        for (const auto &device : devices)
         {
             if (isDeviceSuitable(device))
             {
@@ -180,10 +69,10 @@ namespace Velt::Renderer::Vulkan {
     void VulkanDevice::createLogicalDevice()
     {
         VT_PROFILE_FUNCTION();
-        QueueFamilyIndices indices = findQueueFamilies(m_PhysicalDevice);
+        QueueFamilyIndices indices = FindQueueFamilies(m_PhysicalDevice);
 
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-        std::set<u32> uniqueQueueFamilies = { indices.graphicsFamily, indices.presentFamily };
+        std::set<u32> uniqueQueueFamilies = {indices.graphicsFamily, indices.presentFamily};
 
         float queuePriority = 1.0f;
         for (u32 queueFamily : uniqueQueueFamilies)
@@ -211,7 +100,9 @@ namespace Velt::Renderer::Vulkan {
 
         // might not really be necessary anymore because device specific validation layers
         // have been deprecated
-        if (enableValidationLayers)
+		std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
+	
+        if (!validationLayers.empty())
         {
             createInfo.enabledLayerCount = static_cast<u32>(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
@@ -234,7 +125,7 @@ namespace Velt::Renderer::Vulkan {
     void VulkanDevice::createCommandPool()
     {
         VT_PROFILE_FUNCTION();
-        QueueFamilyIndices queueFamilyIndices = findPhysicalQueueFamilies();
+        QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(m_PhysicalDevice);
 
         VkCommandPoolCreateInfo poolInfo = {};
         poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -249,25 +140,19 @@ namespace Velt::Renderer::Vulkan {
         }
     }
 
-    void VulkanDevice::createSurface()
-    {
-        VT_PROFILE_FUNCTION();
-        VkWindow VulkanWindow = Application::Get.getWindow();
 
-            VulkanWindow.createWindowSurface(m_Instance, &m_Surface);
-    }
 
     bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device)
     {
         VT_PROFILE_FUNCTION();
-        QueueFamilyIndices indices = findQueueFamilies(device);
+        QueueFamilyIndices indices = FindQueueFamilies(device);
 
-        bool extensionsSupported = checkDeviceExtensionSupport(device);
+        bool extensionsSupported = CheckDeviceExtensionSupport(device);
 
         bool swapChainAdequate = false;
         if (extensionsSupported)
         {
-            SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
+            SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(device);
             swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
         }
 
@@ -275,148 +160,10 @@ namespace Velt::Renderer::Vulkan {
         vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
 
         return indices.isComplete() && extensionsSupported && swapChainAdequate &&
-            supportedFeatures.samplerAnisotropy;
+               supportedFeatures.samplerAnisotropy;
     }
 
-    void VulkanDevice::populateDebugMessengerCreateInfo(
-        VkDebugUtilsMessengerCreateInfoEXT& createInfo)
-    {
-        VT_PROFILE_FUNCTION();
-        createInfo = {};
-        createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-        createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-            VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-        createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
-            VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
-            VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-        createInfo.pfnUserCallback = debugCallback;
-        createInfo.pUserData = nullptr;  // Optional
-    }
-
-    void VulkanDevice::setupDebugMessenger()
-    {
-        VT_PROFILE_FUNCTION();
-        if (!enableValidationLayers) return;
-        VkDebugUtilsMessengerCreateInfoEXT createInfo;
-        populateDebugMessengerCreateInfo(createInfo);
-        if (CreateDebugUtilsMessengerEXT(m_Instance, &createInfo, nullptr, &m_DebugMessenger) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to set up debug messenger!");
-            VT_CORE_ERROR("Failed to set up debug messenger!");
-        }
-    }
-
-    bool VulkanDevice::checkValidationLayerSupport()
-    {
-        VT_PROFILE_FUNCTION();
-        u32 layerCount;
-        vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-
-        std::vector<VkLayerProperties> availableLayers(layerCount);
-        vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-
-        for (const char* layerName : validationLayers)
-        {
-            bool layerFound = false;
-
-            for (const auto& layerProperties : availableLayers)
-            {
-                if (strcmp(layerName, layerProperties.layerName) == 0)
-                {
-                    layerFound = true;
-                    break;
-                }
-            }
-
-            if (!layerFound)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    std::vector<const char*> VulkanDevice::getRequiredExtensions()
-    {
-        VT_PROFILE_FUNCTION();
-        // Get SDL3 required Vulkan instance extensions
-        u32 sdlExtensionCount = 0;
-        const char* const* sdlExtensions = SDL_Vulkan_GetInstanceExtensions(&sdlExtensionCount);
-
-        std::vector<const char*> extensions;
-        if (sdlExtensions != nullptr && sdlExtensionCount > 0)
-        {
-            extensions.assign(sdlExtensions, sdlExtensions + sdlExtensionCount);
-        }
-
-#ifdef VT_PLATFORM_OSX
-        extensions.push_back("VK_KHR_portability_enumeration");
-#endif
-
-        extensions.push_back("VK_KHR_get_physical_device_properties2");
-
-        if (enableValidationLayers)
-        {
-            extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-        }
-
-        return extensions;
-    }
-
-    void VulkanDevice::hasSDLRequiredInstanceExtensions()
-    {
-        VT_PROFILE_FUNCTION();
-        u32 extensionCount = 0;
-        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-        std::vector<VkExtensionProperties> extensions(extensionCount);
-        vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
-
-        VT_CORE_INFO("Available Vulkan extensions: ");
-        std::unordered_set<std::string> available;
-        for (const auto& extension : extensions)
-        {
-            VT_CORE_INFO("\t {}", extension.extensionName);
-            available.insert(extension.extensionName);
-        }
-
-        VT_CORE_INFO("Required Vulkan extensions: ");
-        auto requiredExtensions = getRequiredExtensions();
-        for (const auto& required : requiredExtensions)
-        {
-            VT_CORE_INFO("\t {}", required);
-            if (available.find(required) == available.end())
-            {
-                throw std::runtime_error("Missing required SDL extension");
-                VT_CORE_ERROR("Missing required SDL extension: {}", required);
-            }
-        }
-    }
-
-    bool VulkanDevice::checkDeviceExtensionSupport(VkPhysicalDevice device)
-    {
-        VT_PROFILE_FUNCTION();
-        u32 extensionCount;
-        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
-
-        std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-        vkEnumerateDeviceExtensionProperties(
-            device,
-            nullptr,
-            &extensionCount,
-            availableExtensions.data());
-
-        std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
-
-        for (const auto& extension : availableExtensions)
-        {
-            requiredExtensions.erase(extension.extensionName);
-        }
-
-        return requiredExtensions.empty();
-    }
-
-    QueueFamilyIndices VulkanDevice::findQueueFamilies(VkPhysicalDevice device)
+    QueueFamilyIndices VulkanDevice::FindQueueFamilies(VkPhysicalDevice device)
     {
         VT_PROFILE_FUNCTION();
         QueueFamilyIndices indices;
@@ -428,7 +175,7 @@ namespace Velt::Renderer::Vulkan {
         vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
 
         int i = 0;
-        for (const auto& queueFamily : queueFamilies)
+        for (const auto &queueFamily : queueFamilies)
         {
             if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
             {
@@ -436,7 +183,7 @@ namespace Velt::Renderer::Vulkan {
                 indices.graphicsFamilyHasValue = true;
             }
             VkBool32 presentSupport = false;
-            vkGetPhysicalDeviceSurfaceSupportKHR(device, i, m_Surface, &presentSupport);
+            vkGetPhysicalDeviceSurfaceSupportKHR(device, i, VulkanContext::GetSurface(), &presentSupport);
             if (queueFamily.queueCount > 0 && presentSupport)
             {
                 indices.presentFamily = i;
@@ -453,7 +200,30 @@ namespace Velt::Renderer::Vulkan {
         return indices;
     }
 
-    SwapChainSupportDetails VulkanDevice::querySwapChainSupport(VkPhysicalDevice device)
+    bool VulkanDevice::CheckDeviceExtensionSupport(VkPhysicalDevice device)
+    {
+        VT_PROFILE_FUNCTION();
+        uint32_t extensionCount;
+        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+
+        std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+        vkEnumerateDeviceExtensionProperties(
+            device,
+            nullptr,
+            &extensionCount,
+            availableExtensions.data());
+
+        std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
+
+        for (const auto &extension : availableExtensions)
+        {
+            requiredExtensions.erase(extension.extensionName);
+        }
+
+        return requiredExtensions.empty();
+    }
+
+    SwapChainSupportDetails VulkanDevice::QuerySwapChainSupport(VkPhysicalDevice device)
     {
         VT_PROFILE_FUNCTION();
         SwapChainSupportDetails details;
@@ -483,8 +253,8 @@ namespace Velt::Renderer::Vulkan {
         return details;
     }
 
-    VkFormat VulkanDevice::findSupportedFormat(
-        const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
+    VkFormat VulkanDevice::FindSupportedFormat(
+        const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
     {
         VT_PROFILE_FUNCTION();
         for (VkFormat format : candidates)
@@ -502,10 +272,11 @@ namespace Velt::Renderer::Vulkan {
                 return format;
             }
         }
-        throw std::runtime_error("failed to find supported format!");
+        VT_CORE_ASSERT(false, "Failed to find supported format!");
+        return VK_FORMAT_UNDEFINED;
     }
 
-    u32 VulkanDevice::findMemoryType(u32 typeFilter, VkMemoryPropertyFlags properties)
+    u32 VulkanDevice::FindMemoryType(u32 typeFilter, VkMemoryPropertyFlags properties)
     {
         VT_PROFILE_FUNCTION();
         VkPhysicalDeviceMemoryProperties memProperties;
@@ -527,8 +298,8 @@ namespace Velt::Renderer::Vulkan {
         VkDeviceSize size,
         VkBufferUsageFlags usage,
         VkMemoryPropertyFlags properties,
-        VkBuffer& buffer,
-        VkDeviceMemory& bufferMemory)
+        VkBuffer &buffer,
+        VkDeviceMemory &bufferMemory)
     {
         VT_PROFILE_FUNCTION();
         VkBufferCreateInfo bufferInfo{};
@@ -549,7 +320,7 @@ namespace Velt::Renderer::Vulkan {
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
-        allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
+        allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
 
         if (vkAllocateMemory(m_Device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
         {
@@ -602,8 +373,8 @@ namespace Velt::Renderer::Vulkan {
         VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
         VkBufferCopy copyRegion{};
-        copyRegion.srcOffset = 0;  // Optional
-        copyRegion.dstOffset = 0;  // Optional
+        copyRegion.srcOffset = 0; // Optional
+        copyRegion.dstOffset = 0; // Optional
         copyRegion.size = size;
         vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
 
@@ -626,8 +397,8 @@ namespace Velt::Renderer::Vulkan {
         region.imageSubresource.baseArrayLayer = 0;
         region.imageSubresource.layerCount = layerCount;
 
-        region.imageOffset = { 0, 0, 0 };
-        region.imageExtent = { width, height, 1 };
+        region.imageOffset = {0, 0, 0};
+        region.imageExtent = {width, height, 1};
 
         vkCmdCopyBufferToImage(
             commandBuffer,
@@ -640,10 +411,10 @@ namespace Velt::Renderer::Vulkan {
     }
 
     void VulkanDevice::createImageWithInfo(
-        const VkImageCreateInfo& imageInfo,
+        const VkImageCreateInfo &imageInfo,
         VkMemoryPropertyFlags properties,
-        VkImage& image,
-        VkDeviceMemory& imageMemory)
+        VkImage &image,
+        VkDeviceMemory &imageMemory)
     {
         VT_PROFILE_FUNCTION();
         if (vkCreateImage(m_Device, &imageInfo, nullptr, &image) != VK_SUCCESS)
@@ -658,7 +429,7 @@ namespace Velt::Renderer::Vulkan {
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
-        allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
+        allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, properties);
 
         if (vkAllocateMemory(m_Device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
         {

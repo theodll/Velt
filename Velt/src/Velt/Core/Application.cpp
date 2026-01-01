@@ -12,6 +12,8 @@
 bool Velt::Application::s_ShutdownRequested = false;
 
 
+Velt::Application* Velt::Application::s_Instance;
+
 namespace Velt {
 
 
@@ -45,6 +47,7 @@ namespace Velt {
 		m_WindowProps.m_Title = TITLE;
 		
 		m_Window = std::unique_ptr<Window>(Window::Create(m_WindowProps));
+		m_Context = std::unique_ptr<Renderer::Context>(Renderer::Context::Create());
 	}
 
 	Application::~Application()
@@ -70,30 +73,28 @@ namespace Velt {
 		VT_PROFILE_FUNCTION();
 		m_LayerStack.PushLayer(layer);
 
-		if (auto imgui = dynamic_cast<ImGuiLayer*>(layer))
-			m_ImGuiLayer = imgui;
+		// if (auto imgui = dynamic_cast<ImGuiLayer*>(layer))
+		//	m_ImGuiLayer = imgui;
 	}
 
 	void Application::PushOverlay(Layer* layer)
 	{
 		VT_PROFILE_FUNCTION();
 		m_LayerStack.PushOverlay(layer);
-		if (auto imgui = dynamic_cast<ImGuiLayer*>(layer))
-			m_ImGuiLayer = imgui;
+		//if (auto imgui = dynamic_cast<ImGuiLayer*>(layer))
+		//	m_ImGuiLayer = imgui;
 	}
+
 
 	void Application::RenderImGui()
 	{
 		VT_PROFILE_FUNCTION();
 
-		m_ImGuiLayer->Begin();
-		{
-			VT_PROFILE_SCOPE("LayerStack OnImGuiRender");
-
-			for (Layer* layer : m_LayerStack)
-				layer->OnImGuiRender();
-		}
-		m_ImGuiLayer->End();
+		// m_ImGuiLayer->Begin();
+		
+			//	layer->OnImGuiRender();
+		
+		// m_ImGuiLayer->End();
 	}
 
 
@@ -113,8 +114,8 @@ namespace Velt {
 
 				// TODO: dont pass raw sdl events
 
-				if (m_ImGuiLayer)
-					ImGuiLayer::ProcessSDLEvent(&event);
+				//if (m_ImGuiLayer)
+				//	ImGuiLayer::ProcessSDLEvent(&event);
 				switch (event.type)
 				{
 				case SDL_EVENT_QUIT:

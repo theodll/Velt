@@ -1,4 +1,5 @@
 #pragma once
+/*
 
 #include "vtpch.h"
 #include "Velt/Layers/Layer.h"
@@ -50,3 +51,4 @@ namespace Velt {
 
 	}; 
 }
+*/

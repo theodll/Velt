@@ -23,8 +23,8 @@ namespace Velt::Renderer
     public:
         virtual ~VertexBuffer() {};
 
-        virtual void setLayout(const BufferLayout& layout) = 0;
-        virtual BufferLayout getLayout() const = 0; 
+        //virtual void setLayout(const BufferLayout& layout) = 0;
+        //virtual BufferLayout getLayout() const = 0; 
 
 
         virtual void Bind() const = 0;
@@ -32,5 +32,5 @@ namespace Velt::Renderer
         
 
 		static std::shared_ptr<VertexBuffer> Create(const void* vertexData, u64 vertexCount, u64 vertexStride);
-    }
+    };
 } 

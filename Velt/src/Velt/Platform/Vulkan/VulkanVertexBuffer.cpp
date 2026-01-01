@@ -4,12 +4,7 @@
 
 namespace Velt::Renderer::Vulkan
 {
-    VulkanVertexBuffer::VulkanVertexBuffer(
-        const void* vertexData, // data
-        u32 vertexCount, // count 
-        u64 vertexStride // size 
-    ) :   m_VertexCount(vertexCount),
-          m_VertexStride(vertexStride)
+    VulkanVertexBuffer::VulkanVertexBuffer(const void* vertexData, u32 vertexCount, u64 vertexStride ) :   m_VertexCount(vertexCount), m_VertexStride(vertexStride), m_Device(VulkanContext::GetDevice())
     {
         VT_PROFILE_FUNCTION();
         VT_CORE_TRACE("Creating Vulkan Vertex Buffer");
@@ -28,13 +23,13 @@ namespace Velt::Renderer::Vulkan
 
         if (m_VertexBuffer != VK_NULL_HANDLE)
         {
-            vkDestroyBuffer(*m_Device->device(), m_VertexBuffer, nullptr);
+            vkDestroyBuffer(m_Device.device(), m_VertexBuffer, nullptr);
             m_VertexBuffer = VK_NULL_HANDLE;
         }
 
         if (m_VertexBufferMemory != VK_NULL_HANDLE)
         {
-            vkFreeMemory(*m_Device->device(), m_VertexBufferMemory, nullptr);
+            vkFreeMemory(m_Device.device(), m_VertexBufferMemory, nullptr);
             m_VertexBufferMemory = VK_NULL_HANDLE;
         }
     }
@@ -46,7 +41,7 @@ namespace Velt::Renderer::Vulkan
 
         
 
-        m_Device->createBuffer(
+        m_Device.createBuffer(
             bufferSize,
             VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
@@ -57,7 +52,7 @@ namespace Velt::Renderer::Vulkan
 
         void* mappedData = nullptr;
         vkMapMemory(
-            *m_Device->device(),
+            m_Device.device(),
             m_VertexBufferMemory,
             0,
             bufferSize,
@@ -66,7 +61,7 @@ namespace Velt::Renderer::Vulkan
         );
 
         memcpy(mappedData, data, static_cast<size_t>(bufferSize));
-        vkUnmapMemory(VulkanContext::getDevice()->device(), m_VertexBufferMemory);
+        vkUnmapMemory(m_Device.device(), m_VertexBufferMemory);
     }
 
     void VulkanVertexBuffer::Bind() const

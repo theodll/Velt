@@ -25,7 +25,7 @@ namespace Velt::Renderer
 
 		virtual void Invalidate() = 0;
 
-		static Ref<Pipeline> Create(const PipelineSpecification& spec);
+		static Pipeline* Create(const PipelineSpecification& spec);
 	};
 
 }

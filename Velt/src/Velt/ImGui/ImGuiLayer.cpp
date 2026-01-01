@@ -1,3 +1,4 @@
+/*
 #include "vtpch.h"
 #include "ImGuiLayer.h"
 #include <SDL3/SDL.h>
@@ -8,6 +9,8 @@
 #include "imgui_impl_sdl3.h"
 #include "Velt/Core/Log.h"
 #include "Velt/Renderer/Renderer.h"
+#include "Velt/Platform/Vulkan/VulkanContext.h"
+#include "Velt/Core/Application.h"
 
 namespace Velt {
 	
@@ -28,12 +31,12 @@ namespace Velt {
 	{
 		VT_PROFILE_FUNCTION();
 		// Use static accessors from Renderer to get device and swapchain
-		auto* swapchain = Velt::RenderAPI::Renderer::getSwapChain();
-		auto* device = Velt::RenderAPI::Renderer::getDevice();
+		// auto* swapchain = Velt::getSwapChain();
+		auto* device = Renderer::Vulkan::VulkanContext::GetDevice();
 		SDL_Window* window = nullptr;
 		if (device)
 		{
-			window = reinterpret_cast<SDL_Window*>(device->getWindow().GetNativeHandle());
+			window = reinterpret_cast<SDL_Window*>(Application::Get().getWindow().GetNativeHandle());
 		}
 
 		m_Renderer = CreateRef<ImGuiRenderer>(
@@ -127,3 +130,4 @@ namespace Velt {
 		m_Renderer->End();
 	}
 }
+*/

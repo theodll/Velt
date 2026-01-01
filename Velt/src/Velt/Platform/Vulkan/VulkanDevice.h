@@ -36,25 +36,21 @@ namespace Velt::Renderer::Vulkan {
 		VulkanDevice();
 		~VulkanDevice();
 
-		VulkanDevice(const VulkanDevice&) = delete;
-		void operator=(const VulkanDevice&) = delete;
-		VulkanDevice(VulkanDevice&&) = delete;
-		VulkanDevice& operator=(VulkanDevice&&) = delete;
 
 		VkCommandPool getCommandPool() { return m_CommandPool; }
-		VkDevice* device() { return m_Device; }
+		VkDevice& device() { return m_Device; }
 		VkSurfaceKHR surface() { return m_Surface; }
 		VkQueue graphicsQueue() { return m_GraphicsQueue; }
 		VkQueue presentQueue() { return m_PresentQueue; }
-		VkInstance getInstance() { return m_Instance; }
-		VkPhysicalDevice getPhysicalDevice() { return m_PhysicalDevice; }
-		VkQueue getGraphicsQueue() { return m_GraphicsQueue; }
-		u32 getQueueFamilyIndex() { return findPhysicalQueueFamilies().graphicsFamily; }
+
+		VkPhysicalDevice GetPhysicalDevice() { return m_PhysicalDevice; }
+		VkQueue GetGraphicsQueue() { return m_GraphicsQueue; }
+		u32 GetQueueFamilyIndex() { return FindPhysicalQueueFamilies().graphicsFamily; }
 		
-		SwapChainSupportDetails getSwapChainSupport() { return querySwapChainSupport(m_PhysicalDevice); }
-		u32 findMemoryType(u32 typeFilter, VkMemoryPropertyFlags properties);
-		QueueFamilyIndices findPhysicalQueueFamilies() { return findQueueFamilies(m_PhysicalDevice); }
-		VkFormat findSupportedFormat(
+		SwapChainSupportDetails GetSwapChainSupport() { return QuerySwapChainSupport(m_PhysicalDevice); }
+		u32 FindMemoryType(u32 typeFilter, VkMemoryPropertyFlags properties);
+		QueueFamilyIndices FindPhysicalQueueFamilies() { return FindQueueFamilies(m_PhysicalDevice); }
+		VkFormat FindSupportedFormat(
 			const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
 		// Buffer Helper Functions
@@ -64,6 +60,7 @@ namespace Velt::Renderer::Vulkan {
 			VkMemoryPropertyFlags properties,
 			VkBuffer& buffer,
 			VkDeviceMemory& bufferMemory);
+
 		VkCommandBuffer beginSingleTimeCommands();
 		void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
@@ -78,36 +75,30 @@ namespace Velt::Renderer::Vulkan {
 
 		VkPhysicalDeviceProperties properties;
 
+		bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
+       
+
 	private:
-		void createInstance();
-		void setupDebugMessenger();
-		void createSurface();
 		void pickPhysicalDevice();
 		void createLogicalDevice();
 		void createCommandPool();
 
 		// helper functions
 		bool isDeviceSuitable(VkPhysicalDevice device);
-		std::vector<const char*> getRequiredExtensions();
-		bool checkValidationLayerSupport();
-		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-		void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
-		void hasSDLRequiredInstanceExtensions();
-		bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-		SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
+		SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
+		
+		VkInstance& m_Instance;
 
-		VkInstance m_Instance;
-		VkDebugUtilsMessengerEXT m_DebugMessenger;
 		VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
 		VkCommandPool m_CommandPool;
 
 		VkDevice m_Device;
-		VkSurfaceKHR m_Surface;
+		VkSurfaceKHR& m_Surface;
 		VkQueue m_GraphicsQueue;
 		VkQueue m_PresentQueue;
 
-		const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
-
+		
 #ifdef VT_PLATFORM_OSX
 		const std::vector<const char*> deviceExtensions = {
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME,

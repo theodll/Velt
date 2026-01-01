@@ -1,13 +1,11 @@
 #pragma once
 #include "vtpch.h"
 #include "RenderCommandBuffer.h"
-#include "RenderPass.h"
 
 
 namespace Velt::Renderer
 {
 	class Application;
-	class ImGuiLayer;
 	class LayerStack;
 
 	enum class RendererAPI
@@ -27,14 +25,14 @@ namespace Velt::Renderer
 
 		virtual void drawFrame();
 
-		virtual void setImGuiLayer(ImGuiLayer* layer) = 0;
+		// virtual void setImGuiLayer(ImGuiLayer* layer) = 0;
 		virtual void setLayerStack(LayerStack* layerStack) = 0;
 		
 		static void requestShutdown();
 		static void Shutdown();
 
-		static void BeginRenderPass(Ref<RenderCommandBuffer> renderCommandbuffer, Ref<RenderPass> renderPass, bool explicitClear = false);
-		static void EndRenderPass(Ref<RenderCommandBuffer> renderCommandbuffer);
+		static void BeginRenderPass(Ref<VkCommandBuffer> renderCommandbuffer, Ref<VkRenderPass> renderPass, bool explicitClear = false);
+		static void EndRenderPass(Ref<VkCommandBuffer> renderCommandbuffer);
 
 		inline static RendererAPI GetAPI() { return s_API; };
 
@@ -42,7 +40,7 @@ namespace Velt::Renderer
 		virtual void loadModels() = 0;
 		virtual void createPipelineLayout() = 0;
 		virtual void createPipeline() = 0;
-		static RendererAPI s_API; 
+		static RendererAPI s_API;
 
 
 	};

@@ -23,10 +23,10 @@ namespace Velt::Renderer::Vulkan
 			u32 subpass = 0;
 		};
 
-		class VELT_API VulkanPipeline : public Renderer::Pipeline
+		class VELT_API VulkanPipeline : public Pipeline
 		{
 		public:
-			VulkanPipeline(PipelineSpecification& specs); 
+			VulkanPipeline(const PipelineSpecification& specs); 
 			~VulkanPipeline();
 
 			VulkanPipeline(const VulkanPipeline&) = delete;
@@ -36,15 +36,14 @@ namespace Velt::Renderer::Vulkan
 
 			void Bind(VkCommandBuffer commandBuffer);
 
-			static void defaultVulkanPipelineConfigInfo(VulkanPipelineConfigInfo& configInfo);
+			static void SetDefaultVulkanPipelineConfigInfo(VulkanPipelineConfigInfo& configInfo);
+
+			PipelineSpecification& GetSpecification() override { return m_Specification;  };
+			const PipelineSpecification& GetSpecification() const override { return m_Specification; };
 
 		private:
-			static std::vector<char> readFile(const std::string& filepath);
-			void createGraphicsVulkanPipeline(const std::string& vertShaderPath,
-										const std::string& fragShaderPath,
-										const VulkanPipelineConfigInfo& configInfo);
-
-			void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
+			static std::vector<char> ReadFile(const std::string& filepath);
+			void CreateShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 
 			PipelineSpecification m_Specification;
 			BufferLayout m_Layout;
