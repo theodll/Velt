@@ -45,7 +45,8 @@ namespace Velt {
 		m_WindowProps.m_Width = WIDTH;
 		m_WindowProps.m_Height = HEIGHT;
 		m_WindowProps.m_Title = TITLE;
-		
+
+		m_Context = std::make_unique<Renderer::Vulkan::VulkanContext>();
 		m_Window = std::unique_ptr<Window>(Window::Create(m_WindowProps));
 	}
 
@@ -100,6 +101,10 @@ namespace Velt {
 	void Application::Run()
 	{
 		VT_PROFILE_FUNCTION();
+
+		m_Context->Init(); 
+		m_Window->CreateSwapchain(); 
+
 		bool running = true;
 		while (running)
 		{

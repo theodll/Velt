@@ -24,16 +24,17 @@ namespace Velt::Windows
 		void SetVsync(bool enable) override;
 		void SetResizable(bool enable) override;
 		void* GetNativeHandle() const override;
+		VkExtent2D GetExtent() const { return { Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight() }; }
 
 		void CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
-		VkExtent2D GetExtent() const { return { Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight() }; }
+		void CreateSwapchain() override;
+
 		Renderer::Vulkan::VulkanSwapchain& GetSwapchain();
 	private:
 		SDL_Window* m_Window = nullptr;
-		std::unique_ptr<Renderer::Context> m_Context;
 		std::unique_ptr<Renderer::Vulkan::VulkanSwapchain> m_Swapchain;
 
-		virtual void Init(const WindowProps& props);
+		virtual void Init();
 		virtual void Shutdown();
 
 		struct WindowData
@@ -46,6 +47,7 @@ namespace Velt::Windows
 			// EventCallbackFn EventCallback;
 		};
 
+		WindowProps m_WindowProps;
 		WindowData m_Data;
 
 	};

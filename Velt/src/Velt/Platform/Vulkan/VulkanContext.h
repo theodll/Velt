@@ -29,7 +29,7 @@ namespace Velt::Renderer::Vulkan
 		void SDLRequiredInstanceExtensions();
 		std::vector<const char*> GetRequiredExtensions();
 		bool CheckValidationLayerSupport();
-		void CreateSurface();
+		void CreateSurface(SDL_Window* handle);
 
 
 		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);

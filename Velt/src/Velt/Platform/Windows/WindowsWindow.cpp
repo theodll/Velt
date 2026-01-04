@@ -31,11 +31,10 @@ namespace Velt::Windows
 
 	static bool s_SDLInitialized = false;
 
-	WindowsWindow::WindowsWindow(const WindowProps& props)
+	WindowsWindow::WindowsWindow(const WindowProps& props) : m_WindowProps(props)
 	{
 		VT_PROFILE_FUNCTION();
-
-		Init(props);
+		Init();
 	}
 
 	WindowsWindow::~WindowsWindow()
@@ -50,13 +49,13 @@ namespace Velt::Windows
 		VT_PROFILE_FUNCTION();
 	}
 
-	void WindowsWindow::Init(const WindowProps& props)
+	void WindowsWindow::Init()
 	{
 		VT_PROFILE_FUNCTION();
 
-		m_Data.m_Title = props.m_Title;
-		m_Data.m_Width = props.m_Width;
-		m_Data.m_Height = props.m_Height;
+		m_Data.m_Title = m_WindowProps.m_Title;
+		m_Data.m_Width = m_WindowProps.m_Width;
+		m_Data.m_Height = m_WindowProps.m_Height;
 
 		VT_CORE_INFO("Creating WindowsWindow {0} ({1} {2})", m_Data.m_Title, m_Data.m_Width, m_Data.m_Height);
 
@@ -84,20 +83,10 @@ namespace Velt::Windows
 		SDL_PropertiesID sdlProps = SDL_GetWindowProperties(m_Window);
 		SDL_SetPointerProperty(sdlProps, "WindowInstance", this);
 
-		m_Context = Renderer::Context::Create();
-		m_Context->Init();
-		CreateWindowSurface(Renderer::Vulkan::VulkanContext::GetInstance(), &Renderer::Vulkan::VulkanContext::GetSurface());
+	//	m_Context = Renderer::Context::Create();
+	//	m_Context->Init();
+	//	CreateWindowSurface(Renderer::Vulkan::VulkanContext::GetInstance(), &Renderer::Vulkan::VulkanContext::GetSurface());
 
-		m_Swapchain = std::make_unique<Renderer::Vulkan::VulkanSwapchain>();
-
-		Renderer::Vulkan::SwapchainCreateInfo createInfo{};
-
-		createInfo.Height = m_Data.m_Height;
-		createInfo.Width = m_Data.m_Width;
-		createInfo.VSync =  m_Data.m_bVsync;
-
-		m_Swapchain->Init(createInfo);
-		m_Swapchain->InitSurface(m_Window);
 
 	}
 
@@ -143,6 +132,20 @@ namespace Velt::Windows
 	}
 
  
+	void WindowsWindow::CreateSwapchain() 
+	{
+		m_Swapchain = std::make_unique<Renderer::Vulkan::VulkanSwapchain>();
+
+		Renderer::Vulkan::SwapchainCreateInfo createInfo{};
+
+		createInfo.Height = m_Data.m_Height;
+		createInfo.Width = m_Data.m_Width;
+		createInfo.VSync =  m_Data.m_bVsync;
+		
+		m_Swapchain->Init(createInfo);
+		m_Swapchain->InitSurface(m_Window);
+	}
+
 
 	Renderer::Vulkan::VulkanSwapchain& WindowsWindow::GetSwapchain()
 	{

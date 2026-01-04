@@ -36,9 +36,11 @@ namespace Velt
 		// virtual void SetEventCallback(const EventCallbackFn& callback) = 0; 
 		virtual void SetVsync(bool enable) = 0;
 		virtual void SetResizable(bool enable) = 0; 
-		virtual void CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface) = 0;
-
 		virtual void* GetNativeHandle() const = 0;
+
+
+		virtual void CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface) = 0;
+		virtual void CreateSwapchain() = 0;
 
 		static std::unique_ptr<Window> Create(const WindowProps& props = WindowProps());
 
