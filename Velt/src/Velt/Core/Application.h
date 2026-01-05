@@ -19,6 +19,7 @@ namespace Velt
 
 			void operator=(const Application&) = delete;
 
+			void Init();
 			void Run();
 			void Shutdown();
 		

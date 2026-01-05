@@ -98,12 +98,17 @@ namespace Velt {
 	}
 
 
-	void Application::Run()
+	void Application::Init() 
 	{
-		VT_PROFILE_FUNCTION();
 
 		m_Context->Init(); 
 		m_Window->CreateSwapchain(); 
+
+	}
+
+	void Application::Run()
+	{
+		VT_PROFILE_FUNCTION();
 
 		bool running = true;
 		while (running)

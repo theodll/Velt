@@ -1,5 +1,4 @@
 #pragma once
-#include "vtpch.h"
 #include <vulkan/vulkan.h>
 #include "Velt/Core/Core.h"
 #include "Velt/Platform/Vulkan/VulkanDevice.h"

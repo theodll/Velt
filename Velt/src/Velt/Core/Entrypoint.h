@@ -15,6 +15,7 @@ int main(int argc, char** argv)
 
 	VT_PROFILE_BEGIN_SESSION("Startup", "VeltProfile-Startup.json");
 	auto app = Velt::CreateApplication();
+	app->Init();
 	VT_PROFILE_END_SESSION();
 
 	VT_PROFILE_BEGIN_SESSION("Runtime", "VeltProfile-Runtime.json");
