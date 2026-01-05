@@ -9,6 +9,7 @@ namespace Velt::Renderer::Vulkan
 	VulkanDevice* VulkanContext::m_Device = nullptr;
 	VkInstance VulkanContext::m_Instance; 
 	VkSurfaceKHR VulkanContext::m_Surface;
+	std::unique_ptr<VulkanResourceUploader> VulkanContext::m_ResourceUploader = nullptr;
 	
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 		VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -56,6 +57,8 @@ namespace Velt::Renderer::Vulkan
 		}
 
 		m_Device = new VulkanDevice();
+		m_ResourceUploader = std::make_unique<VulkanResourceUploader>();
+		m_ResourceUploader->Init();
 
 	}
 
