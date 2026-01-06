@@ -4,6 +4,7 @@
 #include "Velt/Platform/Vulkan/VulkanDevice.h"
 #include "Velt/Renderer/RenderContext.h"
 #include "Velt/Platform/Vulkan/VulkanSwapchain.h"
+#include "VulkanResourceUploader.h"
 #include "Velt/Platform/Vulkan/VulkanPipeline.h"
 
 
@@ -40,6 +41,7 @@ namespace Velt::Renderer::Vulkan
 		static VkInstance m_Instance;
 		static VulkanDevice* m_Device;
 		static VkSurfaceKHR m_Surface;
+		static std::unique_ptr<VulkanResourceUploader> m_ResourceUploader;
 		VulkanSwapchain* m_Swapchain;
 
 		const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };

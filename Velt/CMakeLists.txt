@@ -63,6 +63,8 @@ add_library(Velt SHARED
         "src/Velt/Platform/Windows/WindowsWindow.cpp"
         "src/Velt/Renderer/RenderAPI.h"
         "src/Velt/Renderer/RenderAPI.cpp"
+        "src/Velt/Platform/Vulkan/VulkanResourceUploader.h"
+        "src/Velt/Platform/Vulkan/VulkanResourceUploader.cpp"
 )
 
 if(WIN32 OR UNIX)

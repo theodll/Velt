@@ -7,7 +7,8 @@ namespace Velt::Renderer::Vulkan
 {
     void VulkanResourceUploader::Begin()
     {
-        
+        VT_PROFILE_FUNCTION();
+        VT_CORE_TRACE("Begin Vulkan Resource Uploader");
         vkWaitForFences(
             m_Device.device(),
             1,
@@ -30,6 +31,8 @@ namespace Velt::Renderer::Vulkan
 
     void VulkanResourceUploader::End()
     {
+        VT_PROFILE_FUNCTION();
+        VT_CORE_TRACE("End Vulkan Resource Uploader");
         vkEndCommandBuffer(m_Commandbuffer);
 
         VkSubmitInfo submitInfo{};
@@ -56,6 +59,8 @@ namespace Velt::Renderer::Vulkan
 
     void VulkanResourceUploader::Init()
     {
+        VT_PROFILE_FUNCTION();
+        VT_CORE_TRACE("Init Vulkan Resource Uploader");
         u32 graphicsQueueFamily = m_Device.GetQueueFamilyIndex();
 
         VkCommandPoolCreateInfo poolInfo{};
@@ -101,6 +106,8 @@ namespace Velt::Renderer::Vulkan
 
     void VulkanResourceUploader::Shutdown() 
     {
+        VT_PROFILE_FUNCTION();
+        VT_CORE_TRACE("Shutdown Vulkan Resource Uploader");
         if (m_Fence)
             vkDestroyFence(m_Device.device(), m_Fence, nullptr);
 
