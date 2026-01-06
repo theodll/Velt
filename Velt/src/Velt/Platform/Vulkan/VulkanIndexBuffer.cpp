@@ -1,7 +1,6 @@
 #include "Core/Core.h"
 #include "VulkanIndexBuffer.h"
 #include "VulkanContext.h"
-#include <vulkan/vulkan.h>
 #include "Core/Log.h"
 
 namespace Velt::Renderer::Vulkan
@@ -10,93 +9,10 @@ namespace Velt::Renderer::Vulkan
 		: m_Size(size)
 	{
 		VT_PROFILE_FUNCTION();
-		VT_CORE_TRACE("VulkanIndexBuffer constructed (uninitialized, size: {0})", size);
-		// CreateBuffer(nullptr, size);
-	}
-
-	VulkanIndexBuffer::VulkanIndexBuffer(void* data, u64 size)
-		: m_Size(size)
-	{
-		VT_PROFILE_FUNCTION();
-		VT_CORE_TRACE("VulkanIndexBuffer constructed (with data, size: {0})", size);
-		VT_CORE_ASSERT(data != nullptr, "Index buffer data is null!");
-		CreateBuffer(data, size);
-	}
-
-	VulkanIndexBuffer::~VulkanIndexBuffer()
-	{
-		VT_PROFILE_FUNCTION();
-		VT_CORE_TRACE("VulkanIndexBuffer destructed");
 
 		auto device = VulkanContext::GetDevice();
 
-		if (m_IndexBuffer != VK_NULL_HANDLE)
-		{
-			vkDestroyBuffer(device.device(), m_IndexBuffer, nullptr);
-			m_IndexBuffer = VK_NULL_HANDLE;
-		}
-
-		if (m_IndexBufferMemory != VK_NULL_HANDLE)
-		{
-			vkFreeMemory(device.device(), m_IndexBufferMemory, nullptr);
-			m_IndexBufferMemory = VK_NULL_HANDLE;
-		}
-	}
-
-	void VulkanIndexBuffer::Bind() const
-	{
-		VT_PROFILE_FUNCTION();
-		VT_CORE_TRACE("Bind VulkanIndexBuffer");
-
-		VT_CORE_WARN("VulkanIndexBuffer:: Bind() called - binding should be done via vkCmdBindIndexBuffer in render pass");
-	}
-
-	void VulkanIndexBuffer::SetData(void* data, u64 size, u64 offset)
-	{
-		VT_PROFILE_FUNCTION();
-		VT_CORE_TRACE("VulkanIndexBuffer::SetData (size: {0}, offset: {1})", size, offset);
-		VT_CORE_ASSERT(data != nullptr, "Index buffer data is null!");
-		VT_CORE_ASSERT(offset + size <= m_Size, "Data size exceeds buffer size!");
-
-		auto device = VulkanContext::GetDevice();
-
-		VkBuffer stagingBuffer;
-		VkDeviceMemory stagingBufferMemory;
-
-		device.createBuffer(
-			size,
-			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-			stagingBuffer,
-			stagingBufferMemory
-		);
-
-		void* mappedData = nullptr;
-		vkMapMemory(device.device(), stagingBufferMemory, 0, size, 0, &mappedData);
-		memcpy(mappedData, data, static_cast<size_t>(size));
-		vkUnmapMemory(device.device(), stagingBufferMemory);
-
-		VkCommandBuffer commandBuffer = device.beginSingleTimeCommands();
-
-		VkBufferCopy copyRegion{};
-		copyRegion.srcOffset = 0;
-		copyRegion.dstOffset = offset;
-		copyRegion.size = size;
-		vkCmdCopyBuffer(commandBuffer, stagingBuffer, m_IndexBuffer, 1, &copyRegion);
-
-		device.endSingleTimeCommands(commandBuffer);
-
-		vkDestroyBuffer(device.device(), stagingBuffer, nullptr);
-		vkFreeMemory(device.device(), stagingBufferMemory, nullptr);
-	}
-
-	void VulkanIndexBuffer::CreateBuffer(void* data, u64 size)
-	{
-		VT_PROFILE_FUNCTION();
-		VT_CORE_TRACE("VulkanIndexBuffer::CreateBuffer (size: {0})", size);
-
-		auto device = VulkanContext::GetDevice();
-
+		// Erstelle nur den GPU-Buffer (device-local)
 		device.createBuffer(
 			size,
 			VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
@@ -104,27 +20,81 @@ namespace Velt::Renderer::Vulkan
 			m_IndexBuffer,
 			m_IndexBufferMemory
 		);
-
-		if (data != nullptr)
-		{
-			SetData(data, size, 0);
-		}
 	}
 
-	void VulkanIndexBuffer::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, u64 size)
+	VulkanIndexBuffer::~VulkanIndexBuffer()
 	{
 		VT_PROFILE_FUNCTION();
 
 		auto device = VulkanContext::GetDevice();
-		VkCommandBuffer commandBuffer = device.beginSingleTimeCommands();
 
+		// Staging-Buffer aufräumen
+		if (m_StagingBuffer != VK_NULL_HANDLE)
+		{
+			vkDestroyBuffer(device.device(), m_StagingBuffer, nullptr);
+			vkFreeMemory(device.device(), m_StagingBufferMemory, nullptr);
+		}
+
+		// GPU-Buffer aufräumen
+		if (m_IndexBuffer != VK_NULL_HANDLE)
+		{
+			vkDestroyBuffer(device.device(), m_IndexBuffer, nullptr);
+			vkFreeMemory(device.device(), m_IndexBufferMemory, nullptr);
+		}
+	}
+
+	void VulkanIndexBuffer::SetData(void* data, u64 size, u64 offset)
+	{
+		VT_PROFILE_FUNCTION();
+
+		VT_CORE_ASSERT(data != nullptr, "Index buffer data is null!");
+		VT_CORE_ASSERT(offset + size <= m_Size, "Upload exceeds index buffer size!");
+
+		auto device = VulkanContext::GetDevice();
+
+		m_UploadSize = size;
+		m_Offset = offset;
+
+		// Bestehenden Staging-Buffer löschen, falls vorhanden
+		if (m_StagingBuffer != VK_NULL_HANDLE)
+		{
+			vkDestroyBuffer(device.device(), m_StagingBuffer, nullptr);
+			vkFreeMemory(device.device(), m_StagingBufferMemory, nullptr);
+		}
+
+		// Staging-Buffer erstellen
+		device.createBuffer(
+			size,
+			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+			m_StagingBuffer,
+			m_StagingBufferMemory
+		);
+
+		// Daten kopieren
+		void* mapped = nullptr;
+		vkMapMemory(device.device(), m_StagingBufferMemory, 0, size, 0, &mapped);
+		memcpy(mapped, data, static_cast<size_t>(size));
+		vkUnmapMemory(device.device(), m_StagingBufferMemory);
+	}
+
+	void VulkanIndexBuffer::Upload(VkCommandBuffer commandBuffer)
+	{
+		VT_PROFILE_FUNCTION();
+
+		VT_CORE_ASSERT(m_StagingBuffer != VK_NULL_HANDLE, "No staging buffer set!");
 
 		VkBufferCopy copyRegion{};
 		copyRegion.srcOffset = 0;
-		copyRegion.dstOffset = 0;
-		copyRegion.size = size;
-		vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
+		copyRegion.dstOffset = m_Offset;
+		copyRegion.size = m_UploadSize;
 
-		device.endSingleTimeCommands(commandBuffer);
+		vkCmdCopyBuffer(
+			commandBuffer,
+			m_StagingBuffer,
+			m_IndexBuffer,
+			1,
+			&copyRegion
+		);
 	}
 }
