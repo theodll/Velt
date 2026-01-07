@@ -5,14 +5,13 @@
 
 namespace Velt::Renderer::Vulkan
 {
-	VulkanIndexBuffer::VulkanIndexBuffer(u64 size)
+	VulkanIndexBuffer::VulkanIndexBuffer(void* data, u64 size, u64 offset)
 		: m_Size(size)
 	{
 		VT_PROFILE_FUNCTION();
 
 		auto device = VulkanContext::GetDevice();
 
-		// Erstelle nur den GPU-Buffer (device-local)
 		device.createBuffer(
 			size,
 			VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
@@ -20,6 +19,9 @@ namespace Velt::Renderer::Vulkan
 			m_IndexBuffer,
 			m_IndexBufferMemory
 		);
+
+		SetData(data, size, offset);
+
 	}
 
 	VulkanIndexBuffer::~VulkanIndexBuffer()
@@ -28,14 +30,12 @@ namespace Velt::Renderer::Vulkan
 
 		auto device = VulkanContext::GetDevice();
 
-		// Staging-Buffer aufräumen
 		if (m_StagingBuffer != VK_NULL_HANDLE)
 		{
 			vkDestroyBuffer(device.device(), m_StagingBuffer, nullptr);
 			vkFreeMemory(device.device(), m_StagingBufferMemory, nullptr);
 		}
 
-		// GPU-Buffer aufräumen
 		if (m_IndexBuffer != VK_NULL_HANDLE)
 		{
 			vkDestroyBuffer(device.device(), m_IndexBuffer, nullptr);
@@ -45,36 +45,29 @@ namespace Velt::Renderer::Vulkan
 
 	void VulkanIndexBuffer::SetData(void* data, u64 size, u64 offset)
 	{
-		VT_PROFILE_FUNCTION();
-
-		VT_CORE_ASSERT(data != nullptr, "Index buffer data is null!");
-		VT_CORE_ASSERT(offset + size <= m_Size, "Upload exceeds index buffer size!");
-
 		auto device = VulkanContext::GetDevice();
 
-		m_UploadSize = size;
-		m_Offset = offset;
+		if (m_StagingBuffer == VK_NULL_HANDLE || m_StagingBufferSize < size) {
+			if (m_StagingBuffer != VK_NULL_HANDLE) {
 
-		// Bestehenden Staging-Buffer löschen, falls vorhanden
-		if (m_StagingBuffer != VK_NULL_HANDLE)
-		{
-			vkDestroyBuffer(device.device(), m_StagingBuffer, nullptr);
-			vkFreeMemory(device.device(), m_StagingBufferMemory, nullptr);
+				vkDestroyBuffer(device.device(), m_StagingBuffer, nullptr);
+				vkFreeMemory(device.device(), m_StagingBufferMemory, nullptr);
+
+			}
+
+			device.createBuffer(
+				size,
+				VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+				m_StagingBuffer,
+				m_StagingBufferMemory
+			);
+			m_StagingBufferSize = size;
 		}
 
-		// Staging-Buffer erstellen
-		device.createBuffer(
-			size,
-			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-			m_StagingBuffer,
-			m_StagingBufferMemory
-		);
-
-		// Daten kopieren
 		void* mapped = nullptr;
 		vkMapMemory(device.device(), m_StagingBufferMemory, 0, size, 0, &mapped);
-		memcpy(mapped, data, static_cast<size_t>(size));
+		memcpy(mapped, data, (size_t)size);
 		vkUnmapMemory(device.device(), m_StagingBufferMemory);
 	}
 

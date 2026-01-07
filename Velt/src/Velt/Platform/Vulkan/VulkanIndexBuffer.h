@@ -24,6 +24,7 @@ namespace Velt::Renderer::Vulkan
 
 		u64 m_Size = 0;  // GPU buffer capacity
 		u64 m_UploadSize = 0;  // size of current upload
+		u64 m_StagingBufferSize = 0;  // staging buffer capacity
 		u64 m_Offset = 0;  // offset in GPU buffer
 	};
 }

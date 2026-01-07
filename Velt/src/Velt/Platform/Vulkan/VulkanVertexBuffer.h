@@ -11,39 +11,27 @@
 
 namespace Velt::Renderer::Vulkan
 {
-    class VulkanVertexBuffer : public VertexBuffer
-    {
-    public:
-        VulkanVertexBuffer(
-            const void* vertexData,
-            u32 vertexCount,
-            VkDeviceSize vertexStride
-        );
+	class VulkanVertexBuffer
+	{
+	public:
+		VulkanVertexBuffer(void* data, u64 size, u64 offset);
+		~VulkanVertexBuffer();
 
-        // virtual void setLayout(const BufferLayout& layout) override {m_Layout = layout;};
-        //virtual BufferLayout getLayout() const override {return m_Layout;};
+		void SetData(void* data, u64 size, u64 offset = 0);
+		void Upload(VkCommandBuffer commandBuffer);
 
-        virtual ~VulkanVertexBuffer() override;
+		VkBuffer GetBuffer() const { return m_VertexBuffer; }
 
-        virtual void Bind() const override;
-        virtual void Unbind() const override;
+	private:
+		VkBuffer       m_VertexBuffer = VK_NULL_HANDLE;
+		VkDeviceMemory m_VertexBufferMemory = VK_NULL_HANDLE;
 
+		VkBuffer       m_StagingBuffer = VK_NULL_HANDLE;
+		VkDeviceMemory m_StagingBufferMemory = VK_NULL_HANDLE;
 
-        u32 GetVertexCount() const { return m_VertexCount; }
-		VkBuffer GetVulkanBuffer() const { return m_VertexBuffer; }
-
-    private:
-        void CreateBuffer(const void* data);
-
-    private:
-        VulkanDevice& m_Device = VulkanContext::GetDevice();        
-
-        VkBuffer m_VertexBuffer = VK_NULL_HANDLE;
-        VkDeviceMemory m_VertexBufferMemory = VK_NULL_HANDLE;
-
-        // BufferLayout m_Layout;
-
-        u32 m_VertexCount = 0;
-        VkDeviceSize m_VertexStride = 0;
-    };
+		u64 m_Size = 0;  // GPU buffer capacity
+		u64 m_UploadSize = 0;  // size of current upload
+		u64 m_StagingBufferSize = 0;  // staging buffer capacity
+		u64 m_Offset = 0;  // offset in GPU buffer
+	};
 }

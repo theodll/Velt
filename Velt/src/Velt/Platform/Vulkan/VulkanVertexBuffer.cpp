@@ -1,76 +1,92 @@
-#include "vtpch.h"
+#include "Core/Core.h"
 #include "VulkanVertexBuffer.h"
-#include "Velt/Platform/Vulkan/VulkanContext.h"
+#include "VulkanContext.h"
+#include "Core/Log.h"
 
 namespace Velt::Renderer::Vulkan
 {
-    VulkanVertexBuffer::VulkanVertexBuffer(const void* vertexData, u32 vertexCount, u64 vertexStride ) :   m_VertexCount(vertexCount), m_VertexStride(vertexStride), m_Device(VulkanContext::GetDevice())
-    {
-        VT_PROFILE_FUNCTION();
-        VT_CORE_TRACE("Creating Vulkan Vertex Buffer");
+	VulkanVertexBuffer::VulkanVertexBuffer(void* data, u64 size, u64 offset)
+		: m_Size(size)
+	{
+		VT_PROFILE_FUNCTION();
 
-        VT_CORE_ASSERT(vertexData, "Vertex data must not be null");
-        VT_CORE_ASSERT(vertexCount > 0, "Vertex count must be > 0");
-        VT_CORE_ASSERT(vertexStride > 0, "Vertex stride must be > 0");
+		auto device = VulkanContext::GetDevice();
 
-        CreateBuffer(vertexData);
-    }
+		device.createBuffer(
+			size,
+			VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+			m_VertexBuffer,
+			m_VertexBufferMemory
+		);
 
-    VulkanVertexBuffer::~VulkanVertexBuffer()
-    {
-        VT_PROFILE_FUNCTION();
-        VT_CORE_TRACE("Destroying Vulkan Vertex Buffer");
+		SetData(data, size, offset);
+	}
 
-        if (m_VertexBuffer != VK_NULL_HANDLE)
-        {
-            vkDestroyBuffer(m_Device.device(), m_VertexBuffer, nullptr);
-            m_VertexBuffer = VK_NULL_HANDLE;
-        }
+	VulkanVertexBuffer::~VulkanVertexBuffer()
+	{
+		VT_PROFILE_FUNCTION();
 
-        if (m_VertexBufferMemory != VK_NULL_HANDLE)
-        {
-            vkFreeMemory(m_Device.device(), m_VertexBufferMemory, nullptr);
-            m_VertexBufferMemory = VK_NULL_HANDLE;
-        }
-    }
+		auto device = VulkanContext::GetDevice();
 
-    void VulkanVertexBuffer::CreateBuffer(const void* data)
-    {
-        VT_PROFILE_FUNCTION();
-        VkDeviceSize bufferSize = m_VertexStride * m_VertexCount;
+		if (m_StagingBuffer != VK_NULL_HANDLE)
+		{
+			vkDestroyBuffer(device.device(), m_StagingBuffer, nullptr);
+			vkFreeMemory(device.device(), m_StagingBufferMemory, nullptr);
+		}
 
-        
+		if (m_VertexBuffer != VK_NULL_HANDLE)
+		{
+			vkDestroyBuffer(device.device(), m_VertexBuffer, nullptr);
+			vkFreeMemory(device.device(), m_VertexBufferMemory, nullptr);
+		}
+	}
 
-        m_Device.createBuffer(
-            bufferSize,
-            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-            VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-            m_VertexBuffer,
-            m_VertexBufferMemory
-        );
+	void VulkanVertexBuffer::SetData(void* data, u64 size, u64 offset)
+	{
+		auto device = VulkanContext::GetDevice();
 
-        void* mappedData = nullptr;
-        vkMapMemory(
-            m_Device.device(),
-            m_VertexBufferMemory,
-            0,
-            bufferSize,
-            0,
-            &mappedData
-        );
+		if (m_StagingBuffer == VK_NULL_HANDLE || m_StagingBufferSize < size) {
+			if (m_StagingBuffer != VK_NULL_HANDLE) {
 
-        memcpy(mappedData, data, static_cast<size_t>(bufferSize));
-        vkUnmapMemory(m_Device.device(), m_VertexBufferMemory);
-    }
+				vkDestroyBuffer(device.device(), m_StagingBuffer, nullptr);
+				vkFreeMemory(device.device(), m_StagingBufferMemory, nullptr);
 
-    void VulkanVertexBuffer::Bind() const
-    {
-        VT_PROFILE_FUNCTION();
-    }
+			}
 
-    void VulkanVertexBuffer::Unbind() const
-    {
-        VT_PROFILE_FUNCTION();
-    }
+			device.createBuffer(
+				size,
+				VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+				m_StagingBuffer,
+				m_StagingBufferMemory
+			);
+			m_StagingBufferSize = size;
+		}
+
+		void* mapped = nullptr;
+		vkMapMemory(device.device(), m_StagingBufferMemory, 0, size, 0, &mapped);
+		memcpy(mapped, data, (size_t)size);
+		vkUnmapMemory(device.device(), m_StagingBufferMemory);
+	}
+
+	void VulkanVertexBuffer::Upload(VkCommandBuffer commandBuffer)
+	{
+		VT_PROFILE_FUNCTION();
+
+		VT_CORE_ASSERT(m_StagingBuffer != VK_NULL_HANDLE, "No staging buffer set!");
+
+		VkBufferCopy copyRegion{};
+		copyRegion.srcOffset = 0;
+		copyRegion.dstOffset = m_Offset;
+		copyRegion.size = m_UploadSize;
+
+		vkCmdCopyBuffer(
+			commandBuffer,
+			m_StagingBuffer,
+			m_VertexBuffer,
+			1,
+			&copyRegion
+		);
+	}
 }
