@@ -1,19 +1,23 @@
 #pragma once
 #include "Core/Core.h"
+#include "Renderer/IndexBuffer.h"
 #include <vulkan/vulkan.h>
 
 namespace Velt::Renderer::Vulkan
 {
-	class VulkanIndexBuffer
+	class VulkanIndexBuffer : public IndexBuffer
 	{
 	public:
 		VulkanIndexBuffer(u64 size);
+		VulkanIndexBuffer(void* data, u64 size, u64 offset);
 		~VulkanIndexBuffer();
 
-		void SetData(void* data, u64 size, u64 offset = 0);
-		void Upload(VkCommandBuffer commandBuffer);
+		virtual void SetData(void* data, u64 size, u64 offset = 0) override;
+		virtual void Upload(VkCommandBuffer commandBuffer) override;
 
-		VkBuffer GetBuffer() const { return m_IndexBuffer; }
+		virtual u32 GetCount() const override { return m_Size / sizeof(i32); }
+
+		virtual VkBuffer GetVulkanBuffer() const override { return m_IndexBuffer; }
 
 	private:
 		VkBuffer       m_IndexBuffer = VK_NULL_HANDLE;

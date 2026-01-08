@@ -1,11 +1,11 @@
 #include "Core/Core.h"
-#include "VulkanIndexBuffer.h"
-#include "VulkanContext.h"
+#include "VulkanVertexBuffer.h"
+#include "../VulkanContext.h"
 #include "Core/Log.h"
 
 namespace Velt::Renderer::Vulkan
 {
-	VulkanIndexBuffer::VulkanIndexBuffer(void* data, u64 size, u64 offset)
+	VulkanVertexBuffer::VulkanVertexBuffer(void* data, u64 size, u64 offset)
 		: m_Size(size)
 	{
 		VT_PROFILE_FUNCTION();
@@ -14,17 +14,16 @@ namespace Velt::Renderer::Vulkan
 
 		device.createBuffer(
 			size,
-			VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+			VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-			m_IndexBuffer,
-			m_IndexBufferMemory
+			m_VertexBuffer,
+			m_VertexBufferMemory
 		);
 
 		SetData(data, size, offset);
-
 	}
 
-	VulkanIndexBuffer::~VulkanIndexBuffer()
+	VulkanVertexBuffer::~VulkanVertexBuffer()
 	{
 		VT_PROFILE_FUNCTION();
 
@@ -36,14 +35,14 @@ namespace Velt::Renderer::Vulkan
 			vkFreeMemory(device.device(), m_StagingBufferMemory, nullptr);
 		}
 
-		if (m_IndexBuffer != VK_NULL_HANDLE)
+		if (m_VertexBuffer != VK_NULL_HANDLE)
 		{
-			vkDestroyBuffer(device.device(), m_IndexBuffer, nullptr);
-			vkFreeMemory(device.device(), m_IndexBufferMemory, nullptr);
+			vkDestroyBuffer(device.device(), m_VertexBuffer, nullptr);
+			vkFreeMemory(device.device(), m_VertexBufferMemory, nullptr);
 		}
 	}
 
-	void VulkanIndexBuffer::SetData(void* data, u64 size, u64 offset)
+	void VulkanVertexBuffer::SetData(void* data, u64 size, u64 offset)
 	{
 		auto device = VulkanContext::GetDevice();
 
@@ -66,12 +65,16 @@ namespace Velt::Renderer::Vulkan
 		}
 
 		void* mapped = nullptr;
+
+		// If I understood correctly, vkMapMemory, well, maps a memory region in the HOST_VISIBLE Vulkan cpu address-space 
+		// the CPU can access and use for a staging buffer, then it writes the source data (data) into the staging buffer
+		// I hope I understood correctly
 		vkMapMemory(device.device(), m_StagingBufferMemory, 0, size, 0, &mapped);
 		memcpy(mapped, data, (size_t)size);
 		vkUnmapMemory(device.device(), m_StagingBufferMemory);
 	}
 
-	void VulkanIndexBuffer::Upload(VkCommandBuffer commandBuffer)
+	void VulkanVertexBuffer::Upload(VkCommandBuffer commandBuffer)
 	{
 		VT_PROFILE_FUNCTION();
 
@@ -85,7 +88,7 @@ namespace Velt::Renderer::Vulkan
 		vkCmdCopyBuffer(
 			commandBuffer,
 			m_StagingBuffer,
-			m_IndexBuffer,
+			m_VertexBuffer,
 			1,
 			&copyRegion
 		);

@@ -3,24 +3,26 @@
 #include "Velt/Core/Core.h"
 #include "Velt/Renderer/VertexBuffer.h"
 
-#include "VulkanContext.h"
-#include "VulkanDevice.h"
+#include "../VulkanContext.h"
+#include "../VulkanDevice.h"
 #include "Renderer/Buffer.h"
 
 #include <vulkan/vulkan.h>
 
 namespace Velt::Renderer::Vulkan
 {
-	class VulkanVertexBuffer
+	class VulkanVertexBuffer : public VertexBuffer
 	{
 	public:
 		VulkanVertexBuffer(void* data, u64 size, u64 offset);
 		~VulkanVertexBuffer();
 
-		void SetData(void* data, u64 size, u64 offset = 0);
-		void Upload(VkCommandBuffer commandBuffer);
+		virtual void SetData(void* data, u64 size, u64 offset = 0) override;
+		virtual void SetLayout(const BufferLayout& layout) override {};
 
-		VkBuffer GetBuffer() const { return m_VertexBuffer; }
+		virtual void Upload(VkCommandBuffer commandBuffer) override;
+
+		VkBuffer GetVulkanBuffer() const { return m_VertexBuffer; }
 
 	private:
 		VkBuffer       m_VertexBuffer = VK_NULL_HANDLE;

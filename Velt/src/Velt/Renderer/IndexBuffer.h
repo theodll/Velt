@@ -8,10 +8,13 @@ namespace Velt::Renderer
     public:
         virtual ~IndexBuffer() {};
 
-        virtual void Bind() const = 0;
-        virtual u64 GetSize() const = 0;
-      
+		virtual void SetData(void* data, u64 size, u64 offset = 0) = 0;
+		virtual void Upload(VkCommandBuffer commandBuffer) = 0;
+
+        virtual VkBuffer GetVulkanBuffer() const = 0;
+        virtual u32 GetCount() const = 0;
+
         static std::shared_ptr<IndexBuffer> Create(u64 size);
-        static std::shared_ptr<IndexBuffer> Create(void* data, u64 size);
+        static std::shared_ptr<IndexBuffer> Create(void* data, u64 size, u64 offset = 0);
     };
 } 

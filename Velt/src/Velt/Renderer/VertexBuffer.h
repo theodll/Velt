@@ -23,14 +23,14 @@ namespace Velt::Renderer
     public:
         virtual ~VertexBuffer() {};
 
-        //virtual void setLayout(const BufferLayout& layout) = 0;
-        //virtual BufferLayout getLayout() const = 0; 
-
-
-        virtual void Bind() const = 0;
-        virtual void Unbind() const = 0;
+		virtual void SetData(void* data, u64 size, u64 offset = 0) = 0;
+		virtual void SetLayout(const BufferLayout& layout) = 0;
         
-
+        virtual void Upload(VkCommandBuffer commandBuffer) = 0;
+		
+        virtual BufferLayout GetLayout() const = 0;
+        virtual VkBuffer GetVulkanBuffer() const = 0;
+        
 		static std::shared_ptr<VertexBuffer> Create(const void* vertexData, u64 vertexCount, u64 vertexStride);
     };
 } 

@@ -1,7 +1,7 @@
 #include "vtpch.h"
 #include "VulkanRenderer.h"
-#include "Velt/Platform/Vulkan/VulkanVertexBuffer.h"
-#include "Velt/Platform/Vulkan/VulkanIndexBuffer.h"
+#include "Velt/Platform/Vulkan/Buffer/VulkanVertexBuffer.h"
+#include "Velt/Platform/Vulkan/Buffer/VulkanIndexBuffer.h"
 #include "Velt/Platform/Vulkan/VulkanPipeline.h"
 
 namespace Velt::Renderer::Vulkan 
@@ -40,18 +40,6 @@ namespace Velt::Renderer::Vulkan
 		
 		uint32_t indexCount = s_RenderData->QuadIndexBuffer->GetCount();
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
-	}
-
-	void VulkanRenderer::Clear()
-	{
-	}
-
-	void VulkanRenderer::SetClearColor(const glm::vec4& color)
-	{
-	}
-
-	void VulkanRenderer::DrawIndexed(const std::shared_ptr<VertexBuffer>& vertexBuffer, std::shared_ptr<IndexBuffer>& indexBuffer)
-	{
 	}
 
 }

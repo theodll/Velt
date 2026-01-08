@@ -1,7 +1,7 @@
 #include "vtpch.h"
 #include "VertexBuffer.h"
 #include "RenderAPI.h"
-#include "Platform/Vulkan/VulkanVertexBuffer.h"
+#include "Platform/Vulkan/Buffer/VulkanVertexBuffer.h"
 #include "Velt/Renderer/Renderer.h"
 #include "RenderAPI.h"
 

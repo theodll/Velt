@@ -7,12 +7,8 @@ namespace Velt::Renderer::Vulkan
 	class VELT_API VulkanRenderer : public RenderAPI
 	{
 	public:
-		
-
-		void Clear() override;
-		void SetClearColor(const glm::vec4& color) override;
-
-		void DrawIndexed(const std::shared_ptr<VertexBuffer>& vertexBuffer, std::shared_ptr<IndexBuffer>& indexBuffer) override;
+		void Init();
+		void DrawQuad(Ref<VkCommandBuffer> renderCommandBuffer, Ref<VulkanPipeline>& pipeline, const glm::mat4& transform); 
 
 	private:
 
