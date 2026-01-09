@@ -8,7 +8,7 @@
 namespace Velt::Renderer
 {
     
-	std::shared_ptr<VertexBuffer> VertexBuffer::Create(const void* vertexData, u64 vertexCount, u64 vertexStride)
+	std::shared_ptr<VertexBuffer> VertexBuffer::Create(void* vertexData, u64 vertexCount, u64 vertexStride)
 	{
 		VT_PROFILE_FUNCTION();
 		switch (Renderer::GetAPI())

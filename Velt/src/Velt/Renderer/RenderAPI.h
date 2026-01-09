@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "VertexBuffer.h"
+#include "Platform/Vulkan/VulkanPipeline.h"
 #include "Velt/Core/Core.h"
 #include "IndexBuffer.h"
 #include <glm/glm.hpp>
@@ -19,10 +20,18 @@ namespace Velt::Renderer {
             METAL = 3
         };
 
-        virtual void Clear() = 0;
-        virtual void SetClearColor(const glm::vec4& color) = 0;
+		virtual void Init() = 0;
+		virtual void Shutdown() = 0;
 
-        virtual void DrawIndexed(const std::shared_ptr<VertexBuffer>& vertexBuffer, std::shared_ptr<IndexBuffer>& indexBuffer) = 0;
+		virtual void DrawQuad(Ref<VkCommandBuffer> renderCommandBuffer, Ref<Vulkan::VulkanPipeline> pipeline, const glm::mat4& transform) = 0;
+
+		virtual void BeginFrame() = 0;
+		virtual void EndFrame() = 0;
+
+		virtual void BeginRenderPass(Ref<VkCommandBuffer> renderCommandBuffer, Ref<VkRenderPass> renderpass, bool explicitClear = false) = 0;
+		virtual void EndRenderPass(Ref<VkCommandBuffer> renderCommandBuffer) = 0;
+
+		virtual void ClearScreen(Ref<VkCommandBuffer> renderCommandBuffer) = 0;
         
         inline static API GetAPI() { return s_API; }
 
