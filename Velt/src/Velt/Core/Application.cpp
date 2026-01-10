@@ -132,6 +132,8 @@ namespace Velt {
 						VT_PROFILE_SCOPE("WindowClose Event");
 						WindowCloseEvent e; 
 						OnEvent(e); 
+						running = false;
+						break;
 					}
 					break;
 				case SDL_EVENT_WINDOW_RESIZED:
