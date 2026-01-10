@@ -20,6 +20,25 @@ namespace Velt::Renderer::Vulkan
 	{
 		VT_PROFILE_FUNCTION();
 		s_RenderData = CreateScope<RenderData>();
+
+		Vertex quadVerticesData[] = {
+			{ {-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+			{ { 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+			{ { 0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}},
+			{ {-0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}}
+		};
+		std::vector<Vertex> quadVertices(quadVerticesData, quadVerticesData + 4);
+
+		s_RenderData->QuadVertexBuffer = CreateRef<VulkanVertexBuffer>(quadVertices.data(), quadVertices.size(), sizeof(Vertex));
+		std::vector<u32> quadIndices = { 0, 1, 2, 2, 3, 0 };
+		s_RenderData->QuadIndexBuffer = CreateRef<VulkanIndexBuffer>(quadIndices.data(), quadIndices.size());
+
+		// Upload quad buffers
+		auto uploader = VulkanContext::GetResourceUploader();
+		uploader.Begin();
+		s_RenderData->QuadVertexBuffer->Upload(uploader.GetCommandBuffer());
+		s_RenderData->QuadIndexBuffer->Upload(uploader.GetCommandBuffer());
+		uploader.End();
 	}
 
 	void VulkanRenderer::Shutdown()

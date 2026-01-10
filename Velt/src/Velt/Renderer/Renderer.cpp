@@ -37,10 +37,7 @@ namespace Velt::Renderer {
 
 	}
 
-	void Submit(const std::shared_ptr<VertexBuffer>& vertexBuffer, const std::shared_ptr<IndexBuffer>& indexBuffer)
-	{
-		
-	}
+//	void Renderer::DrawQuad()
 
 
 

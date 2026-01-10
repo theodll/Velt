@@ -23,6 +23,7 @@ namespace Velt::Renderer::Vulkan
 		static VulkanDevice& GetDevice() { return *m_Device; }
 		static VkInstance& GetInstance() { return m_Instance; }
 		static VkSurfaceKHR& GetSurface() { return m_Surface; }
+		static VulkanResourceUploader& GetResourceUploader() { return *m_ResourceUploader; }
 
 	private:
 		bool m_EnableValidationLayers;
