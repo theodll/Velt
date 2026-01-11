@@ -10,9 +10,10 @@ namespace Velt::Renderer::Vulkan
 	{
 		VT_PROFILE_FUNCTION();
 
-		auto device = VulkanContext::GetDevice();
+		auto& device = VulkanContext::GetDevice();
 
 		device.createBuffer(
+			device.device(),
 			size,
 			VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -44,7 +45,7 @@ namespace Velt::Renderer::Vulkan
 
 	void VulkanVertexBuffer::SetData(void* data, u64 size, u64 offset)
 	{
-		auto device = VulkanContext::GetDevice();
+		auto& device = VulkanContext::GetDevice();
 
 		if (m_StagingBuffer == VK_NULL_HANDLE || m_StagingBufferSize < size) {
 			if (m_StagingBuffer != VK_NULL_HANDLE) {
@@ -55,6 +56,7 @@ namespace Velt::Renderer::Vulkan
 			}
 
 			device.createBuffer(
+				device.device(),
 				size,
 				VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,

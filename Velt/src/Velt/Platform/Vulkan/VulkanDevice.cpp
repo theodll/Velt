@@ -295,6 +295,7 @@ namespace Velt::Renderer::Vulkan
     }
 
     void VulkanDevice::createBuffer(
+        VkDevice& device,
         VkDeviceSize size,
         VkBufferUsageFlags usage,
         VkMemoryPropertyFlags properties,
@@ -308,10 +309,10 @@ namespace Velt::Renderer::Vulkan
         bufferInfo.usage = usage;
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-        if (vkCreateBuffer(m_Device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
+        if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
         {
-            throw std::runtime_error("failed to create vertex buffer!");
-            VT_CORE_ERROR("Failed to create vertex buffer!");
+            static_assert("Failed to create Device Buffer");
+            VT_CORE_ERROR("Failed to create Device Buffer!");
         }
 
         VkMemoryRequirements memRequirements;
@@ -433,7 +434,7 @@ namespace Velt::Renderer::Vulkan
 
         if (vkAllocateMemory(m_Device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
         {
-            throw std::runtime_error("failed to allocate image memory!");
+            static_assert("Failed to allocate Image memory");
             VT_CORE_ERROR("Failed to allocate image memory!");
         }
 

@@ -55,6 +55,7 @@ namespace Velt::Renderer::Vulkan {
 
 		// Buffer Helper Functions
 		void createBuffer(
+			VkDevice& device,
 			VkDeviceSize size,
 			VkBufferUsageFlags usage,
 			VkMemoryPropertyFlags properties,
