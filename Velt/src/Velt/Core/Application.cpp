@@ -103,6 +103,7 @@ namespace Velt {
 
 		m_Context->Init(); 
 		m_Window->CreateSwapchain(); 
+		Renderer::Renderer::Init();
 
 	}
 
@@ -123,8 +124,8 @@ namespace Velt {
 
 				// TODO: dont pass raw sdl events
 
-				//if (m_ImGuiLayer)
-				//	ImGuiLayer::ProcessSDLEvent(&event);
+				//	ImGuiLayer::Pr
+				// ocessSDLEvent(&event);
 				switch (event.type)
 				{
 				case SDL_EVENT_QUIT:

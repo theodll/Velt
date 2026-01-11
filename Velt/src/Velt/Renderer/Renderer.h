@@ -18,18 +18,26 @@ namespace Velt::Renderer
 		Renderer();
 		~Renderer();
 
+		static void Init();
+		static void Shutdown();
+		static void RequestShutdown();
+
 		static void BeginScene();
 		static void EndScene();
 
-		static void Submit(const std::shared_ptr<VertexBuffer>& vertexBuffer, const std::shared_ptr<IndexBuffer>& indexBuffer);
+		static void BeginRenderPass(Ref<VkCommandBuffer> renderCommandBuffer, Ref<VkRenderPass> renderPass, bool explicitClear = false);
+		static void EndRenderPass(Ref<VkCommandBuffer> renderCommandBuffer);
+		
+		static void BeginFrame();
+		static void EndFrame();
 
-		static void RequestShutdown();
-		static void Shutdown();
+		static void DrawQuad(Ref<VkCommandBuffer> renderCommandBuffer, Ref<Vulkan::VulkanPipeline> pipeline, const glm::mat4& transform);
 
+		
 		inline static RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); };
 
 	private:
-
+		static Scope<RenderAPI> s_RenderAPI; 
 		
 
 	};

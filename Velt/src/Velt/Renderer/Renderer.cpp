@@ -5,39 +5,83 @@
 #include "Velt/Core/Core.h"
 #include "Renderer.h"
 #include "Velt/Core/Application.h"
+#include "Platform/Vulkan/VulkanRenderer.h"
 
 
 namespace Velt::Renderer {
 
+	Scope<RenderAPI> Renderer::s_RenderAPI = nullptr;
+
 	Renderer::Renderer()
 	{
-
+		VT_PROFILE_FUNCTION();
 	}
 
 	Renderer::~Renderer()
 	{
-
+		VT_PROFILE_FUNCTION();
 	}
 
+	void Renderer::Init() 
+	{
+		VT_PROFILE_FUNCTION();
+		VT_CORE_TRACE("Init Static Renderer");
+		s_RenderAPI = CreateScope<Vulkan::VulkanRenderer>(); 
+		s_RenderAPI->Init();
+	}
 
 	void Renderer::Shutdown()
 	{
-
+		VT_PROFILE_FUNCTION();
+		VT_CORE_TRACE("Shutdown Static Renderer");
 	}
-
-
 	
 	void Renderer::BeginScene() 
 	{
-
+		VT_PROFILE_FUNCTION();
+		VT_CORE_TRACE("Begin Scene");
 	}
 
 	void Renderer::EndScene() 
 	{
-
+		VT_PROFILE_FUNCTION();
+		VT_CORE_TRACE("End Scene");
 	}
 
-//	void Renderer::DrawQuad()
+	void Renderer::BeginRenderPass(Ref<VkCommandBuffer> renderCommandBuffer, Ref<VkRenderPass> renderPass, bool explicitClear /*= false*/)
+	{
+		VT_PROFILE_FUNCTION();
+		s_RenderAPI->BeginRenderPass(renderCommandBuffer, renderPass, explicitClear);
+	}
+
+	void Renderer::EndRenderPass(Ref<VkCommandBuffer> renderCommandBuffer)
+	{
+		VT_PROFILE_FUNCTION();
+		s_RenderAPI->EndRenderPass(renderCommandBuffer);
+	}
+
+	void Renderer::BeginFrame()
+	{
+		VT_PROFILE_FUNCTION();
+		s_RenderAPI->BeginFrame();
+	}
+
+	void Renderer::EndFrame()
+	{
+		VT_PROFILE_FUNCTION();
+		s_RenderAPI->EndFrame();
+	}
+
+	void Renderer::DrawQuad(Ref<VkCommandBuffer> renderCommandBuffer, Ref<Vulkan::VulkanPipeline> pipeline, const glm::mat4& transform)
+	{
+		VT_PROFILE_FUNCTION();
+		s_RenderAPI->DrawQuad(renderCommandBuffer, pipeline, transform);
+	}
+
+	void Renderer::RequestShutdown()
+	{
+		VT_PROFILE_FUNCTION();
+	}
 
 
 

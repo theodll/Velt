@@ -9,8 +9,8 @@ namespace Velt::Renderer::Vulkan
 
 	struct RenderData
 	{
-		Ref<VulkanVertexBuffer> QuadVertexBuffer;
-		Ref<VulkanIndexBuffer> QuadIndexBuffer;
+		Ref<VertexBuffer> QuadVertexBuffer;
+		Ref<IndexBuffer> QuadIndexBuffer;
 	};
 
 	static Scope<RenderData> s_RenderData = nullptr;
@@ -29,9 +29,9 @@ namespace Velt::Renderer::Vulkan
 		};
 		std::vector<Vertex> quadVertices(quadVerticesData, quadVerticesData + 4);
 
-		s_RenderData->QuadVertexBuffer = CreateRef<VulkanVertexBuffer>(quadVertices.data(), quadVertices.size(), sizeof(Vertex));
+		s_RenderData->QuadVertexBuffer = VertexBuffer::Create(quadVertices.data(), quadVertices.size(), sizeof(Vertex));
 		std::vector<u32> quadIndices = { 0, 1, 2, 2, 3, 0 };
-		s_RenderData->QuadIndexBuffer = CreateRef<VulkanIndexBuffer>(quadIndices.data(), quadIndices.size());
+		s_RenderData->QuadIndexBuffer = IndexBuffer::Create(quadIndices.data(), quadIndices.size());
 
 		// Upload quad buffers
 		auto uploader = VulkanContext::GetResourceUploader();
