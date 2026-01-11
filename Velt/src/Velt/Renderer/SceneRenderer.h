@@ -22,3 +22,10 @@ namespace Velt::Renderer {
 
 	};
 }
+
+
+//my plan is as follows just to get it to work:
+// in application: 
+// DrawQuad(commandbuffer, pipeline, {1, 1, 1, 1}) 
+// commandbuffer and pipeline are fetched through this class (eg. m_SceneRenderer->GetVulkanCommandBuffer() / GetPipeline())
+// Scene Renderer must also be created in Application::Init or somewhere like that. Then for every frame this takes care of it
