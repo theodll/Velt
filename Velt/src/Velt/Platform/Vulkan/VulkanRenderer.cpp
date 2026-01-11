@@ -35,6 +35,7 @@ namespace Velt::Renderer::Vulkan
 
 		// Upload quad buffers
 		auto& uploader = VulkanContext::GetResourceUploader();
+
 		uploader.Begin();
 		s_RenderData->QuadVertexBuffer->Upload(uploader.GetCommandBuffer());
 		s_RenderData->QuadIndexBuffer->Upload(uploader.GetCommandBuffer());

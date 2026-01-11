@@ -231,19 +231,19 @@ namespace Velt::Renderer::Vulkan
 		std::vector<VkExtensionProperties> extensions(extensionCount);
 		vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
 
-		VT_CORE_INFO("Available Vulkan extensions: ");
+		// VT_CORE_TRACE("Available Vulkan extensions: ");
 		std::unordered_set<std::string> available;
 		for (const auto& extension : extensions)
 		{
-			VT_CORE_INFO("\t {}", extension.extensionName);
+			// VT_CORE_TRACE("\t {}", extension.extensionName);
 			available.insert(extension.extensionName);
 		}
 
-		VT_CORE_INFO("Required Vulkan extensions: ");
+		// VT_CORE_TRACE("Required Vulkan extensions: ");
 		auto requiredExtensions = GetRequiredExtensions();
 		for (const auto& required : requiredExtensions)
 		{
-			VT_CORE_INFO("\t {}", required);
+			// VT_CORE_TRACE("\t {}", required);
 			if (available.find(required) == available.end())
 			{
 				VT_CORE_ERROR("Missing required SDL extension: {}", required);

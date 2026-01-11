@@ -41,8 +41,7 @@ namespace Velt::Renderer::Vulkan
         vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
         if (deviceCount == 0)
         {
-            throw std::runtime_error("failed to find GPUs with Vulkan support!");
-            VT_CORE_ERROR("Failed to find GPUs with Vulkan support!");
+           VT_CORE_ERROR("Failed to find GPUs with Vulkan support!");
         }
         VT_CORE_INFO("Device count: {}", deviceCount);
         std::vector<VkPhysicalDevice> devices(deviceCount);
@@ -59,11 +58,11 @@ namespace Velt::Renderer::Vulkan
 
         if (m_PhysicalDevice == VK_NULL_HANDLE)
         {
-            throw std::runtime_error("failed to find a suitable GPU!");
+            VT_CORE_ASSERT(false, "Failed to find a Suitable Physical Device.")
         }
 
         vkGetPhysicalDeviceProperties(m_PhysicalDevice, &properties);
-        VT_CORE_INFO("physical device: {}", properties.deviceName);
+        VT_CORE_INFO("Physical Device: {}", properties.deviceName);
     }
 
     void VulkanDevice::createLogicalDevice()
@@ -135,8 +134,7 @@ namespace Velt::Renderer::Vulkan
 
         if (vkCreateCommandPool(m_Device, &poolInfo, nullptr, &m_CommandPool) != VK_SUCCESS)
         {
-            throw std::runtime_error("failed to create command pool!");
-            VT_CORE_ERROR("Failed to create command pool!");
+            VT_CORE_ASSERT(false, "Failed to create command pool!");
         }
     }
 
@@ -290,8 +288,7 @@ namespace Velt::Renderer::Vulkan
             }
         }
 
-        throw std::runtime_error("failed to find suitable memory type!");
-        VT_CORE_ERROR("Failed to find suitable memory type!");
+        VT_CORE_ASSERT(false, "Failed to find suitable memory type!");
     }
 
     void VulkanDevice::createBuffer(

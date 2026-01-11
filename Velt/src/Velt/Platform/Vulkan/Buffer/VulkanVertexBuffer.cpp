@@ -6,7 +6,7 @@
 namespace Velt::Renderer::Vulkan
 {
 	VulkanVertexBuffer::VulkanVertexBuffer(void* data, u64 size, u64 offset)
-		: m_Size(size)
+		: m_UploadSize(size), m_Size(size)
 	{
 		VT_PROFILE_FUNCTION();
 
@@ -80,6 +80,7 @@ namespace Velt::Renderer::Vulkan
 	{
 		VT_PROFILE_FUNCTION();
 
+		VT_CORE_TRACE("Upload Vertexbuffer to GPU");
 		VT_CORE_ASSERT(m_StagingBuffer != VK_NULL_HANDLE, "No staging buffer set!");
 
 		VkBufferCopy copyRegion{};

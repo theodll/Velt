@@ -6,7 +6,7 @@
 namespace Velt::Renderer::Vulkan
 {
 	VulkanIndexBuffer::VulkanIndexBuffer(void* data, u64 size, u64 offset)
-		: m_Size(size)
+		: m_Size(size), m_UploadSize(size)
 	{
 		VT_PROFILE_FUNCTION();
 
@@ -81,6 +81,7 @@ namespace Velt::Renderer::Vulkan
 	{
 		VT_PROFILE_FUNCTION();
 
+		VT_CORE_TRACE("Upload Indexbuffer");
 		VT_CORE_ASSERT(m_StagingBuffer != VK_NULL_HANDLE, "No staging buffer set!");
 
 		VkBufferCopy copyRegion{};

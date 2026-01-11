@@ -9,17 +9,20 @@ namespace Velt::Renderer::Vulkan
     {
         VT_PROFILE_SCOPE("VulkanResourceUploader Begin");
         VT_CORE_TRACE("Begin Vulkan Resource Uploader");
-        vkWaitForFences(
+
+        if (vkWaitForFences(
             m_Device.device(),
             1,
             &m_Fence,
             VK_TRUE,
             UINT64_MAX
-        );
+        ) != VK_SUCCESS) 
+        {
+            VT_CORE_ASSERT(false, "Failed to wait for Fences");
+        }
 
         vkResetFences(m_Device.device(), 1, &m_Fence);
 
-        // Command Buffer zurücksetzen
         vkResetCommandBuffer(m_Commandbuffer, 0);
 
         VkCommandBufferBeginInfo beginInfo{};
@@ -27,6 +30,7 @@ namespace Velt::Renderer::Vulkan
         beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
         vkBeginCommandBuffer(m_Commandbuffer, &beginInfo);
+        
     }
 
     void VulkanResourceUploader::End()
@@ -48,7 +52,6 @@ namespace Velt::Renderer::Vulkan
             m_Fence
         );
 
-        // Warten bis Upload fertig
         vkWaitForFences(
             m_Device.device(),
             1,
@@ -94,6 +97,7 @@ namespace Velt::Renderer::Vulkan
 
         VkFenceCreateInfo fenceInfo{};
         fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
         if (vkCreateFence(
             m_Device.device(),
