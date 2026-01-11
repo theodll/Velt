@@ -81,7 +81,7 @@ namespace Velt::Renderer::Vulkan
 	{
 		VT_PROFILE_FUNCTION();
 
-		VT_CORE_TRACE("Upload Indexbuffer");
+		VT_CORE_TRACE("Upload Indexbuffer to GPU");
 		VT_CORE_ASSERT(m_StagingBuffer != VK_NULL_HANDLE, "No staging buffer set!");
 
 		VkBufferCopy copyRegion{};

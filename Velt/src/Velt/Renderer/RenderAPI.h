@@ -23,15 +23,15 @@ namespace Velt::Renderer {
 		virtual void Init() = 0;
 		virtual void Shutdown() = 0;
 
-		virtual void DrawQuad(Ref<VkCommandBuffer> renderCommandBuffer, Ref<Vulkan::VulkanPipeline> pipeline, const glm::mat4& transform) = 0;
+		virtual void DrawQuad(VkCommandBuffer& renderCommandBuffer, Ref<Vulkan::VulkanPipeline> pipeline, const glm::mat4& transform) = 0;
 
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
 
-		virtual void BeginRenderPass(Ref<VkCommandBuffer> renderCommandBuffer, Ref<VkRenderPass> renderpass, bool explicitClear = false) = 0;
-		virtual void EndRenderPass(Ref<VkCommandBuffer> renderCommandBuffer) = 0;
+		virtual void BeginRenderPass(VkCommandBuffer& renderCommandBuffer, VkRenderPass& renderpass, bool explicitClear = false) = 0;
+		virtual void EndRenderPass(VkCommandBuffer& renderCommandBuffer) = 0;
 
-		virtual void ClearScreen(Ref<VkCommandBuffer> renderCommandBuffer) = 0;
+		virtual void ClearScreen(VkCommandBuffer& renderCommandBuffer) = 0;
         
         inline static API GetAPI() { return s_API; }
 

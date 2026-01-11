@@ -57,23 +57,23 @@ namespace Velt::Renderer::Vulkan
 
 	}
 
-	void VulkanRenderer::BeginRenderPass(Ref<VkCommandBuffer> renderCommandBuffer, Ref<VkRenderPass> renderpass, bool explicitClear /*= false*/)
+	void VulkanRenderer::BeginRenderPass(VkCommandBuffer& renderCommandBuffer, VkRenderPass& renderpass, bool explicitClear /*= false*/)
 	{
 
 	}
 
-	void VulkanRenderer::EndRenderPass(Ref<VkCommandBuffer> renderCommandBuffer)
+	void VulkanRenderer::EndRenderPass(VkCommandBuffer& renderCommandBuffer)
 	{
 
 	}
 
-	void VulkanRenderer::DrawQuad(Ref<VkCommandBuffer> renderCommandBuffer, Ref<VulkanPipeline> pipeline, const glm::mat4& transform)
+	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, Ref<VulkanPipeline> pipeline, const glm::mat4& transform)
 	{
 		VT_PROFILE_FUNCTION();
 
 		VkPipelineLayout pipelineLayout = pipeline->GetVulkanPipelineLayout();
 		VkBuffer vertexBuffer = s_RenderData->QuadVertexBuffer->GetVulkanBuffer();
-		VkCommandBuffer commandBuffer = *renderCommandBuffer.get();
+		VkCommandBuffer commandBuffer = renderCommandBuffer;
 
 		VkDeviceSize offsets[1] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer, offsets);
@@ -87,7 +87,7 @@ namespace Velt::Renderer::Vulkan
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 	}
 
-	void VulkanRenderer::ClearScreen(Ref<VkCommandBuffer> renderCommandBuffer)
+	void VulkanRenderer::ClearScreen(VkCommandBuffer& renderCommandBuffer)
 	{
 
 	}
