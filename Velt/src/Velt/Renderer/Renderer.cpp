@@ -6,6 +6,7 @@
 #include "Renderer.h"
 #include "Velt/Core/Application.h"
 #include "Platform/Vulkan/VulkanRenderer.h"
+#include "SceneRenderer.h"
 
 
 namespace Velt::Renderer {
@@ -28,12 +29,18 @@ namespace Velt::Renderer {
 		VT_CORE_TRACE("Init Static Renderer");
 		s_RenderAPI = CreateScope<Vulkan::VulkanRenderer>(); 
 		s_RenderAPI->Init();
+
+		s_SceneRenderer = CreateScope<SceneRenderer>();
+		s_SceneRenderer->Init();
 	}
 
 	void Renderer::Shutdown()
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Shutdown Static Renderer");
+		s_SceneRenderer->Shutdown();
+		s_RenderAPI->Shutdown();
+		
 	}
 	
 	void Renderer::BeginScene() 
@@ -48,16 +55,16 @@ namespace Velt::Renderer {
 		VT_CORE_TRACE("End Scene");
 	}
 
-	void Renderer::BeginRenderPass(Ref<VkCommandBuffer> renderCommandBuffer, Ref<VkRenderPass> renderPass, bool explicitClear /*= false*/)
+	void Renderer::BeginRenderPass(Ref<RenderCommandBuffer> renderCommandBuffer, Ref<VkRenderPass> renderPass, bool explicitClear /*= false*/)
 	{
 		VT_PROFILE_FUNCTION();
-		s_RenderAPI->BeginRenderPass(renderCommandBuffer, renderPass, explicitClear);
+		s_RenderAPI->BeginRenderPass(renderCommandBuffer->GetVulkanCommandBuffer(), *renderPass.get(), explicitClear);
 	}
 
-	void Renderer::EndRenderPass(Ref<VkCommandBuffer> renderCommandBuffer)
+	void Renderer::EndRenderPass(Ref<RenderCommandBuffer> renderCommandBuffer)
 	{
 		VT_PROFILE_FUNCTION();
-		s_RenderAPI->EndRenderPass(renderCommandBuffer);
+		s_RenderAPI->EndRenderPass(renderCommandBuffer->GetVulkanCommandBuffer());
 	}
 
 	void Renderer::BeginFrame()
@@ -72,10 +79,10 @@ namespace Velt::Renderer {
 		s_RenderAPI->EndFrame();
 	}
 
-	void Renderer::DrawQuad(Ref<VkCommandBuffer> renderCommandBuffer, Ref<Vulkan::VulkanPipeline> pipeline, const glm::mat4& transform)
+	void Renderer::DrawQuad(Ref<RenderCommandBuffer> renderCommandBuffer, Ref<Vulkan::VulkanPipeline> pipeline, const glm::mat4& transform)
 	{
 		VT_PROFILE_FUNCTION();
-		s_RenderAPI->DrawQuad(renderCommandBuffer, pipeline, transform);
+		s_RenderAPI->DrawQuad(renderCommandBuffer->GetVulkanCommandBuffer(), pipeline, transform);
 	}
 
 	void Renderer::RequestShutdown()

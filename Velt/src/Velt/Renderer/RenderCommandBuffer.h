@@ -16,8 +16,7 @@ namespace Velt::Renderer {
 
 		virtual VkCommandBuffer& GetVulkanCommandBuffer();
 
-		static Ref<RenderCommandBuffer> Create(u32 count = 0, const std::string& debugName = "");
-		static Ref<RenderCommandBuffer> CreateFromSwapChain(const std::string& debugName = "");
+		static Ref<RenderCommandBuffer> Create();
 	};
 
 }

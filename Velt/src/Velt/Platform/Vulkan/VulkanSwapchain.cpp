@@ -113,7 +113,7 @@ namespace Velt::Renderer::Vulkan
         vkResetFences(m_Device.device(), 1, &m_InFlightFences[m_CurrentFrameIndex]);
         if (vkQueueSubmit(m_Device.graphicsQueue(), 1, &submitInfo, m_InFlightFences[m_CurrentFrameIndex]) != VK_SUCCESS)
         {
-            throw std::runtime_error("failed to submit draw command buffer!");
+            VT_CORE_ASSERT(false, "Failed to Submit Draw Commandbuffers")
         }
 
         VkPresentInfoKHR presentInfo = {};
@@ -381,7 +381,7 @@ namespace Velt::Renderer::Vulkan
                 VK_SUCCESS ||
                 vkCreateFence(m_Device.device(), &fenceInfo, nullptr, &m_InFlightFences[i]) != VK_SUCCESS)
             {
-                throw std::runtime_error("failed to create synchronization objects for a frame!");
+                VT_CORE_ASSERT(false, "Failed to Create Synchronisation Primitives");
             }
         }
     }

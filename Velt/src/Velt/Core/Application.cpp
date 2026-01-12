@@ -152,11 +152,22 @@ namespace Velt {
 				}
 			}
 
+			Renderer::Renderer::BeginFrame();
 			VT_PROFILE_SCOPE("Layer OnUpdate Loop");
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 
-			RenderImGui();
+
+			Renderer::Renderer::BeginScene();
+			for (Layer* layer : m_LayerStack)
+				layer->OnRender(Renderer::Renderer::GetVulkanCommandBuffer());
+
+			// TOD: render imgui here 
+
+			Renderer::Renderer::EndScene();
+			Renderer::Renderer::EndFrame();
+
+			
 
 			VT_PROFILE_SCOPE("Renderer drawFrame");
 

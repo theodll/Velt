@@ -18,22 +18,9 @@ namespace Velt::Renderer::Vulkan {
 		virtual void End() override;
 		virtual void Submit() override;
 
-		virtual float GetExecutionGPUTime(u32 frameIndex, u32 queryIndex = 0) const override
+		VkCommandBuffer GetVulkanCommandBuffer() const
 		{
-			if (queryIndex == UINT32_MAX || queryIndex / 2 >= m_TimestampNextAvailableQuery / 2)
-				return 0.0f;
-
-			return m_ExecutionGPUTimes[frameIndex][queryIndex / 2];
-		}
-
-		virtual u32 BeginTimestampQuery() override;
-		virtual void EndTimestampQuery(u32 queryID) override;
-
-		VkCommandBuffer GetActiveCommandBuffer() const { return m_ActiveCommandBuffer; }
-
-		VkCommandBuffer GetCommandBuffer(u32 frameIndex) const
-		{
-			return m_CommandBuffers[frameIndex];
+			return m_CommandBuffers;
 		}
 	private:
 		std::string m_DebugName;
