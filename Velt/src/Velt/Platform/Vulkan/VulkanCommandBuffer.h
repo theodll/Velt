@@ -17,11 +17,12 @@ namespace Velt::Renderer::Vulkan {
 		virtual void Begin() override;
 		virtual void End() override;
 		virtual void Submit() override;
-
+		/*
 		VkCommandBuffer GetVulkanCommandBuffer() const
 		{
 			return m_CommandBuffers;
 		}
+		*/
 	private:
 		std::string m_DebugName;
 		VkCommandPool m_CommandPool = nullptr;

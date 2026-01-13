@@ -160,7 +160,7 @@ namespace Velt {
 
 			Renderer::Renderer::BeginScene();
 			for (Layer* layer : m_LayerStack)
-				layer->OnRender(Renderer::Renderer::GetVulkanCommandBuffer());
+				layer->OnRender(m_Window->GetSwapchain().GetCurrentDrawCommandBuffer());
 
 			// TOD: render imgui here 
 

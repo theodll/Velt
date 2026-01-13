@@ -15,7 +15,7 @@ namespace Velt::Renderer {
 
 		VkCommandBuffer& GetVulkanCommandBuffer() { return m_Commandbuffer; }
 		Ref<Pipeline> GetPipeline();
-		VkRenderPass& GetFinalRenderpass();
+		VkRenderPass GetFinalRenderpass();
 		 
 	private:
 		VkCommandBuffer m_Commandbuffer;

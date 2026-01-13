@@ -29,7 +29,8 @@ namespace Velt::Windows
 		void CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 		void CreateSwapchain() override;
 
-		Renderer::Vulkan::VulkanSwapchain& GetSwapchain();
+
+		Renderer::Vulkan::VulkanSwapchain& GetSwapchain() override;
 	private:
 		SDL_Window* m_Window = nullptr;
 		std::unique_ptr<Renderer::Vulkan::VulkanSwapchain> m_Swapchain;

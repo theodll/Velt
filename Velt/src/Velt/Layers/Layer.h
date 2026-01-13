@@ -15,7 +15,7 @@ namespace Velt
         virtual void OnUpdate() {};
         virtual void OnEvent(Event& event) {};
         virtual void OnImGuiRender() {};
-        virtual void OnRender(Ref<Renderer::RenderCommandBuffer> commandBuffer) {};
+        virtual void OnRender(VkCommandBuffer commandBuffer) {};
 
         inline const std::string& GetName() const {  return m_DebugName;   }
 

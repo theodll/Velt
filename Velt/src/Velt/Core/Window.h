@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include <string>
 #include "Events/Event.h"
+#include "Platform/Vulkan/VulkanSwapchain.h"
 
 namespace Velt
 {
@@ -38,6 +39,7 @@ namespace Velt
 		virtual void SetResizable(bool enable) = 0; 
 		virtual void* GetNativeHandle() const = 0;
 
+		virtual Renderer::Vulkan::VulkanSwapchain& GetSwapchain();
 
 		virtual void CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface) = 0;
 		virtual void CreateSwapchain() = 0;

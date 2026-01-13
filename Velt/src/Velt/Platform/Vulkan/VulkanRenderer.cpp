@@ -3,6 +3,7 @@
 #include "Velt/Platform/Vulkan/Buffer/VulkanVertexBuffer.h"
 #include "Velt/Platform/Vulkan/Buffer/VulkanIndexBuffer.h"
 #include "Velt/Platform/Vulkan/VulkanPipeline.h"
+#include "Core/Application.h"
 
 namespace Velt::Renderer::Vulkan 
 {
@@ -49,11 +50,31 @@ namespace Velt::Renderer::Vulkan
 
 	void VulkanRenderer::BeginFrame()
 	{
+		auto& app = Velt::Application::Get();
+		auto& window = app.GetWindow();
+		auto& swapchain = window.GetSwapchain();
+		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
+		auto&& renderpass = swapchain.GetRenderPass();
 
+		VkCommandBufferBeginInfo cmdBeginInfo{};
+		// cmdBeginInfo.sType = VK_
+
+		vkBeginCommandBuffer(currentCommandBuffer, &cmdBeginInfo);
+		BeginRenderPass(currentCommandBuffer, renderpass);
 	}
 
 	void VulkanRenderer::EndFrame()
 	{
+		auto& app = Velt::Application::Get();
+		auto& window = app.GetWindow();
+		auto& swapchain = window.GetSwapchain();
+		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
+		auto&& renderpass = swapchain.GetRenderPass();
+
+		EndRenderPass(currentCommandBuffer);
+		vkEndCommandBuffer(currentCommandBuffer);
+
+		swapchain.Present();
 
 	}
 
