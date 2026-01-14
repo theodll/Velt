@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/Core.h"
 #include "Pipeline.h"
+#include "Platform/Vulkan/VulkanPipeline.h"
 
 namespace Velt::Renderer {
 
@@ -13,12 +14,15 @@ namespace Velt::Renderer {
 		void BeginScene();
 		void EndScene();
 
-		VkCommandBuffer& GetVulkanCommandBuffer() { return m_Commandbuffer; }
-		Ref<Pipeline> GetPipeline();
+//		VkCommandBuffer& GetVulkanCommandBuffer() { return m_Commandbuffer; }
+		static Ref<Pipeline> GetPipeline();
 		VkRenderPass GetFinalRenderpass();
 		 
 	private:
-		VkCommandBuffer m_Commandbuffer;
+		
+		static Ref<Vulkan::VulkanPipeline> s_Pipeline;
+
+		// VkCommandBuffer m_Commandbuffer;
 
 	};
 }

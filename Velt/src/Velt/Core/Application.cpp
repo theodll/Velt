@@ -158,13 +158,13 @@ namespace Velt {
 				layer->OnUpdate();
 
 
-			Renderer::Renderer::BeginScene();
+		// 	Renderer::Renderer::BeginScene();
 			for (Layer* layer : m_LayerStack)
 				layer->OnRender(m_Window->GetSwapchain().GetCurrentDrawCommandBuffer());
 
 			// TOD: render imgui here 
 
-			Renderer::Renderer::EndScene();
+		//	Renderer::Renderer::EndScene();
 			Renderer::Renderer::EndFrame();
 
 			

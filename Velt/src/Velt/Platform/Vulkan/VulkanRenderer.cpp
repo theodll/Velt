@@ -56,10 +56,12 @@ namespace Velt::Renderer::Vulkan
 		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
 		auto&& renderpass = swapchain.GetRenderPass();
 
-		VkCommandBufferBeginInfo cmdBeginInfo{};
-		// cmdBeginInfo.sType = VK_
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+		beginInfo.pInheritanceInfo = nullptr;
 
-		vkBeginCommandBuffer(currentCommandBuffer, &cmdBeginInfo);
+		vkBeginCommandBuffer(currentCommandBuffer, &beginInfo);
 		BeginRenderPass(currentCommandBuffer, renderpass);
 	}
 
@@ -69,8 +71,7 @@ namespace Velt::Renderer::Vulkan
 		auto& window = app.GetWindow();
 		auto& swapchain = window.GetSwapchain();
 		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
-		auto&& renderpass = swapchain.GetRenderPass();
-
+		
 		EndRenderPass(currentCommandBuffer);
 		vkEndCommandBuffer(currentCommandBuffer);
 
@@ -80,6 +81,32 @@ namespace Velt::Renderer::Vulkan
 
 	void VulkanRenderer::BeginRenderPass(VkCommandBuffer& renderCommandBuffer, VkRenderPass& renderpass, bool explicitClear /*= false*/)
 	{
+		auto& app = Velt::Application::Get();
+		auto& window = app.GetWindow();
+		auto& swapchain = window.GetSwapchain();
+	
+
+		VkRenderPassBeginInfo beginInfo{};
+
+		beginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		beginInfo.renderPass = renderpass; 
+		beginInfo.framebuffer = swapchain.GetCurrentFramebuffer();
+		
+		beginInfo.renderArea.extent = { swapchain.GetWidth(), swapchain.GetHeight() }; 
+		beginInfo.renderArea.offset = { 0, 0 };
+
+		std::array<VkClearValue, 2> clearValues;
+
+		clearValues[0].color = { 0.0f, 1.0f, 0.0f, 0.0f };
+		clearValues[1].depthStencil = { 1.0f, 0 };
+
+		beginInfo.clearValueCount = (u32)clearValues.size();
+		beginInfo.pClearValues = clearValues.data();
+
+		vkCmdBeginRenderPass(renderCommandBuffer, &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		
+
 
 	}
 

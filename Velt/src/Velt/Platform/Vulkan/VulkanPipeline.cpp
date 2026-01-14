@@ -16,10 +16,15 @@ namespace Velt::Renderer::Vulkan {
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Create Pipeline");
+	}
+
+	void VulkanPipeline::Init() 
+	{
+		VT_PROFILE_FUNCTION();
+		VT_CORE_TRACE("Init Pipeline");
 		SetDefaultVulkanPipelineConfigInfo(m_ConfigInfo);
 		Invalidate();
 	}
-
 
 	static VkFormat ShaderDataTypeToVulkanFormat(ShaderDataType type)
 	{
