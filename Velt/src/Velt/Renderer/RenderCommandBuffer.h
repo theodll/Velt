@@ -14,7 +14,7 @@ namespace Velt::Renderer {
 		virtual void End() = 0;
 		virtual void Submit() = 0;
 
-		virtual VkCommandBuffer& GetVulkanCommandBuffer();
+		virtual VkCommandBuffer GetVulkanCommandBuffer() = 0;
 
 		static Ref<RenderCommandBuffer> Create();
 	};

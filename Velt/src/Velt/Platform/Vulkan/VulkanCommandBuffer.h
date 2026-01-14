@@ -10,22 +10,22 @@ namespace Velt::Renderer::Vulkan {
 	class VulkanCommandBuffer : public RenderCommandBuffer
 	{
 	public:
-		VulkanCommandBuffer(u32 count = 0, std::string debugName = "");
-		VulkanCommandBuffer(std::string debugName, bool swapchain);
-		~VulkanCommandBuffer() override;
+		VulkanCommandBuffer(u32 count = 0, std::string debugName = "") {};
+		VulkanCommandBuffer(std::string debugName, bool swapchain) {};
+		~VulkanCommandBuffer() override {};
 
-		virtual void Begin() override;
-		virtual void End() override;
-		virtual void Submit() override;
-		/*
-		VkCommandBuffer GetVulkanCommandBuffer() const
+		virtual void Begin() override {};
+		virtual void End() override {};
+		virtual void Submit() override {};
+		
+		virtual VkCommandBuffer GetVulkanCommandBuffer() override
 		{
-			return m_CommandBuffers;
+			return NULL;
 		}
-		*/
+		
 	private:
 		std::string m_DebugName;
-		VkCommandPool m_CommandPool = nullptr;
+		VkCommandPool m_CommandPool;
 		std::vector<VkCommandBuffer> m_CommandBuffers;
 		VkCommandBuffer m_ActiveCommandBuffer = nullptr;
 		std::vector<VkFence> m_WaitFences;

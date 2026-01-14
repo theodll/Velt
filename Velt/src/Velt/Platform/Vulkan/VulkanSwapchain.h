@@ -67,9 +67,9 @@ namespace Velt::Renderer::Vulkan {
         inline VkRenderPass GetRenderPass() { return m_RenderPass; }
 		inline VkImageView GetImageView(int index) { return m_SwapchainImages[index].ImageView; }
         inline VkFramebuffer GetCurrentFramebuffer() { return GetFrameBuffer(m_CurrentFrameIndex); }
-        inline VkCommandBuffer GetCurrentDrawCommandBuffer() { return GetDrawCommandBuffer(m_CurrentFrameIndex); }
+        inline VkCommandBuffer GetCurrentDrawCommandBuffer() {  return GetDrawCommandBuffer(m_CurrentFrameIndex); }
 
-        inline VkFramebuffer GetFrameBuffer(u32 index) 
+        inline VkFramebuffer GetFrameBuffer(i32 index) 
         { 
             VT_CORE_ASSERT(index < m_Framebuffers.size(), "Framebuffer index out of bounds"); 
             return m_Framebuffers[index]; 
@@ -78,7 +78,7 @@ namespace Velt::Renderer::Vulkan {
         inline VkCommandBuffer GetDrawCommandBuffer(u32 index) 
         { 
             VT_CORE_ASSERT(index < m_Commandbuffers.size(), "Command buffer index out of bounds"); 
-            return m_Commandbuffers[index].CommandBuffer; 
+            return m_Commandbuffers.at(index).CommandBuffer; 
         }
         
 
@@ -106,7 +106,7 @@ namespace Velt::Renderer::Vulkan {
 		std::vector<SwapchainCommandBuffer> m_Commandbuffers;
 
         std::vector<VkFramebuffer> m_Framebuffers;
-        VkRenderPass m_RenderPass = nullptr;
+        VkRenderPass m_RenderPass;
 
         std::vector<DepthStencilImage> m_DepthStencilImages;
         std::vector<SwapchainImage> m_SwapchainImages; 

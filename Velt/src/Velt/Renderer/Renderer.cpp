@@ -12,6 +12,7 @@
 namespace Velt::Renderer {
 
 	Scope<RenderAPI> Renderer::s_RenderAPI = nullptr;
+	Scope<SceneRenderer> Renderer::s_SceneRenderer = nullptr;
 
 	Renderer::Renderer()
 	{
@@ -55,16 +56,16 @@ namespace Velt::Renderer {
 		VT_CORE_TRACE("End Scene");
 	}
 
-	void Renderer::BeginRenderPass(Ref<RenderCommandBuffer> renderCommandBuffer, Ref<VkRenderPass> renderPass, bool explicitClear /*= false*/)
+	void Renderer::BeginRenderPass(VkCommandBuffer& renderCommandBuffer, Ref<VkRenderPass> renderPass, bool explicitClear /*= false*/)
 	{
 		VT_PROFILE_FUNCTION();
-		s_RenderAPI->BeginRenderPass(renderCommandBuffer->GetVulkanCommandBuffer(), *renderPass.get(), explicitClear);
+		s_RenderAPI->BeginRenderPass(renderCommandBuffer, *renderPass.get(), explicitClear);
 	}
 
-	void Renderer::EndRenderPass(Ref<RenderCommandBuffer> renderCommandBuffer)
+	void Renderer::EndRenderPass(VkCommandBuffer& renderCommandBuffer)
 	{
 		VT_PROFILE_FUNCTION();
-		s_RenderAPI->EndRenderPass(renderCommandBuffer->GetVulkanCommandBuffer());
+		s_RenderAPI->EndRenderPass(renderCommandBuffer);
 	}
 
 	void Renderer::BeginFrame()
@@ -79,10 +80,10 @@ namespace Velt::Renderer {
 		s_RenderAPI->EndFrame();
 	}
 
-	void Renderer::DrawQuad(Ref<RenderCommandBuffer> renderCommandBuffer, Ref<Vulkan::VulkanPipeline> pipeline, const glm::mat4& transform)
+	void Renderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, Ref<Vulkan::VulkanPipeline> pipeline, const glm::mat4& transform)
 	{
 		VT_PROFILE_FUNCTION();
-		s_RenderAPI->DrawQuad(renderCommandBuffer->GetVulkanCommandBuffer(), pipeline, transform);
+		s_RenderAPI->DrawQuad(renderCommandBuffer, pipeline, transform);
 	}
 
 	void Renderer::RequestShutdown()

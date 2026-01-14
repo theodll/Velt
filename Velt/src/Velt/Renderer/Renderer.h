@@ -26,13 +26,13 @@ namespace Velt::Renderer
 		static void BeginScene();
 		static void EndScene();
 
-		static void BeginRenderPass(Ref<RenderCommandBuffer> renderCommandBuffer, Ref<VkRenderPass> renderPass, bool explicitClear = false);
-		static void EndRenderPass(Ref<RenderCommandBuffer> renderCommandBuffer);
+		static void BeginRenderPass(VkCommandBuffer& renderCommandBuffer, Ref<VkRenderPass> renderPass, bool explicitClear = false);
+		static void EndRenderPass(VkCommandBuffer& renderCommandBuffer);
 		
 		static void BeginFrame();
 		static void EndFrame();
 
-		static void DrawQuad(Ref<RenderCommandBuffer> renderCommandBuffer, Ref<Vulkan::VulkanPipeline> pipeline, const glm::mat4& transform);
+		static void DrawQuad(VkCommandBuffer& renderCommandBuffer, Ref<Vulkan::VulkanPipeline> pipeline, const glm::mat4& transform);
 
 		
 		inline static RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); };

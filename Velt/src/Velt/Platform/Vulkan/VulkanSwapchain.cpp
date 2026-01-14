@@ -62,6 +62,13 @@ namespace Velt::Renderer::Vulkan
         {
             vkDestroyFence(m_Device.device(), m_InFlightFences[i], nullptr);
         }
+
+        for (auto& frame : m_Commandbuffers)
+        {
+            vkDestroyCommandPool(m_Device.device(), frame.CommandPool, nullptr);
+        }
+
+        m_Commandbuffers.clear();
     }
 
     u32 VulkanSwapchain::AcquireNextImage()
@@ -384,6 +391,41 @@ namespace Velt::Renderer::Vulkan
                 VT_CORE_ASSERT(false, "Failed to Create Synchronisation Primitives");
             }
         }
+
+
+        m_Commandbuffers.resize(MAX_FRAMES_IN_FLIGHT);
+
+        for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+        {
+            // 1) Command Pool
+            VkCommandPoolCreateInfo poolInfo{};
+            poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+            poolInfo.queueFamilyIndex = m_Device.GetQueueFamilyIndex();
+            poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+
+            vkCreateCommandPool(
+                m_Device.device(),
+                &poolInfo,
+                nullptr,
+                &m_Commandbuffers[i].CommandPool
+            );
+
+            // 2) Command Buffer aus DIESEM Pool
+            VkCommandBufferAllocateInfo allocInfo{};
+            allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+            allocInfo.commandPool = m_Commandbuffers[i].CommandPool;
+            allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+            allocInfo.commandBufferCount = 1;
+
+            vkAllocateCommandBuffers(
+                m_Device.device(),
+                &allocInfo,
+                &m_Commandbuffers[i].CommandBuffer
+            );
+        }
+
+        AcquireNextImage(); 
+
     }
 
     VkSurfaceFormatKHR VulkanSwapchain::chooseSwapSurfaceFormat(
