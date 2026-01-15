@@ -66,6 +66,8 @@ namespace Velt::Renderer::Vulkan {
         inline float GetAspectRatio() const { return (float)m_WindowExtent.width / (float)m_WindowExtent.height; }
         inline VkRenderPass GetRenderPass() { return m_RenderPass; }
 		inline VkImageView GetImageView(int index) { return m_SwapchainImages[index].ImageView; }
+
+        inline VkImageView GetCurrentImageView() { return GetImageView(m_CurrentFrameIndex); }
         inline VkFramebuffer GetCurrentFramebuffer() { return GetFrameBuffer(m_CurrentFrameIndex); }
         inline VkCommandBuffer GetCurrentDrawCommandBuffer() {  return GetDrawCommandBuffer(m_CurrentFrameIndex); }
 
