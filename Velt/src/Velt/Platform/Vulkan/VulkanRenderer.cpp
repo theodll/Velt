@@ -54,7 +54,6 @@ namespace Velt::Renderer::Vulkan
 		auto& window = app.GetWindow();
 		auto& swapchain = window.GetSwapchain();
 		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
-		auto&& renderpass = swapchain.GetRenderPass();
 
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -62,7 +61,7 @@ namespace Velt::Renderer::Vulkan
 		beginInfo.pInheritanceInfo = nullptr;
 
 		vkBeginCommandBuffer(currentCommandBuffer, &beginInfo);
-		BeginRenderPass(currentCommandBuffer, renderpass);
+		BeginRendering(currentCommandBuffer, false);
 	}
 
 	void VulkanRenderer::EndFrame()
@@ -72,19 +71,19 @@ namespace Velt::Renderer::Vulkan
 		auto& swapchain = window.GetSwapchain();
 		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
 		
-		EndRenderPass(currentCommandBuffer);
+		EndRendering(currentCommandBuffer);
 		vkEndCommandBuffer(currentCommandBuffer);
 
 		swapchain.Present();
 
 	}
 
-	void VulkanRenderer::BeginRenderPass(VkCommandBuffer& renderCommandBuffer, VkRenderPass& renderpass, bool explicitClear /*= false*/)
+	void VulkanRenderer::BeginRendering(VkCommandBuffer& renderCommandBuffer, bool explicitClear /*= false*/)
 	{
 		auto& app = Velt::Application::Get();
 		auto& window = app.GetWindow();
-		auto& swapchain = window.GetSwapchain();
-	
+		auto& sc = window.GetSwapchain();
+	/*
 
 		VkRenderPassBeginInfo beginInfo{};
 
@@ -101,18 +100,34 @@ namespace Velt::Renderer::Vulkan
 		clearValues[1].depthStencil = { 1.0f, 0 };
 
 		beginInfo.clearValueCount = (u32)clearValues.size();
-		beginInfo.pClearValues = clearValues.data();
+	 	beginInfo.pClearValues = clearValues.data();*/
 
-		vkCmdBeginRenderPass(renderCommandBuffer, &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
+		// vkCmdBeginRenderPass(renderCommandBuffer, &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-		
+		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
 
+		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+		colorAttachmentInfo.imageView = sc.GetCurrentImageView();
+		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL_KHR;
+		colorAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+
+
+		VkRenderingInfoKHR renderInfo{};
+		renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
+		renderInfo.renderArea.extent = { sc.GetWidth(), sc.GetHeight() };
+		renderInfo.renderArea.offset = { 0, 0 };
+		renderInfo.layerCount = 1;
+		renderInfo.colorAttachmentCount = 1;
+		renderInfo.pColorAttachments = &colorAttachmentInfo;
+
+		vkCmdBeginRendering(renderCommandBuffer, &renderInfo);
 
 	}
 
-	void VulkanRenderer::EndRenderPass(VkCommandBuffer& renderCommandBuffer)
+	void VulkanRenderer::EndRendering(VkCommandBuffer& renderCommandBuffer)
 	{
-
+		vkCmdEndRendering(renderCommandBuffer);
 	}
 
 	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, Ref<VulkanPipeline> pipeline, const glm::mat4& transform)

@@ -45,13 +45,6 @@ namespace Velt::Renderer::Vulkan
             vkFreeMemory(m_Device.device(), depthStencilImage.DepthImageMemory, nullptr);
         }
 
-        for (auto framebuffer : m_Framebuffers)
-        {
-            vkDestroyFramebuffer(m_Device.device(), framebuffer, nullptr);
-        }
-
-        vkDestroyRenderPass(m_Device.device(), m_RenderPass, nullptr);
-
         for (size_t i = 0; i < m_ImageAvailableSemaphores.size(); i++)
         {
             vkDestroySemaphore(m_Device.device(), m_RenderFinishedSemaphores[i], nullptr);
@@ -232,7 +225,7 @@ namespace Velt::Renderer::Vulkan
                 VT_CORE_ASSERT(false, "Failed to create Image View.");
             }
         }
-
+/*
         // Create render pass
         VkAttachmentDescription depthAttachment{};
         depthAttachment.format = findDepthFormat();
@@ -288,11 +281,8 @@ namespace Velt::Renderer::Vulkan
         renderPassInfo.pSubpasses = &subpass;
         renderPassInfo.dependencyCount = 1;
         renderPassInfo.pDependencies = &dependency;
-
-        if (vkCreateRenderPass(m_Device.device(), &renderPassInfo, nullptr, &m_RenderPass) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to create render pass!");
-        }
+*/
+  
 
         // Create depth resources
         VkFormat depthFormat = findDepthFormat();
@@ -338,32 +328,6 @@ namespace Velt::Renderer::Vulkan
             if (vkCreateImageView(m_Device.device(), &viewInfo, nullptr, &m_DepthStencilImages[i].DepthImageView) != VK_SUCCESS)
             {
                 throw std::runtime_error("failed to create texture image view!");
-            }
-        }
-
-        // Create framebuffers
-        m_Framebuffers.resize(imageCount);
-        for (size_t i = 0; i < imageCount; i++)
-        {
-            std::array<VkImageView, 2> attachments = { m_SwapchainImages[i].ImageView, m_DepthStencilImages[i].DepthImageView };
-
-            VkExtent2D swapChainExtent = m_WindowExtent;
-            VkFramebufferCreateInfo framebufferInfo = {};
-            framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-            framebufferInfo.renderPass = m_RenderPass;
-            framebufferInfo.attachmentCount = static_cast<u32>(attachments.size());
-            framebufferInfo.pAttachments = attachments.data();
-            framebufferInfo.width = swapChainExtent.width;
-            framebufferInfo.height = swapChainExtent.height;
-            framebufferInfo.layers = 1;
-
-            if (vkCreateFramebuffer(
-                m_Device.device(),
-                &framebufferInfo,
-                nullptr,
-                &m_Framebuffers[i]) != VK_SUCCESS)
-            {
-                throw std::runtime_error("failed to create framebuffer!");
             }
         }
 
@@ -427,6 +391,7 @@ namespace Velt::Renderer::Vulkan
         AcquireNextImage(); 
 
     }
+
 
     VkSurfaceFormatKHR VulkanSwapchain::chooseSwapSurfaceFormat(
         const std::vector<VkSurfaceFormatKHR>& availableFormats)

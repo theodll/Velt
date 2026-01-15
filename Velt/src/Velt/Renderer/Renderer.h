@@ -26,8 +26,8 @@ namespace Velt::Renderer
 		static void BeginScene();
 		static void EndScene();
 
-		static void BeginRenderPass(VkCommandBuffer& renderCommandBuffer, Ref<VkRenderPass> renderPass, bool explicitClear = false);
-		static void EndRenderPass(VkCommandBuffer& renderCommandBuffer);
+		static void BeginRendering(VkCommandBuffer& renderCommandBuffer, bool explicitClear = false);
+		static void EndRendering(VkCommandBuffer& renderCommandBuffer);
 		
 		static void BeginFrame();
 		static void EndFrame();

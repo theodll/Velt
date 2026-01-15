@@ -64,17 +64,10 @@ namespace Velt::Renderer::Vulkan {
 		inline u32 GetHeight() const { return m_WindowExtent.height; }
         inline u32 GetImageCount() const { return (u32)m_SwapchainImages.size(); } 
         inline float GetAspectRatio() const { return (float)m_WindowExtent.width / (float)m_WindowExtent.height; }
-        inline VkRenderPass GetRenderPass() { return m_RenderPass; }
-		inline VkImageView GetImageView(int index) { return m_SwapchainImages[index].ImageView; }
-        inline VkFramebuffer GetCurrentFramebuffer() { return GetFrameBuffer(m_CurrentFrameIndex); }
+        inline VkImageView GetCurrentImageView() { return GetImageView(m_CurrentFrameIndex); }
+        inline VkImageView GetImageView(int index) { return m_SwapchainImages[index].ImageView; }
         inline VkCommandBuffer GetCurrentDrawCommandBuffer() {  return GetDrawCommandBuffer(m_CurrentFrameIndex); }
-
-        inline VkFramebuffer GetFrameBuffer(i32 index) 
-        { 
-            VT_CORE_ASSERT(index < m_Framebuffers.size(), "Framebuffer index out of bounds"); 
-            return m_Framebuffers[index]; 
-        }
-
+      
         inline VkCommandBuffer GetDrawCommandBuffer(u32 index) 
         { 
             VT_CORE_ASSERT(index < m_Commandbuffers.size(), "Command buffer index out of bounds"); 
@@ -83,7 +76,9 @@ namespace Velt::Renderer::Vulkan {
         
 
         VkFormat findDepthFormat();
-        
+        VkRenderingAttachmentInfo* GetColorAttachmentInfo();
+
+
     private:
 		u32 AcquireNextImage();
         u32 SubmitCommandBuffers(const VkCommandBuffer* buffers, u32* imageIndex);
@@ -104,9 +99,6 @@ namespace Velt::Renderer::Vulkan {
 
 
 		std::vector<SwapchainCommandBuffer> m_Commandbuffers;
-
-        std::vector<VkFramebuffer> m_Framebuffers;
-        VkRenderPass m_RenderPass;
 
         std::vector<DepthStencilImage> m_DepthStencilImages;
         std::vector<SwapchainImage> m_SwapchainImages; 
