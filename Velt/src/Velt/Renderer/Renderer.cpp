@@ -56,16 +56,16 @@ namespace Velt::Renderer {
 		VT_CORE_TRACE("End Scene");
 	}
 
-	void Renderer::BeginRendering(VkCommandBuffer& renderCommandBuffer, bool explicitClear /*= false*/)
+	void Renderer::BeginRenderPass(VkCommandBuffer& renderCommandBuffer, Ref<VkRenderPass> renderPass, bool explicitClear /*= false*/)
 	{
 		VT_PROFILE_FUNCTION();
-		s_RenderAPI->BeginRendering(renderCommandBuffer, explicitClear);
+		s_RenderAPI->BeginRenderPass(renderCommandBuffer, *renderPass.get(), explicitClear);
 	}
 
-	void Renderer::EndRendering(VkCommandBuffer& renderCommandBuffer)
+	void Renderer::EndRenderPass(VkCommandBuffer& renderCommandBuffer)
 	{
 		VT_PROFILE_FUNCTION();
-		s_RenderAPI->EndRendering(renderCommandBuffer);
+		s_RenderAPI->EndRenderPass(renderCommandBuffer);
 	}
 
 	void Renderer::BeginFrame()

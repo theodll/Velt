@@ -44,16 +44,6 @@ namespace Velt::Renderer::Vulkan
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Initializing Vulkan Context");
 
-		uint32_t loaderVersion = 0;
-		vkEnumerateInstanceVersion(&loaderVersion);
-
-		VT_CORE_INFO(
-			"Vulkan Loader Version: {}.{}.{}",
-			VK_VERSION_MAJOR(loaderVersion),
-			VK_VERSION_MINOR(loaderVersion),
-			VK_VERSION_PATCH(loaderVersion)
-		);
-
 		auto& window = Application::Get().GetWindow();
 
 		CreateInstance();

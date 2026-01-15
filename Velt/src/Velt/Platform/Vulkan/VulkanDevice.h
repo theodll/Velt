@@ -3,7 +3,6 @@
 #include "vtpch.h"
 #include "Velt/Core/Core.h"
 #include "VulkanCommandBuffer.h"
-#include "../../../../vendor/sdl3/src/video/khronos/vulkan/vulkan_core.h"
 
 namespace Velt::Renderer::Vulkan {
 
@@ -104,15 +103,10 @@ namespace Velt::Renderer::Vulkan {
 #ifdef VT_PLATFORM_OSX
 		const std::vector<const char*> deviceExtensions = {
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-			VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME,
-			VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
 			"VK_KHR_portability_subset"
 		};
 #else
-		const std::vector<const char*> deviceExtensions = { 
-			VK_KHR_SWAPCHAIN_EXTENSION_NAME, 
-			VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME,
-			VK_EXT_DEBUG_UTILS_EXTENSION_NAME };
+		const std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 #endif
 	};
 }  // namespace Velt
