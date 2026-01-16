@@ -140,7 +140,7 @@ namespace Velt::Renderer::Vulkan
 		appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
 		appInfo.pEngineName = "Velt";
 		appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-		appInfo.apiVersion = VK_API_VERSION_1_0;
+		appInfo.apiVersion = VK_API_VERSION_1_3;
 
 		VkInstanceCreateInfo createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -202,7 +202,6 @@ namespace Velt::Renderer::Vulkan
 		PopulateDebugMessengerCreateInfo(createInfo);
 		if (CreateDebugUtilsMessengerEXT(m_Instance, &createInfo, nullptr, &m_DebugMessenger) != VK_SUCCESS)
 		{
-			throw std::runtime_error("failed to set up debug messenger!");
 			VT_CORE_ERROR("Failed to set up debug messenger!");
 		}
 	}

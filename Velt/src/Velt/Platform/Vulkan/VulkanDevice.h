@@ -108,8 +108,7 @@ namespace Velt::Renderer::Vulkan {
 #else
 		const std::vector<const char*> deviceExtensions = { 
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME, 
-			VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME,
-			VK_EXT_DEBUG_UTILS_EXTENSION_NAME };
+		 };
 #endif
 	};
 }  // namespace Velt

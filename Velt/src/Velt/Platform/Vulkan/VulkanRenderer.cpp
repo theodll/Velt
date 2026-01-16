@@ -99,10 +99,33 @@ namespace Velt::Renderer::Vulkan
 
 		// vkCmdBeginRenderPass(renderCommandBuffer, &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
+		VkImageMemoryBarrier2 barrier{};
+		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
+		barrier.srcStageMask = VK_PIPELINE_STAGE_2_NONE;
+		barrier.srcAccessMask = 0;
+		barrier.dstStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
+		barrier.dstAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
+		barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED; 
+		barrier.newLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL;
+		barrier.image = sc.GetCurrentSwapchainImage().Image;
+		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		barrier.subresourceRange.baseMipLevel = 0;
+		barrier.subresourceRange.levelCount = 1;
+		barrier.subresourceRange.baseArrayLayer = 0;
+		barrier.subresourceRange.layerCount = 1;
+
+		VkDependencyInfo dep{};
+		dep.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
+		dep.imageMemoryBarrierCount = 1;
+		dep.pImageMemoryBarriers = &barrier;
+
+		vkCmdPipelineBarrier2(renderCommandBuffer, &dep);
+
+
 		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
 		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
-		colorAttachmentInfo.imageView = sc.GetCurrentImageView();
-		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL_KHR;
+		colorAttachmentInfo.imageView = sc.GetCurrentSwapchainImage().ImageView;
+		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL;
 		colorAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		colorAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 
@@ -114,12 +137,12 @@ namespace Velt::Renderer::Vulkan
 		renderInfo.colorAttachmentCount = 1;
 		renderInfo.pColorAttachments = &colorAttachmentInfo;
 
-		vkCmdBeginRenderingKHR(renderCommandBuffer, &renderInfo);
+		vkCmdBeginRendering(renderCommandBuffer, &renderInfo);
 	}
 
 	void VulkanRenderer::EndRendering(VkCommandBuffer& renderCommandBuffer)
 	{
-		vkCmdEndRenderingKHR(renderCommandBuffer);
+		vkCmdEndRendering(renderCommandBuffer);
 	}
 
 	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, Ref<VulkanPipeline> pipeline, const glm::mat4& transform)

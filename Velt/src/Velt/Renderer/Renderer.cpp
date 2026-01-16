@@ -59,7 +59,7 @@ namespace Velt::Renderer {
 	void Renderer::BeginRendering(VkCommandBuffer& renderCommandBuffer, Ref<VkRenderPass> renderPass, bool explicitClear /*= false*/)
 	{
 		VT_PROFILE_FUNCTION();
-		s_RenderAPI->BeginRendering(renderCommandBuffer, *renderPass.get(), explicitClear);
+		s_RenderAPI->BeginRendering(renderCommandBuffer, explicitClear);
 	}
 
 	void Renderer::EndRendering(VkCommandBuffer& renderCommandBuffer)
