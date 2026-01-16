@@ -9,6 +9,9 @@ namespace Velt::Renderer::Vulkan
 
 		struct VulkanPipelineConfigInfo
 		{
+			std::vector<VkFormat> colorAttachmentFormats;
+			VkFormat depthAttachmentFormat;
+			VkFormat stencilAttachmentFormat;
 			VkPipelineViewportStateCreateInfo viewportInfo;
 			VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
 			VkPipelineRasterizationStateCreateInfo rasterizationInfo;
@@ -47,13 +50,16 @@ namespace Velt::Renderer::Vulkan
 		private:
 			static std::vector<char> ReadFile(const std::string& filepath);
 			void CreateShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
+			void CreatePipelineLayout();
 
+			VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;
 			PipelineSpecification m_Specification;
 			BufferLayout m_Layout;
 			VulkanPipelineConfigInfo m_ConfigInfo;
 			VkPipeline m_VulkanPipeline;
 			VkShaderModule m_VertexShaderModule;
 			VkShaderModule m_FragmentShaderModule;
+
 		};
 }
 
