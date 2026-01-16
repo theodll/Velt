@@ -20,7 +20,7 @@ namespace Velt::Renderer {
 		 
 	private:
 		
-		static Ref<Vulkan::VulkanPipeline> s_Pipeline;
+		static Ref<Pipeline> s_Pipeline;
 
 		// VkCommandBuffer m_Commandbuffer;
 

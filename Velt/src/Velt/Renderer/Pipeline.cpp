@@ -5,7 +5,7 @@
 
 namespace Velt::Renderer
 {
-	Pipeline* Velt::Renderer::Pipeline::Create(const PipelineSpecification& spec)
+	Ref<Pipeline> Velt::Renderer::Pipeline::Create(const PipelineSpecification& spec)
 	{
 		VT_PROFILE_FUNCTION();
 		switch (Renderer::GetAPI())

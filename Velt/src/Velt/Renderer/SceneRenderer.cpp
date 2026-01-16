@@ -2,7 +2,7 @@
 
 namespace Velt::Renderer {
 	
-	Ref<Vulkan::VulkanPipeline> SceneRenderer::s_Pipeline = nullptr;
+	Ref<Pipeline> SceneRenderer::s_Pipeline = nullptr;
 
 	void SceneRenderer::Init()
 	{
@@ -10,11 +10,12 @@ namespace Velt::Renderer {
 		VT_CORE_TRACE("Init SceneRenderer");
 
 		PipelineSpecification specs{};
-		specs.FragmentShaderPath = { "" };
-		specs.VertexShaderPath = {};
+		specs.FragmentShaderPath = { "../../../../Shaders/fragment.glsl.spv" };
+		specs.VertexShaderPath = { "../../../../Shaders/vertex.glsl.spv" };
 		specs.Layout = {};
 
-		s_Pipeline = CreateRef<Vulkan::VulkanPipeline>(specs);
+		s_Pipeline = Pipeline::Create(specs);
+		s_Pipeline->Init();
 	}
 
 	void SceneRenderer::Shutdown()

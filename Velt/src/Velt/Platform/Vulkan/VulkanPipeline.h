@@ -38,7 +38,7 @@ namespace Velt::Renderer::Vulkan
 
 			static void SetDefaultVulkanPipelineConfigInfo(VulkanPipelineConfigInfo& configInfo);
 
-			void Init();
+			void Init() override;
 
 			const VkPipelineLayout& GetVulkanPipelineLayout() const { return m_ConfigInfo.pipelineLayout; };
 			PipelineSpecification& GetSpecification() override { return m_Specification;  };
