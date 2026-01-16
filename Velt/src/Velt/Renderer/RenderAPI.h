@@ -28,8 +28,8 @@ namespace Velt::Renderer {
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
 
-		virtual void BeginRenderPass(VkCommandBuffer& renderCommandBuffer, VkRenderPass& renderpass, bool explicitClear = false) = 0;
-		virtual void EndRenderPass(VkCommandBuffer& renderCommandBuffer) = 0;
+		virtual void BeginRendering(VkCommandBuffer& renderCommandBuffer, bool explicitClear = false) = 0;
+		virtual void EndRendering(VkCommandBuffer& renderCommandBuffer) = 0;
 
 		virtual void ClearScreen(VkCommandBuffer& renderCommandBuffer) = 0;
         

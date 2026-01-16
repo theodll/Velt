@@ -50,7 +50,8 @@ add_library(Velt SHARED
         "Velt.h" 
         "src/Velt/Platform/Vulkan/VulkanCommandBuffer.cpp" 
         "src/Velt/Platform/Vulkan/VulkanCommandBuffer.h"
-        
+        "src/Velt/Renderer/Buffer.h"
+        "src/Velt/Renderer/Buffer.cpp"
         "src/Velt/Platform/Vulkan/Buffer/VulkanVertexBuffer.cpp"
         "src/Velt/Platform/Vulkan/Buffer/VulkanIndexBuffer.cpp"
         "src/Velt/Platform/Vulkan/Buffer/VulkanIndexBuffer.h"
@@ -65,7 +66,9 @@ add_library(Velt SHARED
         "src/Velt/Renderer/RenderAPI.cpp"
         "src/Velt/Platform/Vulkan/VulkanResourceUploader.h"
         "src/Velt/Platform/Vulkan/VulkanResourceUploader.cpp"
- "src/Velt/Renderer/SceneRenderer.cpp" "src/Velt/Renderer/SceneRenderer.h")
+ "src/Velt/Renderer/SceneRenderer.cpp" 
+ "src/Velt/Renderer/SceneRenderer.h" 
+ "src/Velt/Renderer/ShaderLibary.cpp")
 
 if(WIN32 OR UNIX)
     set(SHADER_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders)

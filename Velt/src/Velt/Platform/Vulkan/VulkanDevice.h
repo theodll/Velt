@@ -106,7 +106,9 @@ namespace Velt::Renderer::Vulkan {
 			"VK_KHR_portability_subset"
 		};
 #else
-		const std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+		const std::vector<const char*> deviceExtensions = { 
+			VK_KHR_SWAPCHAIN_EXTENSION_NAME, 
+		 };
 #endif
 	};
 }  // namespace Velt

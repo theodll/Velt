@@ -84,26 +84,33 @@ namespace Velt::Renderer::Vulkan
             queueCreateInfos.push_back(queueCreateInfo);
         }
 
-        VkPhysicalDeviceFeatures deviceFeatures = {};
-        deviceFeatures.samplerAnisotropy = VK_TRUE;
+        VkPhysicalDeviceVulkan13Features vulkan13Features = {};
+        vulkan13Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
+        vulkan13Features.dynamicRendering = VK_TRUE;
+        vulkan13Features.synchronization2 = VK_TRUE;
+
+        VkPhysicalDeviceFeatures2 deviceFeatures2 = {};
+        deviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+        deviceFeatures2.features.samplerAnisotropy = VK_TRUE;
+        deviceFeatures2.pNext = &vulkan13Features;
 
         VkDeviceCreateInfo createInfo = {};
-        createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+        createInfo. sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 
         createInfo.queueCreateInfoCount = static_cast<u32>(queueCreateInfos.size());
         createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
-        createInfo.pEnabledFeatures = &deviceFeatures;
+        createInfo.pEnabledFeatures = nullptr; 
+        createInfo.pNext = &deviceFeatures2;     
+
         createInfo.enabledExtensionCount = static_cast<u32>(deviceExtensions.size());
         createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
-        // might not really be necessary anymore because device specific validation layers
-        // have been deprecated
-		std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
-	
-        if (!validationLayers.empty())
+        std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
+
+        if (! validationLayers.empty())
         {
-            createInfo.enabledLayerCount = static_cast<u32>(validationLayers.size());
+            createInfo.enabledLayerCount = static_cast<u32>(validationLayers. size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
         }
         else
@@ -140,7 +147,7 @@ namespace Velt::Renderer::Vulkan
 
 
 
-    bool VulkanDevice::isDeviceSuitable(VkPhysicalDevice device)
+    bool VulkanDevice:: isDeviceSuitable(VkPhysicalDevice device)
     {
         VT_PROFILE_FUNCTION();
         QueueFamilyIndices indices = FindQueueFamilies(device);
@@ -157,10 +164,22 @@ namespace Velt::Renderer::Vulkan
         VkPhysicalDeviceFeatures supportedFeatures;
         vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
 
-        return indices.isComplete() && extensionsSupported && swapChainAdequate &&
-               supportedFeatures.samplerAnisotropy;
-    }
+        VkPhysicalDeviceDynamicRenderingFeatures dynamicRenderingFeatures = {};
+        dynamicRenderingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES;
+        
+        VkPhysicalDeviceFeatures2 features2 = {};
+        features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+        features2.pNext = &dynamicRenderingFeatures;
+        
+        vkGetPhysicalDeviceFeatures2(device, &features2);
 
+        return indices.isComplete() && 
+            extensionsSupported && 
+            swapChainAdequate &&
+            supportedFeatures.samplerAnisotropy &&
+            dynamicRenderingFeatures.dynamicRendering;
+    }
+    
     QueueFamilyIndices VulkanDevice::FindQueueFamilies(VkPhysicalDevice device)
     {
         VT_PROFILE_FUNCTION();
@@ -431,14 +450,12 @@ namespace Velt::Renderer::Vulkan
 
         if (vkAllocateMemory(m_Device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
         {
-            static_assert("Failed to allocate Image memory");
-            VT_CORE_ERROR("Failed to allocate image memory!");
+            VT_CORE_ASSERT(false, "Failed to allocate image memory!");
         }
 
         if (vkBindImageMemory(m_Device, image, imageMemory, 0) != VK_SUCCESS)
         {
-            throw std::runtime_error("failed to bind image memory!");
-            VT_CORE_ERROR("Failed to bind image memory!");
+            VT_CORE_ASSERT(false, "Failed to bind image memory!");
         }
     }
 }
