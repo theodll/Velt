@@ -80,10 +80,10 @@ namespace Velt::Renderer {
 		s_RenderAPI->EndFrame();
 	}
 
-	void Renderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, Ref<Vulkan::VulkanPipeline> pipeline, const glm::mat4& transform)
+	void Renderer::DrawQuad(VkCommandBuffer& renderCommandBuffer)
 	{
 		VT_PROFILE_FUNCTION();
-		s_RenderAPI->DrawQuad(renderCommandBuffer, pipeline, transform);
+		s_RenderAPI->DrawQuad(renderCommandBuffer);
 	}
 
 	void Renderer::RequestShutdown()

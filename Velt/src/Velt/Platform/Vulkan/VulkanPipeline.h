@@ -37,13 +37,13 @@ namespace Velt::Renderer::Vulkan
 
 			virtual void Invalidate() override; 
 
-			void Bind(VkCommandBuffer commandBuffer);
+			virtual void Bind(VkCommandBuffer& commandBuffer) override;
 
 			static void SetDefaultVulkanPipelineConfigInfo(VulkanPipelineConfigInfo& configInfo);
 
 			void Init() override;
 
-			const VkPipelineLayout& GetVulkanPipelineLayout() const { return m_ConfigInfo.pipelineLayout; };
+			virtual VkPipelineLayout& GetVulkanPipelineLayout() override { return m_ConfigInfo.pipelineLayout; };
 			PipelineSpecification& GetSpecification() override { return m_Specification;  };
 			const PipelineSpecification& GetSpecification() const override { return m_Specification; };
 

@@ -1,4 +1,4 @@
-#include "vtpch.h"
+﻿#include "vtpch.h"
 #include "VulkanRenderer.h"
 #include "Velt/Platform/Vulkan/Buffer/VulkanVertexBuffer.h"
 #include "Velt/Platform/Vulkan/Buffer/VulkanIndexBuffer.h"
@@ -72,6 +72,14 @@ namespace Velt::Renderer::Vulkan
 		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
 
 		EndRendering(currentCommandBuffer);
+
+		VulkanSwapchain::TransitionImageLayout(currentCommandBuffer,
+			swapchain.GetCurrentSwapchainImage().Image,
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
+
 		vkEndCommandBuffer(currentCommandBuffer);
 		swapchain.Present();
 	}
@@ -82,31 +90,14 @@ namespace Velt::Renderer::Vulkan
 		auto& window = app.GetWindow();
 		auto& sc = window.GetSwapchain();
 
-		/*
-		VkRenderPassBeginInfo beginInfo{};
-		beginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		beginInfo.renderPass = renderpass;
-		beginInfo.framebuffer = swapchain.GetCurrentFramebuffer();
-		beginInfo.renderArea.extent = { swapchain.GetWidth(), swapchain.GetHeight() };
-		beginInfo.renderArea.offset = { 0, 0 };
-
-		std::array<VkClearValue, 2> clearValues;
-		clearValues[0].color = { 0.0f, 1.0f, 0.0f, 0.0f };
-		clearValues[1].depthStencil = { 1.0f, 0 };
-
-		beginInfo.clearValueCount = (u32)clearValues.size();
-		beginInfo.pClearValues = clearValues.data();*/
-
-		// vkCmdBeginRenderPass(renderCommandBuffer, &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
-
 		VkImageMemoryBarrier2 barrier{};
 		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
 		barrier.srcStageMask = VK_PIPELINE_STAGE_2_NONE;
 		barrier.srcAccessMask = 0;
 		barrier.dstStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
 		barrier.dstAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
-		barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED; 
-		barrier.newLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL;
+		barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		barrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL; 
 		barrier.image = sc.GetCurrentSwapchainImage().Image;
 		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		barrier.subresourceRange.baseMipLevel = 0;
@@ -121,13 +112,16 @@ namespace Velt::Renderer::Vulkan
 
 		vkCmdPipelineBarrier2(renderCommandBuffer, &dep);
 
+		// Rendering Info Setup
+		VkClearValue clearColor = { {{1.0f, 0.0f, 1.0f, 1.0f}} };  
 
 		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
 		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
 		colorAttachmentInfo.imageView = sc.GetCurrentSwapchainImage().ImageView;
-		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL;
+		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL; 
 		colorAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		colorAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachmentInfo.clearValue = clearColor;  
 
 		VkRenderingInfoKHR renderInfo{};
 		renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
@@ -138,6 +132,26 @@ namespace Velt::Renderer::Vulkan
 		renderInfo.pColorAttachments = &colorAttachmentInfo;
 
 		vkCmdBeginRendering(renderCommandBuffer, &renderInfo);
+
+		auto&& pp = SceneRenderer::GetPipeline();
+		pp->Bind(renderCommandBuffer);
+
+		u32 width = sc.GetWidth();
+		u32 height = sc.GetHeight();
+
+		VkRect2D scissor{};
+		scissor.extent = { width, height };
+		scissor.offset = { 0, 0 };
+		vkCmdSetScissor(renderCommandBuffer, 0, 1, &scissor);
+
+		VkViewport viewport{};
+		viewport.height = (float)height;
+		viewport.width = (float)width;
+		viewport.x = 0;
+		viewport.y = 0;
+		viewport.maxDepth = 1.0f;
+		viewport.minDepth = 0.0f;
+		vkCmdSetViewport(renderCommandBuffer, 0, 1, &viewport);
 	}
 
 	void VulkanRenderer::EndRendering(VkCommandBuffer& renderCommandBuffer)
@@ -145,11 +159,12 @@ namespace Velt::Renderer::Vulkan
 		vkCmdEndRendering(renderCommandBuffer);
 	}
 
-	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, Ref<VulkanPipeline> pipeline, const glm::mat4& transform)
+	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer)
 	{
 		VT_PROFILE_FUNCTION();
+		auto&& pp = SceneRenderer::GetPipeline(); 
 
-		VkPipelineLayout pipelineLayout = pipeline->GetVulkanPipelineLayout();
+		VkPipelineLayout pipelineLayout = pp->GetVulkanPipelineLayout();
 		VkBuffer vertexBuffer = s_RenderData->QuadVertexBuffer->GetVulkanBuffer();
 		VkCommandBuffer commandBuffer = renderCommandBuffer;
 
@@ -158,8 +173,6 @@ namespace Velt::Renderer::Vulkan
 
 		VkBuffer indexBuffer = s_RenderData->QuadIndexBuffer->GetVulkanBuffer();
 		vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-
-		vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
 
 		uint32_t indexCount = s_RenderData->QuadIndexBuffer->GetCount();
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);

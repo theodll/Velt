@@ -1,6 +1,5 @@
 #include <Velt.h>
-
-
+#include "../Velt/Renderer/Renderer.h"
 
 class EditorLayer : public Velt::Layer
 {
@@ -17,6 +16,11 @@ public:
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_INFO("{0}", event.ToString());
+	}
+
+	void OnRender(VkCommandBuffer commandBuffer) 
+	{
+		Velt::Renderer::Renderer::DrawQuad(commandBuffer);
 	}
 
 	void OnImGuiRender()

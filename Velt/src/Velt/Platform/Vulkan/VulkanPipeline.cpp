@@ -177,7 +177,7 @@ namespace Velt::Renderer::Vulkan {
 		vkDestroyShaderModule(VulkanContext::GetDevice().device(), fragModule, nullptr);
 	}
 
-	void VulkanPipeline::Bind(VkCommandBuffer commandBuffer)
+	void VulkanPipeline::Bind(VkCommandBuffer& commandBuffer)
 	{
 		VT_PROFILE_FUNCTION();
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_VulkanPipeline);

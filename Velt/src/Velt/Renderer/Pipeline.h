@@ -26,6 +26,9 @@ namespace Velt::Renderer
 		virtual void Init() = 0;
 		virtual void Invalidate() = 0;
 
+		virtual void Bind(VkCommandBuffer& commandBuffer) = 0;
+		virtual VkPipelineLayout& GetVulkanPipelineLayout() = 0;
+
 		static Ref<Pipeline> Create(const PipelineSpecification& spec);
 	};
 
