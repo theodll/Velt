@@ -5,24 +5,24 @@
 
 namespace Velt::Renderer::Vulkan
 {
-	VulkanIndexBuffer::VulkanIndexBuffer(void* data, u64 size, u64 offset)
-		: m_Size(size), m_UploadSize(size)
+	VulkanIndexBuffer::VulkanIndexBuffer(void* data, u64 count, u64 offsetBytes)
+		: m_Count((u32)count),
+		m_SizeBytes(count * sizeof(u32)),
+		m_UploadBytes(count * sizeof(u32)),
+		m_Offset(offsetBytes)
 	{
-		VT_PROFILE_FUNCTION();
-
 		auto& device = VulkanContext::GetDevice();
 
 		device.createBuffer(
 			device.device(),
-			size,
+			m_SizeBytes,
 			VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 			m_IndexBuffer,
 			m_IndexBufferMemory
 		);
 
-		SetData(data, size, offset);
-
+		SetData(data, m_UploadBytes, 0);
 	}
 
 	VulkanIndexBuffer::VulkanIndexBuffer(u64 size) 
@@ -87,7 +87,7 @@ namespace Velt::Renderer::Vulkan
 		VkBufferCopy copyRegion{};
 		copyRegion.srcOffset = 0;
 		copyRegion.dstOffset = m_Offset;
-		copyRegion.size = m_UploadSize;
+		copyRegion.size = m_UploadBytes;
 
 		vkCmdCopyBuffer(
 			commandBuffer,

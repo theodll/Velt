@@ -15,7 +15,7 @@ namespace Velt::Renderer::Vulkan
 		virtual void SetData(void* data, u64 size, u64 offset = 0) override;
 		virtual void Upload(VkCommandBuffer commandBuffer) override;
 
-		virtual u32 GetCount() const override { return m_Size / sizeof(i32); }
+		virtual u32 GetCount() const override { return m_Count; }
 
 		virtual VkBuffer GetVulkanBuffer() const override { return m_IndexBuffer; }
 
@@ -26,8 +26,10 @@ namespace Velt::Renderer::Vulkan
 		VkBuffer       m_StagingBuffer = VK_NULL_HANDLE;
 		VkDeviceMemory m_StagingBufferMemory = VK_NULL_HANDLE;
 
+		u32 m_Count = 0; 
 		u64 m_Size = 0;  // GPU buffer capacity
-		u64 m_UploadSize = 0;  // size of current upload
+		u64 m_UploadBytes = 0;  // bytes of current upload
+		u64 m_SizeBytes = 0;
 		u64 m_StagingBufferSize = 0;  // staging buffer capacity
 		u64 m_Offset = 0;  // offset in GPU buffer
 	};

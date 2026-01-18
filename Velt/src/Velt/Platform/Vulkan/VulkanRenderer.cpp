@@ -23,10 +23,10 @@ namespace Velt::Renderer::Vulkan
 		s_RenderData = CreateScope<RenderData>();
 
 		Vertex quadVerticesData[] = {
-			{ {-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+			{ {-0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
 			{ { 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-			{ { 0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}},
-			{ {-0.5f,  0.5f}, {1.0f, 1.0f, 1.0f}}
+			{ { 0.5f,  0.5f}, {1.0f, 0.0f, 0.0f}},
+			{ {-0.5f,  0.5f}, {1.0f, 0.0f, 0.0f}}
 		};
 
 		std::vector<Vertex> quadVertices(quadVerticesData, quadVerticesData + 4);
@@ -175,6 +175,7 @@ namespace Velt::Renderer::Vulkan
 		vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
 		uint32_t indexCount = s_RenderData->QuadIndexBuffer->GetCount();
+		// VT_CORE_ERROR("{}", indexCount);
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 	}
 
