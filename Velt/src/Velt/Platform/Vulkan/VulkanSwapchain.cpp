@@ -298,12 +298,10 @@ namespace Velt::Renderer::Vulkan
             }
         }
 
-
         m_Commandbuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
         for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
         {
-            // 1) Command Pool
             VkCommandPoolCreateInfo poolInfo{};
             poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
             poolInfo.queueFamilyIndex = m_Device.GetQueueFamilyIndex();
@@ -316,7 +314,6 @@ namespace Velt::Renderer::Vulkan
                 &m_Commandbuffers[i].CommandPool
             );
 
-            // 2) Command Buffer aus DIESEM Pool
             VkCommandBufferAllocateInfo allocInfo{};
             allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
             allocInfo.commandPool = m_Commandbuffers[i].CommandPool;
@@ -329,9 +326,6 @@ namespace Velt::Renderer::Vulkan
                 &m_Commandbuffers[i].CommandBuffer
             );
         }
-
-        AcquireNextImage(); 
-
     }
 
     VkSurfaceFormatKHR VulkanSwapchain::chooseSwapSurfaceFormat(
@@ -398,14 +392,18 @@ namespace Velt::Renderer::Vulkan
             VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
     }
 
-    void VulkanSwapchain::Present()
-    {
-        VT_PROFILE_FUNCTION();
-        u32 imageIndex = m_CurrentImageIndex;
-        VkCommandBuffer commandBuffers[] = { GetDrawCommandBuffer(m_CurrentFrameIndex) };
+	void VulkanSwapchain::Present()
+	{
+		VT_PROFILE_FUNCTION();
 
-        SubmitCommandBuffers(commandBuffers, &imageIndex);
-    };
+		u32 imageIndex = m_CurrentImageIndex;
+        VkCommandBuffer commandBuffer = GetDrawCommandBuffer(m_CurrentFrameIndex);
+
+		VkCommandBuffer commandBuffers[] = { commandBuffer };
+
+		AcquireNextImage();
+		SubmitCommandBuffers(commandBuffers, &imageIndex);
+	}
 
     void VulkanSwapchain::InitSurface(SDL_Window* windowHandle)
     {
@@ -418,17 +416,12 @@ namespace Velt::Renderer::Vulkan
         std::vector<VkQueueFamilyProperties> queueProps(queueCount);
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueCount, queueProps.data());
 
-        // Iterate over each queue to learn whether it supports presenting: 
-        // Find a queue with present support
-        // Will be used to present the swap chain images to the windowing system
         std::vector<VkBool32> supportsPresent(queueCount);
         for (uint32_t i = 0; i < queueCount; i++)
         {
             vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, m_Surface, &supportsPresent[i]);
         }
 
-        // Search for a graphics and a present queue in the array of queue
-        // families, try to find one that supports both
         u32 graphicsQueueNodeIndex = UINT32_MAX;
         u32 presentQueueNodeIndex = UINT32_MAX;
 
@@ -452,8 +445,6 @@ namespace Velt::Renderer::Vulkan
 
         if (presentQueueNodeIndex == UINT32_MAX)
         {
-            // If there's no queue that supports both present and graphics
-            // try to find a separate present queue
             for (u32 i = 0; i < queueCount; ++i)
             {
                 if (supportsPresent[i] == VK_TRUE)
@@ -473,13 +464,13 @@ namespace Velt::Renderer::Vulkan
     }
 
 
-    // credit to the hazel engine (stole this function (:  )
+	// Copyright (c) 2023 TheCherno
+	// Licensed under the Apache License 2.0
 
     void VulkanSwapchain::FindImageFormatAndColorSpace()
     {
         VkPhysicalDevice physicalDevice = m_Device.GetPhysicalDevice();
 
-        // Get list of supported surface formats
         uint32_t formatCount;
         vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, m_Surface, &formatCount, NULL);
         VT_CORE_ASSERT(formatCount > 0, "No surface formats found.");
@@ -487,8 +478,6 @@ namespace Velt::Renderer::Vulkan
         std::vector<VkSurfaceFormatKHR> surfaceFormats(formatCount);
         vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, m_Surface, &formatCount, surfaceFormats.data());
 
-        // If the surface format list only includes one entry with VK_FORMAT_UNDEFINED,
-        // there is no preferered format, so we assume VK_FORMAT_B8G8R8A8_UNORM
         if ((formatCount == 1) && (surfaceFormats[0].format == VK_FORMAT_UNDEFINED))
         {
             m_ColorFormat = VK_FORMAT_B8G8R8A8_UNORM;
@@ -496,8 +485,6 @@ namespace Velt::Renderer::Vulkan
         }
         else
         {
-            // iterate over the list of available surface format and
-            // check for the presence of VK_FORMAT_B8G8R8A8_UNORM
             bool found_B8G8R8A8_UNORM = false;
             for (auto&& surfaceFormat : surfaceFormats)
             {
@@ -510,8 +497,6 @@ namespace Velt::Renderer::Vulkan
                 }
             }
 
-            // in case VK_FORMAT_B8G8R8A8_UNORM is not available
-            // select the first available color format
             if (!found_B8G8R8A8_UNORM)
             {
                 m_ColorFormat = surfaceFormats[0].format;
@@ -520,6 +505,51 @@ namespace Velt::Renderer::Vulkan
         }
 
     }
+
+	void VulkanSwapchain::TransitionImageLayout(
+		VkCommandBuffer commandBuffer,
+		VkImage image,
+		VkImageLayout oldLayout,
+		VkImageLayout newLayout,
+		VkPipelineStageFlags srcStageMask,
+		VkPipelineStageFlags dstStageMask)
+	{
+		VkImageMemoryBarrier barrier{};
+		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+		barrier.oldLayout = oldLayout;
+		barrier.newLayout = newLayout;
+		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.image = image;
+		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		barrier.subresourceRange.baseMipLevel = 0;
+		barrier.subresourceRange.levelCount = 1;
+		barrier.subresourceRange.baseArrayLayer = 0;
+		barrier.subresourceRange.layerCount = 1;
+
+		if (oldLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL &&
+			newLayout == VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
+		{
+			barrier.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+			barrier.dstAccessMask = 0;
+		}
+		else if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED &&
+			newLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+		{
+			barrier.srcAccessMask = 0;
+			barrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+		}
+
+		vkCmdPipelineBarrier(
+			commandBuffer,
+			srcStageMask,
+			dstStageMask,
+			0,
+			0, nullptr,
+			0, nullptr,
+			1, &barrier
+		);
+	}
 
     VulkanSwapchain::VulkanSwapchain() : m_Device(VulkanContext::GetDevice()), m_Instance(VulkanContext::GetInstance()), m_Surface(VulkanContext::GetSurface())
     {

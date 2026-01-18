@@ -11,7 +11,7 @@ namespace Velt::Renderer::Vulkan
 		virtual void Init() override;
 		virtual void Shutdown() override;
 
-		virtual void DrawQuad(VkCommandBuffer& renderCommandBuffer, Ref<VulkanPipeline> pipeline, const glm::mat4& transform) override;
+		virtual void DrawQuad(VkCommandBuffer& renderCommandBuffer) override;
 
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;

@@ -41,11 +41,6 @@ namespace Velt::Renderer {
 
 	}
 
-	Ref<Pipeline> SceneRenderer::GetPipeline()
-	{
-		return nullptr;
-	}
-
 	VkRenderPass SceneRenderer::GetFinalRenderpass()
 	{
 		return VK_NULL_HANDLE;

@@ -69,6 +69,14 @@ namespace Velt::Renderer::Vulkan {
         inline SwapchainImage GetCurrentSwapchainImage() { return GetSwapchainImage(m_CurrentFrameIndex); }
         inline VkCommandBuffer GetCurrentDrawCommandBuffer() {  return GetDrawCommandBuffer(m_CurrentFrameIndex); }
 
+        static void TransitionImageLayout(
+            VkCommandBuffer commandBuffer,
+            VkImage image,
+            VkImageLayout oldLayout,
+            VkImageLayout newLayout,
+            VkPipelineStageFlags srcStageMask,
+            VkPipelineStageFlags dstStageMask);
+
         inline VkCommandBuffer GetDrawCommandBuffer(u32 index) 
         { 
             VT_CORE_ASSERT(index < m_Commandbuffers.size(), "Command buffer index out of bounds"); 

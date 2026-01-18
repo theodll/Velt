@@ -17,7 +17,7 @@ namespace Velt
         virtual void OnImGuiRender() {};
         virtual void OnRender(VkCommandBuffer commandBuffer) {};
 
-        inline const std::string& GetName() const {  return m_DebugName;   }
+        inline const std::string& GetName() const {  return m_DebugName; }
 
     protected:
         std::string m_DebugName;

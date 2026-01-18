@@ -32,7 +32,7 @@ namespace Velt::Renderer
 		static void BeginFrame();
 		static void EndFrame();
 
-		static void DrawQuad(VkCommandBuffer& renderCommandBuffer, Ref<Vulkan::VulkanPipeline> pipeline, const glm::mat4& transform);
+		static void DrawQuad(VkCommandBuffer& renderCommandBuffer);
 
 		
 		inline static RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); };
