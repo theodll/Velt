@@ -272,8 +272,8 @@ namespace Velt::Renderer::Vulkan {
 		configInfo.depthStencilInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 		configInfo.depthStencilInfo.pNext = nullptr;
 		configInfo.depthStencilInfo.flags = 0;
-		configInfo.depthStencilInfo.depthTestEnable = VK_TRUE;
-		configInfo.depthStencilInfo.depthWriteEnable = VK_TRUE;
+		configInfo.depthStencilInfo.depthTestEnable = VK_FALSE;
+		configInfo.depthStencilInfo.depthWriteEnable = VK_FALSE;
 		configInfo.depthStencilInfo.depthCompareOp = VK_COMPARE_OP_LESS;
 		configInfo.depthStencilInfo.depthBoundsTestEnable = VK_FALSE;
 		configInfo.depthStencilInfo.minDepthBounds = 0.0f;

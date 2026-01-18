@@ -1,1 +1,2 @@
-/usr/local/bin/glslc Velt/src/Velt/Renderer/Shader/shader.vert -o Velt/src/Velt/Renderer/Shader/shader.vert.spv
+glslc -fshader-stage=vertex ../Shaders/vertex.glsl -o ../Shaders/vertex.glsl.spv
+glslc -fshader-stage=fragment ../Shaders/fragment.glsl -o ../Shaders/fragment.glsl.spv

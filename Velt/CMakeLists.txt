@@ -71,8 +71,8 @@ add_library(Velt SHARED
  "src/Velt/Renderer/ShaderLibary.cpp")
 
 if(WIN32 OR UNIX)
-    set(SHADER_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
-    set(SHADER_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/shaders)
+    set(SHADER_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Shaders)
+    set(SHADER_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/Shaders)
     file(MAKE_DIRECTORY ${SHADER_OUT_DIR})
 
     file(GLOB SHADER_FILES "${SHADER_SRC_DIR}/*.vert" "${SHADER_SRC_DIR}/*.frag")

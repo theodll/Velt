@@ -18,8 +18,8 @@ namespace Velt::Renderer {
 		
 
 		PipelineSpecification specs{};
-		specs.FragmentShaderPath = { "../../../../Shaders/fragment.glsl.spv" };
-		specs.VertexShaderPath = { "../../../../Shaders/vertex.glsl.spv" };
+		specs.FragmentShaderPath = { "Shaders/fragment.glsl.spv" };
+		specs.VertexShaderPath = { "Shaders/vertex.glsl.spv" };
 		specs.Layout = layout;
 
 		s_Pipeline = Pipeline::Create(specs);
