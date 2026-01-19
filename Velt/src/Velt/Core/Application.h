@@ -44,7 +44,7 @@ namespace Velt
 		std::unique_ptr<Renderer::Vulkan::VulkanContext> m_Context;
 		std::unique_ptr<Window> m_Window;
 		LayerStack m_LayerStack;
-		// ImGuiLayer* m_ImGuiLayer = nullptr;
+		ImGuiLayer* m_ImGuiLayer = nullptr;
 	};
 
 	Application* CreateApplication();

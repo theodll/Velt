@@ -44,14 +44,14 @@ namespace Velt::Renderer::Vulkan
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Initializing Vulkan Context");
 
-		auto& window = Application::Get().GetWindow();
+		auto& window = Velt::Application::Get().GetWindow();
 
 		CreateInstance();
 		SetupDebugMessenger();
 
 		VT_CORE_TRACE("Create Surface");
 
-		if (!SDL_Vulkan_CreateSurface(static_cast<SDL_Window*>(Application::Get().GetWindow().GetNativeHandle()), m_Instance, nullptr, &m_Surface))
+		if (!SDL_Vulkan_CreateSurface(static_cast<SDL_Window*>(Velt::Application::Get().GetWindow().GetNativeHandle()), m_Instance, nullptr, &m_Surface))
 		{
 			VT_CORE_ERROR("Failed to create window surface: {}", SDL_GetError());
 		}

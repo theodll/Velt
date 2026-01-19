@@ -16,9 +16,9 @@ namespace Velt::Windows
 
 		void OnUpdate() override;
 
-		inline u32 GetWidth() const override { return m_Data.m_Width; };
-		inline u32 GetHeight() const override { return m_Data.m_Height; };
-		bool IsVsync() const override { return m_Data.m_bVsync; };
+		inline u32 GetWidth() const override { return m_Data.Width; };
+		inline u32 GetHeight() const override { return m_Data.Height; };
+		bool IsVsync() const override { return m_Data.bVsync; };
 
 		// void SetEventCallback(const EventCallbackFn& callback) override;
 		void SetVsync(bool enable) override;
@@ -40,10 +40,10 @@ namespace Velt::Windows
 
 		struct WindowData
 		{
-			std::string m_Title;
-			u32 m_Width, m_Height;
-			bool m_bVsync;
-			bool m_bResizable;
+			std::string Title;
+			u32 Width, Height;
+			bool bVsync;
+			bool bResizable = false;
 
 			// EventCallbackFn EventCallback;
 		};

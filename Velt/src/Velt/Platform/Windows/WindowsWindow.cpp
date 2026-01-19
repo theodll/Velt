@@ -53,11 +53,11 @@ namespace Velt::Windows
 	{
 		VT_PROFILE_FUNCTION();
 
-		m_Data.m_Title = m_WindowProps.m_Title;
-		m_Data.m_Width = m_WindowProps.m_Width;
-		m_Data.m_Height = m_WindowProps.m_Height;
+		m_Data.Title = m_WindowProps.m_Title;
+		m_Data.Width = m_WindowProps.m_Width;
+		m_Data.Height = m_WindowProps.m_Height;
 
-		VT_CORE_INFO("Creating WindowsWindow {0} ({1} {2})", m_Data.m_Title, m_Data.m_Width, m_Data.m_Height);
+		VT_CORE_INFO("Creating WindowsWindow {0} ({1} {2})", m_Data.Title, m_Data.Width, m_Data.Height);
 
 		if (!s_SDLInitialized)
 		{
@@ -70,10 +70,10 @@ namespace Velt::Windows
 		}
 
 		u32 windowFlags = SDL_WINDOW_VULKAN;
-		if (m_Data.m_bResizable)
+		if (m_Data.bResizable)
 			windowFlags |= SDL_WINDOW_RESIZABLE;
 
-		m_Window = SDL_CreateWindow(m_Data.m_Title.c_str(), m_Data.m_Width, m_Data.m_Height, windowFlags);
+		m_Window = SDL_CreateWindow(m_Data.Title.c_str(), m_Data.Width, m_Data.Height, windowFlags);
 		if (!m_Window)
 		{
 			VT_CORE_ERROR("Failed to create SDL window: {}", SDL_GetError());
@@ -109,12 +109,13 @@ namespace Velt::Windows
 	{
 		VT_PROFILE_FUNCTION();
 	
-		m_Data.m_bVsync = enable;
+		m_Data.bVsync = enable;
 	}
 
 	void WindowsWindow::SetResizable(bool enable)
 	{
 		VT_PROFILE_FUNCTION();
+		m_Data.bResizable = enable;
 	}
 
 	void WindowsWindow::CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
@@ -138,9 +139,9 @@ namespace Velt::Windows
 
 		Renderer::Vulkan::SwapchainCreateInfo createInfo{};
 
-		createInfo.Height = m_Data.m_Height;
-		createInfo.Width = m_Data.m_Width;
-		createInfo.VSync =  m_Data.m_bVsync;
+		createInfo.Height = m_Data.Height;
+		createInfo.Width = m_Data.Width;
+		createInfo.VSync =  m_Data.bVsync;
 		
 		m_Swapchain->Init(createInfo);
 		m_Swapchain->InitSurface(m_Window);

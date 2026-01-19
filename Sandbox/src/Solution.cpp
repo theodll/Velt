@@ -35,7 +35,7 @@ public:
 		{
 			VT_PROFILE_FUNCTION();
 			PushLayer(new ExampleLayer());
-		//	PushOverlay(new Velt::ImGuiLayer());
+		    PushLayer(new Velt::ImGuiLayer());
 
 		}
 

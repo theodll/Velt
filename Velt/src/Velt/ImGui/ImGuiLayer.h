@@ -1,5 +1,4 @@
 #pragma once
-/*
 
 #include "vtpch.h"
 #include "Velt/Layers/Layer.h"
@@ -8,9 +7,6 @@
 
 #include "Velt/Platform/Vulkan/VulkanDevice.h"	
 #include "Velt/Renderer/Renderer.h"
-
-struct SDL_Window;
-union SDL_Event;
 
 namespace Velt {
 	class VELT_API ImGuiLayer : public Layer
@@ -27,11 +23,7 @@ namespace Velt {
 		virtual void OnEvent(Event& event) override;
 		virtual void OnUpdate() override;
 		
-		// OnRender: Called during the rendering phase after all scene geometry has been rendered.
-		// This is where ImGui actually renders its prepared draw data to the command buffer.
-		// By using the layer system's OnRender, ImGui respects the layer stack order and
-		// renders on top of everything that was rendered before it in the stack.
-		virtual void OnRender(void* commandBuffer) override;
+		virtual void OnRender(VkCommandBuffer commandBuffer) override;
 
 		// Process a raw SDL event through ImGui's SDL backend (implemented in .cpp)
 		static void ProcessSDLEvent(const SDL_Event* event);
@@ -51,4 +43,3 @@ namespace Velt {
 
 	}; 
 }
-*/

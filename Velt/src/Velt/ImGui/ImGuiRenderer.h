@@ -14,7 +14,7 @@ struct VkFramebuffer_T;
 namespace Velt {
 	class VELT_API ImGuiRenderer {
 	public:
-		ImGuiRenderer(Renderer::Vulkan::VulkanSwapchain* swapchain, Renderer::Vulkan::VulkanDevice* device, SDL_Window* window);
+		ImGuiRenderer();
 		~ImGuiRenderer() = default;
 
 		
@@ -25,11 +25,8 @@ namespace Velt {
 		void End();
 		
 	private:
-		Renderer::Vulkan::VulkanSwapchain* m_Swapchain;
-		Renderer::Vulkan::VulkanDevice* m_Device;
 		VkDescriptorPool_T* m_DescriptorPool = nullptr;
-		SDL_Window* m_Window = nullptr;
-
+		
 		float m_Time = 0.0f;
 	};
 }

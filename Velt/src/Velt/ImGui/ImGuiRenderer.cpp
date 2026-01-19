@@ -1,16 +1,14 @@
-/*
-
-
 #include "vtpch.h"
 #include "ImGuiRenderer.h"
 #include "Velt/Core/Log.h"
 #include <vulkan/vulkan.h>
+#include "Core/Application.h"
 #include <SDL3/SDL.h>
+#include "Platform/Vulkan/VulkanContext.h"
 
 namespace Velt {
 
-	ImGuiRenderer::ImGuiRenderer(Renderer::Vulkan::VulkanSwapchain* swapchain, Renderer::Vulkan::VulkanDevice* device, SDL_Window* window)
-		: m_Swapchain(swapchain), m_Device(device), m_Window(window)
+	ImGuiRenderer::ImGuiRenderer()
 	{
 		VT_PROFILE_FUNCTION();
 	}
@@ -18,12 +16,15 @@ namespace Velt {
 	void ImGuiRenderer::Init()
 	{
 		VT_PROFILE_FUNCTION();
+		VT_CORE_TRACE("Init ImGUI Renderer");
+
+		auto&& device = Renderer::Vulkan::VulkanContext::GetDevice();
+		auto&& window = Application::Get().GetWindow();
 
 		// Initialize ImGui SDL3 backend first
-		if (!ImGui_ImplSDL3_InitForVulkan(m_Window))
+		if (!ImGui_ImplSDL3_InitForVulkan(static_cast<SDL_Window*>(window.GetNativeHandle())))
 		{
 			VT_CORE_ERROR("Failed to initialize ImGui SDL3 backend!");
-			throw std::runtime_error("Failed to initialize ImGui SDL3 backend!");
 		}
 
 		// Create descriptor pool for ImGui
@@ -48,7 +49,7 @@ namespace Velt {
 		pool_info.poolSizeCount = std::size(pool_sizes);
 		pool_info.pPoolSizes = pool_sizes;
 
-		if (vkCreateDescriptorPool(m_Device->device(), &pool_info, nullptr, &m_DescriptorPool) != VK_SUCCESS)
+		if (vkCreateDescriptorPool(device.device(), &pool_info, nullptr, &m_DescriptorPool) != VK_SUCCESS)
 		{
 			VT_CORE_ERROR("Failed to create ImGui descriptor pool!");
 			throw std::runtime_error("Failed to create ImGui descriptor pool!");
@@ -56,15 +57,16 @@ namespace Velt {
 
 		// Initialize ImGui for Vulkan
 		ImGui_ImplVulkan_InitInfo init_info = {};
-		init_info.Instance = m_Device->getInstance();
-		init_info.PhysicalDevice = m_Device->getPhysicalDevice();
-		init_info.Device = m_Device->device();
-		init_info.QueueFamily = m_Device->getQueueFamilyIndex();
-		init_info.Queue = m_Device->getGraphicsQueue();
+		init_info.Instance = Renderer::Vulkan::VulkanContext::GetInstance();
+		init_info.PhysicalDevice = device.GetPhysicalDevice();
+		init_info.Device = device.device();
+		init_info.QueueFamily = device.GetQueueFamilyIndex();
+		init_info.Queue = device.GetGraphicsQueue();
 		init_info.DescriptorPool = m_DescriptorPool;
-		init_info.MinImageCount = 2;
-		init_info.ImageCount = m_Swapchain->GetImageCount();
-		init_info.PipelineInfoMain.RenderPass = m_Swapchain->GetRenderPass();
+		init_info.MinImageCount = 3;
+		init_info.ImageCount = 3;
+		init_info.UseDynamicRendering = true;
+
 
 		if (!ImGui_ImplVulkan_Init(&init_info))
 		{
@@ -72,9 +74,6 @@ namespace Velt {
 			throw std::runtime_error("Failed to initialize ImGui Vulkan backend!");
 		}
 
-		// The backend will create / upload fonts automatically on the first NewFrame
-		// call when needed (the imgui_impl_vulkan backend handles font atlas upload),
-		// so there's no need to manually create font textures here.
 		VT_CORE_INFO("ImGuiRenderer initialized");
 	}
 
@@ -125,8 +124,7 @@ namespace Velt {
 			{
 				//VT_CORE_INFO("ImGui draw data: lists=%d verts=%d idx=%d", draw_data->CmdListsCount, total_vtx, total_idx);
 			}
-			ImGui_ImplVulkan_RenderDrawData(draw_data, commandBuffer);
+			ImGui_ImplVulkan_RenderDrawData(draw_data, commandBuffer, Renderer::SceneRenderer::GetPipeline()->GetVulkanPipeline());
 		}
 	}
 }
-*/ 

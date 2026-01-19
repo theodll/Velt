@@ -73,29 +73,22 @@ namespace Velt {
 		VT_PROFILE_FUNCTION();
 		m_LayerStack.PushLayer(layer);
 
-		// if (auto imgui = dynamic_cast<ImGuiLayer*>(layer))
-		//	m_ImGuiLayer = imgui;
+		if (auto imgui = dynamic_cast<ImGuiLayer*>(layer))
+			m_ImGuiLayer = imgui;
 	}
 
-	void Application::PushOverlay(Layer* layer)
-	{
-		VT_PROFILE_FUNCTION();
-		m_LayerStack.PushOverlay(layer);
-		//if (auto imgui = dynamic_cast<ImGuiLayer*>(layer))
-		//	m_ImGuiLayer = imgui;
-	}
-
-
-	void Application::RenderImGui()
+	void Application::PushOverlay(Layer* overlay)
 	{
 		VT_PROFILE_FUNCTION();
 
-		// m_ImGuiLayer->Begin();
-		
-			//	layer->OnImGuiRender();
-		
-		// m_ImGuiLayer->End();
+		m_LayerStack.PushOverlay(overlay);
+
+		if (auto imgui = dynamic_cast<ImGuiLayer*>(overlay))
+		{
+			m_ImGuiLayer = imgui; 
+		}
 	}
+
 
 
 	void Application::Init() 
@@ -105,6 +98,7 @@ namespace Velt {
 		m_Window->CreateSwapchain(); 
 		Renderer::Renderer::Init();
 
+		PushOverlay(new Velt::ImGuiLayer);
 	}
 
 	void Application::Run()
@@ -124,8 +118,7 @@ namespace Velt {
 
 				// TODO: dont pass raw sdl events
 
-				//	ImGuiLayer::Pr
-				// ocessSDLEvent(&event);
+				ImGuiLayer::ProcessSDLEvent(&event);
 				switch (event.type)
 				{
 				case SDL_EVENT_QUIT:
@@ -161,9 +154,12 @@ namespace Velt {
 		// 	Renderer::Renderer::BeginScene();
 			for (Layer* layer : m_LayerStack)
 				layer->OnRender(m_Window->GetSwapchain().GetCurrentDrawCommandBuffer());
+			// m_ImGuiLayer->Begin();
 
-			// TOD: render imgui here 
+			//for (Layer* layer : m_LayerStack)
+				//layer->OnImGuiRender();
 
+			//m_ImGuiLayer->End();
 		//	Renderer::Renderer::EndScene();
 			Renderer::Renderer::EndFrame();
 

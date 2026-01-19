@@ -43,6 +43,7 @@ namespace Velt::Renderer::Vulkan
 
 			void Init() override;
 
+			virtual VkPipeline& GetVulkanPipeline() override { return m_VulkanPipeline; };
 			virtual VkPipelineLayout& GetVulkanPipelineLayout() override { return m_ConfigInfo.pipelineLayout; };
 			PipelineSpecification& GetSpecification() override { return m_Specification;  };
 			const PipelineSpecification& GetSpecification() const override { return m_Specification; };

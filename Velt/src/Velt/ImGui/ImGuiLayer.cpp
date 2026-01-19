@@ -1,4 +1,4 @@
-/*
+
 #include "vtpch.h"
 #include "ImGuiLayer.h"
 #include <SDL3/SDL.h>
@@ -30,20 +30,16 @@ namespace Velt {
 	void ImGuiLayer::OnAttach()
 	{
 		VT_PROFILE_FUNCTION();
-		// Use static accessors from Renderer to get device and swapchain
-		// auto* swapchain = Velt::getSwapChain();
-		auto* device = Renderer::Vulkan::VulkanContext::GetDevice();
-		SDL_Window* window = nullptr;
-		if (device)
-		{
-			window = reinterpret_cast<SDL_Window*>(Application::Get().getWindow().GetNativeHandle());
-		}
+		VT_CORE_TRACE("Attach ImGuiLayer");
 
-		m_Renderer = CreateRef<ImGuiRenderer>(
-			swapchain,
-			device,
-			window
-		);
+
+		auto& device = Renderer::Vulkan::VulkanContext::GetDevice();
+		SDL_Window* window = nullptr;
+	
+		window = reinterpret_cast<SDL_Window*>(Application::Get().GetWindow().GetNativeHandle());
+		
+
+		m_Renderer = CreateRef<ImGuiRenderer>();
 
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
@@ -102,19 +98,13 @@ namespace Velt {
 		m_Renderer->End();
 	}
 
-	void ImGuiLayer::OnRender(void* commandBuffer)
+	void ImGuiLayer::OnRender(VkCommandBuffer commandBuffer)
 	{
 		VT_PROFILE_FUNCTION();
-		// This method is called during the rendering phase after all scene geometry has been rendered.
-		// It takes the VkCommandBuffer that was passed through the layer system and renders the ImGui
-		// draw data that was prepared in OnUpdate(). This ensures ImGui renders on top of everything
-		// in the correct layer order.
-		
 		if (commandBuffer != nullptr)
 		{
 			VT_PROFILE_SCOPE("ImGuiLayer::OnRender Render");
-			VkCommandBuffer cmd = reinterpret_cast<VkCommandBuffer>(commandBuffer);
-			m_Renderer->Render(cmd);
+			m_Renderer->Render(commandBuffer);
 		}
 	}
 
@@ -130,4 +120,4 @@ namespace Velt {
 		m_Renderer->End();
 	}
 }
-*/
+
