@@ -55,6 +55,13 @@ namespace Velt {
 			throw std::runtime_error("Failed to create ImGui descriptor pool!");
 		}
 
+		// Setup dynamic rendering format
+		VkFormat colorFormat = VK_FORMAT_B8G8R8A8_SRGB;
+		VkPipelineRenderingCreateInfoKHR rendering_info = {};
+		rendering_info.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR;
+		rendering_info.colorAttachmentCount = 1;
+		rendering_info.pColorAttachmentFormats = &colorFormat;
+
 		// Initialize ImGui for Vulkan
 		ImGui_ImplVulkan_InitInfo init_info = {};
 		init_info.Instance = Renderer::Vulkan::VulkanContext::GetInstance();
@@ -66,7 +73,7 @@ namespace Velt {
 		init_info.MinImageCount = 3;
 		init_info.ImageCount = 3;
 		init_info.UseDynamicRendering = true;
-
+		init_info.PipelineInfoMain.PipelineRenderingCreateInfo = rendering_info;
 
 		if (!ImGui_ImplVulkan_Init(&init_info))
 		{
@@ -111,20 +118,9 @@ namespace Velt {
 	{
 		VT_PROFILE_FUNCTION();
 		ImDrawData* draw_data = ImGui::GetDrawData();
-		if (draw_data != nullptr)
+		if (draw_data != nullptr && draw_data->TotalVtxCount > 0)
 		{
-			// Log draw data stats for debugging: number of command lists and total vertices
-			int total_vtx = draw_data->TotalVtxCount;
-			int total_idx = draw_data->TotalIdxCount;
-			if (total_vtx == 0)
-			{
-				//VT_CORE_INFO("ImGui draw data empty: vtx=0 idx=0");
-			}
-			else
-			{
-				//VT_CORE_INFO("ImGui draw data: lists=%d verts=%d idx=%d", draw_data->CmdListsCount, total_vtx, total_idx);
-			}
-			ImGui_ImplVulkan_RenderDrawData(draw_data, commandBuffer, Renderer::SceneRenderer::GetPipeline()->GetVulkanPipeline());
+			ImGui_ImplVulkan_RenderDrawData(draw_data, commandBuffer, VK_NULL_HANDLE);
 		}
 	}
 }

@@ -150,17 +150,10 @@ namespace Velt {
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 
-
-		// 	Renderer::Renderer::BeginScene();
+			// Render scene content
 			for (Layer* layer : m_LayerStack)
 				layer->OnRender(m_Window->GetSwapchain().GetCurrentDrawCommandBuffer());
-			// m_ImGuiLayer->Begin();
 
-			//for (Layer* layer : m_LayerStack)
-				//layer->OnImGuiRender();
-
-			//m_ImGuiLayer->End();
-		//	Renderer::Renderer::EndScene();
 			Renderer::Renderer::EndFrame();
 
 			
