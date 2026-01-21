@@ -30,6 +30,8 @@ add_library(Velt SHARED
         "src/Velt/ImGui/ImGuiLayer.cpp"
         "src/Velt/ImGui/ImGuiRenderer.h"
         "src/Velt/ImGui/ImGuiRenderer.cpp"
+        "src/Velt/ImGui/SceneViewport.h"
+        "src/Velt/ImGui/SceneViewport.cpp"
         "src/Velt/ImGui/Widgets/DemoWidget.h"
         "src/Velt/ImGui/Widgets/DemoWidget.cpp" 
         "src/Velt/Utils/Profiling/Instrumentor.h"

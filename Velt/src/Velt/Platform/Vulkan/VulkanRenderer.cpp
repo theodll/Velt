@@ -4,7 +4,8 @@
 #include "Velt/Platform/Vulkan/Buffer/VulkanIndexBuffer.h"
 #include "Velt/Platform/Vulkan/VulkanPipeline.h"
 #include "vulkan/vulkan.h"
-#include "Core/Application.h"
+#include "Velt/Core/Application.h"
+#include "Velt/ImGui/ImGuiLayer.h"
 
 namespace Velt::Renderer::Vulkan
 {
@@ -72,24 +73,8 @@ namespace Velt::Renderer::Vulkan
 		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
 
 		EndRendering(currentCommandBuffer);
-
-		VulkanSwapchain::TransitionImageLayout(currentCommandBuffer,
-			swapchain.GetCurrentSwapchainImage().Image,
-			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-			VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-			VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
-
-		vkEndCommandBuffer(currentCommandBuffer);
-		swapchain.Present();
-	}
-
-	void VulkanRenderer::BeginRendering(VkCommandBuffer& renderCommandBuffer, bool explicitClear /*= false*/)
-	{
-		auto& app = Velt::Application::Get();
-		auto& window = app.GetWindow();
-		auto& sc = window.GetSwapchain();
-
+		
+		// Prepare swapchain for ImGui rendering
 		VkImageMemoryBarrier2 barrier{};
 		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
 		barrier.srcStageMask = VK_PIPELINE_STAGE_2_NONE;
@@ -97,8 +82,8 @@ namespace Velt::Renderer::Vulkan
 		barrier.dstStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
 		barrier.dstAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
 		barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		barrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL; 
-		barrier.image = sc.GetCurrentSwapchainImage().Image;
+		barrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		barrier.image = swapchain.GetCurrentSwapchainImage().Image;
 		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		barrier.subresourceRange.baseMipLevel = 0;
 		barrier.subresourceRange.levelCount = 1;
@@ -110,53 +95,178 @@ namespace Velt::Renderer::Vulkan
 		dep.imageMemoryBarrierCount = 1;
 		dep.pImageMemoryBarriers = &barrier;
 
-		vkCmdPipelineBarrier2(renderCommandBuffer, &dep);
-
-		// Rendering Info Setup
-		VkClearValue clearColor = { {{1.0f, 0.0f, 1.0f, 1.0f}} };  
+		vkCmdPipelineBarrier2(currentCommandBuffer, &dep);
+		
+		// Begin rendering to swapchain for ImGui
+		VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
 
 		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
 		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
-		colorAttachmentInfo.imageView = sc.GetCurrentSwapchainImage().ImageView;
-		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL; 
+		colorAttachmentInfo.imageView = swapchain.GetCurrentSwapchainImage().ImageView;
+		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 		colorAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		colorAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-		colorAttachmentInfo.clearValue = clearColor;  
+		colorAttachmentInfo.clearValue = clearColor;
 
 		VkRenderingInfoKHR renderInfo{};
 		renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
-		renderInfo.renderArea.extent = { sc.GetWidth(), sc.GetHeight() };
+		renderInfo.renderArea.extent = { swapchain.GetWidth(), swapchain.GetHeight() };
 		renderInfo.renderArea.offset = { 0, 0 };
 		renderInfo.layerCount = 1;
 		renderInfo.colorAttachmentCount = 1;
 		renderInfo.pColorAttachments = &colorAttachmentInfo;
 
-		vkCmdBeginRendering(renderCommandBuffer, &renderInfo);
+		vkCmdBeginRendering(currentCommandBuffer, &renderInfo);
+	}
 
-		auto&& pp = SceneRenderer::GetPipeline();
-		pp->Bind(renderCommandBuffer);
+	void VulkanRenderer::BeginRendering(VkCommandBuffer& renderCommandBuffer, bool explicitClear /*= false*/)
+	{
+		auto& app = Velt::Application::Get();
+		auto& window = app.GetWindow();
+		auto& sc = window.GetSwapchain();
 
-		u32 width = sc.GetWidth();
-		u32 height = sc.GetHeight();
+		// Get the ImGui layer to access the scene viewport
+		Velt::ImGuiLayer* imguiLayer = nullptr;
+		auto& layerStack = app.GetLayerStack();
+		for (auto* layer : layerStack)
+		{
+			imguiLayer = dynamic_cast<Velt::ImGuiLayer*>(layer);
+			if (imguiLayer)
+				break;
+		}
 
-		VkRect2D scissor{};
-		scissor.extent = { width, height };
-		scissor.offset = { 0, 0 };
-		vkCmdSetScissor(renderCommandBuffer, 0, 1, &scissor);
+		// Render to scene viewport if available
+		if (imguiLayer && imguiLayer->GetSceneViewport())
+		{
+			auto* sceneViewport = imguiLayer->GetSceneViewport();
+			
+			// Transition viewport image for rendering
+			sceneViewport->TransitionForRendering(renderCommandBuffer);
 
-		VkViewport viewport{};
-		viewport.height = (float)height;
-		viewport.width = (float)width;
-		viewport.x = 0;
-		viewport.y = 0;
-		viewport.maxDepth = 1.0f;
-		viewport.minDepth = 0.0f;
-		vkCmdSetViewport(renderCommandBuffer, 0, 1, &viewport);
+			VkClearValue clearColor = { {{0.1f, 0.1f, 0.1f, 1.0f}} };  
+
+			VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
+			colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+			colorAttachmentInfo.imageView = sceneViewport->GetImageView();
+			colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL; 
+			colorAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			colorAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+			colorAttachmentInfo.clearValue = clearColor;  
+
+			VkRenderingInfoKHR renderInfo{};
+			renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
+			renderInfo.renderArea.extent = { sceneViewport->GetWidth(), sceneViewport->GetHeight() };
+			renderInfo.renderArea.offset = { 0, 0 };
+			renderInfo.layerCount = 1;
+			renderInfo.colorAttachmentCount = 1;
+			renderInfo.pColorAttachments = &colorAttachmentInfo;
+
+			vkCmdBeginRendering(renderCommandBuffer, &renderInfo);
+
+			auto&& pp = SceneRenderer::GetPipeline();
+			pp->Bind(renderCommandBuffer);
+
+			VkRect2D scissor{};
+			scissor.extent = { sceneViewport->GetWidth(), sceneViewport->GetHeight() };
+			scissor.offset = { 0, 0 };
+			vkCmdSetScissor(renderCommandBuffer, 0, 1, &scissor);
+
+			VkViewport viewport{};
+			viewport.height = static_cast<float>(sceneViewport->GetHeight());
+			viewport.width = static_cast<float>(sceneViewport->GetWidth());
+			viewport.x = 0;
+			viewport.y = 0;
+			viewport.maxDepth = 1.0f;
+			viewport.minDepth = 0.0f;
+			vkCmdSetViewport(renderCommandBuffer, 0, 1, &viewport);
+		}
+		else
+		{
+			// Fallback: render to swapchain
+			VkImageMemoryBarrier2 barrier{};
+			barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
+			barrier.srcStageMask = VK_PIPELINE_STAGE_2_NONE;
+			barrier.srcAccessMask = 0;
+			barrier.dstStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
+			barrier.dstAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
+			barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			barrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL; 
+			barrier.image = sc.GetCurrentSwapchainImage().Image;
+			barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			barrier.subresourceRange.baseMipLevel = 0;
+			barrier.subresourceRange.levelCount = 1;
+			barrier.subresourceRange.baseArrayLayer = 0;
+			barrier.subresourceRange.layerCount = 1;
+
+			VkDependencyInfo dep{};
+			dep.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
+			dep.imageMemoryBarrierCount = 1;
+			dep.pImageMemoryBarriers = &barrier;
+
+			vkCmdPipelineBarrier2(renderCommandBuffer, &dep);
+
+			VkClearValue clearColor = { {{1.0f, 0.0f, 1.0f, 1.0f}} };  
+
+			VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
+			colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+			colorAttachmentInfo.imageView = sc.GetCurrentSwapchainImage().ImageView;
+			colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL; 
+			colorAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			colorAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+			colorAttachmentInfo.clearValue = clearColor;  
+
+			VkRenderingInfoKHR renderInfo{};
+			renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
+			renderInfo.renderArea.extent = { sc.GetWidth(), sc.GetHeight() };
+			renderInfo.renderArea.offset = { 0, 0 };
+			renderInfo.layerCount = 1;
+			renderInfo.colorAttachmentCount = 1;
+			renderInfo.pColorAttachments = &colorAttachmentInfo;
+
+			vkCmdBeginRendering(renderCommandBuffer, &renderInfo);
+
+			auto&& pp = SceneRenderer::GetPipeline();
+			pp->Bind(renderCommandBuffer);
+
+			u32 width = sc.GetWidth();
+			u32 height = sc.GetHeight();
+
+			VkRect2D scissor{};
+			scissor.extent = { width, height };
+			scissor.offset = { 0, 0 };
+			vkCmdSetScissor(renderCommandBuffer, 0, 1, &scissor);
+
+			VkViewport viewport{};
+			viewport.height = (float)height;
+			viewport.width = (float)width;
+			viewport.x = 0;
+			viewport.y = 0;
+			viewport.maxDepth = 1.0f;
+			viewport.minDepth = 0.0f;
+			vkCmdSetViewport(renderCommandBuffer, 0, 1, &viewport);
+		}
 	}
 
 	void VulkanRenderer::EndRendering(VkCommandBuffer& renderCommandBuffer)
 	{
 		vkCmdEndRendering(renderCommandBuffer);
+		
+		// Get the ImGui layer to access the scene viewport
+		auto& app = Velt::Application::Get();
+		Velt::ImGuiLayer* imguiLayer = nullptr;
+		auto& layerStack = app.GetLayerStack();
+		for (auto* layer : layerStack)
+		{
+			imguiLayer = dynamic_cast<Velt::ImGuiLayer*>(layer);
+			if (imguiLayer)
+				break;
+		}
+
+		// Transition viewport image for sampling in ImGui
+		if (imguiLayer && imguiLayer->GetSceneViewport())
+		{
+			imguiLayer->GetSceneViewport()->TransitionForSampling(renderCommandBuffer);
+		}
 	}
 
 	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer)
@@ -175,7 +285,6 @@ namespace Velt::Renderer::Vulkan
 		vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
 		uint32_t indexCount = s_RenderData->QuadIndexBuffer->GetCount();
-		// VT_CORE_ERROR("{}", indexCount);
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 	}
 
