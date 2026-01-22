@@ -4,6 +4,7 @@
 #include "Velt/Layers/Layer.h"
 #include "ImGuiRenderer.h"
 #include "Widgets/DemoWidget.h"
+#include "SceneViewport.h"
 
 #include "Velt/Platform/Vulkan/VulkanDevice.h"	
 #include "Velt/Renderer/Renderer.h"
@@ -37,7 +38,9 @@ namespace Velt {
 	private:
 		Ref<ImGuiRenderer> m_Renderer;
 
-		Scope<Renderer::Vulkan::VulkanDevice> m_Device;
+		Scope<Renderer::Vulkan::VulkanDevice>& m_Device;
+		Scope<SceneViewport> m_SceneViewport;
+
 
 		DemoWidget m_DemoWidget;
 

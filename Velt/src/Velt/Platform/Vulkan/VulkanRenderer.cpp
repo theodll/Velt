@@ -230,14 +230,14 @@ namespace Velt::Renderer::Vulkan
 		auto& window = app.GetWindow();
 		auto& swapchain = window.GetSwapchain();
 		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
-
+/*
 		VulkanSwapchain::TransitionImageLayout(currentCommandBuffer,
 			swapchain.GetCurrentSwapchainImage().Image,
 			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
 			VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
 			VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
-
+*/
 		vkEndCommandBuffer(currentCommandBuffer);
 		swapchain.Present();
 	}

@@ -40,13 +40,14 @@ namespace Velt {
 		
 
 		m_Renderer = CreateRef<ImGuiRenderer>();
+		m_SceneViewport = CreateScope<SceneViewport>();
 
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-		// io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Commented out - may not be available in all versions
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Commented out - may not be available in all versions
 		
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();

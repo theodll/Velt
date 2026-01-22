@@ -145,21 +145,27 @@ namespace Velt {
 				}
 			}
 
+
+			VT_PROFILE_SCOPE("Render Loop");
 			Renderer::Renderer::BeginFrame();
-			VT_PROFILE_SCOPE("Layer OnUpdate Loop");
+
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 
-			// Render scene content
+			Renderer::Renderer::BeginScenePass();
+
 			for (Layer* layer : m_LayerStack)
 				layer->OnRender(m_Window->GetSwapchain().GetCurrentDrawCommandBuffer());
-
-			Renderer::Renderer::EndFrame();
-
 			
+			Renderer::Renderer::EndScenePass();
+			Renderer::Renderer::BeginGuiPass();
 
-			VT_PROFILE_SCOPE("Renderer drawFrame");
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
 
+			Renderer::Renderer::EndGuiPass();
+			Renderer::Renderer::EndFrame();
+			
 
 			if (s_ShutdownRequested)
 			{
