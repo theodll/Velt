@@ -24,11 +24,11 @@ namespace Velt::Renderer {
 		VT_PROFILE_FUNCTION();
 	}
 
-	void Renderer::Init() 
+	void Renderer::Init()
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Init Static Renderer");
-		s_RenderAPI = CreateScope<Vulkan::VulkanRenderer>(); 
+		s_RenderAPI = CreateScope<Vulkan::VulkanRenderer>();
 		s_RenderAPI->Init();
 
 		s_SceneRenderer = CreateScope<SceneRenderer>();
@@ -41,16 +41,16 @@ namespace Velt::Renderer {
 		VT_CORE_TRACE("Shutdown Static Renderer");
 		s_SceneRenderer->Shutdown();
 		s_RenderAPI->Shutdown();
-		
+
 	}
-	
-	void Renderer::BeginScene() 
+
+	void Renderer::BeginScene()
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Begin Scene");
 	}
 
-	void Renderer::EndScene() 
+	void Renderer::EndScene()
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("End Scene");
@@ -73,6 +73,31 @@ namespace Velt::Renderer {
 		VT_PROFILE_FUNCTION();
 		s_RenderAPI->BeginFrame();
 	}
+
+	void Renderer::BeginScenePass()
+	{
+		VT_PROFILE_FUNCTION();
+		s_RenderAPI->BeginScenePass();
+	}
+
+	void Renderer::EndScenePass()
+	{
+		VT_PROFILE_FUNCTION();
+		s_RenderAPI->EndScenePass();
+	}
+
+	void Renderer::BeginGuiPass()
+	{
+		VT_PROFILE_FUNCTION();
+		s_RenderAPI->BeginGuiPass();
+	}
+
+	void Renderer::EndGuiPass()
+	{
+		VT_PROFILE_FUNCTION();
+		s_RenderAPI->EndGuiPass();
+	}
+
 
 	void Renderer::EndFrame()
 	{

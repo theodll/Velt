@@ -31,6 +31,12 @@ namespace Velt::Renderer {
 		virtual void BeginRendering(VkCommandBuffer& renderCommandBuffer, bool explicitClear = false) = 0;
 		virtual void EndRendering(VkCommandBuffer& renderCommandBuffer) = 0;
 
+        virtual void BeginScenePass();
+        virtual void EndScenePass();
+
+        virtual void BeginGuiPass();
+        virtual void EndGuiPass();
+
 		virtual void ClearScreen(VkCommandBuffer& renderCommandBuffer) = 0;
         
         inline static API GetAPI() { return s_API; }

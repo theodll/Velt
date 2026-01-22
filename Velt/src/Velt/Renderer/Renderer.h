@@ -32,6 +32,12 @@ namespace Velt::Renderer
 		static void BeginFrame();
 		static void EndFrame();
 
+		static void BeginScenePass();
+		static void EndScenePass();
+		
+		static void BeginGuiPass();
+		static void EndGuiPass();
+
 		static void DrawQuad(VkCommandBuffer& renderCommandBuffer);
 
 		

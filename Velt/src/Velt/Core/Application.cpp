@@ -146,7 +146,6 @@ namespace Velt {
 			}
 
 			Renderer::Renderer::BeginFrame();
-			
 			VT_PROFILE_SCOPE("Layer OnUpdate Loop");
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();

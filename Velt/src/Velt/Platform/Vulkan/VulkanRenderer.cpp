@@ -60,35 +60,14 @@ namespace Velt::Renderer::Vulkan
 		beginInfo.pInheritanceInfo = nullptr;
 
 		vkBeginCommandBuffer(currentCommandBuffer, &beginInfo);
-
-		BeginRendering(currentCommandBuffer, false);
 	}
 
-	void VulkanRenderer::EndFrame()
-	{
-		auto& app = Velt::Application::Get();
-		auto& window = app.GetWindow();
-		auto& swapchain = window.GetSwapchain();
-		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
-
-		EndRendering(currentCommandBuffer);
-
-		VulkanSwapchain::TransitionImageLayout(currentCommandBuffer,
-			swapchain.GetCurrentSwapchainImage().Image,
-			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-			VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-			VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
-
-		vkEndCommandBuffer(currentCommandBuffer);
-		swapchain.Present();
-	}
-
-	void VulkanRenderer::BeginRendering(VkCommandBuffer& renderCommandBuffer, bool explicitClear /*= false*/)
+	void VulkanRenderer::BeginScenePass() 
 	{
 		auto& app = Velt::Application::Get();
 		auto& window = app.GetWindow();
 		auto& sc = window.GetSwapchain();
+		auto&& cmd = sc.GetCurrentDrawCommandBuffer();
 
 		VkImageMemoryBarrier2 barrier{};
 		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
@@ -97,7 +76,7 @@ namespace Velt::Renderer::Vulkan
 		barrier.dstStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
 		barrier.dstAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
 		barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		barrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL; 
+		barrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 		barrier.image = sc.GetCurrentSwapchainImage().Image;
 		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		barrier.subresourceRange.baseMipLevel = 0;
@@ -110,18 +89,18 @@ namespace Velt::Renderer::Vulkan
 		dep.imageMemoryBarrierCount = 1;
 		dep.pImageMemoryBarriers = &barrier;
 
-		vkCmdPipelineBarrier2(renderCommandBuffer, &dep);
+		vkCmdPipelineBarrier2(cmd, &dep);
 
 		// Rendering Info Setup
-		VkClearValue clearColor = { {{1.0f, 0.0f, 1.0f, 1.0f}} };  
+		VkClearValue clearColor = { {{1.0f, 0.0f, 1.0f, 1.0f}} };
 
 		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
 		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
 		colorAttachmentInfo.imageView = sc.GetCurrentSwapchainImage().ImageView;
-		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL; 
+		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 		colorAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		colorAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-		colorAttachmentInfo.clearValue = clearColor;  
+		colorAttachmentInfo.clearValue = clearColor;
 
 		VkRenderingInfoKHR renderInfo{};
 		renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
@@ -131,10 +110,10 @@ namespace Velt::Renderer::Vulkan
 		renderInfo.colorAttachmentCount = 1;
 		renderInfo.pColorAttachments = &colorAttachmentInfo;
 
-		vkCmdBeginRendering(renderCommandBuffer, &renderInfo);
+		vkCmdBeginRendering(cmd, &renderInfo);
 
 		auto&& pp = SceneRenderer::GetPipeline();
-		pp->Bind(renderCommandBuffer);
+		pp->Bind(cmd);
 
 		u32 width = sc.GetWidth();
 		u32 height = sc.GetHeight();
@@ -142,7 +121,7 @@ namespace Velt::Renderer::Vulkan
 		VkRect2D scissor{};
 		scissor.extent = { width, height };
 		scissor.offset = { 0, 0 };
-		vkCmdSetScissor(renderCommandBuffer, 0, 1, &scissor);
+		vkCmdSetScissor(cmd, 0, 1, &scissor);
 
 		VkViewport viewport{};
 		viewport.height = (float)height;
@@ -151,12 +130,116 @@ namespace Velt::Renderer::Vulkan
 		viewport.y = 0;
 		viewport.maxDepth = 1.0f;
 		viewport.minDepth = 0.0f;
-		vkCmdSetViewport(renderCommandBuffer, 0, 1, &viewport);
+		vkCmdSetViewport(cmd, 0, 1, &viewport);
 	}
 
-	void VulkanRenderer::EndRendering(VkCommandBuffer& renderCommandBuffer)
+	void VulkanRenderer::EndScenePass() 
 	{
-		vkCmdEndRendering(renderCommandBuffer);
+		auto& app = Velt::Application::Get();
+		auto& window = app.GetWindow();
+		auto& sc = window.GetSwapchain();
+		auto&& cmd = sc.GetCurrentDrawCommandBuffer();
+
+		vkCmdEndRendering(cmd);
+	}
+
+	void VulkanRenderer::BeginGuiPass()
+	{
+		auto& app = Velt::Application::Get();
+		auto& window = app.GetWindow();
+		auto& sc = window.GetSwapchain();
+		auto&& cmd = sc.GetCurrentDrawCommandBuffer();
+
+		VkImageMemoryBarrier2 barrier{};
+		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
+		barrier.srcStageMask = VK_PIPELINE_STAGE_2_NONE;
+		barrier.srcAccessMask = 0;
+		barrier.dstStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
+		barrier.dstAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
+		barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		barrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		barrier.image = sc.GetCurrentSwapchainImage().Image;
+		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		barrier.subresourceRange.baseMipLevel = 0;
+		barrier.subresourceRange.levelCount = 1;
+		barrier.subresourceRange.baseArrayLayer = 0;
+		barrier.subresourceRange.layerCount = 1;
+
+		VkDependencyInfo dep{};
+		dep.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
+		dep.imageMemoryBarrierCount = 1;
+		dep.pImageMemoryBarriers = &barrier;
+
+		vkCmdPipelineBarrier2(cmd, &dep);
+
+		// Rendering Info Setup
+		VkClearValue clearColor = { {{1.0f, 0.0f, 1.0f, 1.0f}} };
+
+		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
+		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+		colorAttachmentInfo.imageView = sc.GetCurrentSwapchainImage().ImageView;
+		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		colorAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachmentInfo.clearValue = clearColor;
+
+		VkRenderingInfoKHR renderInfo{};
+		renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
+		renderInfo.renderArea.extent = { sc.GetWidth(), sc.GetHeight() };
+		renderInfo.renderArea.offset = { 0, 0 };
+		renderInfo.layerCount = 1;
+		renderInfo.colorAttachmentCount = 1;
+		renderInfo.pColorAttachments = &colorAttachmentInfo;
+
+		vkCmdBeginRendering(cmd, &renderInfo);
+
+		auto&& pp = SceneRenderer::GetPipeline();
+		pp->Bind(cmd);
+
+		u32 width = sc.GetWidth();
+		u32 height = sc.GetHeight();
+
+		VkRect2D scissor{};
+		scissor.extent = { width, height };
+		scissor.offset = { 0, 0 };
+		vkCmdSetScissor(cmd, 0, 1, &scissor);
+
+		VkViewport viewport{};
+		viewport.height = (float)height;
+		viewport.width = (float)width;
+		viewport.x = 0;
+		viewport.y = 0;
+		viewport.maxDepth = 1.0f;
+		viewport.minDepth = 0.0f;
+		vkCmdSetViewport(cmd, 0, 1, &viewport);
+	}
+
+	void VulkanRenderer::EndGuiPass() 
+	{
+		auto& app = Velt::Application::Get();
+		auto& window = app.GetWindow();
+		auto& sc = window.GetSwapchain();
+		auto&& cmd = sc.GetCurrentDrawCommandBuffer();
+
+		vkCmdEndRendering(cmd);
+	}
+
+	void VulkanRenderer::EndFrame()
+	{
+		auto& app = Velt::Application::Get();
+		auto& window = app.GetWindow();
+		auto& swapchain = window.GetSwapchain();
+		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
+
+		VulkanSwapchain::TransitionImageLayout(currentCommandBuffer,
+			swapchain.GetCurrentSwapchainImage().Image,
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
+
+		vkEndCommandBuffer(currentCommandBuffer);
+		swapchain.Present();
 	}
 
 	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer)

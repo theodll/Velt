@@ -19,6 +19,12 @@ namespace Velt::Renderer::Vulkan
 		virtual void BeginRendering(VkCommandBuffer& renderCommandBuffer, bool explicitClear = false) override;
 		virtual void EndRendering(VkCommandBuffer& renderCommandBuffer) override;
 
+		virtual void BeginScenePass() override;
+		virtual void EndScenePass() override;
+
+		virtual void BeginGuiPass() override;
+		virtual void EndGuiPass() override;
+
 		virtual void ClearScreen(VkCommandBuffer& renderCommandBuffer) override;
 
 	private:
