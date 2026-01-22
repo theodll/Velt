@@ -31,8 +31,7 @@ namespace Velt
 			void PushLayer(Layer* layer);
 			void PushOverlay(Layer* overlay);
 			Window& GetWindow() { return *m_Window; }
-			LayerStack& GetLayerStack() { return m_LayerStack; }
-
+		
 			// VARS
 			static bool s_ShutdownRequested;
 			static constexpr int WIDTH {1280};

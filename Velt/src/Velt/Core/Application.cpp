@@ -151,31 +151,13 @@ namespace Velt {
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 
-			// Render scene content to offscreen viewport
+			// Render scene content
 			for (Layer* layer : m_LayerStack)
 				layer->OnRender(m_Window->GetSwapchain().GetCurrentDrawCommandBuffer());
 
-			// EndFrame transitions to swapchain and begins ImGui rendering
 			Renderer::Renderer::EndFrame();
-			
-			// Render ImGui to swapchain
-			m_ImGuiLayer->OnRender(m_Window->GetSwapchain().GetCurrentDrawCommandBuffer());
-			
-			// End ImGui rendering and present
-			auto&& commandBuffer = m_Window->GetSwapchain().GetCurrentDrawCommandBuffer();
-			vkCmdEndRendering(commandBuffer);
-			
-			VT_PROFILE_SCOPE("Swapchain transition and present");
-			Renderer::Vulkan::VulkanSwapchain::TransitionImageLayout(commandBuffer,
-				m_Window->GetSwapchain().GetCurrentSwapchainImage().Image,
-				VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-				VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-				VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-				VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
-			
-			vkEndCommandBuffer(commandBuffer);
-			m_Window->GetSwapchain().Present();
 
+			
 
 			VT_PROFILE_SCOPE("Renderer drawFrame");
 

@@ -4,7 +4,6 @@
 #include "Velt/Layers/Layer.h"
 #include "ImGuiRenderer.h"
 #include "Widgets/DemoWidget.h"
-#include "SceneViewport.h"
 
 #include "Velt/Platform/Vulkan/VulkanDevice.h"	
 #include "Velt/Renderer/Renderer.h"
@@ -34,21 +33,13 @@ namespace Velt {
 		
 		// Allow renderer to record ImGui commands
 		ImGuiRenderer& GetRenderer() { return *m_Renderer; }
-		SceneViewport* GetSceneViewport() { return m_SceneViewport.get(); }
 
 	private:
-		void SetupDockspace();
-		void RenderSceneViewport();
-
 		Ref<ImGuiRenderer> m_Renderer;
 
 		Scope<Renderer::Vulkan::VulkanDevice> m_Device;
 
 		DemoWidget m_DemoWidget;
-		
-		Scope<SceneViewport> m_SceneViewport;
 
-		const uint32_t m_ViewportWidth = 1280;
-		const uint32_t m_ViewportHeight = 720;
 	}; 
 }
