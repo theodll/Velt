@@ -1,4 +1,5 @@
 #pragma once
+#include "Platform/Vulkan/VulkanDevice.h"
 
 namespace Velt
 {
@@ -6,7 +7,7 @@ namespace Velt
 	class VELT_API SceneViewport
 	{
 	public:
-		SceneViewport() : m_Device(Renderer::Vulkan::VulkanContext::GetDevice());
+		SceneViewport();
 		virtual ~SceneViewport() = default; 
 
 		void Init(u32 width, u32 height);

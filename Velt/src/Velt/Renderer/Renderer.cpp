@@ -59,13 +59,13 @@ namespace Velt::Renderer {
 	void Renderer::BeginRendering(VkCommandBuffer& renderCommandBuffer, Ref<VkRenderPass> renderPass, bool explicitClear /*= false*/)
 	{
 		VT_PROFILE_FUNCTION();
-		s_RenderAPI->BeginRendering(renderCommandBuffer, explicitClear);
+		// s_RenderAPI->BeginRendering(renderCommandBuffer, explicitClear);
 	}
 
 	void Renderer::EndRendering(VkCommandBuffer& renderCommandBuffer)
 	{
 		VT_PROFILE_FUNCTION();
-		s_RenderAPI->EndRendering(renderCommandBuffer);
+		// s_RenderAPI->EndRendering(renderCommandBuffer);
 	}
 
 	void Renderer::BeginFrame()
@@ -90,14 +90,15 @@ namespace Velt::Renderer {
 	{
 		VT_PROFILE_FUNCTION();
 		s_RenderAPI->BeginGuiPass();
+		ImGuiLayer::Begin();
 	}
 
 	void Renderer::EndGuiPass()
 	{
 		VT_PROFILE_FUNCTION();
+		ImGuiLayer::End();
 		s_RenderAPI->EndGuiPass();
 	}
-
 
 	void Renderer::EndFrame()
 	{

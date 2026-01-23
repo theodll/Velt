@@ -25,21 +25,24 @@ namespace Velt {
 		virtual void OnUpdate() override;
 		
 		virtual void OnRender(VkCommandBuffer commandBuffer) override;
+		virtual void OnImGuiRender() override;
 
-		// Process a raw SDL event through ImGui's SDL backend (implemented in .cpp)
 		static void ProcessSDLEvent(const SDL_Event* event);
 
-		void Begin();
-		void End();
+		static void Begin();
+		static void End();
+
+		void SetupDockspace();
+		void RenderSceneViewport();
 		
-		// Allow renderer to record ImGui commands
 		ImGuiRenderer& GetRenderer() { return *m_Renderer; }
+		static SceneViewport* GetViewport() { return m_SceneViewport.get(); }
 
 	private:
-		Ref<ImGuiRenderer> m_Renderer;
+		static Ref<ImGuiRenderer> m_Renderer;
 
-		Scope<Renderer::Vulkan::VulkanDevice>& m_Device;
-		Scope<SceneViewport> m_SceneViewport;
+		Scope<Renderer::Vulkan::VulkanDevice> m_Device;
+		static Scope<SceneViewport> m_SceneViewport;
 
 
 		DemoWidget m_DemoWidget;

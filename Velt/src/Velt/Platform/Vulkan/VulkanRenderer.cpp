@@ -68,6 +68,7 @@ namespace Velt::Renderer::Vulkan
 		auto& window = app.GetWindow();
 		auto& sc = window.GetSwapchain();
 		auto&& cmd = sc.GetCurrentDrawCommandBuffer();
+		auto* viewport = ImGuiLayer::GetViewport();
 
 		VkImageMemoryBarrier2 barrier{};
 		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
@@ -77,7 +78,7 @@ namespace Velt::Renderer::Vulkan
 		barrier.dstAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
 		barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		barrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-		barrier.image = sc.GetCurrentSwapchainImage().Image;
+		barrier.image = viewport->GetImage();
 		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		barrier.subresourceRange.baseMipLevel = 0;
 		barrier.subresourceRange.levelCount = 1;
@@ -96,7 +97,7 @@ namespace Velt::Renderer::Vulkan
 
 		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
 		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
-		colorAttachmentInfo.imageView = sc.GetCurrentSwapchainImage().ImageView;
+		colorAttachmentInfo.imageView = viewport->GetImageView();
 		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 		colorAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		colorAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -104,7 +105,7 @@ namespace Velt::Renderer::Vulkan
 
 		VkRenderingInfoKHR renderInfo{};
 		renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
-		renderInfo.renderArea.extent = { sc.GetWidth(), sc.GetHeight() };
+		renderInfo.renderArea.extent = { viewport->GetWidth(), viewport->GetHeight() };
 		renderInfo.renderArea.offset = { 0, 0 };
 		renderInfo.layerCount = 1;
 		renderInfo.colorAttachmentCount = 1;
@@ -123,14 +124,14 @@ namespace Velt::Renderer::Vulkan
 		scissor.offset = { 0, 0 };
 		vkCmdSetScissor(cmd, 0, 1, &scissor);
 
-		VkViewport viewport{};
-		viewport.height = (float)height;
-		viewport.width = (float)width;
-		viewport.x = 0;
-		viewport.y = 0;
-		viewport.maxDepth = 1.0f;
-		viewport.minDepth = 0.0f;
-		vkCmdSetViewport(cmd, 0, 1, &viewport);
+		VkViewport VulkanViewport{};
+		VulkanViewport.height = (float)height;
+		VulkanViewport.width = (float)width;
+		VulkanViewport.x = 0;
+		VulkanViewport.y = 0;
+		VulkanViewport.maxDepth = 1.0f;
+		VulkanViewport.minDepth = 0.0f;
+		vkCmdSetViewport(cmd, 0, 1, &VulkanViewport);
 	}
 
 	void VulkanRenderer::EndScenePass() 

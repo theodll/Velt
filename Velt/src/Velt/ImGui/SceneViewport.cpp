@@ -1,12 +1,14 @@
 #include "vtpch.h"
 #include "SceneViewport.h"
 #include "Velt/Platform/Vulkan/VulkanContext.h"
+#include "Velt/Platform/Vulkan/VulkanDevice.h"
 #include "imgui_impl_vulkan.h"
 
 namespace Velt {
 
 	SceneViewport::SceneViewport() : m_Width(0), m_Height(0), m_Device(Renderer::Vulkan::VulkanContext::GetDevice())
 	{
+
 	}
 
 	void SceneViewport::Init(u32 width, u32 height) 

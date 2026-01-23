@@ -68,7 +68,10 @@ add_library(Velt SHARED
         "src/Velt/Platform/Vulkan/VulkanResourceUploader.cpp"
  "src/Velt/Renderer/SceneRenderer.cpp" 
  "src/Velt/Renderer/SceneRenderer.h" 
- "src/Velt/Renderer/ShaderLibary.cpp")
+ "src/Velt/Renderer/ShaderLibary.cpp"
+ "src/Velt/ImGui/SceneViewport.h"
+ "src/Velt/ImGui/SceneViewport.cpp"
+)
 
 if(WIN32 OR UNIX)
     set(SHADER_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Shaders)

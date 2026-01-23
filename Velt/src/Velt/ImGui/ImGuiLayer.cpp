@@ -12,9 +12,12 @@
 #include "Velt/Platform/Vulkan/VulkanContext.h"
 #include "Velt/Core/Application.h"
 
+
 namespace Velt {
-	
-	
+
+	Scope<SceneViewport> ImGuiLayer::m_SceneViewport = nullptr;
+	Ref<ImGuiRenderer> ImGuiLayer::m_Renderer = nullptr;
+
 	ImGuiLayer::ImGuiLayer()
 	{
 		VT_PROFILE_FUNCTION();
@@ -47,12 +50,10 @@ namespace Velt {
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Commented out - may not be available in all versions
-		
-		// Setup Dear ImGui style
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
 		ImGui::StyleColorsDark();
 
-		// Initialize platform/renderer backends
 		m_Renderer->Init();
 
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
@@ -89,14 +90,91 @@ namespace Velt {
 	void ImGuiLayer::OnUpdate()
 	{
 		VT_PROFILE_FUNCTION();
-		// Begin ImGui frame
-		m_Renderer->Begin();
+	}
 
-		// Render demo widget
-		m_DemoWidget.OnRender();
+	void ImGuiLayer::OnImGuiRender()
+	{
+		VT_PROFILE_FUNCTION();
 
-		// End ImGui frame (prepares draw data)
-		m_Renderer->End();
+		SetupDockspace();
+		RenderSceneViewport();
+	}
+
+	void ImGuiLayer::SetupDockspace()
+	{
+		VT_PROFILE_FUNCTION();
+
+		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+
+		const ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(viewport->WorkPos);
+		ImGui::SetNextWindowSize(viewport->WorkSize);
+		ImGui::SetNextWindowViewport(viewport->ID);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+		if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+			window_flags |= ImGuiWindowFlags_NoBackground;
+
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+		ImGui::Begin("DockSpace", nullptr, window_flags);
+		ImGui::PopStyleVar();
+		ImGui::PopStyleVar(2);
+
+		// Submit the DockSpace
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+		{
+			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+		}
+
+		// Menu bar
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Exit"))
+				{
+					Application::s_ShutdownRequested = true;
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+
+		ImGui::End();
+	}
+
+	void ImGuiLayer::RenderSceneViewport()
+	{
+		VT_PROFILE_FUNCTION();
+
+		// Fixed size for the scene viewport
+		const ImVec2 viewportSize(static_cast<float>(m_SceneViewport->GetWidth()), static_cast<float>(m_SceneViewport->GetHeight()));
+
+		ImGui::SetNextWindowSize(viewportSize, ImGuiCond_Always);
+		ImGui::Begin("Scene Viewport", nullptr,
+			ImGuiWindowFlags_NoResize |
+			ImGuiWindowFlags_NoScrollbar |
+			ImGuiWindowFlags_NoScrollWithMouse);
+
+		ImVec2 contentRegion = ImGui::GetContentRegionAvail();
+
+		// Display the rendered scene texture
+		if (m_SceneViewport && m_SceneViewport->GetDescriptorSet() != VK_NULL_HANDLE)
+		{
+			ImGui::Image((ImTextureID)m_SceneViewport->GetDescriptorSet(), contentRegion);
+		}
+		else
+		{
+			ImGui::Text("Scene viewport not initialized");
+		}
+
+		ImGui::End();
 	}
 
 	void ImGuiLayer::OnRender(VkCommandBuffer commandBuffer)
