@@ -406,7 +406,6 @@ namespace Velt::Renderer::Vulkan
 
 		VkCommandBuffer commandBuffers[] = { commandBuffer };
 
-		AcquireNextImage();
 		SubmitCommandBuffers(commandBuffers, &imageIndex);
 	}
 
