@@ -66,7 +66,7 @@ namespace Velt::Renderer::Vulkan {
         inline float GetAspectRatio() const { return (float)m_WindowExtent.width / (float)m_WindowExtent.height; }
 		
         inline SwapchainImage GetSwapchainImage(int index) { return m_SwapchainImages[index]; }
-        inline SwapchainImage GetCurrentSwapchainImage() { return GetSwapchainImage(m_CurrentFrameIndex); }
+        inline SwapchainImage GetCurrentSwapchainImage() { return GetSwapchainImage(m_CurrentImageIndex); }
         inline VkCommandBuffer GetCurrentDrawCommandBuffer() {  return GetDrawCommandBuffer(m_CurrentFrameIndex); }
 
         static void TransitionImageLayout(

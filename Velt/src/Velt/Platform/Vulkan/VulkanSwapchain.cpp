@@ -328,6 +328,11 @@ namespace Velt::Renderer::Vulkan
         }
     }
 
+    void VulkanSwapchain::BeginFrame() 
+    {
+        AcquireNextImage();
+    }
+
     VkSurfaceFormatKHR VulkanSwapchain::chooseSwapSurfaceFormat(
         const std::vector<VkSurfaceFormatKHR>& availableFormats)
     {
@@ -538,7 +543,28 @@ namespace Velt::Renderer::Vulkan
 		{
 			barrier.srcAccessMask = 0;
 			barrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-		}
+		} else if (oldLayout == VK_IMAGE_LAYOUT_PRESENT_SRC_KHR &&
+         newLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+        {
+            barrier.srcAccessMask = 0;
+            barrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        }
+        else if (oldLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL &&
+                newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+        {
+            barrier.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+            barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+        }
+        else if (oldLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL &&
+                newLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+        {
+            barrier.srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
+            barrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        }
+        else
+        {
+            VT_CORE_ASSERT(false, "Unsupported layout transition");
+        }
 
 		vkCmdPipelineBarrier(
 			commandBuffer,

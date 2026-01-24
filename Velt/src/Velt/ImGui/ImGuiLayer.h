@@ -35,7 +35,7 @@ namespace Velt {
 		void SetupDockspace();
 		void RenderSceneViewport();
 		
-		ImGuiRenderer& GetRenderer() { return *m_Renderer; }
+		static ImGuiRenderer* GetRenderer() { return m_Renderer.get(); } // <- hier hakt es
 		static SceneViewport* GetViewport() { return m_SceneViewport.get(); }
 
 	private:

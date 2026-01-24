@@ -44,7 +44,6 @@ namespace Velt {
 
 		m_Renderer = CreateRef<ImGuiRenderer>();
 		m_SceneViewport = CreateScope<SceneViewport>();
-
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -55,6 +54,8 @@ namespace Velt {
 		ImGui::StyleColorsDark();
 
 		m_Renderer->Init();
+		m_SceneViewport->Init(480, 480);
+
 
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
@@ -95,6 +96,9 @@ namespace Velt {
 	void ImGuiLayer::OnImGuiRender()
 	{
 		VT_PROFILE_FUNCTION();
+
+
+		m_DemoWidget.OnRender();
 
 		SetupDockspace();
 		RenderSceneViewport();
@@ -180,11 +184,11 @@ namespace Velt {
 	void ImGuiLayer::OnRender(VkCommandBuffer commandBuffer)
 	{
 		VT_PROFILE_FUNCTION();
-		if (commandBuffer != nullptr)
-		{
-			VT_PROFILE_SCOPE("ImGuiLayer::OnRender Render");
-			m_Renderer->Render(commandBuffer);
-		}
+	//	if (commandBuffer != nullptr)
+	//	{
+	//		VT_PROFILE_SCOPE("ImGuiLayer::OnRender Render");
+	//		m_Renderer->Render(commandBuffer);
+	//	}
 	}
 
 	void ImGuiLayer::Begin()

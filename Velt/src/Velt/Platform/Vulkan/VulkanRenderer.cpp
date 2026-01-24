@@ -54,6 +54,8 @@ namespace Velt::Renderer::Vulkan
 		auto& swapchain = window.GetSwapchain();
 		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
 
+		swapchain.BeginFrame();
+
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
@@ -70,27 +72,14 @@ namespace Velt::Renderer::Vulkan
 		auto&& cmd = sc.GetCurrentDrawCommandBuffer();
 		auto* viewport = ImGuiLayer::GetViewport();
 
-		VkImageMemoryBarrier2 barrier{};
-		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
-		barrier.srcStageMask = VK_PIPELINE_STAGE_2_NONE;
-		barrier.srcAccessMask = 0;
-		barrier.dstStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
-		barrier.dstAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
-		barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		barrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-		barrier.image = viewport->GetImage();
-		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		barrier.subresourceRange.baseMipLevel = 0;
-		barrier.subresourceRange.levelCount = 1;
-		barrier.subresourceRange.baseArrayLayer = 0;
-		barrier.subresourceRange.layerCount = 1;
-
-		VkDependencyInfo dep{};
-		dep.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
-		dep.imageMemoryBarrierCount = 1;
-		dep.pImageMemoryBarriers = &barrier;
-
-		vkCmdPipelineBarrier2(cmd, &dep);
+		sc.TransitionImageLayout(
+    	cmd,
+    	viewport->GetImage(),
+    	VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+    	VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+    	VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+    	VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+		);
 
 		// Rendering Info Setup
 		VkClearValue clearColor = { {{1.0f, 0.0f, 1.0f, 1.0f}} };
@@ -116,8 +105,8 @@ namespace Velt::Renderer::Vulkan
 		auto&& pp = SceneRenderer::GetPipeline();
 		pp->Bind(cmd);
 
-		u32 width = sc.GetWidth();
-		u32 height = sc.GetHeight();
+		u32 width = viewport->GetWidth();
+		u32 height = viewport->GetHeight();
 
 		VkRect2D scissor{};
 		scissor.extent = { width, height };
@@ -142,6 +131,19 @@ namespace Velt::Renderer::Vulkan
 		auto&& cmd = sc.GetCurrentDrawCommandBuffer();
 
 		vkCmdEndRendering(cmd);
+
+
+		auto* viewport = ImGuiLayer::GetViewport();
+		VkImage sceneImg = viewport->GetImage();
+
+		sc.TransitionImageLayout(
+			cmd,
+			sceneImg,
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
+		);
 	}
 
 	void VulkanRenderer::BeginGuiPass()
@@ -151,27 +153,16 @@ namespace Velt::Renderer::Vulkan
 		auto& sc = window.GetSwapchain();
 		auto&& cmd = sc.GetCurrentDrawCommandBuffer();
 
-		VkImageMemoryBarrier2 barrier{};
-		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2;
-		barrier.srcStageMask = VK_PIPELINE_STAGE_2_NONE;
-		barrier.srcAccessMask = 0;
-		barrier.dstStageMask = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT;
-		barrier.dstAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT;
-		barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		barrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-		barrier.image = sc.GetCurrentSwapchainImage().Image;
-		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		barrier.subresourceRange.baseMipLevel = 0;
-		barrier.subresourceRange.levelCount = 1;
-		barrier.subresourceRange.baseArrayLayer = 0;
-		barrier.subresourceRange.layerCount = 1;
+		auto&& img = sc.GetCurrentSwapchainImage(); 
 
-		VkDependencyInfo dep{};
-		dep.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
-		dep.imageMemoryBarrierCount = 1;
-		dep.pImageMemoryBarriers = &barrier;
-
-		vkCmdPipelineBarrier2(cmd, &dep);
+		sc.TransitionImageLayout(
+			cmd,
+			img.Image,
+			VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,          
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+		);
 
 		// Rendering Info Setup
 		VkClearValue clearColor = { {{1.0f, 0.0f, 1.0f, 1.0f}} };
@@ -193,9 +184,6 @@ namespace Velt::Renderer::Vulkan
 		renderInfo.pColorAttachments = &colorAttachmentInfo;
 
 		vkCmdBeginRendering(cmd, &renderInfo);
-
-		auto&& pp = SceneRenderer::GetPipeline();
-		pp->Bind(cmd);
 
 		u32 width = sc.GetWidth();
 		u32 height = sc.GetHeight();
@@ -222,7 +210,18 @@ namespace Velt::Renderer::Vulkan
 		auto& sc = window.GetSwapchain();
 		auto&& cmd = sc.GetCurrentDrawCommandBuffer();
 
+		ImGuiLayer::GetRenderer()->Render(cmd);
 		vkCmdEndRendering(cmd);
+
+		auto&& img = sc.GetCurrentSwapchainImage();
+		sc.TransitionImageLayout(
+			cmd,
+			img.Image,
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT
+		);
 	}
 
 	void VulkanRenderer::EndFrame()
@@ -231,14 +230,7 @@ namespace Velt::Renderer::Vulkan
 		auto& window = app.GetWindow();
 		auto& swapchain = window.GetSwapchain();
 		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
-/*
-		VulkanSwapchain::TransitionImageLayout(currentCommandBuffer,
-			swapchain.GetCurrentSwapchainImage().Image,
-			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-			VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-			VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
-*/
+
 		vkEndCommandBuffer(currentCommandBuffer);
 		swapchain.Present();
 	}
