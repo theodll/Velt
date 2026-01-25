@@ -83,6 +83,14 @@ namespace Velt::Windows
 		SDL_PropertiesID sdlProps = SDL_GetWindowProperties(m_Window);
 		SDL_SetPointerProperty(sdlProps, "WindowInstance", this);
 
+		int lW, lH;
+		SDL_GetWindowSize(m_Window,&lW ,&lH);
+		VT_CORE_ERROR("Logical Window Size: {0}, {1}", lW, lH);
+
+		int pW, pH;
+		SDL_GetWindowSizeInPixels(m_Window, &pW ,&pH);
+		VT_CORE_ERROR("Pixel Window Size: {0}, {1}", pW, pH);
+
 	//	m_Context = Renderer::Context::Create();
 	//	m_Context->Init();
 	//	CreateWindowSurface(Renderer::Vulkan::VulkanContext::GetInstance(), &Renderer::Vulkan::VulkanContext::GetSurface());

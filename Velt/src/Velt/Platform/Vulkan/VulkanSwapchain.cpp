@@ -3,6 +3,7 @@
 #include "VulkanContext.h"
 #include <SDL3/SDL_vulkan.h>
 #include <SDL3/SDL.h>
+#include "Core/Application.h"
 
 namespace Velt::Renderer::Vulkan
 {
@@ -11,8 +12,16 @@ namespace Velt::Renderer::Vulkan
     {
         VT_PROFILE_FUNCTION();
         VT_CORE_TRACE("Swapchain Created");
+        auto&& window = (SDL_Window*)Velt::Application::Get().GetWindow().GetNativeHandle();
+        i32 w{}, h{};
+        SDL_GetWindowSizeInPixels(window, &w, &h);
+        m_WindowExtent = { (u32)w, (u32)h };
+
         Create(createInfo);
         m_Instance = VulkanContext::GetInstance();
+
+        VT_CORE_ERROR("Swapchain Size: {0}, {1}", GetWidth(), GetHeight());
+        VT_CORE_ERROR("Swapchain Extend: {0}, {1}", m_WindowExtent.width, m_WindowExtent.height);
     }
 
     void VulkanSwapchain::Destroy()
@@ -141,9 +150,13 @@ namespace Velt::Renderer::Vulkan
         VT_PROFILE_FUNCTION();
         SwapChainSupportDetails swapChainSupport = m_Device.GetSwapChainSupport();
 
+        VT_CORE_ERROR("Swapchain Creation Info Extend: {0}, {1}", createInfo.Width, createInfo.Height);
         VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
         VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
         VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
+
+        VT_CORE_ERROR("Chosen Swapchain Extend: {0}, {1}", extent.width, extent.height);
+        
 
         u32 imageCount = swapChainSupport.capabilities.minImageCount + 1;
         if (swapChainSupport.capabilities.maxImageCount > 0 &&
