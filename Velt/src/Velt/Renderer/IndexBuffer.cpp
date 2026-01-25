@@ -15,7 +15,7 @@ namespace Velt::Renderer
 		switch (Renderer::GetAPI())						 
 		{												 
 		case RenderAPI::API::None:    return nullptr;	 
-		case RenderAPI::API::Vulkan:  return std::make_shared<Vulkan::VulkanIndexBuffer>(size);
+		case RenderAPI::API::Vulkan:  return std::make_shared<RHI::VulkanIndexBuffer>(size);
 		}												 
 		VT_CORE_ASSERT(false, "Unknown RendererAPI");	 
 		return nullptr;									 
@@ -27,7 +27,7 @@ namespace Velt::Renderer
 		switch (Renderer::GetAPI())
 		{
 		case RenderAPI::API::None:    return nullptr;
-		case RenderAPI::API::Vulkan:  return std::make_shared<Vulkan::VulkanIndexBuffer>(data, size, offset);
+		case RenderAPI::API::Vulkan:  return std::make_shared<RHI::VulkanIndexBuffer>(data, size, offset);
 		}
 		VT_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;

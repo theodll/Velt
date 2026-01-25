@@ -41,7 +41,7 @@ namespace Velt
 	private:
 		static Application* s_Instance;
 		WindowProps m_WindowProps;
-		std::unique_ptr<Renderer::Vulkan::VulkanContext> m_Context;
+		std::unique_ptr<Renderer::RHI::VulkanContext> m_Context;
 		std::unique_ptr<Window> m_Window;
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer = nullptr;

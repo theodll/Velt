@@ -8,7 +8,7 @@
 #include "Velt/Platform/Vulkan/VulkanPipeline.h"
 
 
-namespace Velt::Renderer::Vulkan
+namespace Velt::Renderer::RHI
 {
 
 	class VELT_API VulkanContext : public Context

@@ -16,7 +16,7 @@ namespace Velt::Renderer
 		switch (Renderer::GetAPI())
 		{
 			case RenderAPI::API::None:    return nullptr;
-			case RenderAPI::API::Vulkan:  return std::make_shared<Vulkan::VulkanVertexBuffer>(vertexData, bytes, 0);
+			case RenderAPI::API::Vulkan:  return std::make_shared<RHI::VulkanVertexBuffer>(vertexData, bytes, 0);
 		}
 		VT_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;

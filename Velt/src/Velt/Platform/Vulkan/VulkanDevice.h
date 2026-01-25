@@ -4,7 +4,7 @@
 #include "Velt/Core/Core.h"
 #include "VulkanCommandBuffer.h"
 
-namespace Velt::Renderer::Vulkan {
+namespace Velt::Renderer::RHI {
 
 	class VELT_API Window;
 

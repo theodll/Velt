@@ -9,7 +9,7 @@
 
 #include <vulkan/vulkan.h>
 
-namespace Velt::Renderer::Vulkan
+namespace Velt::Renderer::RHI
 {
 	class VulkanVertexBuffer : public VertexBuffer
 	{

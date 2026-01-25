@@ -36,7 +36,7 @@ namespace Velt {
 		VT_CORE_TRACE("Attach ImGuiLayer");
 
 
-		auto& device = Renderer::Vulkan::VulkanContext::GetDevice();
+		auto& device = Renderer::RHI::VulkanContext::GetDevice();
 		SDL_Window* window = nullptr;
 	
 		window = reinterpret_cast<SDL_Window*>(Application::Get().GetWindow().GetNativeHandle());

@@ -41,7 +41,7 @@ namespace Velt {
 	private:
 		static Ref<ImGuiRenderer> m_Renderer;
 
-		Scope<Renderer::Vulkan::VulkanDevice> m_Device;
+		Scope<Renderer::RHI::VulkanDevice> m_Device;
 		static Scope<SceneViewport> m_SceneViewport;
 
 

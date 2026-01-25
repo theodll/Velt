@@ -4,7 +4,7 @@
 #include <SDL3/SDL_vulkan.h>
 
 
-namespace Velt::Renderer::Vulkan
+namespace Velt::Renderer::RHI
 {
 	VulkanDevice* VulkanContext::m_Device = nullptr;
 	VkInstance VulkanContext::m_Instance; 

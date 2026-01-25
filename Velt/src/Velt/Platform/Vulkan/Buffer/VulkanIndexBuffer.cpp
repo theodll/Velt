@@ -3,7 +3,7 @@
 #include "../VulkanContext.h"
 #include "Core/Log.h"
 
-namespace Velt::Renderer::Vulkan
+namespace Velt::Renderer::RHI
 {
 	VulkanIndexBuffer::VulkanIndexBuffer(void* data, u64 count, u64 offsetBytes)
 		: m_Count((u32)count),

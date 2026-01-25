@@ -3,7 +3,7 @@
 #include "VulkanResourceUploader.h"
 #include "VulkanContext.h"
 
-namespace Velt::Renderer::Vulkan
+namespace Velt::Renderer::RHI
 {
     void VulkanResourceUploader::Begin()
     {

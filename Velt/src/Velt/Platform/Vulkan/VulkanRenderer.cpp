@@ -6,7 +6,7 @@
 #include "vulkan/vulkan.h"
 #include "Core/Application.h"
 
-namespace Velt::Renderer::Vulkan
+namespace Velt::Renderer::RHI
 {
 	struct RenderData
 	{

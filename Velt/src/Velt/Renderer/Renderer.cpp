@@ -28,7 +28,7 @@ namespace Velt::Renderer {
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Init Static Renderer");
-		s_RenderAPI = CreateScope<Vulkan::VulkanRenderer>();
+		s_RenderAPI = CreateScope<RHI::VulkanRenderer>();
 		s_RenderAPI->Init();
 
 		s_SceneRenderer = CreateScope<SceneRenderer>();
