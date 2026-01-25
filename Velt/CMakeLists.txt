@@ -66,11 +66,15 @@ add_library(Velt SHARED
         "src/Velt/Renderer/RenderAPI.cpp"
         "src/Velt/Platform/Vulkan/VulkanResourceUploader.h"
         "src/Velt/Platform/Vulkan/VulkanResourceUploader.cpp"
- "src/Velt/Renderer/SceneRenderer.cpp" 
- "src/Velt/Renderer/SceneRenderer.h" 
- "src/Velt/Renderer/ShaderLibary.cpp"
- "src/Velt/ImGui/SceneViewport.h"
- "src/Velt/ImGui/SceneViewport.cpp"
+        "src/Velt/Renderer/SceneRenderer.cpp" 
+        "src/Velt/Renderer/SceneRenderer.h" 
+        "src/Velt/Renderer/ShaderLibary.cpp"
+        "src/Velt/ImGui/SceneViewport.h"
+        "src/Velt/ImGui/SceneViewport.cpp"
+        "src/Velt/Renderer/UniformBuffer.h"
+        "src/Velt/Renderer/UniformBuffer.cpp"
+        "src/Velt/Platform/Vulkan/Buffer/VulkanUniformBuffer.h"
+        "src/Velt/Platform/Vulkan/Buffer/VulkanUniformBuffer.cpp"
 )
 
 if(WIN32 OR UNIX)
