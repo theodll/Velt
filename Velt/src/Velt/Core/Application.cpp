@@ -37,7 +37,7 @@ namespace Velt {
 		return VK_FORMAT_UNDEFINED; 
 	}
 
-	Application::Application()
+	Application::Application() : m_Camera(-1.0f, 1.0f, -1.0f, 1.0f)
 	{
 		VT_PROFILE_FUNCTION();
 		s_Instance = this;
@@ -148,22 +148,22 @@ namespace Velt {
 
 			VT_PROFILE_SCOPE("Render Loop");
 			Renderer::Renderer::BeginFrame();
-
+			// Frame 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 
 			Renderer::Renderer::BeginScenePass();
+			// Scene Pass
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnRender(m_Window->GetSwapchain().GetCurrentDrawCommandBuffer());
 			
 			Renderer::Renderer::EndScenePass();
 			Renderer::Renderer::BeginGuiPass();
+			// Gui Pass
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
-
-			// m_ImGuiLayer->Render(); 
 
 			Renderer::Renderer::EndGuiPass();
 			Renderer::Renderer::EndFrame();

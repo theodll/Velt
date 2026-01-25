@@ -71,7 +71,7 @@ add_library(Velt SHARED
  "src/Velt/Renderer/ShaderLibary.cpp"
  "src/Velt/ImGui/SceneViewport.h"
  "src/Velt/ImGui/SceneViewport.cpp"
-)
+ "src/Velt/Renderer/OrthograpicCamera.cpp" "src/Velt/Renderer/OrthographicCamera.h")
 
 if(WIN32 OR UNIX)
     set(SHADER_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Shaders)

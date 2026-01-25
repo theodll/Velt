@@ -4,6 +4,7 @@
 #include "Window.h"
 #include "Layers/LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
+#include "Renderer/OrthographicCamera.h"
 
 namespace Velt
 {	
@@ -45,6 +46,8 @@ namespace Velt
 		std::unique_ptr<Window> m_Window;
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer = nullptr;
+
+		Renderer::OrthographicCamera m_Camera;
 	};
 
 	Application* CreateApplication();
