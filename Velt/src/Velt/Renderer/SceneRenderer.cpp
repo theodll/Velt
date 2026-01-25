@@ -24,6 +24,10 @@ namespace Velt::Renderer {
 
 		s_Pipeline = Pipeline::Create(specs);
 		s_Pipeline->Init();
+
+
+
+
 	}
 
 	void SceneRenderer::Shutdown()

@@ -1,5 +1,8 @@
 #pragma once
+#include <memory>
+
 #include "Velt/Core/Core.h"
+#include "Velt/Platform/Vulkan/Buffer/VulkanUniformBuffer.h"
 #include "Buffer.h"
 
 namespace Velt::Renderer
@@ -15,6 +18,6 @@ namespace Velt::Renderer
 		
         virtual VkBuffer GetVulkanBuffer() const = 0;
         
-		static std::shared_ptr<UniformBuffer> Create(void* uniformData, u64 size, u64 offset);
+		static std::shared_ptr<UniformBuffer> Create(void* uniformData, bool useStaging = false, u64 offset);
     };
 } 
