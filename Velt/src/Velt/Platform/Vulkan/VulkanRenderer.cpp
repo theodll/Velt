@@ -102,9 +102,6 @@ namespace Velt::Renderer::RHI
 
 		vkCmdBeginRendering(cmd, &renderInfo);
 
-		auto&& pp = SceneRenderer::GetPipeline();
-		pp->Bind(cmd);
-
 		u32 width = viewport->GetWidth();
 		u32 height = viewport->GetHeight();
 

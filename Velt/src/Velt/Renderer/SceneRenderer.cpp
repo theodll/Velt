@@ -1,5 +1,7 @@
 #include "SceneRenderer.h"
 #include "Buffer.h"
+#include "Core/Core.h"
+#include "Core/Application.h"
 
 namespace Velt::Renderer {
 	
@@ -25,7 +27,12 @@ namespace Velt::Renderer {
 		s_Pipeline = Pipeline::Create(specs);
 		s_Pipeline->Init();
 
+		auto& sc = Velt::Application::Get().GetWindow().GetSwapchain();
 
+		const u32 mfif = sc.GetMaxFrameInFlight();
+		m_CameraUBOs.resize(mfif);
+		for (u32 i = 0; i < mfif; i++)
+			m_CameraUBOs[i] = UniformBuffer::Create(sizeof(m_Camera));
 
 
 	}
@@ -37,17 +44,21 @@ namespace Velt::Renderer {
 
 	void SceneRenderer::BeginScene()
 	{
+		VT_PROFILE_FUNCTION();
+		
+		auto cmd = Velt::Application::Get().GetWindow().GetSwapchain().GetCurrentDrawCommandBuffer();
+		auto frameIndex = Velt::Application::Get().GetWindow().GetSwapchain().GetCurrentFrameIndex();
 
+		m_CameraUBOs[frameIndex]->SetData(&m_Camera, sizeof(m_Camera), 0);
+		
+		s_Pipeline->Bind(cmd);
+
+		// s_Pipeline->BindDescriptorSet(cmd, frameIndex);
 	}
 
 	void SceneRenderer::EndScene()
 	{
-
-	}
-
-	VkRenderPass SceneRenderer::GetFinalRenderpass()
-	{
-		return VK_NULL_HANDLE;
+		VT_PROFILE_FUNCTION();
 	}
 
 }

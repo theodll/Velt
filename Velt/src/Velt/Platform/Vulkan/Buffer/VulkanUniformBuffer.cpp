@@ -46,7 +46,6 @@ namespace Velt::Renderer::RHI
 		VT_PROFILE_FUNCTION();
 
 		auto device = VulkanContext::GetDevice();
-
 		if (m_Mapped)
 		{
 			vkUnmapMemory(device.device(), m_UniformBufferMemory);

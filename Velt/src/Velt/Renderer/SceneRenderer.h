@@ -2,8 +2,10 @@
 #include "Core/Core.h"
 #include "Pipeline.h"
 #include "Platform/Vulkan/VulkanPipeline.h"
+#include "Renderer/UniformBuffer.h"
 
 namespace Velt::Renderer {
+
 
 	class SceneRenderer
 	{
@@ -14,22 +16,20 @@ namespace Velt::Renderer {
 		void BeginScene();
 		void EndScene();
 
-//		VkCommandBuffer& GetVulkanCommandBuffer() { return m_Commandbuffer; }
 		static Ref<Pipeline> GetPipeline() { return s_Pipeline; };
-		VkRenderPass GetFinalRenderpass();
 		 
 	private:
-		
-		static Ref<Pipeline> s_Pipeline;
+		struct alignas(16)
+		{
+			glm::mat4 view;
+			glm::mat4 proj;
+			glm::mat4 viewProj;
+		} m_Camera;	
 
-		// VkCommandBuffer m_Commandbuffer;
+		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
+
+		static Ref<Pipeline> s_Pipeline;
+		
 
 	};
 }
-
-
-//my plan is as follows just to get it to work:
-// in application: 
-// DrawQuad(commandbuffer, pipeline, {1, 1, 1, 1}) 
-// commandbuffer and pipeline are fetched through this class (eg. m_SceneRenderer->GetVulkanCommandBuffer() / GetPipeline())
-// Scene Renderer must also be created in Application::Init or somewhere like that. Then for every frame this takes care of it

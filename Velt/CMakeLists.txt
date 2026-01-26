@@ -75,6 +75,8 @@ add_library(Velt SHARED
         "src/Velt/Renderer/UniformBuffer.cpp"
         "src/Velt/Platform/Vulkan/Buffer/VulkanUniformBuffer.h"
         "src/Velt/Platform/Vulkan/Buffer/VulkanUniformBuffer.cpp"
+        "src/Velt/Renderer/OrthographicCamera.h"
+        "src/Velt/Renderer/OrthographicCamera.cpp"
 )
 
 if(WIN32 OR UNIX)

@@ -78,11 +78,13 @@ namespace Velt::Renderer {
 	{
 		VT_PROFILE_FUNCTION();
 		s_RenderAPI->BeginScenePass();
+		s_SceneRenderer->BeginScene();
 	}
 
 	void Renderer::EndScenePass()
 	{
 		VT_PROFILE_FUNCTION();
+		s_SceneRenderer->EndScene();
 		s_RenderAPI->EndScenePass();
 	}
 

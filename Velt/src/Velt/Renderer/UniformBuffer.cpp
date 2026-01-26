@@ -8,15 +8,14 @@
 namespace Velt::Renderer
 {
 
-	std::shared_ptr<UniformBuffer> UniformBuffer::Create(void* uniformData, bool useStaging, u64 offset)
+	std::shared_ptr<UniformBuffer> UniformBuffer::Create(u64 size, u64 offset)
 	{
 		VT_PROFILE_FUNCTION();
 
-		u64 bytes = vertexCount * vertexStride;
 		switch (Renderer::GetAPI())
 		{
 		case RenderAPI::API::None:    return nullptr;
-		case RenderAPI::API::Vulkan:  return std::make_shared<RHI::VulkanUniformBuffer>(uniformData, false, offset);
+		case RenderAPI::API::Vulkan:  return std::make_shared<RHI::VulkanUniformBuffer>(size, false);
 		}
 		VT_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;
