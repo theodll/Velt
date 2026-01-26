@@ -32,7 +32,7 @@ namespace Velt::Renderer {
 		const u32 mfif = sc.GetMaxFrameInFlight();
 		m_CameraUBOs.resize(mfif);
 		for (u32 i = 0; i < mfif; i++)
-			m_CameraUBOs[i] = UniformBuffer::Create(sizeof(m_Camera));
+			m_CameraUBOs[i] = UniformBuffer::Create(sizeof(CameraUBO));
 
 
 	}
@@ -49,7 +49,10 @@ namespace Velt::Renderer {
 		auto cmd = Velt::Application::Get().GetWindow().GetSwapchain().GetCurrentDrawCommandBuffer();
 		auto frameIndex = Velt::Application::Get().GetWindow().GetSwapchain().GetCurrentFrameIndex();
 
-		m_CameraUBOs[frameIndex]->SetData(&m_Camera, sizeof(m_Camera), 0);
+		CameraUBO ubo{};
+		ubo.viewProj = m_Camera.GetViewProjectionMatrix();
+
+		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
 		
 		s_Pipeline->Bind(cmd);
 

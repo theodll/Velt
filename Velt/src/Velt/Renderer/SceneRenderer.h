@@ -3,6 +3,7 @@
 #include "Pipeline.h"
 #include "Platform/Vulkan/VulkanPipeline.h"
 #include "Renderer/UniformBuffer.h"
+#include "Renderer/OrthographicCamera.h"
 
 namespace Velt::Renderer {
 
@@ -19,12 +20,12 @@ namespace Velt::Renderer {
 		static Ref<Pipeline> GetPipeline() { return s_Pipeline; };
 		 
 	private:
-		struct alignas(16)
+		struct alignas(16) CameraUBO
 		{
-			glm::mat4 view;
-			glm::mat4 proj;
 			glm::mat4 viewProj;
-		} m_Camera;	
+		};
+
+		OrthographicCamera m_Camera;
 
 		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
 
