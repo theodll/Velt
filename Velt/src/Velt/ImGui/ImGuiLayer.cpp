@@ -51,7 +51,9 @@ namespace Velt {
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-		ImGui::StyleColorsDark();
+		ImGuiStyle& style = ImGui::GetStyle();
+		// ApplyEditorTheme(style);
+	
 
 		m_Renderer->Init();
 		m_SceneViewport->Init(480, 480);
@@ -93,12 +95,121 @@ namespace Velt {
 		VT_PROFILE_FUNCTION();
 	}
 
+	void ImGuiLayer::ApplyEditorTheme(ImGuiStyle& style)
+	{
+		// --- Spacing / Rounding (macht den "modern editor" Look aus) ---
+		style.WindowPadding = ImVec2(0.0f, 0.0f);
+		style.FramePadding = ImVec2(0.0f, 0.0f);
+		style.CellPadding = ImVec2(0.0f, 0.0f);
+		style.ItemSpacing = ImVec2(8.0f, 6.0f);
+		style.ItemInnerSpacing = ImVec2(0.0f, 0.0f);
+		style.IndentSpacing = 18.0f;
+		style.ScrollbarSize = 14.0f;
+		style.GrabMinSize = 10.0f;
+
+		style.WindowRounding = 10.0f;
+		style.ChildRounding = 10.0f;
+		style.FrameRounding = 8.0f;
+		style.PopupRounding = 10.0f;
+		style.ScrollbarRounding = 12.0f;
+		style.GrabRounding = 10.0f;
+		style.TabRounding = 0.0f;
+
+		style.WindowBorderSize = 1.0f;
+		style.ChildBorderSize = 1.0f;
+		style.PopupBorderSize = 1.0f;
+		style.FrameBorderSize = 0.0f;
+		style.TabBorderSize = 0.0f;
+
+		style.WindowTitleAlign = ImVec2(0.50f, 0.50f);
+		style.ButtonTextAlign = ImVec2(0.50f, 0.50f);
+		style.SelectableTextAlign = ImVec2(0.0f, 0.50f);
+
+		style.SeparatorTextBorderSize = 0.0f;
+		style.SeparatorTextAlign = ImVec2(0.0f, 0.5f);
+
+		style.AntiAliasedLines = true;
+		style.AntiAliasedFill = true;
+
+		ImVec4* c = style.Colors;
+
+		const ImVec4 bg0 = ImVec4(0.07f, 0.07f, 0.08f, 1.00f);
+		const ImVec4 bg1 = ImVec4(0.10f, 0.10f, 0.12f, 1.00f);
+		const ImVec4 bg2 = ImVec4(0.13f, 0.13f, 0.16f, 1.00f);
+		const ImVec4 fg0 = ImVec4(0.90f, 0.90f, 0.92f, 1.00f);
+		const ImVec4 fg1 = ImVec4(0.70f, 0.70f, 0.74f, 1.00f);
+
+		const ImVec4 accent = ImVec4(0.20f, 0.45f, 0.95f, 1.00f);
+		const ImVec4 accentHover = ImVec4(0.25f, 0.52f, 0.98f, 1.00f);
+		const ImVec4 accentActive = ImVec4(0.18f, 0.40f, 0.86f, 1.00f);
+
+		c[ImGuiCol_Text] = fg0;
+		c[ImGuiCol_TextDisabled] = ImVec4(fg1.x, fg1.y, fg1.z, 1.0f);
+
+		c[ImGuiCol_WindowBg] = bg0;
+		c[ImGuiCol_ChildBg] = ImVec4(0, 0, 0, 0);
+		c[ImGuiCol_PopupBg] = bg1;
+
+		c[ImGuiCol_Border] = ImVec4(0.20f, 0.20f, 0.24f, 1.00f);
+		c[ImGuiCol_BorderShadow] = ImVec4(0, 0, 0, 0);
+
+		c[ImGuiCol_FrameBg] = bg1;
+		c[ImGuiCol_FrameBgHovered] = bg2;
+		c[ImGuiCol_FrameBgActive] = ImVec4(bg2.x, bg2.y, bg2.z, 1.00f);
+
+		c[ImGuiCol_TitleBg] = bg0;
+		c[ImGuiCol_TitleBgActive] = bg0;
+		c[ImGuiCol_TitleBgCollapsed] = bg0;
+
+		c[ImGuiCol_MenuBarBg] = bg1;
+
+		c[ImGuiCol_ScrollbarBg] = ImVec4(bg0.x, bg0.y, bg0.z, 0.60f);
+		c[ImGuiCol_ScrollbarGrab] = ImVec4(0.25f, 0.25f, 0.30f, 1.00f);
+		c[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.30f, 0.30f, 0.36f, 1.00f);
+		c[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.34f, 0.34f, 0.40f, 1.00f);
+
+		c[ImGuiCol_CheckMark] = accent;
+
+		c[ImGuiCol_SliderGrab] = accent;
+		c[ImGuiCol_SliderGrabActive] = accentActive;
+
+		c[ImGuiCol_Button] = ImVec4(bg1.x, bg1.y, bg1.z, 1.00f);
+		c[ImGuiCol_ButtonHovered] = ImVec4(bg2.x, bg2.y, bg2.z, 1.00f);
+		c[ImGuiCol_ButtonActive] = ImVec4(bg2.x, bg2.y, bg2.z, 1.00f);
+
+		c[ImGuiCol_Header] = ImVec4(bg1.x, bg1.y, bg1.z, 1.00f);
+		c[ImGuiCol_HeaderHovered] = ImVec4(bg2.x, bg2.y, bg2.z, 1.00f);
+		c[ImGuiCol_HeaderActive] = ImVec4(bg2.x, bg2.y, bg2.z, 1.00f);
+
+		c[ImGuiCol_Separator] = ImVec4(0.20f, 0.20f, 0.24f, 1.00f);
+		c[ImGuiCol_SeparatorHovered] = ImVec4(0.30f, 0.30f, 0.36f, 1.00f);
+		c[ImGuiCol_SeparatorActive] = ImVec4(0.35f, 0.35f, 0.42f, 1.00f);
+
+		c[ImGuiCol_Tab] = bg1;
+		c[ImGuiCol_TabHovered] = bg2;
+		c[ImGuiCol_TabActive] = bg2;
+		c[ImGuiCol_TabUnfocused] = bg1;
+		c[ImGuiCol_TabUnfocusedActive] = bg2;
+
+		c[ImGuiCol_ResizeGrip] = ImVec4(0, 0, 0, 0);
+		c[ImGuiCol_ResizeGripHovered] = ImVec4(0, 0, 0, 0);
+		c[ImGuiCol_ResizeGripActive] = ImVec4(0, 0, 0, 0);
+
+		c[ImGuiCol_PlotLines] = fg1;
+		c[ImGuiCol_PlotLinesHovered] = fg0;
+		c[ImGuiCol_PlotHistogram] = accent;
+		c[ImGuiCol_PlotHistogramHovered] = accentHover;
+
+		c[ImGuiCol_TextSelectedBg] = ImVec4(accent.x, accent.y, accent.z, 0.35f);
+		c[ImGuiCol_DragDropTarget] = ImVec4(accent.x, accent.y, accent.z, 0.90f);
+
+		c[ImGuiCol_NavCursor] = ImVec4(accent.x, accent.y, accent.z, 1.00f);
+		c[ImGuiCol_NavWindowingHighlight] = ImVec4(accent.x, accent.y, accent.z, 0.80f);
+	}
+
 	void ImGuiLayer::OnImGuiRender()
 	{
 		VT_PROFILE_FUNCTION();
-
-
-		m_DemoWidget.OnRender();
 
 		SetupDockspace();
 		RenderSceneViewport();

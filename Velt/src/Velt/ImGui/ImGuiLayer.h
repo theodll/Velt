@@ -38,7 +38,8 @@ namespace Velt {
 		static ImGuiRenderer* GetRenderer() { return m_Renderer.get(); } // <- hier hakt es
 		static SceneViewport* GetViewport() { return m_SceneViewport.get(); }
 
-	private:
+	private: 
+		inline void ApplyEditorTheme(ImGuiStyle& style);
 		static Ref<ImGuiRenderer> m_Renderer;
 
 		Scope<Renderer::RHI::VulkanDevice> m_Device;

@@ -419,7 +419,6 @@ namespace Velt::Renderer::RHI
 
 		VkCommandBuffer commandBuffers[] = { commandBuffer };
 
-		AcquireNextImage();
 		SubmitCommandBuffers(commandBuffers, &imageIndex);
 	}
 
