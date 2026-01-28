@@ -3,7 +3,7 @@
 #include "VulkanPipeline.h"
 #include "VulkanContext.h"
 
-namespace Velt::Renderer::Vulkan {
+namespace Velt::Renderer::RHI {
 
 	VulkanPipeline::~VulkanPipeline()
 	{

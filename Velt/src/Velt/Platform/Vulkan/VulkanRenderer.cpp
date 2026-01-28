@@ -6,7 +6,7 @@
 #include "vulkan/vulkan.h"
 #include "Core/Application.h"
 
-namespace Velt::Renderer::Vulkan
+namespace Velt::Renderer::RHI
 {
 	struct RenderData
 	{
@@ -101,9 +101,6 @@ namespace Velt::Renderer::Vulkan
 		renderInfo.pColorAttachments = &colorAttachmentInfo;
 
 		vkCmdBeginRendering(cmd, &renderInfo);
-
-		auto&& pp = SceneRenderer::GetPipeline();
-		pp->Bind(cmd);
 
 		u32 width = viewport->GetWidth();
 		u32 height = viewport->GetHeight();

@@ -14,7 +14,7 @@ namespace Velt::Renderer
 		switch (Renderer::GetAPI())
 		{
 		case RenderAPI::API::None:    return nullptr;
-		case RenderAPI::API::Vulkan:  return std::make_unique<Vulkan::VulkanContext>();
+		case RenderAPI::API::Vulkan:  return std::make_unique<RHI::VulkanContext>();
 		}
 		VT_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;

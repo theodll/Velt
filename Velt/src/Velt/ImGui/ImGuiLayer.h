@@ -42,7 +42,7 @@ namespace Velt {
 		inline void ApplyEditorTheme(ImGuiStyle& style);
 		static Ref<ImGuiRenderer> m_Renderer;
 
-		Scope<Renderer::Vulkan::VulkanDevice> m_Device;
+		Scope<Renderer::RHI::VulkanDevice> m_Device;
 		static Scope<SceneViewport> m_SceneViewport;
 
 

@@ -2,7 +2,7 @@
 #include "vtpch.h"
 #include "Velt/Renderer/Pipeline.h"
 
-namespace Velt::Renderer::Vulkan 
+namespace Velt::Renderer::RHI 
 {
 
 		class VELT_API VulkanDevice;
@@ -53,6 +53,10 @@ namespace Velt::Renderer::Vulkan
 			void CreateShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 			void CreatePipelineLayout();
 
+			std::unordered_map<u32, VkDescriptorSetLayout> m_SetLayouts;
+			std::unordered_map<uint32_t, std::vector<VkDescriptorSet>> m_DescriptorSets;
+			VkDescriptorPool m_DescriptorPool{};
+			
 			VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;
 			PipelineSpecification m_Specification;
 			BufferLayout m_Layout;

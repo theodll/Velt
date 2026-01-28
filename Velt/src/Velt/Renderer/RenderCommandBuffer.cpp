@@ -10,7 +10,7 @@ namespace Velt::Renderer
 		switch (Renderer::GetAPI())
 		{
 			case RenderAPI::API::None:    return nullptr;
-			case RenderAPI::API::Vulkan:  return CreateRef<Vulkan::VulkanCommandBuffer>();
+			case RenderAPI::API::Vulkan:  return CreateRef<RHI::VulkanCommandBuffer>();
 		}
 		VT_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;

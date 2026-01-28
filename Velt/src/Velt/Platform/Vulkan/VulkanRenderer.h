@@ -3,7 +3,7 @@
 #include "Platform/Vulkan/VulkanPipeline.h"
 #include "Velt/Renderer/Renderer.h"
 
-namespace Velt::Renderer::Vulkan
+namespace Velt::Renderer::RHI
 {
 	class VELT_API VulkanRenderer : public RenderAPI
 	{

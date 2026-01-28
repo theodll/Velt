@@ -2,7 +2,7 @@
 #include <vulkan/vulkan.h>
 #include "VulkanDevice.h"
 
-namespace Velt::Renderer::Vulkan  
+namespace Velt::Renderer::RHI  
 {
 
     class VulkanResourceUploader 

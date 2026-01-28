@@ -6,7 +6,7 @@
 #include "Velt/Renderer/Framebuffer.h"
 #include <SDL3/SDL.h>
 
-namespace Velt::Renderer::Vulkan {
+namespace Velt::Renderer::RHI {
 
     struct SwapchainExtent
     {
@@ -63,7 +63,11 @@ namespace Velt::Renderer::Vulkan {
         inline u32 GetWidth() const { return m_WindowExtent.width; }
 		inline u32 GetHeight() const { return m_WindowExtent.height; }
         inline u32 GetImageCount() const { return (u32)m_SwapchainImages.size(); } 
+        inline u32 GetMaxFrameInFlight() const { return MAX_FRAMES_IN_FLIGHT; }
         inline float GetAspectRatio() const { return (float)m_WindowExtent.width / (float)m_WindowExtent.height; }
+
+        inline u32 GetCurrentFrameIndex() const { return m_CurrentFrameIndex; }
+        inline u32 GetCurrentImageIndex() const { return m_CurrentImageIndex; }
 		
         inline SwapchainImage GetSwapchainImage(int index) { return m_SwapchainImages[index]; }
         inline SwapchainImage GetCurrentSwapchainImage() { return GetSwapchainImage(m_CurrentImageIndex); }

@@ -39,7 +39,7 @@ namespace Velt
 		virtual void SetResizable(bool enable) = 0; 
 		virtual void* GetNativeHandle() const = 0;
 
-		virtual Renderer::Vulkan::VulkanSwapchain& GetSwapchain() = 0;
+		virtual Renderer::RHI::VulkanSwapchain& GetSwapchain() = 0;
 
 		virtual void CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface) = 0;
 		virtual void CreateSwapchain() = 0;
