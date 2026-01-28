@@ -175,3 +175,7 @@ target_include_directories(Velt PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/backends
 )
+
+set_target_properties(Velt PROPERTIES
+    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+)

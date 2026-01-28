@@ -7,6 +7,7 @@ namespace Velt::Renderer {
 	class OrthographicCamera
 	{
 	public:
+		OrthographicCamera() : OrthographicCamera(-1.0f, 1.0f, -1.0f, 1.0f) {}
 		OrthographicCamera(float left, float right, float bottom, float top);
 
 		void SetProjection(float left, float right, float bottom, float top);

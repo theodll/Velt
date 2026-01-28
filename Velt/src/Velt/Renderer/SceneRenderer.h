@@ -25,9 +25,11 @@ namespace Velt::Renderer {
 			glm::mat4 viewProj;
 		};
 
-		OrthographicCamera m_Camera;
+		Ref<OrthographicCamera> m_Camera;
 
 		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
+
+		i32 m_Rotation{};
 
 		static Ref<Pipeline> s_Pipeline;
 		

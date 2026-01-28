@@ -38,6 +38,8 @@ namespace Velt::Renderer::RHI
 			virtual void Invalidate() override; 
 
 			virtual void Bind(VkCommandBuffer& commandBuffer) override;
+			virtual void BindDescriptorSet(VkCommandBuffer& commandBuffer, u32 frameIndex) override;
+			virtual void UpdateDescriptorSet(u32 frameIndex, u32 binding, Ref<UniformBuffer> uniformBuffer) override;
 
 			static void SetDefaultVulkanPipelineConfigInfo(VulkanPipelineConfigInfo& configInfo);
 
@@ -52,10 +54,11 @@ namespace Velt::Renderer::RHI
 			static std::vector<char> ReadFile(const std::string& filepath);
 			void CreateShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 			void CreatePipelineLayout();
+			void CreateDescriptorResources();
 
-			std::unordered_map<u32, VkDescriptorSetLayout> m_SetLayouts;
-			std::unordered_map<uint32_t, std::vector<VkDescriptorSet>> m_DescriptorSets;
-			VkDescriptorPool m_DescriptorPool{};
+			VkDescriptorSetLayout m_DescriptorSetLayout = VK_NULL_HANDLE;
+			std::vector<VkDescriptorSet> m_DescriptorSets;
+			VkDescriptorPool m_DescriptorPool = VK_NULL_HANDLE;
 			
 			VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;
 			PipelineSpecification m_Specification;
