@@ -2,12 +2,24 @@
 #include "Core/Core.h"
 #include "VulkanPipeline.h"
 #include "VulkanContext.h"
+#include "Core/Application.h"
 
 namespace Velt::Renderer::RHI {
 
 	VulkanPipeline::~VulkanPipeline()
 	{
 		VkDevice device = VulkanContext::GetDevice().device();
+		
+		if (m_DescriptorPool != VK_NULL_HANDLE)
+		{
+			vkDestroyDescriptorPool(device, m_DescriptorPool, nullptr);
+		}
+		
+		if (m_DescriptorSetLayout != VK_NULL_HANDLE)
+		{
+			vkDestroyDescriptorSetLayout(device, m_DescriptorSetLayout, nullptr);
+		}
+		
 		vkDestroyPipeline(device, m_VulkanPipeline, nullptr);
 		vkDestroyPipelineLayout(device, m_PipelineLayout, nullptr);
 	}
@@ -24,6 +36,7 @@ namespace Velt::Renderer::RHI {
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Init Pipeline");
 		SetDefaultVulkanPipelineConfigInfo(m_ConfigInfo);
+		CreateDescriptorResources();
 		CreatePipelineLayout();
 		Invalidate();
 	}
@@ -48,25 +61,81 @@ namespace Velt::Renderer::RHI {
 		return VK_FORMAT_UNDEFINED;
 	}
 
+	void VulkanPipeline::CreateDescriptorResources()
+	{
+		VT_PROFILE_FUNCTION();
+		
+		VkDevice device = VulkanContext::GetDevice().device();
+		
+		// Create descriptor set layout for a single UBO at binding 0
+		VkDescriptorSetLayoutBinding uboLayoutBinding{};
+		uboLayoutBinding.binding = 0;
+		uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		uboLayoutBinding.descriptorCount = 1;
+		uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+		uboLayoutBinding.pImmutableSamplers = nullptr;
+		
+		VkDescriptorSetLayoutCreateInfo layoutInfo{};
+		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		layoutInfo.bindingCount = 1;
+		layoutInfo.pBindings = &uboLayoutBinding;
+		
+		VT_CORE_ASSERT(
+			vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &m_DescriptorSetLayout) == VK_SUCCESS,
+			"Failed to create descriptor set layout!"
+		);
+		
+		// Create descriptor pool
+		auto& app = Velt::Application::Get();
+		u32 maxFramesInFlight = app.GetWindow().GetSwapchain().GetMaxFrameInFlight(); // Match VulkanSwapchain::MAX_FRAMES_IN_FLIGHT
+		
+		VkDescriptorPoolSize poolSize{};
+		poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		poolSize.descriptorCount = maxFramesInFlight;
+		
+		VkDescriptorPoolCreateInfo poolInfo{};
+		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+		poolInfo.poolSizeCount = 1;
+		poolInfo.pPoolSizes = &poolSize;
+		poolInfo.maxSets = maxFramesInFlight;
+
+		if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &m_DescriptorPool) != VK_SUCCESS)
+		{
+			VT_CORE_ERROR("Failed to create descriptor pool!");
+		};
+
+		// Allocate descriptor sets
+		std::vector<VkDescriptorSetLayout> layouts(maxFramesInFlight, m_DescriptorSetLayout);
+		
+		VkDescriptorSetAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+		allocInfo.descriptorPool = m_DescriptorPool;
+		allocInfo.descriptorSetCount = maxFramesInFlight;
+		allocInfo.pSetLayouts = layouts.data();
+		
+		m_DescriptorSets.resize(maxFramesInFlight);
+		if (vkAllocateDescriptorSets(device, &allocInfo, m_DescriptorSets.data()) != VK_SUCCESS)
+		{
+			VT_CORE_ERROR("Failed to allocate descriptor sets!");
+		};
+	}
+
 	void VulkanPipeline::CreatePipelineLayout()
 	{
 		VT_PROFILE_FUNCTION();
 
-		// TODO: Add descriptor set layouts if you need them
-		// For now, creating an empty pipeline layout
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.pNext = nullptr;
 		pipelineLayoutInfo.flags = 0;
-		pipelineLayoutInfo.setLayoutCount = 0;
-		pipelineLayoutInfo.pSetLayouts = nullptr;
+		pipelineLayoutInfo.setLayoutCount = 1;
+		pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
 		pipelineLayoutInfo.pushConstantRangeCount = 0;
 		pipelineLayoutInfo.pPushConstantRanges = nullptr;
-
-		VT_CORE_ASSERT(
-			vkCreatePipelineLayout(VulkanContext::GetDevice().device(), &pipelineLayoutInfo, nullptr, &m_PipelineLayout) == VK_SUCCESS,
-			"Failed to create pipeline layout!"
-		);
+		if (vkCreatePipelineLayout(VulkanContext::GetDevice().device(), &pipelineLayoutInfo, nullptr, &m_PipelineLayout) != VK_SUCCESS)
+		{
+			VT_CORE_ERROR("Failed to create pipeline layout!");
+		};
 
 		m_ConfigInfo.pipelineLayout = m_PipelineLayout;
 	}
@@ -324,6 +393,45 @@ namespace Velt::Renderer::RHI {
 			vkCreateShaderModule(VulkanContext::GetDevice().device(), &createInfo, nullptr, shaderModule) == VK_SUCCESS,
 			"Failed to create shader module!"
 		);
+	}
+
+	void VulkanPipeline::BindDescriptorSet(VkCommandBuffer& commandBuffer, u32 frameIndex)
+	{
+		VT_PROFILE_FUNCTION();
+		VT_CORE_ASSERT(frameIndex < m_DescriptorSets.size(), "Frame index out of bounds!");
+		
+		vkCmdBindDescriptorSets(
+			commandBuffer,
+			VK_PIPELINE_BIND_POINT_GRAPHICS,
+			m_PipelineLayout,
+			0,
+			1,
+			&m_DescriptorSets[frameIndex],
+			0,
+			nullptr
+		);
+	}
+	
+	void VulkanPipeline::UpdateDescriptorSet(u32 frameIndex, u32 binding, Ref<UniformBuffer> uniformBuffer)
+	{
+		VT_PROFILE_FUNCTION();
+		VT_CORE_ASSERT(frameIndex < m_DescriptorSets.size(), "Frame index out of bounds!");
+		
+		VkDescriptorBufferInfo bufferInfo{};
+		bufferInfo.buffer = uniformBuffer->GetVulkanBuffer();
+		bufferInfo.offset = 0;
+		bufferInfo.range = uniformBuffer->GetSize();
+		
+		VkWriteDescriptorSet descriptorWrite{};
+		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrite.dstSet = m_DescriptorSets[frameIndex];
+		descriptorWrite.dstBinding = binding;
+		descriptorWrite.dstArrayElement = 0;
+		descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrite.descriptorCount = 1;
+		descriptorWrite.pBufferInfo = &bufferInfo;
+		
+		vkUpdateDescriptorSets(VulkanContext::GetDevice().device(), 1, &descriptorWrite, 0, nullptr);
 	}
 
 

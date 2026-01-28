@@ -8,9 +8,9 @@
 
 namespace Velt::Renderer
 {
-	class Application;
-	class LayerStack;
-	class SceneRenderer;
+	static class Application;
+	static class LayerStack;
+	static class SceneRenderer;
 
 
 	class VELT_API Renderer
