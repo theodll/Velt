@@ -26,8 +26,31 @@ namespace Velt::Renderer {
 
 		s_Pipeline = Pipeline::Create(specs);
 		s_Pipeline->Init();
+		
+		float width, height{};
 
-		m_Camera = CreateRef<OrthographicCamera>(-2.0f, 2.0f, -2.0f, 2.0f);
+		if (ImGuiLayer::GetViewport())
+		{
+			width = ImGuiLayer::GetViewport()->GetWidth();
+			height = ImGuiLayer::GetViewport()->GetHeight();
+		} 
+		else
+		{
+			width = 1920;
+			height = 1080;
+		}
+
+		float aspect = width / height;
+
+		float halfHeight = 1.0f;
+		float halfWidth = aspect * halfHeight;
+
+		m_Camera = CreateRef<OrthographicCamera>(
+			-halfWidth,
+			halfWidth,
+			-halfHeight,
+			halfHeight
+		);
 		m_Camera->SetRotation(0);
 
 		auto& sc = Velt::Application::Get().GetWindow().GetSwapchain();
@@ -50,7 +73,31 @@ namespace Velt::Renderer {
 	{
 		VT_PROFILE_FUNCTION();
 		
-		m_Camera->SetRotation(m_Rotation);
+		float width, height{};
+
+		if (ImGuiLayer::GetViewport())
+		{
+			width = ImGuiLayer::GetViewport()->GetWidth();
+			height = ImGuiLayer::GetViewport()->GetHeight();
+		}
+		else
+		{
+			width = 1920;
+			height = 1080;
+		}
+
+		float aspect = width / height;
+
+		float halfHeight = 1.0f;
+		float halfWidth = aspect * halfHeight;
+
+		m_Camera->SetProjection(
+			-halfWidth,
+			halfWidth,
+			-halfHeight,
+			halfHeight
+		);
+		// m_Camera->SetRotation(m_Rotation);
 		m_Rotation++;
 		auto cmd = Velt::Application::Get().GetWindow().GetSwapchain().GetCurrentDrawCommandBuffer();
 		auto frameIndex = Velt::Application::Get().GetWindow().GetSwapchain().GetCurrentFrameIndex();

@@ -271,9 +271,8 @@ namespace Velt {
 		// Fixed size for the scene viewport
 		const ImVec2 viewportSize(static_cast<float>(m_SceneViewport->GetWidth()), static_cast<float>(m_SceneViewport->GetHeight()));
 
-		ImGui::SetNextWindowSize(viewportSize, ImGuiCond_Always);
+		// ImGui::SetNextWindowSize(viewportSize, ImGuiCond_Always);
 		ImGui::Begin("Scene Viewport", nullptr,
-			ImGuiWindowFlags_NoResize |
 			ImGuiWindowFlags_NoScrollbar |
 			ImGuiWindowFlags_NoScrollWithMouse);
 
