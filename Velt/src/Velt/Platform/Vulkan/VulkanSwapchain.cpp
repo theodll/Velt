@@ -137,6 +137,9 @@ namespace Velt::Renderer::RHI
 
         auto result = vkQueuePresentKHR(m_Device.presentQueue(), &presentInfo);
 
+        // Mark this image as having been presented at least once
+        m_ImagePresentedOnce[*imageIndex] = true;
+
         vkQueueWaitIdle(m_Device.presentQueue());
 
         m_CurrentFrameIndex = (m_CurrentFrameIndex + 1) % MAX_FRAMES_IN_FLIGHT;
@@ -290,6 +293,7 @@ namespace Velt::Renderer::RHI
         m_RenderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
         m_InFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
         m_ImagesInFlight.resize(imageCount, VK_NULL_HANDLE);
+        m_ImagePresentedOnce.resize(imageCount, false); // Initialize all to false
 
         VkSemaphoreCreateInfo semaphoreInfo = {};
         semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -344,6 +348,7 @@ namespace Velt::Renderer::RHI
     void VulkanSwapchain::BeginFrame() 
     {
         AcquireNextImage();
+    
     }
 
     VkSurfaceFormatKHR VulkanSwapchain::chooseSwapSurfaceFormat(
@@ -555,8 +560,9 @@ namespace Velt::Renderer::RHI
 		{
 			barrier.srcAccessMask = 0;
 			barrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-		} else if (oldLayout == VK_IMAGE_LAYOUT_PRESENT_SRC_KHR &&
-         newLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+		}
+		else if (oldLayout == VK_IMAGE_LAYOUT_PRESENT_SRC_KHR &&
+			newLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
         {
             barrier.srcAccessMask = 0;
             barrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;

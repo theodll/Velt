@@ -49,6 +49,9 @@ namespace Velt::Renderer::RHI
 
 	void VulkanRenderer::BeginFrame()
 	{
+		// Handle any pending viewport resize before starting command recording
+		ImGuiLayer::ProcessPendingResize();
+		
 		auto& app = Velt::Application::Get();
 		auto& window = app.GetWindow();
 		auto& swapchain = window.GetSwapchain();
@@ -152,10 +155,15 @@ namespace Velt::Renderer::RHI
 
 		auto&& img = sc.GetCurrentSwapchainImage(); 
 
+		// On first frame for this image, it's in UNDEFINED layout, not PRESENT_SRC_KHR
+		VkImageLayout oldLayout = sc.IsFirstFrameForImage(sc.GetCurrentImageIndex()) 
+			? VK_IMAGE_LAYOUT_UNDEFINED 
+			: VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
 		sc.TransitionImageLayout(
 			cmd,
 			img.Image,
-			VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+			oldLayout,
 			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
 			VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,          
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
@@ -198,6 +206,8 @@ namespace Velt::Renderer::RHI
 		viewport.maxDepth = 1.0f;
 		viewport.minDepth = 0.0f;
 		vkCmdSetViewport(cmd, 0, 1, &viewport);
+
+
 	}
 
 	void VulkanRenderer::EndGuiPass() 
@@ -207,7 +217,6 @@ namespace Velt::Renderer::RHI
 		auto& sc = window.GetSwapchain();
 		auto&& cmd = sc.GetCurrentDrawCommandBuffer();
 
-		ImGuiLayer::GetRenderer()->Render(cmd);
 		vkCmdEndRendering(cmd);
 
 		auto&& img = sc.GetCurrentSwapchainImage();

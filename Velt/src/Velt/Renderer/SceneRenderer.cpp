@@ -69,33 +69,36 @@ namespace Velt::Renderer {
 
 	}
 
+	glm::vec2 GetAspectPair(u32 width, u32 height, float targetY = 0.9f)
+	{
+		VT_PROFILE_FUNCTION();
+
+		float w = (float)width;
+		float h = (float)height;
+
+		float scale = targetY / h; 
+
+	// 	VT_CORE_TRACE("GetAspectPair w: {0}, h: {1}, wa: {2}, ha {3}", width, height, w * scale, h * scale);
+
+		return { w * scale, h * scale };
+	}
+
 	void SceneRenderer::BeginScene()
 	{
 		VT_PROFILE_FUNCTION();
 		
-		float width, height{};
+		u32 w = ImGuiLayer::GetViewport()->GetWidth();
+		u32 h = ImGuiLayer::GetViewport()->GetHeight();
 
-		if (ImGuiLayer::GetViewport())
-		{
-			width = ImGuiLayer::GetViewport()->GetWidth();
-			height = ImGuiLayer::GetViewport()->GetHeight();
-		}
-		else
-		{
-			width = 1920;
-			height = 1080;
-		}
+		glm::vec2 aspect = GetAspectPair(w, h);
 
-		float aspect = width / height;
-
-		float halfHeight = 1.0f;
-		float halfWidth = aspect * halfHeight;
+		// VT_CORE_ERROR("ax: {0} ay:, {1}", aspect.x, aspect.y);
 
 		m_Camera->SetProjection(
-			-halfWidth,
-			halfWidth,
-			-halfHeight,
-			halfHeight
+			-aspect.x,
+			aspect.x,
+			-aspect.y,
+			aspect.y
 		);
 		// m_Camera->SetRotation(m_Rotation);
 		m_Rotation++;

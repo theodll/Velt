@@ -1,4 +1,3 @@
-
 #include "vtpch.h"
 #include "ImGuiLayer.h"
 #include <SDL3/SDL.h>
@@ -17,6 +16,9 @@ namespace Velt {
 
 	Scope<SceneViewport> ImGuiLayer::m_SceneViewport = nullptr;
 	Ref<ImGuiRenderer> ImGuiLayer::m_Renderer = nullptr;
+	u32 ImGuiLayer::m_PendingViewportH = 0;
+	u32 ImGuiLayer::m_PendingViewportW = 0;
+	bool ImGuiLayer::m_ViewportResizePending = false;
 
 	ImGuiLayer::ImGuiLayer()
 	{
@@ -266,31 +268,29 @@ namespace Velt {
 
 	void ImGuiLayer::RenderSceneViewport()
 	{
-		VT_PROFILE_FUNCTION();
-
-		// Fixed size for the scene viewport
-		const ImVec2 viewportSize(static_cast<float>(m_SceneViewport->GetWidth()), static_cast<float>(m_SceneViewport->GetHeight()));
-
-		// ImGui::SetNextWindowSize(viewportSize, ImGuiCond_Always);
 		ImGui::Begin("Scene Viewport", nullptr,
 			ImGuiWindowFlags_NoScrollbar |
 			ImGuiWindowFlags_NoScrollWithMouse);
 
-		ImVec2 contentRegion = ImGui::GetContentRegionAvail();
+		ImVec2 avail = ImGui::GetContentRegionAvail();
 
-		// Display the rendered scene texture
+		u32 newW = (u32)glm::max(1.0f, avail.x);
+		u32 newH = (u32)glm::max(1.0f, avail.y);
+
+		if (newW != m_SceneViewport->GetWidth() || newH != m_SceneViewport->GetHeight())
+		{
+			m_PendingViewportW = newW;
+			m_PendingViewportH = newH;
+			m_ViewportResizePending = true;
+		}
+
 		if (m_SceneViewport && m_SceneViewport->GetDescriptorSet() != VK_NULL_HANDLE)
-		{
-			ImGui::Image((ImTextureID)m_SceneViewport->GetDescriptorSet(), contentRegion);
-		}
+			ImGui::Image((ImTextureID)m_SceneViewport->GetDescriptorSet(), avail);
 		else
-		{
 			ImGui::Text("Scene viewport not initialized");
-		}
 
 		ImGui::End();
 	}
-
 	void ImGuiLayer::OnRender(VkCommandBuffer commandBuffer)
 	{
 		VT_PROFILE_FUNCTION();
@@ -301,16 +301,37 @@ namespace Velt {
 	//	}
 	}
 
+	void ImGuiLayer::ProcessPendingResize()
+	{
+		VT_PROFILE_FUNCTION();
+
+		if (m_ViewportResizePending)
+		{
+			m_SceneViewport->Resize(m_PendingViewportW, m_PendingViewportH);
+			m_ViewportResizePending = false;
+		}
+	}
+
 	void ImGuiLayer::Begin()
 	{
 		VT_PROFILE_FUNCTION();
+
 		m_Renderer->Begin();
 	}
 
 	void ImGuiLayer::End()
 	{
 		VT_PROFILE_FUNCTION();
+
 		m_Renderer->End();
+	}
+
+	void ImGuiLayer::Render()
+	{
+		VT_PROFILE_FUNCTION();
+
+		auto&& cmd = Velt::Application::Get().GetWindow().GetSwapchain().GetCurrentDrawCommandBuffer();
+		m_Renderer->RenderDrawData(cmd);
 	}
 }
 

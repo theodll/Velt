@@ -68,6 +68,7 @@ namespace Velt::Renderer::RHI {
 
         inline u32 GetCurrentFrameIndex() const { return m_CurrentFrameIndex; }
         inline u32 GetCurrentImageIndex() const { return m_CurrentImageIndex; }
+        inline bool IsFirstFrameForImage(u32 imageIndex) const { return !m_ImagePresentedOnce[imageIndex]; }
 		
         inline SwapchainImage GetSwapchainImage(int index) { return m_SwapchainImages[index]; }
         inline SwapchainImage GetCurrentSwapchainImage() { return GetSwapchainImage(m_CurrentImageIndex); }
@@ -126,6 +127,8 @@ namespace Velt::Renderer::RHI {
         
         u32 m_CurrentImageIndex = 0; // Frame currently displayed
         u32 m_CurrentFrameIndex = 0; // Frame that is being worked on
+        
+        std::vector<bool> m_ImagePresentedOnce; // Track if each image has been presented at least once
     };
     
 }

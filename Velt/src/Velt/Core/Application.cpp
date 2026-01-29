@@ -165,6 +165,9 @@ namespace Velt {
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
 
+			ImGuiLayer::End();   
+			ImGuiLayer::Render();
+
 			Renderer::Renderer::EndGuiPass();
 			Renderer::Renderer::EndFrame();
 			

@@ -31,11 +31,13 @@ namespace Velt {
 
 		static void Begin();
 		static void End();
+		static void Render();
+		static void ProcessPendingResize();
 
 		void SetupDockspace();
 		void RenderSceneViewport();
 		
-		static ImGuiRenderer* GetRenderer() { return m_Renderer.get(); } // <- hier hakt es
+		static ImGuiRenderer* GetRenderer() { return m_Renderer.get(); } 
 		static SceneViewport* GetViewport() { return m_SceneViewport.get(); }
 
 	private: 
@@ -45,6 +47,9 @@ namespace Velt {
 		Scope<Renderer::RHI::VulkanDevice> m_Device;
 		static Scope<SceneViewport> m_SceneViewport;
 
+		static u32 m_PendingViewportW;
+		static u32 m_PendingViewportH;
+		static bool m_ViewportResizePending;
 
 		DemoWidget m_DemoWidget;
 

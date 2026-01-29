@@ -19,10 +19,11 @@ namespace Velt {
 
 		
 		void Init();
-		void Render(VkCommandBuffer& commandBuffer);
+		// void Render(VkCommandBuffer commandBuffer);
 		void Shutdown();
 		void Begin();
 		void End();
+		void RenderDrawData(VkCommandBuffer cmd);
 		
 	private:
 		VkDescriptorPool_T* m_DescriptorPool = nullptr;

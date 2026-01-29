@@ -111,10 +111,12 @@ namespace Velt {
 	void ImGuiRenderer::End()
 	{
 		VT_PROFILE_FUNCTION();
+
 		ImGui::Render();
 	}
 
-	void ImGuiRenderer::Render(VkCommandBuffer& commandBuffer)
+	/*
+	void ImGuiRenderer::Render(VkCommandBuffer commandBuffer)
 	{
 		VT_PROFILE_FUNCTION();
 		ImDrawData* draw_data = ImGui::GetDrawData();
@@ -122,5 +124,13 @@ namespace Velt {
 		{
 			ImGui_ImplVulkan_RenderDrawData(draw_data, commandBuffer, VK_NULL_HANDLE);
 		}
+	}*/
+
+
+	void ImGuiRenderer::RenderDrawData(VkCommandBuffer cmd)
+	{
+		ImDrawData* dd = ImGui::GetDrawData();
+		if (dd && dd->TotalVtxCount > 0)
+			ImGui_ImplVulkan_RenderDrawData(dd, cmd, VK_NULL_HANDLE);
 	}
 }

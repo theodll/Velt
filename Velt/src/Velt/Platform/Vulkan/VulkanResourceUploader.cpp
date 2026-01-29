@@ -8,7 +8,7 @@ namespace Velt::Renderer::RHI
     void VulkanResourceUploader::Begin()
     {
         VT_PROFILE_SCOPE("VulkanResourceUploader Begin");
-        VT_CORE_TRACE("Begin Vulkan Resource Uploader");
+       // VT_CORE_TRACE("Begin Vulkan Resource Uploader");
 
         if (vkWaitForFences(
             m_Device.device(),
@@ -36,7 +36,7 @@ namespace Velt::Renderer::RHI
     void VulkanResourceUploader::End()
     {
         VT_PROFILE_SCOPE("VulkanResourceUploader End");
-        VT_CORE_TRACE("End Vulkan Resource Uploader");
+       // VT_CORE_TRACE("End Vulkan Resource Uploader");
 
         vkEndCommandBuffer(m_Commandbuffer);
 
