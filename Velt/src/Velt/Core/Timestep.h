@@ -11,7 +11,7 @@ namespace Velt
 			
 		}
 		
-		operator float() const { return m_Time }
+		operator float() const { return m_Time; }
 
 		float GetSeconds() { return m_Time; }
 		float GetMilliseconds() { return m_Time * 1000; };
