@@ -4,6 +4,7 @@
 #include "Window.h"
 #include "Layers/LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
+#include "Timestep.h"
 #include "Renderer/OrthographicCamera.h"
 
 namespace Velt
@@ -40,14 +41,22 @@ namespace Velt
 			std::string TITLE { "Velt Engine" };
 
 	private:
+		// Window Things
 		static Application* s_Instance;
-		WindowProps m_WindowProps;
 		std::unique_ptr<Renderer::RHI::VulkanContext> m_Context;
 		std::unique_ptr<Window> m_Window;
+		
+		// Layers
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer = nullptr;
 
-		Renderer::OrthographicCamera m_Camera;
+		// Misc 
+		double m_LastFrameTime;
+
+		// Properties
+		WindowProps m_WindowProps;
+
+		
 	};
 
 	Application* CreateApplication();

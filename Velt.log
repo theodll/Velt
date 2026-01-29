@@ -1,82 +1,33 @@
-[18:01:39] [info] Velt: Core Log Initialized!
-[18:01:39] [info] APP: Client Log Initialized!
-[18:01:39] [info] Velt: Creating WindowsWindow Velt Engine (1280 720)
-[18:01:39] [error] Velt: Logical Window Size: 1280, 720
-[18:01:39] [error] Velt: Pixel Window Size: 1280, 720
-[18:01:39] [trace] Velt: Initializing Vulkan Context
-[18:01:39] [trace] Velt: Create Surface
-[18:01:39] [trace] Velt: Creating VulkanDevice...
-[18:01:39] [info] Velt: Device count: 1
-[18:01:39] [info] Velt: Physical Device: NVIDIA GeForce RTX 3080
-[18:01:39] [trace] Velt: Init Vulkan Resource Uploader
-[18:01:39] [trace] Velt: Swapchain Created
-[18:01:39] [error] Velt: Swapchain Creation Info Extend: 1280, 720
-[18:01:39] [info] Velt: Present mode: V-Sync
-[18:01:39] [error] Velt: Chosen Swapchain Extend: 1280, 720
-[18:01:39] [error] Velt: Swapchain Size: 1280, 720
-[18:01:39] [error] Velt: Swapchain Extend: 1280, 720
-[18:01:39] [trace] Velt: Init Static Renderer
-[18:01:39] [trace] Velt: Begin Vulkan Resource Uploader
-[18:01:39] [trace] Velt: Upload Vertexbuffer to GPU
-[18:01:39] [trace] Velt: Upload Indexbuffer to GPU
-[18:01:39] [trace] Velt: End Vulkan Resource Uploader
-[18:01:39] [trace] Velt: Init SceneRenderer
-[18:01:39] [trace] Velt: Create Pipeline
-[18:01:39] [error] Velt: 20
-[18:01:39] [trace] Velt: Init Pipeline
-[18:01:39] [trace] Velt: Attach ImGuiLayer
-[18:01:39] [trace] Velt: Init ImGUI Renderer
-[18:01:39] [info] Velt: ImGuiRenderer initialized
-[18:01:39] [trace] Velt: Begin Vulkan Resource Uploader
-[18:01:39] [trace] Velt: End Vulkan Resource Uploader
-[18:01:39] [info] Velt: ImGuiLayer attached
-[18:01:39] [info] Velt: WindowsResizeEvent: 1280, 720
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Semaphore must not be currently signaled.
-The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, it must be unsignaled (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-01286)
-[18:01:39] [error] Velt: validation layer: vkQueuePresentKHR(): pPresentInfo->pImageIndices[0] was acquired with a semaphore VkSemaphore 0x160000000016 that has not since been waited on
-[18:01:39] [error] Velt: validation layer: vkQueueSubmit(): pSubmits[0] command buffer VkCommandBuffer 0x5f918763d5a0 expects VkImage 0x70000000007 (subresource: aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, mipLevel = 0, arrayLayer = 0) to be in layout VK_IMAGE_LAYOUT_PRESENT_SRC_KHR--instead, current layout is VK_IMAGE_LAYOUT_UNDEFINED.
-The Vulkan spec states: If a descriptor with type equal to any of VK_DESCRIPTOR_TYPE_SAMPLE_WEIGHT_IMAGE_QCOM, VK_DESCRIPTOR_TYPE_BLOCK_MATCH_IMAGE_QCOM, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, or VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT is accessed as a result of this command, all image subresources identified by that descriptor must be in the image layout identified when the descriptor was written (https://docs.vulkan.org/spec/latest/chapters/drawing.html#VUID-vkCmdDraw-None-09600)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Semaphore must not be currently signaled.
-The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, it must be unsignaled (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-01286)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Application has already previously acquired 2 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
-The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
-[18:01:39] [error] Velt: validation layer: vkQueueSubmit(): pSubmits[0] command buffer VkCommandBuffer 0x5f9187643960 expects VkImage 0x90000000009 (subresource: aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, mipLevel = 0, arrayLayer = 0) to be in layout VK_IMAGE_LAYOUT_PRESENT_SRC_KHR--instead, current layout is VK_IMAGE_LAYOUT_UNDEFINED.
-The Vulkan spec states: If a descriptor with type equal to any of VK_DESCRIPTOR_TYPE_SAMPLE_WEIGHT_IMAGE_QCOM, VK_DESCRIPTOR_TYPE_BLOCK_MATCH_IMAGE_QCOM, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, or VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT is accessed as a result of this command, all image subresources identified by that descriptor must be in the image layout identified when the descriptor was written (https://docs.vulkan.org/spec/latest/chapters/drawing.html#VUID-vkCmdDraw-None-09600)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Semaphore must not be currently signaled.
-The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, it must be unsignaled (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-01286)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Application has already previously acquired 2 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
-The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Semaphore must not be currently signaled.
-The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, it must be unsignaled (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-01286)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Application has already previously acquired 2 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
-The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Semaphore must not be currently signaled.
-The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, it must be unsignaled (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-01286)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Application has already previously acquired 2 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
-The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Semaphore must not be currently signaled.
-The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, it must be unsignaled (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-01286)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Application has already previously acquired 2 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
-The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Semaphore must not be currently signaled.
-The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, it must be unsignaled (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-01286)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Application has already previously acquired 2 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
-The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Semaphore must not be currently signaled.
-The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, it must be unsignaled (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-01286)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Application has already previously acquired 2 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
-The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Semaphore must not be currently signaled.
-The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, it must be unsignaled (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-01286)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Application has already previously acquired 2 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
-The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
-[18:01:39] [error] Velt: validation layer: (Warning - This VUID has now been reported 10 times, which is the duplicate_message_limit value, this will be the last time reporting it).
-vkAcquireNextImageKHR(): Semaphore must not be currently signaled.
-The Vulkan spec states: If semaphore is not VK_NULL_HANDLE, it must be unsignaled (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-semaphore-01286)
-[18:01:39] [error] Velt: validation layer: vkAcquireNextImageKHR(): Application has already previously acquired 2 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
-The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
-[18:01:39] [error] Velt: validation layer: (Warning - This VUID has now been reported 10 times, which is the duplicate_message_limit value, this will be the last time reporting it).
-vkAcquireNextImageKHR(): Application has already previously acquired 2 images from swapchain. Only 2 are available to be acquired using a timeout of UINT64_MAX (given the swapchain has 3, and VkSurfaceCapabilitiesKHR::minImageCount is 2).
-The Vulkan spec states: If forward progress cannot be guaranteed for the surface used to create the swapchain member of pAcquireInfo, timeout must not be UINT64_MAX (https://docs.vulkan.org/spec/latest/chapters/VK_KHR_surface/wsi.html#VUID-vkAcquireNextImageKHR-surface-07783)
-[18:02:02] [info] Velt: WindowClose
-[18:02:02] [info] Velt: ImGuiRenderer shutdown
+[13:21:58] [info] Velt: Core Log Initialized!
+[13:21:58] [info] APP: Client Log Initialized!
+[13:21:58] [info] Velt: Creating WindowsWindow Velt Engine (1280 720)
+[13:21:58] [error] Velt: Logical Window Size: 1280, 720
+[13:21:58] [error] Velt: Pixel Window Size: 1280, 720
+[13:21:58] [trace] Velt: Initializing Vulkan Context
+[13:21:58] [error] Velt: validation layer: env var 'VK_INSTANCE_LAYERS' defined and adding layers "VK_LAYER_KHRONOS_validation"
+[13:21:58] [error] Velt: validation layer: env var 'VK_INSTANCE_LAYERS' defined and adding layers "VK_LAYER_KHRONOS_validation"
+[13:21:58] [trace] Velt: Create Surface
+[13:21:58] [trace] Velt: Creating VulkanDevice...
+[13:21:58] [info] Velt: Device count: 1
+[13:21:58] [info] Velt: Physical Device: NVIDIA GeForce RTX 3080
+[13:21:59] [trace] Velt: Init Vulkan Resource Uploader
+[13:21:59] [trace] Velt: Swapchain Created
+[13:21:59] [error] Velt: Swapchain Creation Info Extend: 1280, 720
+[13:21:59] [info] Velt: Present mode: V-Sync
+[13:21:59] [error] Velt: Chosen Swapchain Extend: 1280, 720
+[13:21:59] [error] Velt: Swapchain Size: 1280, 720
+[13:21:59] [error] Velt: Swapchain Extend: 1280, 720
+[13:21:59] [trace] Velt: Init Static Renderer
+[13:21:59] [trace] Velt: Upload Vertexbuffer to GPU
+[13:21:59] [trace] Velt: Upload Indexbuffer to GPU
+[13:21:59] [trace] Velt: Init SceneRenderer
+[13:21:59] [trace] Velt: Create Pipeline
+[13:21:59] [error] Velt: 20
+[13:21:59] [trace] Velt: Init Pipeline
+[13:21:59] [trace] Velt: Attach ImGuiLayer
+[13:21:59] [trace] Velt: Init ImGUI Renderer
+[13:21:59] [info] Velt: ImGuiRenderer initialized
+[13:21:59] [info] Velt: ImGuiLayer attached
+[13:21:59] [info] Velt: WindowsResizeEvent: 1280, 720
+[13:22:30] [info] Velt: WindowClose
+[13:22:30] [info] Velt: ImGuiRenderer shutdown

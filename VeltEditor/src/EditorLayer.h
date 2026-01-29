@@ -1,34 +1,18 @@
 #include <Velt.h>
 #include "../Velt/Renderer/Renderer.h"
 
-class EditorLayer : public Velt::Layer
-{
-public:
-	EditorLayer() : Layer("Editor") { VT_PROFILE_FUNCTION(); }
+namespace Editor {
 
-
-	void OnUpdate() override
+	class EditorLayer : public Velt::Layer
 	{
-		VT_PROFILE_FUNCTION();
-		//VT_CORE_INFO("ExampleLayer::Update");
-	}
-	void OnEvent(Velt::Event& event) override
-	{
-		VT_PROFILE_FUNCTION();
-		VT_CORE_INFO("{0}", event.ToString());
-	}
+	public:
+		EditorLayer();
 
-	void OnRender(VkCommandBuffer commandBuffer) 
-	{
-		Velt::Renderer::Renderer::DrawQuad(commandBuffer);
-	}
 
-	void OnImGuiRender()
-	{
-		VT_PROFILE_FUNCTION();
-		//VT_CORE_INFO("ExampleLayer::OnRender");
+		void OnUpdate(Velt::Timestep ts) override;
+		void OnEvent(Velt::Event& event) override;
+		void OnRender(VkCommandBuffer commandBuffer) override;
 
-		// ImGui::Begin("Hello from ExampleLayer");
-
-	}
-};
+		void OnImGuiRender();
+	};
+}

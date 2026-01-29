@@ -18,14 +18,15 @@ namespace Velt::Renderer {
 		void EndScene();
 
 		static Ref<Pipeline> GetPipeline() { return s_Pipeline; };
-		 
+		static OrthographicCamera* GetCamera() { return m_Camera.get(); };
+
 	private:
 		struct alignas(16) CameraUBO
 		{
 			glm::mat4 viewProj;
 		};
 
-		Ref<OrthographicCamera> m_Camera;
+		static Ref<OrthographicCamera> m_Camera;
 
 		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
 

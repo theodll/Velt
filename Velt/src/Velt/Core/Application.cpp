@@ -37,7 +37,7 @@ namespace Velt {
 		return VK_FORMAT_UNDEFINED; 
 	}
 
-	Application::Application() : m_Camera(-1.0f, 1.0f, -1.0f, 1.0f)
+	Application::Application()
 	{
 		VT_PROFILE_FUNCTION();
 		s_Instance = this;
@@ -108,16 +108,25 @@ namespace Velt {
 		bool running = true;
 		while (running)
 		{
-			
 			VT_PROFILE_SCOPE("Application::Run Loop");
 			SDL_Event event;
+
+			// Todo: Move to a Platform Independent Place
+
+			static const double invFreq = 1.0 / (double)SDL_GetPerformanceFrequency();
+
+			u64 counter = SDL_GetPerformanceCounter();
+			double time = (double)counter * invFreq;
+
+			Timestep ts = time - m_LastFrameTime;
+			m_LastFrameTime = time;
+
 			while (SDL_PollEvent(&event))
 			{
 
 				VT_PROFILE_SCOPE("SDL PollEvent Loop");
 
-				// TODO: dont pass raw sdl events
-
+				// TODO: Dont pass raw sdl events
 				ImGuiLayer::ProcessSDLEvent(&event);
 				switch (event.type)
 				{
@@ -150,7 +159,7 @@ namespace Velt {
 			Renderer::Renderer::BeginFrame();
 			// Frame 
 			for (Layer* layer : m_LayerStack)
-				layer->OnUpdate();
+				layer->OnUpdate(ts);
 
 			Renderer::Renderer::BeginScenePass();
 			// Scene Pass
@@ -164,6 +173,11 @@ namespace Velt {
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
+
+			ImGui::Begin("Statistics");
+			ImGui::Text("Deltatime (s): %fs", ts.GetSeconds());
+			ImGui::Text("Deltatime (ms): %fms", ts.GetMilliseconds());
+			ImGui::End();
 
 			ImGuiLayer::End();   
 			ImGuiLayer::Render();

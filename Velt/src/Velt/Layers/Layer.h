@@ -2,6 +2,7 @@
 #include "vtpch.h"
 #include "Events/Event.h"
 #include "Renderer/RenderCommandBuffer.h"
+#include "Core/Timestep.h"
 
 namespace Velt
 {
@@ -12,7 +13,7 @@ namespace Velt
 
         virtual void OnAttach() {};
         virtual void OnDetach() {};
-        virtual void OnUpdate() {};
+        virtual void OnUpdate(Timestep ts) {};
         virtual void OnEvent(Event& event) {};
         virtual void OnImGuiRender() {};
         virtual void OnRender(VkCommandBuffer commandBuffer) {};

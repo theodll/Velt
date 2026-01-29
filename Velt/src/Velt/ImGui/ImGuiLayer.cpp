@@ -92,7 +92,7 @@ namespace Velt {
 		ImGui_ImplSDL3_ProcessEvent(reinterpret_cast<SDL_Event*>(const_cast<SDL_Event*>(event)));
 	}
 
-	void ImGuiLayer::OnUpdate()
+	void ImGuiLayer::OnUpdate(Timestep ts)
 	{
 		VT_PROFILE_FUNCTION();
 	}
