@@ -1,5 +1,8 @@
-#include <Velt.h>
-#include "../Velt/Renderer/Renderer.h"
+#pragma once
+#include <Velt/Core/Core.h>
+#include <Velt/Layers/Layer.h>
+#include <Velt/Core/Timestep.h>
+#include <Velt/Renderer/Renderer.h>
 
 namespace Editor {
 
@@ -13,6 +16,8 @@ namespace Editor {
 		void OnEvent(Velt::Event& event) override;
 		void OnRender(VkCommandBuffer commandBuffer) override;
 
-		void OnImGuiRender();
+		void OnImGuiRender() override;
+	private: 
+		glm::vec3 m_CameraPos{};
 	};
 }

@@ -1,33 +1,33 @@
-[13:21:58] [info] Velt: Core Log Initialized!
-[13:21:58] [info] APP: Client Log Initialized!
-[13:21:58] [info] Velt: Creating WindowsWindow Velt Engine (1280 720)
-[13:21:58] [error] Velt: Logical Window Size: 1280, 720
-[13:21:58] [error] Velt: Pixel Window Size: 1280, 720
-[13:21:58] [trace] Velt: Initializing Vulkan Context
-[13:21:58] [error] Velt: validation layer: env var 'VK_INSTANCE_LAYERS' defined and adding layers "VK_LAYER_KHRONOS_validation"
-[13:21:58] [error] Velt: validation layer: env var 'VK_INSTANCE_LAYERS' defined and adding layers "VK_LAYER_KHRONOS_validation"
-[13:21:58] [trace] Velt: Create Surface
-[13:21:58] [trace] Velt: Creating VulkanDevice...
-[13:21:58] [info] Velt: Device count: 1
-[13:21:58] [info] Velt: Physical Device: NVIDIA GeForce RTX 3080
-[13:21:59] [trace] Velt: Init Vulkan Resource Uploader
-[13:21:59] [trace] Velt: Swapchain Created
-[13:21:59] [error] Velt: Swapchain Creation Info Extend: 1280, 720
-[13:21:59] [info] Velt: Present mode: V-Sync
-[13:21:59] [error] Velt: Chosen Swapchain Extend: 1280, 720
-[13:21:59] [error] Velt: Swapchain Size: 1280, 720
-[13:21:59] [error] Velt: Swapchain Extend: 1280, 720
-[13:21:59] [trace] Velt: Init Static Renderer
-[13:21:59] [trace] Velt: Upload Vertexbuffer to GPU
-[13:21:59] [trace] Velt: Upload Indexbuffer to GPU
-[13:21:59] [trace] Velt: Init SceneRenderer
-[13:21:59] [trace] Velt: Create Pipeline
-[13:21:59] [error] Velt: 20
-[13:21:59] [trace] Velt: Init Pipeline
-[13:21:59] [trace] Velt: Attach ImGuiLayer
-[13:21:59] [trace] Velt: Init ImGUI Renderer
-[13:21:59] [info] Velt: ImGuiRenderer initialized
-[13:21:59] [info] Velt: ImGuiLayer attached
-[13:21:59] [info] Velt: WindowsResizeEvent: 1280, 720
-[13:22:30] [info] Velt: WindowClose
-[13:22:30] [info] Velt: ImGuiRenderer shutdown
+[20:29:37] [info] Velt: Core Log Initialized!
+[20:29:37] [info] APP: Client Log Initialized!
+[20:29:37] [info] Velt: Creating WindowsWindow Velt Engine (1280 720)
+[20:29:38] [error] Velt: Logical Window Size: 1280, 720
+[20:29:38] [error] Velt: Pixel Window Size: 1280, 720
+[20:29:38] [trace] Velt: Initializing Vulkan Context
+[20:29:38] [error] Velt: validation layer: env var 'VK_INSTANCE_LAYERS' defined and adding layers "VK_LAYER_KHRONOS_validation"
+[20:29:38] [error] Velt: validation layer: env var 'VK_INSTANCE_LAYERS' defined and adding layers "VK_LAYER_KHRONOS_validation"
+[20:29:38] [trace] Velt: Create Surface
+[20:29:38] [trace] Velt: Creating VulkanDevice...
+[20:29:38] [info] Velt: Device count: 1
+[20:29:38] [info] Velt: Physical Device: NVIDIA GeForce RTX 3080
+[20:29:38] [trace] Velt: Init Vulkan Resource Uploader
+[20:29:38] [trace] Velt: Swapchain Created
+[20:29:38] [error] Velt: Swapchain Creation Info Extend: 1280, 720
+[20:29:38] [info] Velt: Present mode: V-Sync
+[20:29:38] [error] Velt: Chosen Swapchain Extend: 1280, 720
+[20:29:38] [error] Velt: Swapchain Size: 1280, 720
+[20:29:38] [error] Velt: Swapchain Extend: 1280, 720
+[20:29:38] [trace] Velt: Init Static Renderer
+[20:29:38] [trace] Velt: Upload Vertexbuffer to GPU
+[20:29:38] [trace] Velt: Upload Indexbuffer to GPU
+[20:29:38] [trace] Velt: Init SceneRenderer
+[20:29:38] [trace] Velt: Create Pipeline
+[20:29:38] [error] Velt: 20
+[20:29:38] [trace] Velt: Init Pipeline
+[20:29:38] [trace] Velt: Attach ImGuiLayer
+[20:29:38] [trace] Velt: Init ImGUI Renderer
+[20:29:38] [info] Velt: ImGuiRenderer initialized
+[20:29:38] [info] Velt: ImGuiLayer attached
+[20:29:38] [info] Velt: WindowsResizeEvent: 1280, 720
+[20:32:28] [info] Velt: WindowClose
+[20:32:28] [info] Velt: ImGuiRenderer shutdown

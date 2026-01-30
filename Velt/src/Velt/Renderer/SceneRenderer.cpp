@@ -2,10 +2,12 @@
 #include "Buffer.h"
 #include "Core/Core.h"
 #include "Core/Application.h"
+#include "Core/Input.h"
 
 namespace Velt::Renderer {
 	
 	Ref<Pipeline> SceneRenderer::s_Pipeline = nullptr;
+	Ref<OrthographicCamera> SceneRenderer::m_Camera = nullptr;
 
 	void SceneRenderer::Init()
 	{
@@ -100,6 +102,7 @@ namespace Velt::Renderer {
 			-aspect.y,
 			aspect.y
 		);
+
 		// m_Camera->SetRotation(m_Rotation);
 		m_Rotation++;
 		auto cmd = Velt::Application::Get().GetWindow().GetSwapchain().GetCurrentDrawCommandBuffer();

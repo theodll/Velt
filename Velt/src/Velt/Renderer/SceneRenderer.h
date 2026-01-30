@@ -8,7 +8,7 @@
 namespace Velt::Renderer {
 
 
-	class SceneRenderer
+	class VELT_API SceneRenderer
 	{
 	public:
 		void Init();
@@ -31,6 +31,7 @@ namespace Velt::Renderer {
 		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
 
 		i32 m_Rotation{};
+		glm::vec3 m_CameraPosition{};
 
 		static Ref<Pipeline> s_Pipeline;
 		

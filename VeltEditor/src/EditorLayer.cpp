@@ -1,4 +1,5 @@
 #include "EditorLayer.h"
+#include "Velt/Core/Input.h"
 
 namespace Editor
 {
@@ -12,6 +13,26 @@ namespace Editor
 	{
 		VT_PROFILE_FUNCTION();
 		//VT_CORE_INFO("ExampleLayer::Update");
+
+		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_W))
+		{
+			m_CameraPos.y += 1.f * ts;
+		} 
+		else if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_A))
+		{
+			m_CameraPos.x += 1.f * ts;
+		} 
+		else if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_D))
+		{
+			m_CameraPos.x -= 1.f * ts;
+		}
+		else if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_S))
+		{
+			m_CameraPos.y -= 1.f * ts;
+		}
+
+		auto&& camera = Velt::Renderer::SceneRenderer::GetCamera();
+		camera->SetPosition(m_CameraPos);
 
 
 	}
