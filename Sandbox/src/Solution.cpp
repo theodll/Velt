@@ -5,7 +5,7 @@ class ExampleLayer : public Velt::Layer
 {
 	public:
 	ExampleLayer() : Layer("Example") { VT_PROFILE_FUNCTION(); }
-	void OnUpdate() override
+	void OnUpdate(Velt::Timestep ts) override
 	{
 		VT_PROFILE_FUNCTION();
 		//VT_CORE_INFO("ExampleLayer::Update");
@@ -16,7 +16,7 @@ class ExampleLayer : public Velt::Layer
 		VT_CORE_INFO("{0}", event.ToString());
 	}
 
-	void OnImGuiRender() 
+	void OnImGuiRender() override
 	{
 		VT_PROFILE_FUNCTION();
 		//VT_CORE_INFO("ExampleLayer::OnRender");

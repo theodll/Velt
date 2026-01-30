@@ -3,22 +3,22 @@
 #include "EditorLayer.h"
 
 
-class Editor : public  Velt::Application
+class EditorApp : public Velt::Application
 {
 public: 
-		Editor()
-		{
-			VT_PROFILE_FUNCTION();
-			PushLayer(new EditorLayer());
-		}
+	EditorApp()
+	{
+		VT_PROFILE_FUNCTION();
+		PushLayer(new Editor::EditorLayer());
+	}
 
 
-		~Editor() { VT_PROFILE_FUNCTION(); }
+	~EditorApp() { VT_PROFILE_FUNCTION(); }
 };
 
 
 Velt::Application* Velt::CreateApplication()
 {
 	VT_PROFILE_FUNCTION();
-	return new Editor();
+	return new EditorApp();
 }

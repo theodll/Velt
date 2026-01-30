@@ -7,7 +7,7 @@
 #include "Renderer/Buffer.h"
 #include "Events/ApplicationEvent.h" 
 #include <cassert>
-
+#include "Input.h"
 
 bool Velt::Application::s_ShutdownRequested = false;
 
@@ -99,6 +99,8 @@ namespace Velt {
 		Renderer::Renderer::Init();
 
 		PushOverlay(new Velt::ImGuiLayer);
+
+		Input::Init();
 	}
 
 	void Application::Run()
@@ -127,7 +129,16 @@ namespace Velt {
 				VT_PROFILE_SCOPE("SDL PollEvent Loop");
 
 				// TODO: Dont pass raw sdl events
+
+				Input::ProcessEvent(event);
 				ImGuiLayer::ProcessSDLEvent(&event);
+
+				if (Input::IsKeyDown(Scancode::VELT_SCANCODE_N))
+				{
+					running = false; 
+				}
+
+
 				switch (event.type)
 				{
 				case SDL_EVENT_QUIT:

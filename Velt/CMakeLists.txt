@@ -77,7 +77,7 @@ add_library(Velt SHARED
         "src/Velt/Platform/Vulkan/Buffer/VulkanUniformBuffer.cpp"
         "src/Velt/Renderer/OrthographicCamera.h"
         "src/Velt/Renderer/OrthographicCamera.cpp"
- "src/Velt/Core/Timestep.h" "src/Velt/Core/Input.h" "src/Velt/Core/Scancodes.h" "src/Velt/Platform/Windows/WindowsInput.h" "src/Velt/Platform/Windows/WindowsInput.cpp")
+ "src/Velt/Core/Timestep.h" "src/Velt/Core/Input.h" "src/Velt/Core/Scancodes.h" "src/Velt/Platform/Windows/WindowsInput.h" "src/Velt/Platform/Windows/WindowsInput.cpp" "src/Velt/Core/Input.cpp")
 
 if(WIN32 OR UNIX)
     set(SHADER_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Shaders)
