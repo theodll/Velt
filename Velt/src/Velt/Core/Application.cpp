@@ -5,7 +5,7 @@
 #include <SDL3/SDL.h>
 #include "ImGui/ImGuiLayer.h"
 #include "Renderer/Buffer.h"
-#include "Events/ApplicationEvent.h" 
+#include "Events/ApplicationEvents.h" 
 #include <cassert>
 #include "Input.h"
 #include "Events/EventHandler.h"
@@ -65,7 +65,7 @@ namespace Velt {
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
 		{
 			(*--it)->OnEvent(e);
-			if (e.IsHandled())
+			if (e.IsHandled)
 				break;
 		}
 	}
@@ -123,6 +123,11 @@ namespace Velt {
 			Timestep ts = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
+			if (Input::IsKeyDown(Scancode::VELT_SCANCODE_ESCAPE))
+			{
+				s_ShutdownRequested = true;
+			}
+
 			SDL_Event sdl;
 			while (SDL_PollEvent(&sdl))
 			{
@@ -150,13 +155,7 @@ namespace Velt {
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
 
-			ImGui::Begin("Statistics");
-			ImGui::Text("Deltatime (s): %fs", ts.GetSeconds());
-			ImGui::Text("Deltatime (ms): %fms", ts.GetMilliseconds());
-			ImGui::End();
-
-			ImGuiLayer::End();   
-			ImGuiLayer::Render();
+			RenderStatisticsWidget(ts);
 
 			Renderer::Renderer::EndGuiPass();
 			Renderer::Renderer::EndFrame();
@@ -171,8 +170,24 @@ namespace Velt {
 		}
 	}
 
+
+	void Application::RenderStatisticsWidget(Timestep ts)
+	{
+		ImGui::Begin("Statistics");
+
+		float v = std::round(1 / ts.GetSeconds());
+		static float s = v; s += (v - s) * (1.0f - std::exp(-ts.GetSeconds() / 0.12f)); // Smothes the fps display
+		ImGui::Text("Frames per Second: %.0fFPS", s);
+		ImGui::Dummy({ 3, 1 });
+		ImGui::Text("Deltatime (s): %fs", ts.GetSeconds());
+		ImGui::Text("Deltatime (ms): %.4gms", ts.GetMilliseconds());
+		ImGui::End();
+	}
+
+
 	void Application::Shutdown()
 	{
 		VT_PROFILE_FUNCTION();
+		s_ShutdownRequested = true; 
 	}
 }

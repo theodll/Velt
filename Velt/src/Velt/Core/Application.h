@@ -33,6 +33,8 @@ namespace Velt
 			void PushLayer(Layer* layer);
 			void PushOverlay(Layer* overlay);
 			Window& GetWindow() { return *m_Window; }
+
+			void RenderStatisticsWidget(Timestep ts);
 		
 			// VARS
 			static bool s_ShutdownRequested;

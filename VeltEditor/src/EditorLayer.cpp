@@ -18,17 +18,31 @@ namespace Editor
 		{
 			m_CameraPos.y += 1.f * ts;
 		} 
-		else if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_A))
+		
+		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_A))
 		{
 			m_CameraPos.x += 1.f * ts;
 		} 
-		else if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_D))
+		
+		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_D))
 		{
 			m_CameraPos.x -= 1.f * ts;
 		}
-		else if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_S))
+		
+		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_S))
 		{
 			m_CameraPos.y -= 1.f * ts;
+		}
+
+		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_Q))
+		{
+			m_CameraPos.z += .1f * ts;
+		}
+
+
+		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_E))
+		{
+			m_CameraPos.z -= .1f * ts;
 		}
 
 		auto&& camera = Velt::Renderer::SceneRenderer::GetCamera();
@@ -40,7 +54,7 @@ namespace Editor
 	void EditorLayer::OnEvent(Velt::Event& event)
 	{
 		VT_PROFILE_FUNCTION();
-		VT_CORE_INFO("{0}", event.ToString());
+		//VT_CORE_INFO("{0}", event.ToString());
 	}
 
 	void EditorLayer::OnRender(VkCommandBuffer commandBuffer)

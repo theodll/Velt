@@ -11,7 +11,7 @@
 namespace Velt {
 
     inline std::unique_ptr<Event> TranslateSDLEvent(const SDL_Event& e) {
-        ImGuiLayer::ProcessSDLEvent(e);
+        ImGuiLayer::ProcessSDLEvent(&e);
         Input::ProcessEvent(e);
 
         switch (e.type) {

@@ -8,7 +8,7 @@ namespace Velt {
 		None = 0,
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
 		KeyPressed, KeyReleased,
-		MouseMoved, MouseButtonPressed, MouseButtonReleased, MouseScrolled
+		MouseMoved, MouseButtonPressed, MouseButtonReleased, MouseScrolled, GassyGoonToonX
 	};
 
 	enum EventCategory : uint32_t {
@@ -31,7 +31,7 @@ namespace Velt {
 
 		bool IsInCategory(EventCategory cat) const { return (GetCategoryFlags() & cat) != 0; }
 
-		bool Handled = false;
+		bool IsHandled = false;
 	};
 
 } // namespace Velt

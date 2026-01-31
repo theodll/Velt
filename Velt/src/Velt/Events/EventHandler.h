@@ -28,7 +28,7 @@ namespace Velt
         {
             if (m_Event.GetEventType() == T::GetStaticType())
             {
-                m_Event.m_Handled = func(*(T*)&m_Event);
+                m_Event.IsHandled = func(*(T*)&m_Event);
                 return true;
             }
             return false;
@@ -36,9 +36,9 @@ namespace Velt
     private:
         Event& m_Event;
     };
-
+    /*
     inline std::ostream& operator<<(std::ostream& os, const Event& e)
     {
         return os << e.ToString();
-    }
+    }*/
 }

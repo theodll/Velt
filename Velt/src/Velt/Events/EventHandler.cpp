@@ -2,7 +2,7 @@
 #include "Event.h"
 #include "ImGui/ImGuiLayer.h"
 #include "Platform/Windows/WindowsInput.h"
-
+/*
 namespace Velt
 {
     void EventHandler::ProcessEvent(Event& event)
@@ -23,7 +23,7 @@ namespace Velt
     }
 }
 
-
+*/
 
 /*
 * 	while (SDL_PollEvent(&event))

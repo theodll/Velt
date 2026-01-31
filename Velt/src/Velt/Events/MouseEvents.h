@@ -9,12 +9,14 @@ namespace Velt {
         MouseMovedEvent(float x, float y) : X(x), Y(y) {}
 
         float X = 0, Y = 0;
-
+        /*
         std::string ToString() const override {
             std::stringstream ss;
             ss << GetName() << ": " << X << ", " << Y;
             return ss.str();
-        }
+        }*/
+
+        std::string ToString() const override { return ""; }
 
         VELT_EVENT_CLASS_TYPE(MouseMoved)
         VELT_EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryMouse)
