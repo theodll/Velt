@@ -8,6 +8,8 @@
 #include "Events/ApplicationEvent.h" 
 #include <cassert>
 #include "Input.h"
+#include "Events/EventHandler.h"
+#include "Platform/SDL/SDLEventTranslator.h"
 
 bool Velt::Application::s_ShutdownRequested = false;
 
@@ -111,9 +113,7 @@ namespace Velt {
 		while (running)
 		{
 			VT_PROFILE_SCOPE("Application::Run Loop");
-			SDL_Event event;
-
-			// Todo: Move to a Platform Independent Place
+			// TODO: Move to a Platform Independent Place
 
 			static const double invFreq = 1.0 / (double)SDL_GetPerformanceFrequency();
 
@@ -123,48 +123,13 @@ namespace Velt {
 			Timestep ts = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
-			while (SDL_PollEvent(&event))
+			SDL_Event sdl;
+			while (SDL_PollEvent(&sdl))
 			{
-
-				VT_PROFILE_SCOPE("SDL PollEvent Loop");
-
-				// TODO: Dont pass raw sdl events
-
-				Input::ProcessEvent(event);
-				ImGuiLayer::ProcessSDLEvent(&event);
-
-				if (Input::IsKeyDown(Scancode::VELT_SCANCODE_N))
-				{
-					running = false; 
-				}
-
-
-				switch (event.type)
-				{
-				case SDL_EVENT_QUIT:
-					{
-						VT_PROFILE_SCOPE("WindowClose Event");
-						WindowCloseEvent e; 
-						OnEvent(e); 
-						running = false;
-						break;
-					}
-					break;
-				case SDL_EVENT_WINDOW_RESIZED:
-				case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
-					{
-						VT_PROFILE_SCOPE("WindowResize Event");
-						u16 w = (u16)event.window.data1;
-						u16 h = (u16)event.window.data2;
-						WindowResizeEvent e(w, h);
-						OnEvent(e);
-					}
-					break;
-				default:
-					break;
+				if (auto evt = TranslateSDLEvent(sdl)) {
+					OnEvent(*evt);
 				}
 			}
-
 
 			VT_PROFILE_SCOPE("Render Loop");
 			Renderer::Renderer::BeginFrame();
