@@ -5,9 +5,11 @@
 #include <SDL3/SDL.h>
 #include "ImGui/ImGuiLayer.h"
 #include "Renderer/Buffer.h"
-#include "Events/ApplicationEvent.h" 
+#include "Events/ApplicationEvents.h" 
 #include <cassert>
 #include "Input.h"
+#include "Events/EventHandler.h"
+#include "Platform/SDL/SDLEventTranslator.h"
 
 bool Velt::Application::s_ShutdownRequested = false;
 
@@ -63,7 +65,7 @@ namespace Velt {
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
 		{
 			(*--it)->OnEvent(e);
-			if (e.IsHandled())
+			if (e.IsHandled)
 				break;
 		}
 	}
@@ -111,9 +113,7 @@ namespace Velt {
 		while (running)
 		{
 			VT_PROFILE_SCOPE("Application::Run Loop");
-			SDL_Event event;
-
-			// Todo: Move to a Platform Independent Place
+			// TODO: Move to a Platform Independent Place
 
 			static const double invFreq = 1.0 / (double)SDL_GetPerformanceFrequency();
 
@@ -123,48 +123,18 @@ namespace Velt {
 			Timestep ts = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
-			while (SDL_PollEvent(&event))
+			if (Input::IsKeyDown(Scancode::VELT_SCANCODE_ESCAPE))
 			{
-
-				VT_PROFILE_SCOPE("SDL PollEvent Loop");
-
-				// TODO: Dont pass raw sdl events
-
-				Input::ProcessEvent(event);
-				ImGuiLayer::ProcessSDLEvent(&event);
-
-				if (Input::IsKeyDown(Scancode::VELT_SCANCODE_N))
-				{
-					running = false; 
-				}
-
-
-				switch (event.type)
-				{
-				case SDL_EVENT_QUIT:
-					{
-						VT_PROFILE_SCOPE("WindowClose Event");
-						WindowCloseEvent e; 
-						OnEvent(e); 
-						running = false;
-						break;
-					}
-					break;
-				case SDL_EVENT_WINDOW_RESIZED:
-				case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
-					{
-						VT_PROFILE_SCOPE("WindowResize Event");
-						u16 w = (u16)event.window.data1;
-						u16 h = (u16)event.window.data2;
-						WindowResizeEvent e(w, h);
-						OnEvent(e);
-					}
-					break;
-				default:
-					break;
-				}
+				s_ShutdownRequested = true;
 			}
 
+			SDL_Event sdl;
+			while (SDL_PollEvent(&sdl))
+			{
+				if (auto evt = TranslateSDLEvent(sdl)) {
+					OnEvent(*evt);
+				}
+			}
 
 			VT_PROFILE_SCOPE("Render Loop");
 			Renderer::Renderer::BeginFrame();
@@ -185,13 +155,7 @@ namespace Velt {
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
 
-			ImGui::Begin("Statistics");
-			ImGui::Text("Deltatime (s): %fs", ts.GetSeconds());
-			ImGui::Text("Deltatime (ms): %fms", ts.GetMilliseconds());
-			ImGui::End();
-
-			ImGuiLayer::End();   
-			ImGuiLayer::Render();
+			RenderStatisticsWidget(ts);
 
 			Renderer::Renderer::EndGuiPass();
 			Renderer::Renderer::EndFrame();
@@ -206,8 +170,24 @@ namespace Velt {
 		}
 	}
 
+
+	void Application::RenderStatisticsWidget(Timestep ts)
+	{
+		ImGui::Begin("Statistics");
+
+		float v = std::round(1 / ts.GetSeconds());
+		static float s = v; s += (v - s) * (1.0f - std::exp(-ts.GetSeconds() / 0.12f)); // Smothes the fps display
+		ImGui::Text("Frames per Second: %.0fFPS", s);
+		ImGui::Dummy({ 3, 1 });
+		ImGui::Text("Deltatime (s): %fs", ts.GetSeconds());
+		ImGui::Text("Deltatime (ms): %.4gms", ts.GetMilliseconds());
+		ImGui::End();
+	}
+
+
 	void Application::Shutdown()
 	{
 		VT_PROFILE_FUNCTION();
+		s_ShutdownRequested = true; 
 	}
 }

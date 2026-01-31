@@ -8,10 +8,6 @@ add_library(Velt SHARED
         "src/Velt/Renderer/Renderer.cpp"
         "src/Velt/Core/Log.h"
         "src/Velt/Core/Log.cpp"
-        "src/Velt/Events/ApplicationEvent.h"
-        "src/Velt/Events/Event.h"
-        "src/Velt/Events/KeyEvent.h"
-        "src/Velt/Events/MouseEvent.h"
         "src/Velt/Platform/Vulkan/VulkanPipeline.h"
         "src/Velt/Platform/Vulkan/VulkanPipeline.cpp"
         "src/Velt/Platform/Vulkan/VulkanDevice.cpp"
@@ -77,7 +73,17 @@ add_library(Velt SHARED
         "src/Velt/Platform/Vulkan/Buffer/VulkanUniformBuffer.cpp"
         "src/Velt/Renderer/OrthographicCamera.h"
         "src/Velt/Renderer/OrthographicCamera.cpp"
- "src/Velt/Core/Timestep.h" "src/Velt/Core/Input.h" "src/Velt/Core/Scancodes.h" "src/Velt/Platform/Windows/WindowsInput.h" "src/Velt/Platform/Windows/WindowsInput.cpp" "src/Velt/Core/Input.cpp")
+ "src/Velt/Core/Timestep.h" "src/Velt/Core/Input.h" "src/Velt/Core/Scancodes.h" "src/Velt/Platform/Windows/WindowsInput.h" "src/Velt/Platform/Windows/WindowsInput.cpp" "src/Velt/Core/Input.cpp"
+        src/Velt/Events/Event.cpp
+        src/Velt/Events/Event.h
+        src/Velt/Events/EventHandler.h
+        src/Velt/Events/EventHandler.cpp
+        src/Velt/Events/EventDispatcher.h
+        src/Velt/Events/ApplicationEvents.h
+        src/Velt/Platform/SDL/SDLEventTranslator.h
+        src/Velt/Events/KeyEvents.h
+        src/Velt/Events/MouseEvents.h
+)
 
 if(WIN32 OR UNIX)
     set(SHADER_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Shaders)

@@ -99,6 +99,8 @@ namespace Velt::Renderer {
 	{
 		VT_PROFILE_FUNCTION();
 		ImGuiLayer::End();
+		ImGuiLayer::Render();
+
 		s_RenderAPI->EndGuiPass();
 	}
 
