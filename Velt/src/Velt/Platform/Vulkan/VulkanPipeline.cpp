@@ -124,14 +124,19 @@ namespace Velt::Renderer::RHI {
 	{
 		VT_PROFILE_FUNCTION();
 
+		VkPushConstantRange range = {};
+		range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT /* | VK_SHADER_STAGE_FRAGMENT_BIT */;
+		range.offset = 0;
+		range.size = sizeof(glm::mat4);
+
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.pNext = nullptr;
 		pipelineLayoutInfo.flags = 0;
 		pipelineLayoutInfo.setLayoutCount = 1;
 		pipelineLayoutInfo.pSetLayouts = &m_DescriptorSetLayout;
-		pipelineLayoutInfo.pushConstantRangeCount = 0;
-		pipelineLayoutInfo.pPushConstantRanges = nullptr;
+		pipelineLayoutInfo.pushConstantRangeCount = 1;
+		pipelineLayoutInfo.pPushConstantRanges = &range;
 		if (vkCreatePipelineLayout(VulkanContext::GetDevice().device(), &pipelineLayoutInfo, nullptr, &m_PipelineLayout) != VK_SUCCESS)
 		{
 			VT_CORE_ERROR("Failed to create pipeline layout!");

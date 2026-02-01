@@ -19,5 +19,8 @@ namespace Editor {
 		void OnImGuiRender() override;
 	private: 
 		glm::vec3 m_CameraPos{};
+		float m_CameraRot{};
+
+		glm::vec3 m_SquarePos{};
 	};
 }

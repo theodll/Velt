@@ -11,7 +11,7 @@ namespace Velt::Renderer::RHI
 		virtual void Init() override;
 		virtual void Shutdown() override;
 
-		virtual void DrawQuad(VkCommandBuffer& renderCommandBuffer) override;
+		virtual void DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform) override;
 
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;

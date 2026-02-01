@@ -24,7 +24,6 @@ namespace Velt::SDL {
                 return std::make_unique<WindowResizeEvent>(
                     (int)e.window.data1, (int)e.window.data2
                 );
-w
             case SDL_EVENT_KEY_DOWN: {
                 const bool repeat = e.key.repeat != 0;
                 return std::make_unique<KeyPressedEvent>((int)e.key.key, repeat);

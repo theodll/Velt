@@ -110,10 +110,10 @@ namespace Velt::Renderer {
 		s_RenderAPI->EndFrame();
 	}
 
-	void Renderer::DrawQuad(VkCommandBuffer& renderCommandBuffer)
+	void Renderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform)
 	{
 		VT_PROFILE_FUNCTION();
-		s_RenderAPI->DrawQuad(renderCommandBuffer);
+		s_RenderAPI->DrawQuad(renderCommandBuffer, transform);
 	}
 
 	void Renderer::RequestShutdown()

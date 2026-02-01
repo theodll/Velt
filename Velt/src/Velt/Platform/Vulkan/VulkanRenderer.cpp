@@ -241,10 +241,11 @@ namespace Velt::Renderer::RHI
 		swapchain.Present();
 	}
 
-	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer)
+	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform)
 	{
 		VT_PROFILE_FUNCTION();
-		auto&& pp = SceneRenderer::GetPipeline(); 
+		auto pp = SceneRenderer::GetPipeline(); 
+		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
 
 		VkPipelineLayout pipelineLayout = pp->GetVulkanPipelineLayout();
 		VkBuffer vertexBuffer = s_RenderData->QuadVertexBuffer->GetVulkanBuffer();
@@ -258,6 +259,8 @@ namespace Velt::Renderer::RHI
 
 		uint32_t indexCount = s_RenderData->QuadIndexBuffer->GetCount();
 		// VT_CORE_ERROR("{}", indexCount);
+
+		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 	}
 

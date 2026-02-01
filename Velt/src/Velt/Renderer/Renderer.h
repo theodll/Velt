@@ -38,7 +38,7 @@ namespace Velt::Renderer
 		static void BeginGuiPass();
 		static void EndGuiPass();
 
-		static void DrawQuad(VkCommandBuffer& renderCommandBuffer);
+		static void DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform = glm::mat4(1.0f));
 
 		
 		inline static RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); };
