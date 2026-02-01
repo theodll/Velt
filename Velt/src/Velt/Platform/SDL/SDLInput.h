@@ -3,7 +3,7 @@
 #include <SDL3/SDL.h>
 
 
-namespace Velt::Windows
+namespace Velt::SDL
 {
 	class Input : public Velt::Input
 	{

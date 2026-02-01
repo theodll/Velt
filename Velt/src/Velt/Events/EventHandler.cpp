@@ -1,7 +1,7 @@
 #include "EventHandler.h"
 #include "Event.h"
 #include "ImGui/ImGuiLayer.h"
-#include "Platform/Windows/WindowsInput.h"
+#include "Platform/SDL/SDLInput.h"
 /*
 namespace Velt
 {

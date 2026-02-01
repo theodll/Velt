@@ -102,7 +102,7 @@ namespace Velt {
 
 		PushOverlay(new Velt::ImGuiLayer);
 
-		Input::Init();
+		SDL::Input::Init();
 	}
 
 	void Application::Run()
@@ -123,7 +123,7 @@ namespace Velt {
 			Timestep ts = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
-			if (Input::IsKeyDown(Scancode::VELT_SCANCODE_ESCAPE))
+			if (SDL::Input::IsKeyDown(Scancode::VELT_SCANCODE_ESCAPE))
 			{
 				s_ShutdownRequested = true;
 			}
@@ -131,7 +131,7 @@ namespace Velt {
 			SDL_Event sdl;
 			while (SDL_PollEvent(&sdl))
 			{
-				if (auto evt = TranslateSDLEvent(sdl)) {
+				if (auto evt = SDL::TranslateSDLEvent(sdl)) {
 					OnEvent(*evt);
 				}
 			}
@@ -174,13 +174,15 @@ namespace Velt {
 	void Application::RenderStatisticsWidget(Timestep ts)
 	{
 		ImGui::Begin("Statistics");
-
+		ImGui::Text("Velt Engine v0.0");
 		float v = std::round(1 / ts.GetSeconds());
 		static float s = v; s += (v - s) * (1.0f - std::exp(-ts.GetSeconds() / 0.12f)); // Smothes the fps display
 		ImGui::Text("Frames per Second: %.0fFPS", s);
-		ImGui::Dummy({ 3, 1 });
+		ImGui::Dummy({ 500, 3 });
 		ImGui::Text("Deltatime (s): %fs", ts.GetSeconds());
 		ImGui::Text("Deltatime (ms): %.4gms", ts.GetMilliseconds());
+		ImGui::Dummy({ 500, 3 });
+		ImGui::Text("Camera Position: X: %.2f Y: %.2f Z: %.2f", Renderer::SceneRenderer::GetCamera()->GetPosition().x, Renderer::SceneRenderer::GetCamera()->GetPosition().y, Renderer::SceneRenderer::GetCamera()->GetPosition().z);
 		ImGui::End();
 	}
 

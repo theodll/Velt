@@ -1,10 +1,10 @@
 #include "vtpch.h"
 #include "Core/Input.h"
-#include "WindowsInput.h"
+#include "SDLInput.h"
 
 #include <SDL3/SDL.h>
 
-namespace Velt::Windows
+namespace Velt::SDL
 {
 	bool Input::IsKeyPressedImpl(Scancode code)
 	{
@@ -54,7 +54,6 @@ namespace Velt::Windows
 	void Input::HandleKeyDown(const SDL_Event& e)
 	{
 		VT_PROFILE_FUNCTION();
-		VT_CORE_TRACE("Key Down Handeled"); 
 		if (!e.key.repeat)
 		{
 			SDL_Scancode sc = e.key.scancode;

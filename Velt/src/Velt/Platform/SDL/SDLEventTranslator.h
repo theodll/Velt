@@ -2,13 +2,13 @@
 #include <SDL3/SDL.h>
 #include <memory>
 
-#include "Platform/Windows/WindowsInput.h"
+#include "SDLInput.h"
 #include "Velt/Events/ApplicationEvents.h"
 #include "Velt/Events/KeyEvents.h"
 #include "Velt/Events/MouseEvents.h"
 #include "Velt/ImGui/ImGuiLayer.h"
 
-namespace Velt {
+namespace Velt::SDL {
 
     inline std::unique_ptr<Event> TranslateSDLEvent(const SDL_Event& e) {
         ImGuiLayer::ProcessSDLEvent(&e);
@@ -24,7 +24,7 @@ namespace Velt {
                 return std::make_unique<WindowResizeEvent>(
                     (int)e.window.data1, (int)e.window.data2
                 );
-
+w
             case SDL_EVENT_KEY_DOWN: {
                 const bool repeat = e.key.repeat != 0;
                 return std::make_unique<KeyPressedEvent>((int)e.key.key, repeat);

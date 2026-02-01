@@ -1,7 +1,7 @@
 #include "vtpch.h"
 
 #include "Input.h"
-#include "Platform/Windows/WindowsInput.h"
+#include "Platform/SDL/SDLInput.h"
 
 namespace Velt
 {
@@ -9,6 +9,6 @@ namespace Velt
 
 	void Input::Init()
 	{
-		s_Instance = CreateScope<Windows::Input>();
+		s_Instance = CreateScope<SDL::Input>();
 	};
 }
