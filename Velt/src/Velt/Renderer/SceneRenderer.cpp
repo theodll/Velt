@@ -16,8 +16,7 @@ namespace Velt::Renderer {
 
 		BufferLayout layout{
 
-				{ ShaderDataType::Float2, "a_Position" },
-				{ ShaderDataType::Float3, "a_Color" }
+				{ ShaderDataType::Float2, "a_Position" }
 		};
 		
 
