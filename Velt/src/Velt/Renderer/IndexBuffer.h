@@ -3,6 +3,8 @@
 
 namespace Velt::Renderer
 {
+    typedef float Index;
+
     class IndexBuffer
     {
     public:
@@ -15,6 +17,6 @@ namespace Velt::Renderer
         virtual u32 GetCount() const = 0;
 
         static std::shared_ptr<IndexBuffer> Create(u64 size);
-        static std::shared_ptr<IndexBuffer> Create(void* data, u64 size, u64 offset = 0);
+        static std::shared_ptr<IndexBuffer> Create(void* data, u64 size, u64 offset = 0, bool autoupload = false);
     };
 } 

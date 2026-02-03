@@ -5,7 +5,7 @@
 
 namespace Velt::Renderer::RHI
 {
-	VulkanIndexBuffer::VulkanIndexBuffer(void* data, u64 count, u64 offsetBytes)
+	VulkanIndexBuffer::VulkanIndexBuffer(void* data, u64 count, u64 offsetBytes, bool autoupload)
 		: m_Count((u32)count),
 		m_SizeBytes(count * sizeof(u32)),
 		m_UploadBytes(count * sizeof(u32)),
@@ -23,6 +23,17 @@ namespace Velt::Renderer::RHI
 		);
 
 		SetData(data, m_UploadBytes, 0);
+
+		// this probably is bad practice because I build the resource loader to batch uploads 
+		// eg. 1 cmd buffer 2++ uploads
+		if (autoupload)
+		{
+			auto& uploader = VulkanContext::GetResourceUploader();
+
+			uploader.Begin();
+			Upload(uploader.GetCommandBuffer());
+			uploader.End();
+		}
 	}
 
 	VulkanIndexBuffer::VulkanIndexBuffer(u64 size) 
