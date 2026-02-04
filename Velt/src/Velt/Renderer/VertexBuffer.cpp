@@ -8,7 +8,7 @@
 namespace Velt::Renderer
 {
     
-	std::shared_ptr<VertexBuffer> VertexBuffer::Create(void* vertexData, u64 vertexCount, u64 vertexStride)
+	std::shared_ptr<VertexBuffer> VertexBuffer::Create(void* vertexData, u64 vertexCount, u64 vertexStride, bool autoupload)
 	{
 		VT_PROFILE_FUNCTION();
 
@@ -16,7 +16,7 @@ namespace Velt::Renderer
 		switch (Renderer::GetAPI())
 		{
 			case RenderAPI::API::None:    return nullptr;
-			case RenderAPI::API::Vulkan:  return std::make_shared<RHI::VulkanVertexBuffer>(vertexData, bytes, 0);
+			case RenderAPI::API::Vulkan:  return std::make_shared<RHI::VulkanVertexBuffer>(vertexData, bytes, 0, autoupload);
 		}
 		VT_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;
