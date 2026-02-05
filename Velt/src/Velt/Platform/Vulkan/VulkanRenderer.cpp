@@ -275,17 +275,17 @@ namespace Velt::Renderer::RHI
 
 		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
 
-		const auto& submeshes = model->GetSubmeshes();
-		for (const auto& submesh : submeshes)
+		auto& submeshes = model->GetSubmeshes();
+		for (auto& submesh : submeshes)
 		{
-			VkBuffer vertexBuffer = submesh.mesh.GetVertexBuffer()->GetVulkanBuffer();
+			VkBuffer vertexBuffer = submesh.Mesh->GetVertexBuffer()->GetVulkanBuffer();
 			VkDeviceSize offsets[1] = { 0 };
 			vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer, offsets);
 
-			VkBuffer indexBuffer = submesh.mesh.GetIndexBuffer()->GetVulkanBuffer();
+			VkBuffer indexBuffer = submesh.Mesh->GetIndexBuffer()->GetVulkanBuffer();
 			vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-			uint32_t indexCount = static_cast<uint32_t>(submesh.mesh.GetIndexBuffer()->GetCount());
+			uint32_t indexCount = (uint32_t)submesh.Mesh->GetIndexBuffer()->GetCount();
 
 			vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 		}

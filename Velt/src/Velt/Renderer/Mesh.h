@@ -11,17 +11,12 @@ namespace Velt::Renderer
 	class Mesh
 	{
 	public:
-		Mesh();
-
-		// Note [4.02.26, Theo]: I have to change this someday, because this is essentially a constructor replace and with this I would
-		// like to keep RAII compatible.
-
-		void Create(const std::vector<Vertex>& vertices, const std::vector<Index>& indices); 
+		Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices);
 		virtual ~Mesh() = default;
 
 		u64 GetVertexCount() { return m_VertexCount; }
-		Ref<VertexBuffer> GetVertexBuffer() { return m_VertexBuffer; };
-		Ref<IndexBuffer> GetIndexBuffer() { return m_IndexBuffer; };
+		Ref<VertexBuffer> GetVertexBuffer() const { return m_VertexBuffer; };
+		Ref<IndexBuffer> GetIndexBuffer() const { return m_IndexBuffer; };
 	private:
 
 		std::vector<Vertex> m_Vertices;

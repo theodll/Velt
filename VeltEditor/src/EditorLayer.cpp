@@ -8,6 +8,29 @@ namespace Editor
 	EditorLayer::EditorLayer() : Layer("Editor")
 	{
 		VT_PROFILE_FUNCTION();
+
+		// Note [5.02.26, Theo] This will be substantially different because all these things we have to do 
+		// manually right now will be automatically done by a loader of models eg. glTF or obj.
+
+		Velt::Renderer::Vertex quadVerticesData[] = {
+			{ {-0.5f, -0.5f} },
+			{ { 0.5f, -0.5f} },
+			{ { 0.5f,  0.5f} },
+			{ {-0.5f,  0.5f} }
+		};
+
+		std::vector<Velt::Renderer::Vertex> quadVertices(quadVerticesData, quadVerticesData + 4);
+		std::vector<Velt::Renderer::Index> quadIndices = { 0, 1, 2, 2, 3, 0 };
+
+		Velt::Renderer::SubmeshCreateInfo smInfo{};
+
+		smInfo.Vertices = quadVertices;
+		smInfo.Indices = quadIndices;
+
+		Velt::Renderer::ModelCreateInfo info{};
+		info.Parts = { smInfo };
+		
+		m_Model = Velt::Renderer::Model::Create(info);
 	}
 
 	void EditorLayer::OnUpdate(Velt::Timestep ts)
@@ -60,8 +83,9 @@ namespace Editor
 	{
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_SquarePos);
 
-		Velt::Renderer::Renderer::DrawQuad(commandBuffer);
 		Velt::Renderer::Renderer::DrawQuad(commandBuffer, transform);
+
+		Velt::Renderer::Renderer::DrawStaticModel(commandBuffer, m_Model);
 	}
 
 	void EditorLayer::OnImGuiRender()
