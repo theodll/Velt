@@ -15,6 +15,7 @@ namespace Velt::Renderer
 
 		// Note [4.02.26, Theo]: I have to change this someday, because this is essentially a constructor replace and with this I would
 		// like to keep RAII compatible.
+
 		void Create(const std::vector<Vertex>& vertices, const std::vector<Index>& indices); 
 		virtual ~Mesh() = default;
 
@@ -30,11 +31,5 @@ namespace Velt::Renderer
 
 		Ref<VertexBuffer> m_VertexBuffer;
 		Ref<IndexBuffer> m_IndexBuffer;
-	};
-
-	struct Submesh
-	{
-		Mesh mesh;
-		u32 matIndex;
 	};
 }
