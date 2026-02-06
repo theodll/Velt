@@ -11,7 +11,7 @@ namespace Editor {
 	public:
 		EditorLayer();
 
-
+		void Init() override;
 		void OnUpdate(Velt::Timestep ts) override;
 		void OnEvent(Velt::Event& event) override;
 		void OnRender(VkCommandBuffer commandBuffer) override;

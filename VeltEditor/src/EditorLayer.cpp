@@ -7,6 +7,13 @@ namespace Editor
 
 	EditorLayer::EditorLayer() : Layer("Editor")
 	{
+		
+	}
+
+	void EditorLayer::Init()
+	{
+		
+
 		VT_PROFILE_FUNCTION();
 
 		// Note [5.02.26, Theo] This will be substantially different because all these things we have to do 
