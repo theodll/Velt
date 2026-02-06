@@ -12,7 +12,7 @@ namespace Editor
 
 	void EditorLayer::Init()
 	{
-		
+		VT_CORE_TRACE("goon");
 
 		VT_PROFILE_FUNCTION();
 
@@ -46,16 +46,16 @@ namespace Editor
 		//VT_CORE_INFO("ExampleLayer::Update");
 
 		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_W))
-			m_CameraPos.y += 1.f * ts;
+			m_CameraPos.y -= 1.f * ts;
 		
 		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_A))
-			m_CameraPos.x += 1.f * ts;
-		
-		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_D))
 			m_CameraPos.x -= 1.f * ts;
 		
+		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_D))
+			m_CameraPos.x += 1.f * ts;
+		
 		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_S))
-			m_CameraPos.y -= 1.f * ts;
+			m_CameraPos.y += 1.f * ts;
 		
 		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_Q))
 			m_CameraRot += 100.f * ts;
@@ -88,11 +88,17 @@ namespace Editor
 
 	void EditorLayer::OnRender(VkCommandBuffer commandBuffer)
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_SquarePos);
-
-		Velt::Renderer::Renderer::DrawQuad(commandBuffer, transform);
-
-		Velt::Renderer::Renderer::DrawStaticModel(commandBuffer, m_Model);
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+		// Velt::Renderer::Renderer::DrawQuad(commandBuffer, transform);
+		for (int x{}; x < 100; x++)
+		{
+			for (int y{}; y < 100; y++)
+			{
+				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+				Velt::Renderer::Renderer::DrawQuad(commandBuffer, transform);
+			}
+		}
 	}
 
 	void EditorLayer::OnImGuiRender()

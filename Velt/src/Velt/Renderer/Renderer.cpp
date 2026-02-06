@@ -112,7 +112,6 @@ namespace Velt::Renderer {
 
 	void Renderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform)
 	{
-		VT_PROFILE_FUNCTION();
 		s_RenderAPI->DrawQuad(renderCommandBuffer, transform);
 	}
 

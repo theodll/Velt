@@ -86,7 +86,7 @@ namespace Velt::Renderer::RHI
 		);
 
 		// Rendering Info Setup
-		VkClearValue clearColor = { {{1.0f, 0.0f, 1.0f, 1.0f}} };
+		VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
 
 		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
 		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
@@ -171,7 +171,7 @@ namespace Velt::Renderer::RHI
 		);
 
 		// Rendering Info Setup
-		VkClearValue clearColor = { {{1.0f, 0.0f, 1.0f, 1.0f}} };
+		VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
 
 		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
 		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
@@ -244,7 +244,6 @@ namespace Velt::Renderer::RHI
 
 	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform)
 	{
-		VT_PROFILE_FUNCTION();
 		auto pp = SceneRenderer::GetPipeline(); 
 		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
 
@@ -267,7 +266,6 @@ namespace Velt::Renderer::RHI
 
 	void VulkanRenderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model, const glm::mat4& transform)
 	{
-		VT_PROFILE_FUNCTION();
 		auto pp = SceneRenderer::GetPipeline(); 
 		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
 

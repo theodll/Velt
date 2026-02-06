@@ -24,8 +24,9 @@ namespace Velt::Renderer::RHI
 
 		SetData(data, m_UploadBytes, 0);
 
-		// this probably is bad practice because I build the resource loader to batch uploads 
+		// Note [2.02.26, Theo] This probably is bad practice because I build the resource loader to batch uploads 
 		// eg. 1 cmd buffer 2++ uploads
+
 		if (autoupload)
 		{
 			auto& uploader = VulkanContext::GetResourceUploader();
@@ -44,7 +45,7 @@ namespace Velt::Renderer::RHI
 	{
 		VT_PROFILE_FUNCTION();
 
-		auto device = VulkanContext::GetDevice();
+		auto&& device = VulkanContext::GetDevice();
 
 		if (m_StagingBuffer != VK_NULL_HANDLE)
 		{

@@ -3,7 +3,7 @@
 
 namespace Velt::Renderer
 {
-    typedef float Index;
+    typedef u32 Index;
 
     class IndexBuffer
     {
