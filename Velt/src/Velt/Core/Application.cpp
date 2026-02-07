@@ -110,6 +110,9 @@ namespace Velt {
 		VT_PROFILE_FUNCTION();
 
 		bool running = true;
+		for (Layer* layer : m_LayerStack)
+						layer->Init();
+
 		while (running)
 		{
 			VT_PROFILE_SCOPE("Application::Run Loop");

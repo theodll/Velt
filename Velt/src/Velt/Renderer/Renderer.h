@@ -5,12 +5,10 @@
 #include "SceneRenderer.h"
 #include "IndexBuffer.h"
 #include "RenderAPI.h"
+#include "Model.h"
 
 namespace Velt::Renderer
 {
-	static class Application;
-	static class LayerStack;
-	static class SceneRenderer;
 
 
 	class VELT_API Renderer
@@ -39,7 +37,7 @@ namespace Velt::Renderer
 		static void EndGuiPass();
 
 		static void DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform = glm::mat4(1.0f));
-
+		static void DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model, const glm::mat4& transform = glm::mat4(1.0f));
 		
 		inline static RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); };
 

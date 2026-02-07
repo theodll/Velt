@@ -12,7 +12,8 @@ namespace Velt::Renderer::RHI
 		virtual void Shutdown() override;
 
 		virtual void DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform) override;
-
+		virtual void DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model, const glm::mat4& transform) override;
+		
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 

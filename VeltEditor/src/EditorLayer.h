@@ -11,7 +11,7 @@ namespace Editor {
 	public:
 		EditorLayer();
 
-
+		void Init() override;
 		void OnUpdate(Velt::Timestep ts) override;
 		void OnEvent(Velt::Event& event) override;
 		void OnRender(VkCommandBuffer commandBuffer) override;
@@ -20,6 +20,8 @@ namespace Editor {
 	private: 
 		glm::vec3 m_CameraPos{};
 		float m_CameraRot{};
+
+		Velt::Ref<Velt::Renderer::Model> m_Model;
 
 		glm::vec3 m_SquarePos{};
 	};

@@ -9,7 +9,7 @@ namespace Velt::Renderer::RHI
 	{
 	public:
 		VulkanIndexBuffer(u64 size);
-		VulkanIndexBuffer(void* data, u64 size, u64 offset);
+		VulkanIndexBuffer(void* data, u64 size, u64 offset, bool autoupload = false);
 		~VulkanIndexBuffer();
 
 		virtual void SetData(void* data, u64 size, u64 offset = 0) override;

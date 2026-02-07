@@ -30,6 +30,6 @@ namespace Velt::Renderer
         virtual BufferLayout GetLayout() const = 0;
         virtual VkBuffer GetVulkanBuffer() const = 0;
         
-		static std::shared_ptr<VertexBuffer> Create(void* vertexData, u64 vertexCount, u64 vertexStride);
+        static std::shared_ptr<VertexBuffer> Create(void* vertexData, u64 vertexCount, u64 vertexStride, bool autoupload = false); 
     };
 } 

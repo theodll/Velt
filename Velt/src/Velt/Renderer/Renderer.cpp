@@ -112,8 +112,12 @@ namespace Velt::Renderer {
 
 	void Renderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform)
 	{
-		VT_PROFILE_FUNCTION();
 		s_RenderAPI->DrawQuad(renderCommandBuffer, transform);
+	}
+
+	void Renderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model, const glm::mat4& transform)
+	{
+		s_RenderAPI->DrawStaticModel(renderCommandBuffer, model, transform);
 	}
 
 	void Renderer::RequestShutdown()

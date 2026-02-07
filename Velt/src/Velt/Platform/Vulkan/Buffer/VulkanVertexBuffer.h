@@ -14,7 +14,7 @@ namespace Velt::Renderer::RHI
 	class VulkanVertexBuffer : public VertexBuffer
 	{
 	public:
-		VulkanVertexBuffer(void* data, u64 size, u64 offset);
+		VulkanVertexBuffer(void* data, u64 size, u64 offset, bool autoupload = false);
 		~VulkanVertexBuffer();
 
 		virtual void SetData(void* data, u64 size, u64 offset = 0) override;

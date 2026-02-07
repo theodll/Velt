@@ -4,6 +4,7 @@
 #include "Platform/Vulkan/VulkanPipeline.h"
 #include "Velt/Core/Core.h"
 #include "IndexBuffer.h"
+#include "Velt/Renderer/Model.h"
 #include <glm/glm.hpp>
 
 namespace Velt::Renderer {
@@ -24,6 +25,7 @@ namespace Velt::Renderer {
 		virtual void Shutdown() = 0;
 
 		virtual void DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform) = 0;
+        virtual void DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model, const glm::mat4& transform) = 0;
 
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
