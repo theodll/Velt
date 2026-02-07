@@ -88,15 +88,17 @@ namespace Editor
 
 	void EditorLayer::OnRender(VkCommandBuffer commandBuffer)
 	{
+		// Note [6.02.26]: Never EVER use a VT_PROFILE_FUNCTION() in a per frame performance thing!
+		// It causes immense performance loss
+
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
-		// Velt::Renderer::Renderer::DrawQuad(commandBuffer, transform);
 		for (int x{}; x < 100; x++)
 		{
 			for (int y{}; y < 100; y++)
 			{
 				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
 				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-				Velt::Renderer::Renderer::DrawQuad(commandBuffer, transform);
+				Velt::Renderer::Renderer::DrawStaticModel(commandBuffer, m_Model, transform);
 			}
 		}
 	}
@@ -105,9 +107,7 @@ namespace Editor
 	{
 		VT_PROFILE_FUNCTION();
 		//VT_CORE_INFO("ExampleLayer::OnRender");
-
 		// ImGui::Begin("Hello from ExampleLayer");
-
 	}
 
 }

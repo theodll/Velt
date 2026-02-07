@@ -117,7 +117,6 @@ namespace Velt::Renderer {
 
 	void Renderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model, const glm::mat4& transform)
 	{
-		VT_PROFILE_FUNCTION();
 		s_RenderAPI->DrawStaticModel(renderCommandBuffer, model, transform);
 	}
 
