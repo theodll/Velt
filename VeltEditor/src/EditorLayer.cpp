@@ -26,18 +26,70 @@ namespace Editor
 			{ {-0.5f,  0.5f} }
 		};
 
+		std::vector<Velt::Renderer::Vertex> vertices{
+		
+			// left face (white)
+			{{-.5f, -.5f, -.5f}},
+			{{-.5f, .5f, .5f}},
+			{{-.5f, -.5f, .5f}},
+			{{-.5f, -.5f, -.5f}},
+			{{-.5f, .5f, -.5f}},
+			{{-.5f, .5f, .5f}},
+		
+			// right face (yellow)
+			{{.5f, -.5f, -.5f}},
+			{{.5f, .5f, .5f}},
+			{{.5f, -.5f, .5f}},
+			{{.5f, -.5f, -.5f}},
+			{{.5f, .5f, -.5f}},
+			{{.5f, .5f, .5f}},
+		
+			// top face (orange, remember y axis points down)
+			{{-.5f, -.5f, -.5f}},
+			{{.5f, -.5f, .5f}},
+			{{-.5f, -.5f, .5f}},
+			{{-.5f, -.5f, -.5f}},
+			{{.5f, -.5f, -.5f}},
+			{{.5f, -.5f, .5f}},
+		
+			// bottom face (red)
+			{{-.5f, .5f, -.5f}},
+			{{.5f, .5f, .5f}},
+			{{-.5f, .5f, .5f}},
+			{{-.5f, .5f, -.5f}},
+			{{.5f, .5f, -.5f}},
+			{{.5f, .5f, .5f}},
+		
+			// nose face (blue)
+			{{-.5f, -.5f, 0.5f}},
+			{{.5f, .5f, 0.5f}},
+			{{-.5f, .5f, 0.5f}},
+			{{-.5f, -.5f, 0.5f}},
+			{{.5f, -.5f, 0.5f}},
+			{{.5f, .5f, 0.5f}},
+		
+			// tail face (green)
+			{{-.5f, -.5f, -0.5f}},
+			{{.5f, .5f, -0.5f}},
+			{{-.5f, .5f, -0.5f}},
+			{{-.5f, -.5f, -0.5f}},
+			{{.5f, -.5f, -0.5f}},
+			{{.5f, .5f, -0.5f}},
+		
+		};
+
 		std::vector<Velt::Renderer::Vertex> quadVertices(quadVerticesData, quadVerticesData + 4);
 		std::vector<Velt::Renderer::Index> quadIndices = { 0, 1, 2, 2, 3, 0 };
 
 		Velt::Renderer::SubmeshCreateInfo smInfo{};
 
-		smInfo.Vertices = quadVertices;
+		smInfo.Vertices = vertices;
 		smInfo.Indices = quadIndices;
 
 		Velt::Renderer::ModelCreateInfo info{};
 		info.Parts = { smInfo };
 		
-		m_Model = Velt::Renderer::Model::Create(info);
+		m_Cube = Velt::Renderer::Model::Create(info);
 	}
 
 	void EditorLayer::OnUpdate(Velt::Timestep ts)
@@ -98,7 +150,7 @@ namespace Editor
 			{
 				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
 				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-				Velt::Renderer::Renderer::DrawStaticModel(commandBuffer, m_Model, transform);
+				Velt::Renderer::Renderer::DrawStaticModel(commandBuffer, m_Cube, transform);
 			}
 		}
 	}

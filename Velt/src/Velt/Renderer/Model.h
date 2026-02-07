@@ -1,5 +1,6 @@
 #pragma once
 #include "Mesh.h"
+#include "Tools.h"
 
 namespace Velt::Renderer
 {
@@ -30,5 +31,7 @@ namespace Velt::Renderer
 		const std::vector<Submesh>& GetSubmeshes() const { return m_Submeshes; }
 	private: 
 		std::vector<Submesh> m_Submeshes;
+
+		TransformComponent transform{};
 	};
 }
