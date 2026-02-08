@@ -19,13 +19,6 @@ namespace Editor
 		// Note [5.02.26, Theo] This will be substantially different because all these things we have to do 
 		// manually right now will be automatically done by a loader of models eg. glTF or obj.
 
-		Velt::Renderer::Vertex quadVerticesData[] = {
-			{ {-0.5f, -0.5f} },
-			{ { 0.5f, -0.5f} },
-			{ { 0.5f,  0.5f} },
-			{ {-0.5f,  0.5f} }
-		};
-
 		std::vector<Velt::Renderer::Vertex> vertices{
 		
 			// left face (white)
@@ -78,8 +71,15 @@ namespace Editor
 		
 		};
 
-		std::vector<Velt::Renderer::Vertex> quadVertices(quadVerticesData, quadVerticesData + 4);
-		std::vector<Velt::Renderer::Index> quadIndices = { 0, 1, 2, 2, 3, 0 };
+		std::vector<Velt::Renderer::Index> indices{
+			0,  1,  2,  3,  4,  5,
+			6,  7,  8,  9, 10, 11,
+			12, 13, 14, 15, 16, 17,
+			18, 19, 20, 21, 22, 23,
+			24, 25, 26, 27, 28, 29,
+			30, 31, 32, 33, 34, 35
+		};
+
 
 		Velt::Renderer::SubmeshCreateInfo smInfo{};
 

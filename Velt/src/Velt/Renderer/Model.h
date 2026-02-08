@@ -6,7 +6,7 @@ namespace Velt::Renderer
 {
 	struct Submesh
 	{
-		Ref<Mesh> Mesh; // <- braucht index und vertex daten (vector)
+		Ref<Mesh> Mesh;
 		u32 MatIndex;
 	};
 
@@ -28,10 +28,12 @@ namespace Velt::Renderer
 		static Ref<Model> Create(const ModelCreateInfo& info);
 
 		virtual ~Model() = default;
-		const std::vector<Submesh>& GetSubmeshes() const { return m_Submeshes; }
-	private: 
-		std::vector<Submesh> m_Submeshes;
 
-		TransformComponent transform{};
+		const TransformComponent& GetTransform() const {return m_Transform; }
+		const std::vector<Submesh>& GetSubmeshes() const { return m_Submeshes; }
+	private:
+		Model() {};
+		std::vector<Submesh> m_Submeshes;
+		TransformComponent m_Transform{};
 	};
 }

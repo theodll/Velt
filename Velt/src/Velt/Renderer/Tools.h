@@ -5,6 +5,8 @@
 
 namespace Velt::Renderer 
 {
+
+    // Todo [08.02.26, Theo]: Move this to some component / ecs implementation
     struct TransformComponent
     {
         glm::vec3 position;
