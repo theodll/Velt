@@ -7,7 +7,7 @@
 
 #include <vulkan/vulkan.h>
 
-namespace Velt::Renderer::RHI
+namespace Velt::RHI
 {
 	class VulkanUniformBuffer : public UniformBuffer
 	{

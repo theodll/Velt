@@ -9,7 +9,7 @@
 #include "SceneRenderer.h"
 
 
-namespace Velt::Renderer {
+namespace Velt {
 
 	Scope<RenderAPI> Renderer::s_RenderAPI = nullptr;
 	Scope<SceneRenderer> Renderer::s_SceneRenderer = nullptr;
@@ -115,9 +115,9 @@ namespace Velt::Renderer {
 		s_RenderAPI->DrawQuad(renderCommandBuffer, transform);
 	}
 
-	void Renderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model, const glm::mat4& transform)
+	void Renderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model)
 	{
-		s_RenderAPI->DrawStaticModel(renderCommandBuffer, model, transform);
+		s_RenderAPI->DrawStaticModel(renderCommandBuffer, model);
 	}
 
 	void Renderer::RequestShutdown()

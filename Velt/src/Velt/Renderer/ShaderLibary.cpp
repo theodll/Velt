@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "Renderer/Shader.h"
 
-namespace Velt::Renderer 
+namespace Velt 
 {
 	class ShaderLibary 
 	{

@@ -21,8 +21,9 @@ namespace Editor {
 		glm::vec3 m_CameraPos{};
 		float m_CameraRot{};
 
-		Velt::Ref<Velt::Renderer::Model> m_Cube;
-
+		Velt::Ref<Velt::Model> m_Cube;
+		int index{};
+		float x{}, y{}, z{};
 		glm::vec3 m_SquarePos{};
 	};
 }

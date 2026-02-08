@@ -4,7 +4,7 @@
 #include "Velt/Renderer/Renderer.h"
 #include "vtpch.h"
 /*
-namespace Velt::Renderer {
+namespace Velt {
 
     Ref<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec) 
     {

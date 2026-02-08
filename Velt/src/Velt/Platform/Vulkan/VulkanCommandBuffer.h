@@ -5,7 +5,7 @@
 #include "vulkan/vulkan.h"
 
 
-namespace Velt::Renderer::RHI {
+namespace Velt::RHI {
 
 	class VulkanCommandBuffer : public RenderCommandBuffer
 	{

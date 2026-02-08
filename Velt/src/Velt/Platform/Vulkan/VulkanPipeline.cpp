@@ -4,7 +4,7 @@
 #include "VulkanContext.h"
 #include "Core/Application.h"
 
-namespace Velt::Renderer::RHI {
+namespace Velt::RHI {
 
 	VulkanPipeline::~VulkanPipeline()
 	{

@@ -5,7 +5,7 @@
 
 #include "RenderAPI.h"
 
-namespace Velt::Renderer
+namespace Velt
 {
 
 	std::unique_ptr<Context> Context::Create()

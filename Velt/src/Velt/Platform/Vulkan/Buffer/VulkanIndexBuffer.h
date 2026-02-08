@@ -3,7 +3,7 @@
 #include "Renderer/IndexBuffer.h"
 #include <vulkan/vulkan.h>
 
-namespace Velt::Renderer::RHI
+namespace Velt::RHI
 {
 	class VulkanIndexBuffer : public IndexBuffer
 	{

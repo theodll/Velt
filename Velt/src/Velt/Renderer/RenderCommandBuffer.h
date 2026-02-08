@@ -3,7 +3,7 @@
 #include "Velt/Core/Core.h"
 #include "Pipeline.h"
 
-namespace Velt::Renderer {
+namespace Velt {
 
 	class RenderCommandBuffer
 	{

@@ -30,10 +30,10 @@ namespace Velt::Windows
 		void CreateSwapchain() override;
 
 
-		Renderer::RHI::VulkanSwapchain& GetSwapchain() override;
+		RHI::VulkanSwapchain& GetSwapchain() override;
 	private:
 		SDL_Window* m_Window = nullptr;
-		std::unique_ptr<Renderer::RHI::VulkanSwapchain> m_Swapchain;
+		std::unique_ptr<RHI::VulkanSwapchain> m_Swapchain;
 
 		virtual void Init();
 		virtual void Shutdown();

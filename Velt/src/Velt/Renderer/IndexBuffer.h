@@ -1,7 +1,7 @@
 #pragma once
 #include "Velt/Core/Core.h"
 
-namespace Velt::Renderer
+namespace Velt
 {
     typedef u32 Index;
 

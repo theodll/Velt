@@ -2,7 +2,7 @@
 #include "Velt/Core/Core.h"
 
 /*
-namespace Velt::Renderer {
+namespace Velt {
 
 struct FramebufferSpecification 
 {

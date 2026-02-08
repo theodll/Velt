@@ -3,7 +3,7 @@
 #include "../VulkanContext.h"
 #include "Core/Log.h"
 
-namespace Velt::Renderer::RHI
+namespace Velt::RHI
 {
 	VulkanVertexBuffer::VulkanVertexBuffer(void* data, u64 size, u64 offset, bool autoupload)
 		: m_UploadSize(size), m_Size(size)

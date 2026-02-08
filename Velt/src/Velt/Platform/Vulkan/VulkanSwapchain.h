@@ -6,7 +6,7 @@
 #include "Velt/Renderer/Framebuffer.h"
 #include <SDL3/SDL.h>
 
-namespace Velt::Renderer::RHI {
+namespace Velt::RHI {
 
     struct SwapchainExtent
     {

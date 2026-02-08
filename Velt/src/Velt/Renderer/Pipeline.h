@@ -4,7 +4,7 @@
 #include "Buffer.h"
 #include "UniformBuffer.h"
 
-namespace Velt::Renderer
+namespace Velt
 {
 	struct PipelineSpecification
 	{

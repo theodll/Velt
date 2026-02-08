@@ -7,7 +7,7 @@
 #include <vector>
 #include <vulkan/vulkan.h>
 
-namespace Velt::Renderer::Vulkan {
+namespace Velt::Vulkan {
 
 enum class FramebufferTextureFormat {
   None = 0,

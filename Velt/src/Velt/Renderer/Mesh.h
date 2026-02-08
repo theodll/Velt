@@ -2,7 +2,7 @@
 #include "IndexBuffer.h"
 #include "VertexBuffer.h"
 
-namespace Velt::Renderer
+namespace Velt
 {
 	// Note [2.02.26, Theo]: Currently every mesh is static (because there straight up is no skeletal
 	// mesh/animation system) and I could not bother less to rename this to StaticMesh. 

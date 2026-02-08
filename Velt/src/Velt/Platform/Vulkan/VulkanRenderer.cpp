@@ -7,7 +7,7 @@
 #include "Core/Application.h"
 #include "Velt/Renderer/Model.h"
 
-namespace Velt::Renderer::RHI
+namespace Velt::RHI
 {
 	struct RenderData
 	{
@@ -24,10 +24,10 @@ namespace Velt::Renderer::RHI
 		s_RenderData = CreateScope<RenderData>();
 
 		Vertex quadVerticesData[] = {
-			{ {-0.5f, -0.5f} },
-			{ { 0.5f, -0.5f} },
-			{ { 0.5f,  0.5f} },
-			{ {-0.5f,  0.5f} }
+			{ {-0.5f, -0.5f, 0.5f} },
+			{ { 0.5f, -0.5f, 0.5f} },
+			{ { 0.5f,  0.5f, 0.5f} },
+			{ {-0.5f,  0.5f, 0.5f} }
 		};
 
 		std::vector<Vertex> quadVertices(quadVerticesData, quadVerticesData + 4);
@@ -264,13 +264,14 @@ namespace Velt::Renderer::RHI
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 	}
 
-	void VulkanRenderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model, const glm::mat4& transform)
+	void VulkanRenderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model)
 	{
 		auto pp = SceneRenderer::GetPipeline(); 
 		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
 
 		VkCommandBuffer commandBuffer = renderCommandBuffer;
 
+		auto transform = model->GetTransform().mat4();
 		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
 
 		auto& submeshes = model->GetSubmeshes();

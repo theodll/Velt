@@ -5,7 +5,7 @@
 #include "Velt/Renderer/Renderer.h"
 #include "RenderAPI.h"
 
-namespace Velt::Renderer
+namespace Velt
 {
 
 	std::shared_ptr<UniformBuffer> UniformBuffer::Create(u64 size, u64 offset)

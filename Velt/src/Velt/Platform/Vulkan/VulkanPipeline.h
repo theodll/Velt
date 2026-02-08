@@ -2,7 +2,7 @@
 #include "vtpch.h"
 #include "Velt/Renderer/Pipeline.h"
 
-namespace Velt::Renderer::RHI 
+namespace Velt::RHI 
 {
 
 		class VELT_API VulkanDevice;

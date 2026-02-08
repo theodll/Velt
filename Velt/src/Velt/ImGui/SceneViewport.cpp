@@ -6,7 +6,7 @@
 
 namespace Velt {
 
-	SceneViewport::SceneViewport() : m_Width(0), m_Height(0), m_Device(Renderer::RHI::VulkanContext::GetDevice())
+	SceneViewport::SceneViewport() : m_Width(0), m_Height(0), m_Device(RHI::VulkanContext::GetDevice())
 	{
 
 	}
@@ -102,7 +102,7 @@ namespace Velt {
 		}
 
 		// Transition image to SHADER_READ_ONLY_OPTIMAL for the first time
-		auto& resourceUploader = Renderer::RHI::VulkanContext::GetResourceUploader();
+		auto& resourceUploader = RHI::VulkanContext::GetResourceUploader();
 		resourceUploader.Begin();
 
 		VkImageMemoryBarrier barrier{};
