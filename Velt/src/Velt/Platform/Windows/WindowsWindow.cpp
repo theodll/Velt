@@ -132,7 +132,7 @@ namespace Velt::Windows
 
 		switch (Renderer::Renderer::GetAPI())
 		{
-		case Renderer::RenderAPI::API::Vulkan:
+		case RenderAPI::API::Vulkan:
 			if (!SDL_Vulkan_CreateSurface(static_cast<SDL_Window*>(Application::Get().GetWindow().GetNativeHandle()), instance, nullptr, surface))
 			{
 				VT_CORE_ERROR("Failed to create window surface: {}", SDL_GetError());
@@ -143,9 +143,9 @@ namespace Velt::Windows
  
 	void WindowsWindow::CreateSwapchain() 
 	{
-		m_Swapchain = std::make_unique<Renderer::RHI::VulkanSwapchain>();
+		m_Swapchain = std::make_unique<RHI::VulkanSwapchain>();
 
-		Renderer::RHI::SwapchainCreateInfo createInfo{};
+		RHI::SwapchainCreateInfo createInfo{};
 
 		createInfo.Height = m_Data.Height;
 		createInfo.Width = m_Data.Width;
@@ -156,7 +156,7 @@ namespace Velt::Windows
 	}
 
 
-	Renderer::RHI::VulkanSwapchain& WindowsWindow::GetSwapchain()
+	RHI::VulkanSwapchain& WindowsWindow::GetSwapchain()
 	{
 		return *m_Swapchain;
 	}

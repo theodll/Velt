@@ -9,10 +9,7 @@
 
 namespace Velt
 {	
-	namespace RenderAPI {
-		class Renderer;
-	}
-		
+
 	class VELT_API Application
 	{
 		public:
@@ -45,7 +42,7 @@ namespace Velt
 	private:
 		// Window Things
 		static Application* s_Instance;
-		std::unique_ptr<Renderer::RHI::VulkanContext> m_Context;
+		std::unique_ptr<RHI::VulkanContext> m_Context;
 		std::unique_ptr<Window> m_Window;
 		
 		// Layers

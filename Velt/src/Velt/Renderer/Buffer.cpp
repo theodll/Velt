@@ -1,6 +1,6 @@
 #include "Buffer.h"
 
-namespace Velt::Renderer 
+namespace Velt 
 {
 	void BufferLayout::CalculateOffsetAndStride()
 	{

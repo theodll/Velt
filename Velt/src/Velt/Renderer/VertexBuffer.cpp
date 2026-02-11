@@ -5,7 +5,7 @@
 #include "Velt/Renderer/Renderer.h"
 #include "RenderAPI.h"
 
-namespace Velt::Renderer
+namespace Velt
 {
     
 	std::shared_ptr<VertexBuffer> VertexBuffer::Create(void* vertexData, u64 vertexCount, u64 vertexStride, bool autoupload)

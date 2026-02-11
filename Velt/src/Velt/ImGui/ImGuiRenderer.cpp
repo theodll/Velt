@@ -18,7 +18,7 @@ namespace Velt {
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Init ImGUI Renderer");
 
-		auto&& device = Renderer::RHI::VulkanContext::GetDevice();
+		auto&& device = RHI::VulkanContext::GetDevice();
 		auto&& window = Application::Get().GetWindow();
 
 		// Initialize ImGui SDL3 backend first
@@ -64,7 +64,7 @@ namespace Velt {
 
 		// Initialize ImGui for Vulkan
 		ImGui_ImplVulkan_InitInfo init_info = {};
-		init_info.Instance = Renderer::RHI::VulkanContext::GetInstance();
+		init_info.Instance = RHI::VulkanContext::GetInstance();
 		init_info.PhysicalDevice = device.GetPhysicalDevice();
 		init_info.Device = device.device();
 		init_info.QueueFamily = device.GetQueueFamilyIndex();

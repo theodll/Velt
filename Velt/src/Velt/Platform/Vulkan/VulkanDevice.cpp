@@ -5,7 +5,7 @@
 #include "Core/Application.h"
 #include "VulkanContext.h"
 
-namespace Velt::Renderer::RHI
+namespace Velt::RHI
 {
 
     class Application;

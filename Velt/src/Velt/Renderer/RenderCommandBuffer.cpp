@@ -2,7 +2,7 @@
 #include "Renderer.h"
 #include "Platform/Vulkan/VulkanCommandBuffer.h"
 
-namespace Velt::Renderer 
+namespace Velt 
 {
 	Ref<RenderCommandBuffer> RenderCommandBuffer::Create()
 	{

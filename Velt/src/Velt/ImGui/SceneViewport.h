@@ -39,7 +39,7 @@ namespace Velt
 		VkSampler m_Sampler = VK_NULL_HANDLE;
 		VkDescriptorSet m_DescriptorSet = VK_NULL_HANDLE;
 
-		Renderer::RHI::VulkanDevice& m_Device;
+		RHI::VulkanDevice& m_Device;
 	};
 
 }

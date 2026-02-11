@@ -1,6 +1,6 @@
 #include "Mesh.h"
 
-namespace Velt::Renderer
+namespace Velt
 {
 	Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices) : m_Vertices(vertices), m_Indices(indices)
 	{

@@ -6,7 +6,6 @@
 
 // libs
 #include <vulkan/vulkan.h>
-#include <glm/glm.hpp>
 
 // std
 #include <string>
@@ -28,6 +27,10 @@
 #include <thread>
 #include <chrono>
 #include <algorithm>
+
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 // self
 #include "Velt/Core/Log.h"

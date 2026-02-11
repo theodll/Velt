@@ -5,7 +5,7 @@
 #include "Renderer/UniformBuffer.h"
 #include "Renderer/OrthographicCamera.h"
 
-namespace Velt::Renderer {
+namespace Velt {
 
 
 	class VELT_API SceneRenderer

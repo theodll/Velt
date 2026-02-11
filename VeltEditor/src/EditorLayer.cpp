@@ -1,5 +1,6 @@
 #include "EditorLayer.h"
 #include "Velt/Core/Input.h"
+#include <imgui.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Editor
@@ -19,25 +20,80 @@ namespace Editor
 		// Note [5.02.26, Theo] This will be substantially different because all these things we have to do 
 		// manually right now will be automatically done by a loader of models eg. glTF or obj.
 
-		Velt::Renderer::Vertex quadVerticesData[] = {
-			{ {-0.5f, -0.5f} },
-			{ { 0.5f, -0.5f} },
-			{ { 0.5f,  0.5f} },
-			{ {-0.5f,  0.5f} }
+		std::vector<Velt::Vertex> vertices{
+		
+			// left face (white)
+			{{-.5f, -.5f, -.5f}},
+			{{-.5f, .5f, .5f}},
+			{{-.5f, -.5f, .5f}},
+			{{-.5f, -.5f, -.5f}},
+			{{-.5f, .5f, -.5f}},
+			{{-.5f, .5f, .5f}},
+		
+			// right face (yellow)
+			{{.5f, -.5f, -.5f}},
+			{{.5f, .5f, .5f}},
+			{{.5f, -.5f, .5f}},
+			{{.5f, -.5f, -.5f}},
+			{{.5f, .5f, -.5f}},
+			{{.5f, .5f, .5f}},
+		
+			// top face (orange, remember y axis points down)
+			{{-.5f, -.5f, -.5f}},
+			{{.5f, -.5f, .5f}},
+			{{-.5f, -.5f, .5f}},
+			{{-.5f, -.5f, -.5f}},
+			{{.5f, -.5f, -.5f}},
+			{{.5f, -.5f, .5f}},
+		
+			// bottom face (red)
+			{{-.5f, .5f, -.5f}},
+			{{.5f, .5f, .5f}},
+			{{-.5f, .5f, .5f}},
+			{{-.5f, .5f, -.5f}},
+			{{.5f, .5f, -.5f}},
+			{{.5f, .5f, .5f}},
+		
+			// nose face (blue)
+			{{-.5f, -.5f, 0.5f}},
+			{{.5f, .5f, 0.5f}},
+			{{-.5f, .5f, 0.5f}},
+			{{-.5f, -.5f, 0.5f}},
+			{{.5f, -.5f, 0.5f}},
+			{{.5f, .5f, 0.5f}},
+		
+			// tail face (green)
+			{{-.5f, -.5f, -0.5f}},
+			{{.5f, .5f, -0.5f}},
+			{{-.5f, .5f, -0.5f}},
+			{{-.5f, -.5f, -0.5f}},
+			{{.5f, -.5f, -0.5f}},
+			{{.5f, .5f, -0.5f}},
+		
 		};
 
-		std::vector<Velt::Renderer::Vertex> quadVertices(quadVerticesData, quadVerticesData + 4);
-		std::vector<Velt::Renderer::Index> quadIndices = { 0, 1, 2, 2, 3, 0 };
+		std::vector<Velt::Index> indices{
+			0,  1,  2,  3,  4,  5,
+			6,  7,  8,  9, 10, 11,
+			12, 13, 14, 15, 16, 17,
+			18, 19, 20, 21, 22, 23,
+			24, 25, 26, 27, 28, 29,
+			30, 31, 32, 33, 34, 35
+		};
 
-		Velt::Renderer::SubmeshCreateInfo smInfo{};
 
-		smInfo.Vertices = quadVertices;
-		smInfo.Indices = quadIndices;
+		Velt::SubmeshCreateInfo smInfo{};
 
-		Velt::Renderer::ModelCreateInfo info{};
+		smInfo.Vertices = vertices;
+		smInfo.Indices = indices;
+
+		Velt::ModelCreateInfo info{};
 		info.Parts = { smInfo };
 		
-		m_Model = Velt::Renderer::Model::Create(info);
+		m_Cube = Velt::Model::Create(info);
+
+		m_Cube->GetTransform().translation = { 0.0f, 0.0f, .5f }; 
+		m_Cube->GetTransform().scale = { .5f, .5f, .5f };
 	}
 
 	void EditorLayer::OnUpdate(Velt::Timestep ts)
@@ -75,9 +131,10 @@ namespace Editor
 		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_K))
 			m_SquarePos.y += 1.f * ts;
 
-		auto&& camera = Velt::Renderer::SceneRenderer::GetCamera();
+		auto&& camera = Velt::SceneRenderer::GetCamera();
 		camera->SetPosition(m_CameraPos);
 		camera->SetRotation(m_CameraRot);
+
 	}
 
 	void EditorLayer::OnEvent(Velt::Event& event)
@@ -92,22 +149,33 @@ namespace Editor
 		// It causes immense performance loss
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
-		for (int x{}; x < 100; x++)
-		{
-			for (int y{}; y < 100; y++)
-			{
-				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
-				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-				Velt::Renderer::Renderer::DrawStaticModel(commandBuffer, m_Model, transform);
-			}
-		}
+
+		for (int i{}; i < index; i++)
+			Velt::Renderer::DrawStaticModel(commandBuffer, m_Cube);
 	}
 
-	void EditorLayer::OnImGuiRender()
+	void EditorLayer::OnImGuiRender2()
 	{
-		VT_PROFILE_FUNCTION();
-		//VT_CORE_INFO("ExampleLayer::OnRender");
-		// ImGui::Begin("Hello from ExampleLayer");
+		
+		ImGui::Begin("Transform", nullptr, 0);
+
+		if (ImGui::Button("Add one Cube"))
+			index++;
+
+		ImGui::Text("Rotation");
+		ImGui::DragInt("Rotation X", &x);
+		ImGui::DragInt("Rotation Y", &y);
+		ImGui::DragInt("Rotation Z", &z);
+
+		ImGui::Text("Scale");
+		ImGui::DragFloat("Scale X", &sx, 0.1f);
+		ImGui::DragFloat("Scale Y", &sy, 0.1f);
+		ImGui::DragFloat("Scale Z", &sz, 0.1f);
+
+		ImGui::End(); 
+
+		m_Cube->GetTransform().SetEulerDegrees({ x, y, z });
+		m_Cube->GetTransform().scale = { sx, sy, sz };
 	}
 
 }

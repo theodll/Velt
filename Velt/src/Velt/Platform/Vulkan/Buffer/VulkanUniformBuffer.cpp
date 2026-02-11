@@ -5,7 +5,7 @@
 
 #include <cstring>
 
-namespace Velt::Renderer::RHI
+namespace Velt::RHI
 {
 	VulkanUniformBuffer::VulkanUniformBuffer(u64 size, bool useStaging, u64 offset)
 		: m_UseStaging(useStaging), m_Size(size), m_Offset(offset)

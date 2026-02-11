@@ -4,7 +4,7 @@
 #include "Core/Application.h"
 #include "Core/Input.h"
 
-namespace Velt::Renderer {
+namespace Velt {
 	
 	Ref<Pipeline> SceneRenderer::s_Pipeline = nullptr;
 	Ref<OrthographicCamera> SceneRenderer::m_Camera = nullptr;
@@ -16,7 +16,7 @@ namespace Velt::Renderer {
 
 		BufferLayout layout{
 
-				{ ShaderDataType::Float2, "a_Position" }
+				{ ShaderDataType::Float3, "a_Position" }
 		};
 		
 

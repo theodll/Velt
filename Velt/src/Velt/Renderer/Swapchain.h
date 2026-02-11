@@ -1,7 +1,7 @@
 #pragma once
 #include "Velt/Core/Core.h"
 
-namespace Velt::Renderer
+namespace Velt
 {
 	class VELT_API Swapchain
 	{

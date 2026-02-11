@@ -2,7 +2,7 @@
 #include "Core/Assert.h"
 #include "Core/Core.h"
 
-namespace Velt::Renderer
+namespace Velt
 {
 
 	enum class ShaderDataType : uint8_t

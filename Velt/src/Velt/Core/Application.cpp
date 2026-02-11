@@ -20,19 +20,19 @@ namespace Velt {
 
 
 
-	VkFormat ShaderDataTypeToVulkanBaseType(Renderer::ShaderDataType type) {
+	VkFormat ShaderDataTypeToVulkanBaseType(ShaderDataType type) {
 		switch(type) {
-			case Renderer::ShaderDataType::Float:   return VK_FORMAT_R32_SFLOAT;
-			case Renderer::ShaderDataType::Float2:  return VK_FORMAT_R32G32_SFLOAT;
-			case Renderer::ShaderDataType::Float3:  return VK_FORMAT_R32G32B32_SFLOAT;
-			case Renderer::ShaderDataType::Float4:  return VK_FORMAT_R32G32B32A32_SFLOAT;
-			case Renderer::ShaderDataType::Mat3:    return VK_FORMAT_R32G32B32_SFLOAT; 
-			case Renderer::ShaderDataType::Mat4:    return VK_FORMAT_R32G32B32A32_SFLOAT;
-			case Renderer::ShaderDataType::Int:     return VK_FORMAT_R32_SINT;
-			case Renderer::ShaderDataType::Int2:    return VK_FORMAT_R32G32_SINT;
-			case Renderer::ShaderDataType::Int3:    return VK_FORMAT_R32G32B32_SINT;
-			case Renderer::ShaderDataType::Int4:    return VK_FORMAT_R32G32B32A32_SINT;
-			case Renderer::ShaderDataType::Bool:    return VK_FORMAT_R8_UINT;
+			case ShaderDataType::Float:   return VK_FORMAT_R32_SFLOAT;
+			case ShaderDataType::Float2:  return VK_FORMAT_R32G32_SFLOAT;
+			case ShaderDataType::Float3:  return VK_FORMAT_R32G32B32_SFLOAT;
+			case ShaderDataType::Float4:  return VK_FORMAT_R32G32B32A32_SFLOAT;
+			case ShaderDataType::Mat3:    return VK_FORMAT_R32G32B32_SFLOAT; 
+			case ShaderDataType::Mat4:    return VK_FORMAT_R32G32B32A32_SFLOAT;
+			case ShaderDataType::Int:     return VK_FORMAT_R32_SINT;
+			case ShaderDataType::Int2:    return VK_FORMAT_R32G32_SINT;
+			case ShaderDataType::Int3:    return VK_FORMAT_R32G32B32_SINT;
+			case ShaderDataType::Int4:    return VK_FORMAT_R32G32B32A32_SINT;
+			case ShaderDataType::Bool:    return VK_FORMAT_R8_UINT;
 		}
 		VT_CORE_ASSERT(false, "Unknown Shader Data Type");
 
@@ -48,7 +48,7 @@ namespace Velt {
 		m_WindowProps.m_Height = HEIGHT;
 		m_WindowProps.m_Title = TITLE;
 
-		m_Context = std::make_unique<Renderer::RHI::VulkanContext>();
+		m_Context = std::make_unique<RHI::VulkanContext>();
 		m_Window = std::unique_ptr<Window>(Window::Create(m_WindowProps));
 	}
 
@@ -98,7 +98,7 @@ namespace Velt {
 
 		m_Context->Init(); 
 		m_Window->CreateSwapchain(); 
-		Renderer::Renderer::Init();
+		Renderer::Init();
 
 		PushOverlay(new Velt::ImGuiLayer);
 
@@ -108,7 +108,7 @@ namespace Velt {
 	void Application::Run()
 	{
 		VT_PROFILE_FUNCTION();
-
+		
 		bool running = true;
 		for (Layer* layer : m_LayerStack)
 						layer->Init();
@@ -140,28 +140,31 @@ namespace Velt {
 			}
 
 			VT_PROFILE_SCOPE("Render Loop");
-			Renderer::Renderer::BeginFrame();
+			Renderer::BeginFrame();
 			// Frame 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate(ts);
 
-			Renderer::Renderer::BeginScenePass();
+			Renderer::BeginScenePass();
 			// Scene Pass
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnRender(m_Window->GetSwapchain().GetCurrentDrawCommandBuffer());
 			
-			Renderer::Renderer::EndScenePass();
-			Renderer::Renderer::BeginGuiPass();
+			Renderer::EndScenePass();
+			Renderer::BeginGuiPass();
 			// Gui Pass
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
 
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender2();
+
 			RenderStatisticsWidget(ts);
 
-			Renderer::Renderer::EndGuiPass();
-			Renderer::Renderer::EndFrame();
+			Renderer::EndGuiPass();
+			Renderer::EndFrame();
 			
 
 			if (s_ShutdownRequested)
@@ -185,7 +188,7 @@ namespace Velt {
 		ImGui::Text("Deltatime (s): %fs", ts.GetSeconds());
 		ImGui::Text("Deltatime (ms): %.4gms", ts.GetMilliseconds());
 		ImGui::Dummy({ 500, 3 });
-		ImGui::Text("Camera Position: X: %.2f Y: %.2f Z: %.2f", Renderer::SceneRenderer::GetCamera()->GetPosition().x, Renderer::SceneRenderer::GetCamera()->GetPosition().y, Renderer::SceneRenderer::GetCamera()->GetPosition().z);
+		ImGui::Text("Camera Position: X: %.2f Y: %.2f Z: %.2f", SceneRenderer::GetCamera()->GetPosition().x, SceneRenderer::GetCamera()->GetPosition().y, SceneRenderer::GetCamera()->GetPosition().z);
 		ImGui::End();
 	}
 

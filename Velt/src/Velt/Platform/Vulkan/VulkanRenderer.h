@@ -3,7 +3,7 @@
 #include "Platform/Vulkan/VulkanPipeline.h"
 #include "Velt/Renderer/Renderer.h"
 
-namespace Velt::Renderer::RHI
+namespace Velt::RHI
 {
 	class VELT_API VulkanRenderer : public RenderAPI
 	{
@@ -12,7 +12,7 @@ namespace Velt::Renderer::RHI
 		virtual void Shutdown() override;
 
 		virtual void DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform) override;
-		virtual void DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model, const glm::mat4& transform) override;
+		virtual void DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model) override;
 		
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;

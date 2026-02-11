@@ -3,9 +3,9 @@
 #include "Renderer.h"
 #include "RenderAPI.h"
 
-namespace Velt::Renderer
+namespace Velt
 {
-	Ref<Pipeline> Velt::Renderer::Pipeline::Create(const PipelineSpecification& spec)
+	Ref<Pipeline> Velt::Pipeline::Create(const PipelineSpecification& spec)
 	{
 		VT_PROFILE_FUNCTION();
 		switch (Renderer::GetAPI())

@@ -1,11 +1,12 @@
 #pragma once
 #include "Mesh.h"
+#include "Tools.h"
 
-namespace Velt::Renderer
+namespace Velt
 {
 	struct Submesh
 	{
-		Ref<Mesh> Mesh; // <- braucht index und vertex daten (vector)
+		Ref<Mesh> Mesh;
 		u32 MatIndex;
 	};
 
@@ -26,9 +27,13 @@ namespace Velt::Renderer
 	public:
 		static Ref<Model> Create(const ModelCreateInfo& info);
 
+		Model() {};
 		virtual ~Model() = default;
+
+		TransformComponent& GetTransform() { return m_Transform; }
 		const std::vector<Submesh>& GetSubmeshes() const { return m_Submeshes; }
-	private: 
+	private:
 		std::vector<Submesh> m_Submeshes;
+		TransformComponent m_Transform{};
 	};
 }

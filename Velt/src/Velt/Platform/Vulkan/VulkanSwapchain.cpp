@@ -5,7 +5,7 @@
 #include <SDL3/SDL.h>
 #include "Core/Application.h"
 
-namespace Velt::Renderer::RHI
+namespace Velt::RHI
 {
 
     void VulkanSwapchain::Init(SwapchainCreateInfo& createInfo)

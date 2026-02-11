@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace Velt::Renderer 
+namespace Velt 
 {
 	class Shader 
 	{

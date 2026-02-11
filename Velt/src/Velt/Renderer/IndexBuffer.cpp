@@ -5,7 +5,7 @@
 #include "RenderAPI.h"									 
 #include <memory>										 
 														 
-namespace Velt::Renderer								 
+namespace Velt								 
 {														 
 														 
 														 

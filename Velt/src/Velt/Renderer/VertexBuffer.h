@@ -2,7 +2,7 @@
 #include "Velt/Core/Core.h"
 #include "Buffer.h"
 
-namespace Velt::Renderer
+namespace Velt
 {
 
     struct VertexBufferElement
@@ -13,7 +13,7 @@ namespace Velt::Renderer
 
     struct Vertex
     {
-        glm::vec2 position;
+        glm::vec3 position;
     };
 
 

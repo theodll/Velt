@@ -4,7 +4,7 @@
 #include "Velt/Core/Core.h"
 #include "Buffer.h"
 
-namespace Velt::Renderer
+namespace Velt
 {
 
     class UniformBuffer

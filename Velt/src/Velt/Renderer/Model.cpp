@@ -1,7 +1,7 @@
 #include "Core/Core.h"
 #include "Model.h"
 
-namespace Velt::Renderer {
+namespace Velt {
 	
 	
 	Ref<Model> Model::Create(const ModelCreateInfo& info)
