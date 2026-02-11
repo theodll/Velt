@@ -108,7 +108,7 @@ namespace Velt {
 	void Application::Run()
 	{
 		VT_PROFILE_FUNCTION();
-
+		
 		bool running = true;
 		for (Layer* layer : m_LayerStack)
 						layer->Init();
@@ -157,6 +157,9 @@ namespace Velt {
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
+
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender2();
 
 			RenderStatisticsWidget(ts);
 

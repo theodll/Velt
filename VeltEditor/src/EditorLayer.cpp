@@ -154,19 +154,28 @@ namespace Editor
 			Velt::Renderer::DrawStaticModel(commandBuffer, m_Cube);
 	}
 
-	void EditorLayer::OnImGuiRender()
+	void EditorLayer::OnImGuiRender2()
 	{
+		
+		ImGui::Begin("Transform", nullptr, 0);
 
-		ImGui::Begin("Hello from ExampleLayer");
-		if (ImGui::Button("One more cube"))
+		if (ImGui::Button("Add one Cube"))
 			index++;
 
-		ImGui::SliderFloat("x", &x, 0.0f, 1.0f);
-		ImGui::SliderFloat("y", &y, 0.0f, 1.0f);
-		ImGui::SliderFloat("z", &z, 0.0f, 1.0f);
-		ImGui::End();
+		ImGui::Text("Rotation");
+		ImGui::DragInt("Rotation X", &x);
+		ImGui::DragInt("Rotation Y", &y);
+		ImGui::DragInt("Rotation Z", &z);
 
-		m_Cube->GetTransform().translation = { x, y, z };
+		ImGui::Text("Scale");
+		ImGui::DragFloat("Scale X", &sx, 0.1f);
+		ImGui::DragFloat("Scale Y", &sy, 0.1f);
+		ImGui::DragFloat("Scale Z", &sz, 0.1f);
+
+		ImGui::End(); 
+
+		m_Cube->GetTransform().SetEulerDegrees({ x, y, z });
+		m_Cube->GetTransform().scale = { sx, sy, sz };
 	}
 
 }

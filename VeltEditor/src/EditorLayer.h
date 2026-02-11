@@ -16,14 +16,15 @@ namespace Editor {
 		void OnEvent(Velt::Event& event) override;
 		void OnRender(VkCommandBuffer commandBuffer) override;
 
-		void OnImGuiRender() override;
+		void OnImGuiRender2() override;
 	private: 
 		glm::vec3 m_CameraPos{};
 		float m_CameraRot{};
 
 		Velt::Ref<Velt::Model> m_Cube;
 		int index{};
-		float x{}, y{}, z{};
+		int x{}, y{}, z{};
+		float sx{ 1 }, sy{1}, sz{1};
 		glm::vec3 m_SquarePos{};
 	};
 }
