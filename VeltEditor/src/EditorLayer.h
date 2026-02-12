@@ -22,9 +22,12 @@ namespace Editor {
 		float m_CameraRot{};
 
 		Velt::Ref<Velt::Model> m_Cube;
-		int index{};
-		int x{}, y{}, z{};
-		float sx{ 1 }, sy{1}, sz{1};
+		int index{1};
+
+		glm::vec3 m_Rotation{};
+		glm::vec3 m_Scale{};
+		glm::vec3 m_Translation{};
+
 		glm::vec3 m_SquarePos{};
 	};
 }
