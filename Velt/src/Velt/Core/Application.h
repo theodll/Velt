@@ -35,8 +35,8 @@ namespace Velt
 		
 			// VARS
 			static bool s_ShutdownRequested;
-			static constexpr int WIDTH {1280};
-			static constexpr int HEIGHT { 720 };
+			static constexpr int WIDTH{ 1920  };
+			static constexpr int HEIGHT { 1080 };
 			std::string TITLE { "Velt Engine" };
 
 	private:

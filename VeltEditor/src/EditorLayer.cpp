@@ -16,6 +16,7 @@ namespace Editor
 		VT_CORE_TRACE("goon");
 
 		VT_PROFILE_FUNCTION();
+        index++;
 
 		// Note [5.02.26, Theo] This will be substantially different because all these things we have to do 
 		// manually right now will be automatically done by a loader of models eg. glTF or obj.
@@ -154,28 +155,193 @@ namespace Editor
 			Velt::Renderer::DrawStaticModel(commandBuffer, m_Cube);
 	}
 
-	void EditorLayer::OnImGuiRender2()
-	{
-		
-		ImGui::Begin("Transform", nullptr, 0);
+    void EditorLayer::OnImGuiRender2()
+    {
+        ImGui::Begin("Transform");
 
-		if (ImGui::Button("Add one Cube"))
-			index++;
+        if (ImGui::Button("Cube"))
+            index++;
 
-		ImGui::Text("Rotation");
-		ImGui::DragInt("Rotation X", &x);
-		ImGui::DragInt("Rotation Y", &y);
-		ImGui::DragInt("Rotation Z", &z);
+        {
+            auto& tr = m_Cube->GetTransform();
+            m_Translation = tr.translation;
+            m_Scale = tr.scale;
+        }
 
-		ImGui::Text("Scale");
-		ImGui::DragFloat("Scale X", &sx, 0.1f);
-		ImGui::DragFloat("Scale Y", &sy, 0.1f);
-		ImGui::DragFloat("Scale Z", &sz, 0.1f);
+        {
+            ImGui::PushID("Translation");
 
-		ImGui::End(); 
+            ImGui::Columns(2);
+            ImGui::SetColumnWidth(0, 95.0f);
+            ImGui::TextUnformatted("Translation");
+            ImGui::NextColumn();
 
-		m_Cube->GetTransform().SetEulerDegrees({ x, y, z });
-		m_Cube->GetTransform().scale = { sx, sy, sz };
-	}
+            float fullWidth = ImGui::CalcItemWidth();
+            float spacing = ImGui::GetStyle().ItemSpacing.x;
+            float itemWidth = (fullWidth - 2.0f * spacing) / 3.0f;
+
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 4,4 });
+
+            float lineHeight = ImGui::GetFontSize() + ImGui::GetStyle().FramePadding.y * 2.0f;
+            ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+            ImGui::PushStyleColor(ImGuiCol_Button, { 0.80f,0.10f,0.15f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.90f,0.20f,0.25f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 1.00f,0.30f,0.35f,1 });
+            if (ImGui::Button("X", buttonSize)) m_Translation.x = 0.0f;
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine();
+            ImGui::PushItemWidth(itemWidth);
+            ImGui::DragFloat("##TX", &m_Translation.x, 0.05f);
+            ImGui::PopItemWidth();
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, { 0.20f,0.70f,0.20f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.30f,0.80f,0.30f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0.40f,0.90f,0.40f,1 });
+            if (ImGui::Button("Y", buttonSize)) m_Translation.y = 0.0f;
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine();
+            ImGui::PushItemWidth(itemWidth);
+            ImGui::DragFloat("##TY", &m_Translation.y, 0.05f);
+            ImGui::PopItemWidth();
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, { 0.10f,0.25f,0.80f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.20f,0.35f,0.90f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0.30f,0.45f,1.00f,1 });
+            if (ImGui::Button("Z", buttonSize)) m_Translation.z = 0.0f;
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine();
+            ImGui::PushItemWidth(itemWidth);
+            ImGui::DragFloat("##TZ", &m_Translation.z, 0.05f);
+            ImGui::PopItemWidth();
+
+            ImGui::PopStyleVar();
+            ImGui::Columns(1);
+            ImGui::PopID();
+        }
+
+        {
+            ImGui::PushID("Rotation");
+
+            ImGui::Columns(2);
+            ImGui::SetColumnWidth(0, 95.0f);
+            ImGui::TextUnformatted("Rotation");
+            ImGui::NextColumn();
+
+            float fullWidth = ImGui::CalcItemWidth();
+            float spacing = ImGui::GetStyle().ItemSpacing.x;
+            float itemWidth = (fullWidth - 2.0f * spacing) / 3.0f;
+
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 4,4 });
+
+            float lineHeight = ImGui::GetFontSize() + ImGui::GetStyle().FramePadding.y * 2.0f;
+            ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+            ImGui::PushStyleColor(ImGuiCol_Button, { 0.80f,0.10f,0.15f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.90f,0.20f,0.25f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 1.00f,0.30f,0.35f,1 });
+            if (ImGui::Button("X", buttonSize)) m_Rotation.x = 0.0f;
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine();
+            ImGui::PushItemWidth(itemWidth);
+            ImGui::DragFloat("##RX", &m_Rotation.x, 0.5f);
+            ImGui::PopItemWidth();
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, { 0.20f,0.70f,0.20f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.30f,0.80f,0.30f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0.40f,0.90f,0.40f,1 });
+            if (ImGui::Button("Y", buttonSize)) m_Rotation.y = 0.0f;
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine();
+            ImGui::PushItemWidth(itemWidth);
+            ImGui::DragFloat("##RY", &m_Rotation.y, 0.5f);
+            ImGui::PopItemWidth();
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, { 0.10f,0.25f,0.80f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.20f,0.35f,0.90f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0.30f,0.45f,1.00f,1 });
+            if (ImGui::Button("Z", buttonSize)) m_Rotation.z = 0.0f;
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine();
+            ImGui::PushItemWidth(itemWidth);
+            ImGui::DragFloat("##RZ", &m_Rotation.z, 0.5f);
+            ImGui::PopItemWidth();
+
+            ImGui::PopStyleVar();
+            ImGui::Columns(1);
+            ImGui::PopID();
+        }
+
+        {
+            ImGui::PushID("Scale");
+
+            ImGui::Columns(2);
+            ImGui::SetColumnWidth(0, 95.0f);
+            ImGui::TextUnformatted("Scale");
+            ImGui::NextColumn();
+
+            float fullWidth = ImGui::CalcItemWidth();
+            float spacing = ImGui::GetStyle().ItemSpacing.x;
+            float itemWidth = (fullWidth - 2.0f * spacing) / 3.0f;
+
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 4,4 });
+
+            float lineHeight = ImGui::GetFontSize() + ImGui::GetStyle().FramePadding.y * 2.0f;
+            ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+            ImGui::PushStyleColor(ImGuiCol_Button, { 0.80f,0.10f,0.15f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.90f,0.20f,0.25f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 1.00f,0.30f,0.35f,1 });
+            if (ImGui::Button("X", buttonSize)) m_Scale.x = 1.0f;
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine();
+            ImGui::PushItemWidth(itemWidth);
+            ImGui::DragFloat("##SX", &m_Scale.x, 0.05f, 0.001f);
+            ImGui::PopItemWidth();
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, { 0.20f,0.70f,0.20f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.30f,0.80f,0.30f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0.40f,0.90f,0.40f,1 });
+            if (ImGui::Button("Y", buttonSize)) m_Scale.y = 1.0f;
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine();
+            ImGui::PushItemWidth(itemWidth);
+            ImGui::DragFloat("##SY", &m_Scale.y, 0.05f, 0.001f);
+            ImGui::PopItemWidth();
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, { 0.10f,0.25f,0.80f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.20f,0.35f,0.90f,1 });
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0.30f,0.45f,1.00f,1 });
+            if (ImGui::Button("Z", buttonSize)) m_Scale.z = 1.0f;
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine();
+            ImGui::PushItemWidth(itemWidth);
+            ImGui::DragFloat("##SZ", &m_Scale.z, 0.05f, 0.001f);
+            ImGui::PopItemWidth();
+
+            ImGui::PopStyleVar();
+            ImGui::Columns(1);
+            ImGui::PopID();
+        }
+
+        ImGui::End();
+
+        auto& tr = m_Cube->GetTransform();
+
+        m_Scale.x = (m_Scale.x < 0.001f) ? 0.001f : m_Scale.x;
+        m_Scale.y = (m_Scale.y < 0.001f) ? 0.001f : m_Scale.y;
+        m_Scale.z = (m_Scale.z < 0.001f) ? 0.001f : m_Scale.z;
+
+        tr.translation = m_Translation;
+        tr.scale = m_Scale;
+        tr.SetEulerDegrees(m_Rotation);
+    }
+
 
 }
