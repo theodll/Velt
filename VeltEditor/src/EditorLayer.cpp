@@ -1,5 +1,6 @@
 #include "EditorLayer.h"
 #include "Velt/Core/Input.h"
+#include "Velt/Core/Application.h"
 #include <imgui.h>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -101,6 +102,8 @@ namespace Editor
 	{
 		VT_PROFILE_FUNCTION();
 		//VT_CORE_INFO("ExampleLayer::Update");
+
+        Velt::Application::UpdateTitle(Velt::Application::Get().TITLE + " - " + std::to_string(static_cast<int>(1000 / ts.GetMilliseconds())) + "FPS", false);
 
 		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_W))
 			m_CameraPos.y -= 1.f * ts;

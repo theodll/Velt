@@ -25,7 +25,14 @@ namespace Velt
 			void OnEvent(Event& e);
 		
 			static inline Application& Get() { if (s_Instance) { return *s_Instance; } else VT_CORE_ASSERT(s_Instance, "Application Instance is null.") }
-		
+			static inline void UpdateTitle(std::string s, bool updateTitle = true)
+			{
+				if (updateTitle)
+					s_Instance->TITLE = s;
+				
+				SDL_SetWindowTitle((SDL_Window*)s_Instance->m_Window->GetNativeHandle(), s.c_str());
+			}
+
 			void RenderImGui();
 			void PushLayer(Layer* layer);
 			void PushOverlay(Layer* overlay);

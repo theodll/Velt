@@ -9,7 +9,15 @@ public:
 	EditorApp()
 	{
 		VT_PROFILE_FUNCTION();
+		
 		PushLayer(new Editor::EditorLayer());
+	
+#if NDEBUG
+		Application::UpdateTitle("Velt Editor - Release");
+#else
+		Application::UpdateTitle("Velt Editor - Debug");
+#endif
+
 	}
 
 
