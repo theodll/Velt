@@ -24,7 +24,7 @@ namespace Editor {
 		Velt::Ref<Velt::Model> m_Cube;
 		int index{1};
 
-		glm::vec3 m_Rotation{};
+		glm::vec3 m_Rotation{-25.f, 45.f, 25.f};
 		glm::vec3 m_Scale{};
 		glm::vec3 m_Translation{};
 

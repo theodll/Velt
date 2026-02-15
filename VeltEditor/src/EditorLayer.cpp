@@ -103,8 +103,6 @@ namespace Editor
 		VT_PROFILE_FUNCTION();
 		//VT_CORE_INFO("ExampleLayer::Update");
 
-        Velt::Application::UpdateTitle(Velt::Application::Get().TITLE + " - " + std::to_string(static_cast<int>(1000 / ts.GetMilliseconds())) + "FPS", false);
-
 		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_W))
 			m_CameraPos.y -= 1.f * ts;
 		
@@ -340,6 +338,9 @@ namespace Editor
         m_Scale.x = (m_Scale.x < 0.001f) ? 0.001f : m_Scale.x;
         m_Scale.y = (m_Scale.y < 0.001f) ? 0.001f : m_Scale.y;
         m_Scale.z = (m_Scale.z < 0.001f) ? 0.001f : m_Scale.z;
+
+
+        m_Rotation.x++;
 
         tr.translation = m_Translation;
         tr.scale = m_Scale;

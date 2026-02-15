@@ -142,6 +142,7 @@ namespace Velt {
 			VT_PROFILE_SCOPE("Render Loop");
 			Renderer::BeginFrame();
 			// Frame 
+
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate(ts);
 
@@ -190,6 +191,8 @@ namespace Velt {
 		ImGui::Dummy({ 500, 3 });
 		ImGui::Text("Camera Position: X: %.2f Y: %.2f Z: %.2f", SceneRenderer::GetCamera()->GetPosition().x, SceneRenderer::GetCamera()->GetPosition().y, SceneRenderer::GetCamera()->GetPosition().z);
 		ImGui::End();
+
+		Velt::Application::UpdateTitle(Velt::Application::Get().TITLE + " - " + std::to_string((int)s), false);
 	}
 
 
