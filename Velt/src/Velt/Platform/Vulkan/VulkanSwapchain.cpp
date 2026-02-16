@@ -13,9 +13,12 @@ namespace Velt::RHI
         VT_PROFILE_FUNCTION();
         VT_CORE_TRACE("Swapchain Created");
         auto&& window = (SDL_Window*)Velt::Application::Get().GetWindow().GetNativeHandle();
+        m_WindowHandle = window;
         i32 w{}, h{};
         SDL_GetWindowSizeInPixels(window, &w, &h);
         m_WindowExtent = { (u32)w, (u32)h };
+
+        m_VSync = createInfo.VSync;
 
         Create(createInfo);
         m_Instance = VulkanContext::GetInstance();
@@ -37,7 +40,8 @@ namespace Velt::RHI
 
         for (auto image : m_SwapchainImages)
         {
-            vkDestroyImageView(m_Device.device(), image.ImageView, nullptr);
+            if (image.ImageView)
+                vkDestroyImageView(m_Device.device(), image.ImageView, nullptr);
         }
         m_SwapchainImages.clear();
 
@@ -49,33 +53,63 @@ namespace Velt::RHI
 
         for (auto depthStencilImage : m_DepthStencilImages)
         {
-            vkDestroyImageView(m_Device.device(), depthStencilImage.DepthImageView, nullptr);
-            vkDestroyImage(m_Device.device(), depthStencilImage.DepthImage, nullptr);
-            vkFreeMemory(m_Device.device(), depthStencilImage.DepthImageMemory, nullptr);
+            if (depthStencilImage.DepthImageView)
+                vkDestroyImageView(m_Device.device(), depthStencilImage.DepthImageView, nullptr);
+            if (depthStencilImage.DepthImage)
+                vkDestroyImage(m_Device.device(), depthStencilImage.DepthImage, nullptr);
+            if (depthStencilImage.DepthImageMemory)
+                vkFreeMemory(m_Device.device(), depthStencilImage.DepthImageMemory, nullptr);
         }
+        m_DepthStencilImages.clear();
 
         for (size_t i = 0; i < m_ImageAvailableSemaphores.size(); i++)
         {
-            vkDestroySemaphore(m_Device.device(), m_RenderFinishedSemaphores[i], nullptr);
-            vkDestroySemaphore(m_Device.device(), m_ImageAvailableSemaphores[i], nullptr);
+            if (i < m_RenderFinishedSemaphores.size() && m_RenderFinishedSemaphores[i])
+                vkDestroySemaphore(m_Device.device(), m_RenderFinishedSemaphores[i], nullptr);
+            if (m_ImageAvailableSemaphores[i])
+                vkDestroySemaphore(m_Device.device(), m_ImageAvailableSemaphores[i], nullptr);
         }
+        m_ImageAvailableSemaphores.clear();
+        m_RenderFinishedSemaphores.clear();
 
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+        for (auto fence : m_InFlightFences)
         {
-            vkDestroyFence(m_Device.device(), m_InFlightFences[i], nullptr);
+            if (fence)
+                vkDestroyFence(m_Device.device(), fence, nullptr);
         }
+        m_InFlightFences.clear();
 
         for (auto& frame : m_Commandbuffers)
         {
-            vkDestroyCommandPool(m_Device.device(), frame.CommandPool, nullptr);
+            if (frame.CommandPool)
+                vkDestroyCommandPool(m_Device.device(), frame.CommandPool, nullptr);
         }
 
         m_Commandbuffers.clear();
+
+        m_ImagesInFlight.clear();
+        m_ImagePresentedOnce.clear();
+
+        m_CurrentFrameIndex = 0;
+        m_CurrentImageIndex = 0;
     }
 
-    u32 VulkanSwapchain::AcquireNextImage()
+    VkResult VulkanSwapchain::AcquireNextImage()
     {
         VT_PROFILE_FUNCTION();
+
+        if (m_Swapchain == VK_NULL_HANDLE)
+            return VK_ERROR_OUT_OF_DATE_KHR;
+
+        if (m_InFlightFences.empty() || m_ImageAvailableSemaphores.empty())
+            return VK_ERROR_INITIALIZATION_FAILED;
+
+        if (m_CurrentFrameIndex >= m_InFlightFences.size())
+            m_CurrentFrameIndex = 0;
+
+        if (m_InFlightFences[m_CurrentFrameIndex] == VK_NULL_HANDLE)
+            return VK_ERROR_INITIALIZATION_FAILED;
+
         vkWaitForFences(
             m_Device.device(),
             1,
@@ -94,10 +128,20 @@ namespace Velt::RHI
         return result;
     }
 
-    u32 VulkanSwapchain::SubmitCommandBuffers(
+    VkResult VulkanSwapchain::SubmitCommandBuffers(
         const VkCommandBuffer* buffers, u32* imageIndex)
     {
         VT_PROFILE_FUNCTION();
+
+        if (!imageIndex)
+            return VK_ERROR_INITIALIZATION_FAILED;
+
+        if (m_ImagesInFlight.empty() || *imageIndex >= m_ImagesInFlight.size())
+            return VK_ERROR_OUT_OF_DATE_KHR;
+
+        if (m_InFlightFences.empty() || m_CurrentFrameIndex >= m_InFlightFences.size())
+            return VK_ERROR_INITIALIZATION_FAILED;
+
         if (m_ImagesInFlight[*imageIndex] != VK_NULL_HANDLE)
         {
             vkWaitForFences(m_Device.device(), 1, &m_ImagesInFlight[*imageIndex], VK_TRUE, UINT64_MAX);
@@ -292,8 +336,11 @@ namespace Velt::RHI
         m_ImageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
         m_RenderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
         m_InFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
-        m_ImagesInFlight.resize(imageCount, VK_NULL_HANDLE);
-        m_ImagePresentedOnce.resize(imageCount, false); // Initialize all to false
+
+        // Track which per-image fence is currently using a swapchain image.
+        // Must be reset on every swapchain recreate (resize), even if imageCount stays the same.
+        m_ImagesInFlight.assign(imageCount, VK_NULL_HANDLE);
+        m_ImagePresentedOnce.assign(imageCount, false);
 
         VkSemaphoreCreateInfo semaphoreInfo = {};
         semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -347,7 +394,38 @@ namespace Velt::RHI
 
     void VulkanSwapchain::BeginFrame() 
     {
-        AcquireNextImage();
+        if (m_WindowHandle)
+        {
+            i32 w = 0, h = 0;
+            SDL_GetWindowSizeInPixels(m_WindowHandle, &w, &h);
+            if (w > 0 && h > 0 && ((u32)w != m_WindowExtent.width || (u32)h != m_WindowExtent.height))
+            {
+                SwapchainExtent extent{ (u32)h, (u32)w };
+                OnResize(extent);
+            }
+        }
+
+        VkResult result = AcquireNextImage();
+
+        if (result == VK_ERROR_OUT_OF_DATE_KHR)
+        {
+            if (m_WindowHandle)
+            {
+                i32 w = 0, h = 0;
+                SDL_GetWindowSizeInPixels(m_WindowHandle, &w, &h);
+                if (w > 0 && h > 0)
+                {
+                    SwapchainExtent extent{ (u32)h, (u32)w };
+                    OnResize(extent);
+                    result = AcquireNextImage();
+                }
+            }
+        }
+
+        if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+        {
+            VT_CORE_WARN("Failed to acquire swapchain image (VkResult={0})", (int)result);
+        }
     
     }
 
@@ -424,11 +502,26 @@ namespace Velt::RHI
 
 		VkCommandBuffer commandBuffers[] = { commandBuffer };
 
-		SubmitCommandBuffers(commandBuffers, &imageIndex);
+        VkResult result = SubmitCommandBuffers(commandBuffers, &imageIndex);
+
+        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
+        {
+            if (m_WindowHandle)
+            {
+                i32 w = 0, h = 0;
+                SDL_GetWindowSizeInPixels(m_WindowHandle, &w, &h);
+                if (w > 0 && h > 0)
+                {
+                    SwapchainExtent extent{ (u32)h, (u32)w };
+                    OnResize(extent);
+                }
+            }
+        }
 	}
 
     void VulkanSwapchain::InitSurface(SDL_Window* windowHandle)
     {
+        m_WindowHandle = windowHandle;
         VkPhysicalDevice physicalDevice = m_Device.GetPhysicalDevice();
 
         u32 queueCount;
@@ -483,6 +576,36 @@ namespace Velt::RHI
         m_QueueNodeIndex = graphicsQueueNodeIndex;
 
         FindImageFormatAndColorSpace();
+    }
+
+
+    void VulkanSwapchain::OnResize(SwapchainExtent& extend)
+    {
+        VT_PROFILE_FUNCTION();
+
+        if (extend.Width == 0 || extend.Height == 0)
+        {
+            m_WindowExtent = { 0, 0 };
+            return;
+        }
+
+        m_WindowExtent = { extend.Width, extend.Height };
+
+        VT_CORE_INFO("Recreating swapchain: {0}x{1}", extend.Width, extend.Height);
+
+        vkDeviceWaitIdle(m_Device.device());
+
+        Destroy();
+
+        SwapchainCreateInfo createInfo{};
+        createInfo.Width = extend.Width;
+        createInfo.Height = extend.Height;
+        createInfo.VSync = m_VSync;
+
+        Create(createInfo);
+
+        m_CurrentFrameIndex = 0;
+        m_CurrentImageIndex = 0;
     }
 
 

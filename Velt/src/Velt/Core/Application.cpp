@@ -139,6 +139,25 @@ namespace Velt {
 				}
 			}
 
+			{
+				i32 pixelW = 0, pixelH = 0;
+				auto* sdlWindow = static_cast<SDL_Window*>(m_Window->GetNativeHandle());
+				SDL_GetWindowSizeInPixels(sdlWindow, &pixelW, &pixelH);
+
+				if (pixelW == 0 || pixelH == 0)
+				{
+					SDL_Delay(16);
+					continue;
+				}
+
+				auto& swapchain = m_Window->GetSwapchain();
+				if ((u32)pixelW != swapchain.GetWidth() || (u32)pixelH != swapchain.GetHeight())
+				{
+					RHI::SwapchainExtent extent{ (u32)pixelW, (u32)pixelH };
+					swapchain.OnResize(extent);
+				}
+			}
+
 			VT_PROFILE_SCOPE("Render Loop");
 			Renderer::BeginFrame();
 			// Frame 

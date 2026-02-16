@@ -92,8 +92,8 @@ namespace Velt::RHI {
         VkFormat findDepthFormat();
         
     private:
-		u32 AcquireNextImage();
-        u32 SubmitCommandBuffers(const VkCommandBuffer* buffers, u32* imageIndex);
+		VkResult AcquireNextImage();
+        VkResult SubmitCommandBuffers(const VkCommandBuffer* buffers, u32* imageIndex);
 
         VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
         VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
@@ -121,6 +121,8 @@ namespace Velt::RHI {
         std::vector<VkFence> m_ImagesInFlight;
 
         VkExtent2D m_WindowExtent;
+
+        SDL_Window* m_WindowHandle = nullptr;
 
         bool m_VSync = false;
         u32 m_QueueNodeIndex = UINT32_MAX; 

@@ -23,5 +23,5 @@ if (NOT TARGET Velt)
     add_subdirectory("${CMAKE_SOURCE_DIR}/Velt")
 endif()
 
-target_link_libraries(VeltEditor PRIVATE Velt)
+target_link_libraries(VeltEditor PRIVATE Velt SDL3::SDL3)
 
