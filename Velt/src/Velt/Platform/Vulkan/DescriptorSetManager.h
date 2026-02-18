@@ -6,7 +6,7 @@
 
 namespace Velt::RHI
 { 
-        struct PoolSizes {
+	struct PoolSizes {
         std::vector<std::pair<VkDescriptorType, float>> sizes = {
             { VK_DESCRIPTOR_TYPE_SAMPLER,                0.5f },
             { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 4.0f },
@@ -20,6 +20,12 @@ namespace Velt::RHI
             { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1.0f },
             { VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT,       0.5f }
         };
+    };
+
+    struct FDAllocator
+    {
+        DescriptorSetManager allocs[Velt::Application::Get().GetWindow().GetSwapchain().GetMaxFrameInFlight()];
+
     };
 
     class DescriptorSetManager

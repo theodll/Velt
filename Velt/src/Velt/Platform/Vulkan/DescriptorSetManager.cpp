@@ -2,6 +2,9 @@
 #include "Core/Core.h"
 #include "DescriptorSetManager.h"
 
+#include "../../../../vendor/sdl3/src/video/khronos/vulkan/vulkan_core.h"
+#include "../../Core/Assert.h"
+
 namespace Velt::RHI 
 {
     void DescriptorSetManager::ResetPools() 
@@ -40,9 +43,39 @@ namespace Velt::RHI
             return set;
         }
 
-        VK_CHECK(res);
+        if (res != VK_SUCCESS)
+            VT_CORE_ASSERT("Failed to allocate Descripor Sets {}", res); 
+
         return VK_NULL_HANDLE;
-    } 
+    }
+
+    void DescriptorSetManager::CreatePool(u32 maxSets)
+    {
+        std::vector<VkDescriptorPoolSize> poolSizes;
+        poolSizes.reserve(m_PoolSizes.sizes.size());
+
+        for (auto [type, weight] : m_PoolSizes.sizes )
+        {
+            VkDescriptorPoolSize s{};
+            s.type = type;
+            s.descriptorCount = (u32)std::ceil(weight * maxSets);
+        	poolSizes.push_back(s);
+        }
+
+        VkDescriptorPoolCreateInfo info{};
+        info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        info.flags = 0; 
+        info.maxSets = maxSets;
+        info.poolSizeCount = (u32)poolSizes.size();
+        info.pPoolSizes = poolSizes.data();
+
+        VkDescriptorPool pool = VK_NULL_HANDLE;
+        if (vkCreateDescriptorPool(m_Device, &info, nullptr, &pool) != VK_SUCCESS)
+        {
+	        VT_CORE_ASSERT("Failed to create Descriptor Pools")
+        }
+        return pool;
+    }
 
     VkDescriptorPool DescriptorSetManager::GrabPool(u32 maxSets) 
     {
