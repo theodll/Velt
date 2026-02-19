@@ -8,39 +8,8 @@
 
 namespace Velt::RHI {
 
-    struct SwapchainExtent
-    {
-        u32 Height;
-        u32 Width;
-    };
 
-    struct SwapchainCreateInfo 
-    {
-        u32 Width;
-        u32 Height;
-        bool VSync; 
-    };
-
-	struct SwapchainCommandBuffer
-	{
-		VkCommandBuffer CommandBuffer = nullptr;
-		VkCommandPool CommandPool = nullptr;
-	};
-
-    struct SwapchainImage
-    {
-        VkImage Image = nullptr;
-        VkImageView ImageView = nullptr;
-    };
-
-	struct DepthStencilImage
-	{
-		VkImage DepthImage = nullptr;
-        VkDeviceMemory DepthImageMemory = nullptr;
-		VkImageView DepthImageView = nullptr;
-	};
-
-    class VELT_API VulkanSwapchain
+    class VELT_API VulkanSwapchain : Swapchain
     {
     public:
         static constexpr int MAX_FRAMES_IN_FLIGHT = 3;
@@ -50,29 +19,29 @@ namespace Velt::RHI {
         VulkanSwapchain(const VulkanSwapchain&) = delete;
         void operator=(const VulkanSwapchain&) = delete;
 
-        void Init(SwapchainCreateInfo& createInfo);
+        void Init(SwapchainCreateInfo& createInfo) override;
         void InitSurface(SDL_Window* windowHandle);
-        void Create(SwapchainCreateInfo& createInfo);
-        void Destroy();
+        void Create(SwapchainCreateInfo& createInfo) override;
+        void Destroy() override;
 
-        void OnResize(SwapchainExtent& extend);
+        void OnResize(SwapchainExtent& extend) override;
 
-        void BeginFrame();
-        void Present(); 
+        void BeginFrame() override;
+        void Present() override;
 
-        inline u32 GetWidth() const { return m_WindowExtent.width; }
-		inline u32 GetHeight() const { return m_WindowExtent.height; }
-        inline u32 GetImageCount() const { return (u32)m_SwapchainImages.size(); } 
-        inline u32 GetMaxFrameInFlight() const { return MAX_FRAMES_IN_FLIGHT; }
-        inline float GetAspectRatio() const { return (float)m_WindowExtent.width / (float)m_WindowExtent.height; }
+        inline u32 GetWidth() const override { return m_WindowExtent.width; }
+		inline u32 GetHeight() const override { return m_WindowExtent.height; }
+        inline u32 GetImageCount() const override  { return (u32)m_SwapchainImages.size(); }
+        inline u32 GetMaxFrameInFlight() const override  { return MAX_FRAMES_IN_FLIGHT; }
+        inline float GetAspectRatio() const override  { return (float)m_WindowExtent.width / (float)m_WindowExtent.height; }
 
-        inline u32 GetCurrentFrameIndex() const { return m_CurrentFrameIndex; }
-        inline u32 GetCurrentImageIndex() const { return m_CurrentImageIndex; }
-        inline bool IsFirstFrameForImage(u32 imageIndex) const { return !m_ImagePresentedOnce[imageIndex]; }
+        inline u32 GetCurrentFrameIndex() const override  { return m_CurrentFrameIndex; }
+        inline u32 GetCurrentImageIndex() const override  { return m_CurrentImageIndex; }
+        inline bool IsFirstFrameForImage(u32 imageIndex) const override  { return !m_ImagePresentedOnce[imageIndex]; }
 		
-        inline SwapchainImage GetSwapchainImage(int index) { return m_SwapchainImages[index]; }
-        inline SwapchainImage GetCurrentSwapchainImage() { return GetSwapchainImage(m_CurrentImageIndex); }
-        inline VkCommandBuffer GetCurrentDrawCommandBuffer() {  return GetDrawCommandBuffer(m_CurrentFrameIndex); }
+        inline SwapchainImage GetSwapchainImage(int index) override  { return m_SwapchainImages[index]; }
+        inline SwapchainImage GetCurrentSwapchainImage() override  { return GetSwapchainImage(m_CurrentImageIndex); }
+        inline VkCommandBuffer GetCurrentDrawCommandBuffer() override {  return GetDrawCommandBuffer(m_CurrentFrameIndex); }
 
         static void TransitionImageLayout(
             VkCommandBuffer commandBuffer,

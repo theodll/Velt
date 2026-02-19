@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/Core.h"
 #include "Core/Application.h"
+#include "Renderer/Swapchain.h"
 #include "VulkanDevice.h"
 #include <vulkan/vulkan.h>
 
@@ -24,7 +25,26 @@ namespace Velt::RHI
 
     struct FDAllocator
     {
-        DescriptorSetManager allocs[Velt::Application::Get().GetWindow().GetSwapchain().GetMaxFrameInFlight()];
+        // Todo [19.02.26, Theo]: Change the 3 to a getter to get the MaxFramesInFlight
+
+        // Note [19.02.26, Theo]: The 3 stands for the MaxFramesInFlight
+
+        DescriptorSetManager allocs[3];
+
+        void Init()
+        {
+            for (auto& a : allocs) a.Init();
+        }
+
+        void BeginFrame(u32 frameIndex)
+        {
+            allocs[frameIndex].ResetPools();
+        }
+
+        VkDescriptorSet Allocate(u32 frameIndex, VkDescriptorSetLayout layout)
+        {
+            return allocs[frameIndex].Allocate(layout, frameIndex); 
+        }
 
     };
 
@@ -46,8 +66,8 @@ namespace Velt::RHI
         VkDescriptorSet Allocate(VkDescriptorSetLayout layout, u32 maxSetsHint = 128);
 
         private: 
-        void GrabPool(u32 maxSets); 
-        void CreatePool(u32 maxSets);
+    	VkDescriptorPool GrabPool(u32 maxSets);
+        VkDescriptorPool CreatePool(u32 maxSets);
 
         private:
         VulkanDevice& m_Device; 

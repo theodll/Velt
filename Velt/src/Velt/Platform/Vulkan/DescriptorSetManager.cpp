@@ -31,7 +31,7 @@ namespace Velt::RHI
         allocInfo.descriptorSetCount = 1;
         allocInfo.pSetLayouts = &layout;
 
-        VkResult res = vkAllocateDescriptorSets(m_Device, &allocInfo, &set);
+        VkResult res = vkAllocateDescriptorSets(m_Device.device(), &allocInfo, &set);
         if (res == VK_SUCCESS) return set;
 
         if (res == VK_ERROR_FRAGMENTED_POOL || res == VK_ERROR_OUT_OF_POOL_MEMORY) {
@@ -39,7 +39,8 @@ namespace Velt::RHI
             m_UsedPools.push_back(m_CurrentPool);
 
             allocInfo.descriptorPool = m_CurrentPool;
-            VK_CHECK(vkAllocateDescriptorSets(m_Device, &allocInfo, &set));
+            if (vkAllocateDescriptorSets(m_Device.device(), &allocInfo, &set) != VK_SUCCESS)
+                VT_CORE_ASSERT(false, "Failed to allocate Descriptor Sets")
             return set;
         }
 
@@ -49,7 +50,7 @@ namespace Velt::RHI
         return VK_NULL_HANDLE;
     }
 
-    void DescriptorSetManager::CreatePool(u32 maxSets)
+    VkDescriptorPool DescriptorSetManager::CreatePool(u32 maxSets)
     {
         std::vector<VkDescriptorPoolSize> poolSizes;
         poolSizes.reserve(m_PoolSizes.sizes.size());
@@ -70,9 +71,9 @@ namespace Velt::RHI
         info.pPoolSizes = poolSizes.data();
 
         VkDescriptorPool pool = VK_NULL_HANDLE;
-        if (vkCreateDescriptorPool(m_Device, &info, nullptr, &pool) != VK_SUCCESS)
+        if (vkCreateDescriptorPool(m_Device.device(), &info, nullptr, &pool) != VK_SUCCESS)
         {
-	        VT_CORE_ASSERT("Failed to create Descriptor Pools")
+	        VT_CORE_ASSERT(false, "Failed to create Descriptor Pools")
         }
         return pool;
     }
