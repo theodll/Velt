@@ -45,7 +45,7 @@ namespace Velt::RHI
         }
 
         if (res != VK_SUCCESS)
-            VT_CORE_ASSERT("Failed to allocate Descripor Sets {}", res); 
+            VT_CORE_ASSERT("Failed to allocate Descripor Sets {}", VkResultToString(res)); 
 
         return VK_NULL_HANDLE;
     }
@@ -80,6 +80,11 @@ namespace Velt::RHI
 
     VkDescriptorPool DescriptorSetManager::GrabPool(u32 maxSets) 
     {
-
+        if (!m_FreePools.empty()) {
+            VkDescriptorPool pool = m_FreePools.back();
+            m_FreePools.pop_back();
+            return pool;
+        }
+        return CreatePool(maxSets);
     }
 }

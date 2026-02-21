@@ -14,7 +14,7 @@ typedef int32_t i32;
 typedef int64_t i64;
 
 
-#ifdef VT_PLATFORM_WINDOWS
+#if VT_PLATFORM_WINDOWS
 	#ifdef VT_BUILD_DLL
 		#define VELT_API __declspec(dllexport)
 	#else
@@ -24,6 +24,12 @@ typedef int64_t i64;
 	#define VELT_API
 #endif
 
+
+// Todo [21.02.26, Theo]: Move this to the cmake thing 
+#define VT_COMPILE_VULKAN 1
+#if VT_COMPILE_VULKAN
+#define VT_VK_CHECK(f, e) if (!(f) == VK_SUCCESS) { VT_CORE_ASSERT(false, e); }
+#endif
 
 namespace Velt {
 

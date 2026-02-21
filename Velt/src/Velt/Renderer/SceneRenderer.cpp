@@ -61,7 +61,7 @@ namespace Velt {
 		for (u32 i = 0; i < mfif; i++)
 		{
 			m_CameraUBOs[i] = UniformBuffer::Create(sizeof(CameraUBO));
-			s_Pipeline->UpdateDescriptorSet(i, 0, m_CameraUBOs[i]);
+// 			s_Pipeline->UpdateDescriptorSet(i, 0, m_CameraUBOs[i]);
 		}
 	}
 
@@ -113,7 +113,7 @@ namespace Velt {
 		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
 		
 		s_Pipeline->Bind(cmd);
-		s_Pipeline->BindDescriptorSet(cmd, frameIndex);
+//		s_Pipeline->BindDescriptorSet(cmd, frameIndex);
 	}
 
 	void SceneRenderer::EndScene()

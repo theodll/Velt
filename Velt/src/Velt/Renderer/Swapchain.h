@@ -1,5 +1,6 @@
 #pragma once
 #include "Velt/Core/Core.h"
+#include <SDL3/SDL.h>
 
 namespace Velt
 {
@@ -39,15 +40,15 @@ namespace Velt
 	class VELT_API Swapchain
 	{
 	public:
-        virtual void Init(SwapchainCreateInfo& createInfo);
-        virtual void InitSurface(SDL_Window* windowHandle);
-        virtual void Create(SwapchainCreateInfo& createInfo);
-        virtual void Destroy();
+        virtual void Init(SwapchainCreateInfo& createInfo) = 0;
+        virtual void InitSurface(SDL_Window* windowHandle) = 0;
+        virtual void Create(SwapchainCreateInfo& createInfo) = 0;
+        virtual void Destroy() = 0;
 
-        virtual void OnResize(SwapchainExtent& extend);
+        virtual void OnResize(SwapchainExtent& extend) = 0;
 
-        virtual void BeginFrame();
-        virtual void Present();
+        virtual void BeginFrame() = 0;
+        virtual void Present() = 0;
 
         inline virtual u32 GetWidth() const = 0;
         inline virtual u32 GetHeight() const = 0;

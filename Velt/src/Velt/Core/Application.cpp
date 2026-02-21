@@ -153,7 +153,7 @@ namespace Velt {
 				auto& swapchain = m_Window->GetSwapchain();
 				if ((u32)pixelW != swapchain.GetWidth() || (u32)pixelH != swapchain.GetHeight())
 				{
-					RHI::SwapchainExtent extent{ (u32)pixelW, (u32)pixelH };
+					SwapchainExtent extent{ (u32)pixelW, (u32)pixelH };
 					swapchain.OnResize(extent);
 				}
 			}

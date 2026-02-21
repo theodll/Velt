@@ -7,6 +7,20 @@
 
 namespace Velt::RHI
 { 
+    const char* VkResultToString(VkResult r)
+    {
+        switch (r)
+        {
+        case VK_SUCCESS: return "VK_SUCCESS";
+        case VK_NOT_READY: return "VK_NOT_READY";
+        case VK_TIMEOUT: return "VK_TIMEOUT";
+        case VK_ERROR_OUT_OF_HOST_MEMORY: return "VK_ERROR_OUT_OF_HOST_MEMORY";
+        case VK_ERROR_OUT_OF_DEVICE_MEMORY: return "VK_ERROR_OUT_OF_DEVICE_MEMORY";
+        case VK_ERROR_DEVICE_LOST: return "VK_ERROR_DEVICE_LOST";
+        default: return "UNKNOWN_VK_RESULT";
+        }
+    }
+
 	struct PoolSizes {
         std::vector<std::pair<VkDescriptorType, float>> sizes = {
             { VK_DESCRIPTOR_TYPE_SAMPLER,                0.5f },
@@ -21,31 +35,6 @@ namespace Velt::RHI
             { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1.0f },
             { VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT,       0.5f }
         };
-    };
-
-    struct FDAllocator
-    {
-        // Todo [19.02.26, Theo]: Change the 3 to a getter to get the MaxFramesInFlight
-
-        // Note [19.02.26, Theo]: The 3 stands for the MaxFramesInFlight
-
-        DescriptorSetManager allocs[3];
-
-        void Init()
-        {
-            for (auto& a : allocs) a.Init();
-        }
-
-        void BeginFrame(u32 frameIndex)
-        {
-            allocs[frameIndex].ResetPools();
-        }
-
-        VkDescriptorSet Allocate(u32 frameIndex, VkDescriptorSetLayout layout)
-        {
-            return allocs[frameIndex].Allocate(layout, frameIndex); 
-        }
-
     };
 
     class DescriptorSetManager
@@ -77,5 +66,30 @@ namespace Velt::RHI
         std::vector<VkDescriptorPool> m_FreePools; 
 
         PoolSizes m_PoolSizes{}; 
+    };
+
+    struct FDAllocator
+    {
+        // Todo [19.02.26, Theo]: Change the 3 to a getter to get the MaxFramesInFlight
+
+        // Note [19.02.26, Theo]: The 3 stands for the MaxFramesInFlight
+
+        DescriptorSetManager allocs[3];
+
+        void Init()
+        {
+            for (auto& a : allocs) a.Init();
+        }
+
+        void BeginFrame(u32 frameIndex)
+        {
+            allocs[frameIndex].ResetPools();
+        }
+
+        VkDescriptorSet Allocate(u32 frameIndex, VkDescriptorSetLayout layout)
+        {
+            return allocs[frameIndex].Allocate(layout, frameIndex);
+        }
+
     };
 }
