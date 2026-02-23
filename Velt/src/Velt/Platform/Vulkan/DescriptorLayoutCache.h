@@ -5,7 +5,7 @@
 
 namespace Velt
 {
-	typedef VkDescriptorSetLayout DSLayoutHandle;
+	typedef VkDescriptorSetLayout DescriptorSetLayoutHandle;
 }
 
 namespace Velt::RHI
@@ -34,7 +34,7 @@ namespace Velt::RHI
     struct DescriptorBinding
     {
         DescriptorType type;
-        u32 bindingl;
+        u32 binding;
         u32 count{ 1 };
         ShaderStage stage;
     };
@@ -48,10 +48,17 @@ namespace Velt::RHI
         void Init();
         void Shutdown();
 
-        DSLayoutHandle CreateLayout(const std::vector<DescriptorBinding>& bindings);
+        DescriptorSetLayoutHandle CreateLayout(std::vector<DescriptorBinding> *bindings);
 
 	private:
-        VkDescriptorSetLayout CreateVulkanLayout(const std::vector<DescriptorBinding>& bindings);
+        VkDescriptorSetLayout CreateVulkanLayout(std::vector<DescriptorBinding> *bindings);
+        size_t HashBindings(std::vector<DescriptorBinding>* bindings);
+
+        template<typename T>
+        void HashCombine(size_t* seed, const T& v)
+        {
+            seed ^= std::hash<T>{}(v)+0x9e3779b9 + (seed << 6) + (seed >> 2);
+        }
 
         std::unordered_map<size_t, VkDescriptorSetLayout> m_Cache;
 

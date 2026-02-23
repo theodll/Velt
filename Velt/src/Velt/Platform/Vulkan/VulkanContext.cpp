@@ -60,6 +60,12 @@ namespace Velt::RHI
 		m_ResourceUploader = std::make_unique<VulkanResourceUploader>();
 		m_ResourceUploader->Init();
 
+		m_DescriptorSetManager = CreateScope<DescriptorSetManager>();
+		m_DescriptorSetManager->Init();
+
+		m_DescriptorLayoutCache = CreateScope<DescriptorLayoutCache>();
+		m_DescriptorLayoutCache->Init();
+
 	}
 
 

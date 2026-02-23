@@ -24,6 +24,7 @@ typedef int64_t i64;
 	#define VELT_API
 #endif
 
+#define VT_NULL_HANDLE nullptr
 
 // Todo [21.02.26, Theo]: Move this to the cmake thing 
 #define VT_COMPILE_VULKAN 1

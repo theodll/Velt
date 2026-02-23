@@ -6,7 +6,8 @@
 #include "Velt/Platform/Vulkan/VulkanSwapchain.h"
 #include "VulkanResourceUploader.h"
 #include "Velt/Platform/Vulkan/VulkanPipeline.h"
-
+#include "Velt/Platform/Vulkan/DescriptorLayoutCache.h"
+#include "Velt/Platform/Vulkan/DescriptorSetManager.h"
 
 namespace Velt::RHI
 {
@@ -43,7 +44,8 @@ namespace Velt::RHI
 		static VulkanDevice* m_Device;
 		static VkSurfaceKHR m_Surface;
 		static std::unique_ptr<VulkanResourceUploader> m_ResourceUploader;
-		VulkanSwapchain* m_Swapchain;
+		static Scope<DescriptorLayoutCache> m_DescriptorLayoutCache;
+		static Scope<DescriptorSetManager> m_DescriptorSetManager;
 
 		const std::vector<const char*> m_ValidationLayers = { "VK_LAYER_KHRONOS_validation" };
 	};
