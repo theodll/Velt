@@ -57,7 +57,7 @@ namespace Velt::RHI
         template<typename T>
         void HashCombine(size_t* seed, const T& v)
         {
-            seed ^= std::hash<T>{}(v)+0x9e3779b9 + (seed << 6) + (seed >> 2);
+            *seed ^= std::hash<T>{}(v)+0x9e3779b9 + (*seed << 6) + (*seed >> 2);
         }
 
         std::unordered_map<size_t, VkDescriptorSetLayout> m_Cache;

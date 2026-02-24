@@ -7,6 +7,10 @@
 
 namespace Velt::RHI 
 {
+    void DescriptorSetManager::Init() {} 
+
+    void DescriptorSetManager::Shutdown() {}
+
     void DescriptorSetManager::ResetPools() 
     {
         for (auto p : m_UsedPools) 

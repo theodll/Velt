@@ -6,14 +6,16 @@
 #include "Velt/Platform/Vulkan/VulkanSwapchain.h"
 #include "VulkanResourceUploader.h"
 #include "Velt/Platform/Vulkan/VulkanPipeline.h"
-#include "Velt/Platform/Vulkan/DescriptorLayoutCache.h"
-#include "Velt/Platform/Vulkan/DescriptorSetManager.h"
+
 
 namespace Velt::RHI
 {
+	class DescriptorLayoutCache;
+	class DescriptorSetManager;
 
 	class VELT_API VulkanContext : public Context
 	{
+
 	public:
 		VulkanContext();
 		virtual ~VulkanContext() = default;

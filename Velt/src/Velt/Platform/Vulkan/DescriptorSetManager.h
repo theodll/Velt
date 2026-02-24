@@ -3,11 +3,12 @@
 #include "Core/Application.h"
 #include "Renderer/Swapchain.h"
 #include "VulkanDevice.h"
+#include "VulkanContext.h"
 #include <vulkan/vulkan.h>
 
 namespace Velt::RHI
 { 
-    const char* VkResultToString(VkResult r)
+    static const char* VkResultToString(VkResult r)
     {
         switch (r)
         {
