@@ -27,6 +27,8 @@ namespace Velt::RHI
 		static VkInstance& GetInstance() { return m_Instance; }
 		static VkSurfaceKHR& GetSurface() { return m_Surface; }
 		static VulkanResourceUploader& GetResourceUploader() { return *m_ResourceUploader; }
+		static DescriptorLayoutCache* GetLayoutCache() { return m_DescriptorLayoutCache.get(); }
+		static DescriptorSetManager* GetSetManager() { return m_DescriptorSetManager.get(); }
 
 	private:
 		bool m_EnableValidationLayers;
@@ -45,7 +47,7 @@ namespace Velt::RHI
 		static VkInstance m_Instance;
 		static VulkanDevice* m_Device;
 		static VkSurfaceKHR m_Surface;
-		static std::unique_ptr<VulkanResourceUploader> m_ResourceUploader;
+		static Scope<VulkanResourceUploader> m_ResourceUploader;
 		static Scope<DescriptorLayoutCache> m_DescriptorLayoutCache;
 		static Scope<DescriptorSetManager> m_DescriptorSetManager;
 

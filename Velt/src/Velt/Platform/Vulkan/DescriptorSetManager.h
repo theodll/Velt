@@ -3,11 +3,11 @@
 #include "Core/Application.h"
 #include "Renderer/Swapchain.h"
 #include "VulkanDevice.h"
-#include "VulkanContext.h"
 #include <vulkan/vulkan.h>
 
 namespace Velt::RHI
 { 
+    class VulkanContext;
     static const char* VkResultToString(VkResult r)
     {
         switch (r)
@@ -52,6 +52,8 @@ namespace Velt::RHI
 
         void ResetPools();
         void SetPoolSize(const PoolSizes& sizes) { m_PoolSizes = std::move(sizes); }; 
+        void WriteBuffer(VkDescriptorSet set, uint32_t binding, VkBuffer buffer, VkDeviceSize size);
+
 
         VkDescriptorSet Allocate(VkDescriptorSetLayout layout, u32 maxSetsHint = 128);
 

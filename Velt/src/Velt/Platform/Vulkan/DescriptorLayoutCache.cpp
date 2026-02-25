@@ -51,10 +51,10 @@ namespace Velt::RHI
 		switch (stage)
 		{
 		case ShaderStage::FRAGMENT:
-			VK_SHADER_STAGE_FRAGMENT_BIT;
+			return VK_SHADER_STAGE_FRAGMENT_BIT;
 
 		case ShaderStage::VERTEX:
-			VK_SHADER_STAGE_VERTEX_BIT;
+			return VK_SHADER_STAGE_VERTEX_BIT;
 
 		default:
 			VT_CORE_ASSERT(false, "");
@@ -70,25 +70,25 @@ namespace Velt::RHI
 	{
 	}
 
-	DescriptorSetLayoutHandle DescriptorLayoutCache::CreateLayout(std::vector<DescriptorBinding> *bindings)
+	DescriptorSetLayoutHandle DescriptorLayoutCache::CreateLayout(std::vector<DescriptorBinding> *pBindings)
 	{
-		auto hash = HashBindings(bindings);
+		auto hash = HashBindings(pBindings);
 		auto it = m_Cache.find(hash);
 
 		if (it != m_Cache.end())
 			return it->second;
 
-		VkDescriptorSetLayout vkLayout = CreateVulkanLayout(bindings);
+		VkDescriptorSetLayout vkLayout = CreateVulkanLayout(pBindings);
 		m_Cache[hash] = vkLayout;
 
 		return vkLayout;
 	}
 
-	size_t DescriptorLayoutCache::HashBindings(std::vector<DescriptorBinding>* bindings)
+	size_t DescriptorLayoutCache::HashBindings(std::vector<DescriptorBinding>* pBindings)
 	{
 		size_t hash{};
 
-		for (const auto& b : *bindings)
+		for (const auto& b : *pBindings)
 		{
 			HashCombine(&hash, b.binding);
 			HashCombine(&hash, (u32)b.type);

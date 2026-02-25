@@ -6,13 +6,16 @@
 
 namespace Velt
 {
+	class DescriptorLayoutCache;
+	typedef VkDescriptorSetLayout DescriptorSetLayoutHandle;
+
 	struct PipelineSpecification
 	{
 		BufferLayout Layout;	
 		std::string VertexShaderPath; // this has to be the compiled binary right now, not the Source ! 
 		std::string FragmentShaderPath; // this too
 		std::string DebugName;
-		std::vector<VkDescriptorSetLayout> SetLayouts;
+		std::vector<DescriptorSetLayoutHandle> SetLayouts;
 	};
 
 	class VELT_API Pipeline
