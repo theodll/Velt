@@ -1,5 +1,6 @@
 #pragma once 
-
+#include "Core/Math.h"
+#include "Material.h"
 #include "VertexBuffer.h"
 #include "Platform/Vulkan/VulkanPipeline.h"
 #include "Velt/Core/Core.h"
@@ -24,8 +25,8 @@ namespace Velt {
 		virtual void Init() = 0;
 		virtual void Shutdown() = 0;
 
-		virtual void DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform) = 0;
-        virtual void DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model) = 0;
+		virtual void DrawQuad(VkCommandBuffer& renderCommandBuffer, const Matrix& transform) = 0;
+        virtual void DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model> model, const Ref<Material> material) = 0;
 
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;

@@ -32,13 +32,23 @@ namespace Velt {
 		viewProj.stage = RHI::ShaderStage::VERTEX;
 		
 		globalBindings.emplace_back(viewProj);
+
+		std::vector<RHI::DescriptorBinding> materialLayout{};
+		RHI::DescriptorBinding color;
+		color.type = RHI::DescriptorType::UNIFORM_BUFFER;
+		color.binding = 0;
+		color.count = 1;
+		color.stage = RHI::ShaderStage::VERTEX;
+
+		globalBindings.emplace_back(color);
 		
 		auto globalLayout = RHI::VulkanContext::GetLayoutCache()->CreateLayout(&globalBindings);
+		auto materialLayout = RHI::VulkanContext::GetLayoutCache()->CreateLayout(&materialLayout);
 
 		PipelineSpecification specs{};
 		specs.FragmentShaderPath = { "Shaders/fragment.glsl.spv" };
 		specs.VertexShaderPath = { "Shaders/vertex.glsl.spv" };
-		specs.SetLayouts = { globalLayout };
+		specs.SetLayouts = { globalLayout, materialLayout };
 		specs.Layout = layout;
 
 

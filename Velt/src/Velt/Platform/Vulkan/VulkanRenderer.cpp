@@ -242,7 +242,7 @@ namespace Velt::RHI
 		swapchain.Present();
 	}
 
-	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform)
+	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, const Matrix& transform)
 	{
 		auto pp = SceneRenderer::GetPipeline(); 
 		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
@@ -264,7 +264,7 @@ namespace Velt::RHI
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 	}
 
-	void VulkanRenderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model)
+	void VulkanRenderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model> model, const Ref<Material> material)
 	{
 		auto pp = SceneRenderer::GetPipeline(); 
 		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
