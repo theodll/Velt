@@ -1,13 +1,14 @@
 #pragma once
 #include "Core/Core.h"
-#include "Core/Application.h"
 #include "Renderer/Swapchain.h"
 #include "VulkanDevice.h"
+#include "VulkanContext.h"
 #include <vulkan/vulkan.h>
 
 namespace Velt::RHI
 { 
-    class VulkanContext;
+    class Application;
+
     static const char* VkResultToString(VkResult r)
     {
         switch (r)

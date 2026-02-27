@@ -31,8 +31,7 @@ namespace Velt {
 		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
 		std::vector<VkDescriptorSet> m_GlobalSets;
 
-		DescriptorSetLayoutHandle m_MaterialLayout;
-
+		
 		i32 m_Rotation{};
 		glm::vec3 m_CameraPosition{};
 

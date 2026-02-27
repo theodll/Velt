@@ -110,14 +110,14 @@ namespace Velt {
 		s_RenderAPI->EndFrame();
 	}
 
-	void Renderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform)
+	void Renderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, const Matrix& transform)
 	{
 		s_RenderAPI->DrawQuad(renderCommandBuffer, transform);
 	}
 
-	void Renderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model)
+	void Renderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, Ref<Model> model, Ref<Material> material)
 	{
-		s_RenderAPI->DrawStaticModel(renderCommandBuffer, model);
+		s_RenderAPI->DrawStaticModel(renderCommandBuffer, model, material);
 	}
 
 	void Renderer::RequestShutdown()

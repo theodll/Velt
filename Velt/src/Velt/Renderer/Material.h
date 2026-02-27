@@ -1,30 +1,32 @@
 #pragma once
 #include "Core/Core.h"
 #include "Core/Math.h"
-#include "Platform/Vulkan/DescriptorSetManager.h"
 
 namespace Velt 
 {
+	class UniformBuffer;
+	class Application;
+
 	struct MaterialUBO
 	{
 		HVector Color;
 	};
 
-	class Material
+	class VELT_API Material
 	{
 	public:
-		Material(const HVector& color) : m_Color(color) {};
+		Material(const HVector& color);
 
-		void SetColor(const HVector& color) { m_Color = color; }
+		void SetColor(const HVector& color);
 
-		const Vector& GetColor() const { return m_Color; }
-		const VkDescriptorSet& GetSet() const { return m_Set; }
+		const HVector& GetColor() const { return m_Data.Color; }
+		const VkDescriptorSet& GetSet() const;
+	
 	private:
 		// Todo [26.02, Theo]
-		HVector m_Color{};
-		VkDescriptorSet m_Set;
 
-		std::array<Ref<UniformBuffer>, MAX_FRAMES_IN_FLIGHT> m_UBOs;
-		std::array<VkDescriptorSet, MAX_FRAMES_IN_FLIGHT>    m_Sets;
+		Ref<UniformBuffer> m_UBOs[MAX_FRAMES_IN_FLIGHT];
+		VkDescriptorSet m_Sets[MAX_FRAMES_IN_FLIGHT];
+		MaterialUBO m_Data;
 	};
 }

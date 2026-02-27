@@ -274,6 +274,8 @@ namespace Velt::RHI
 		auto transform = model->GetTransform().mat4();
 		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
 
+		vkCmdBindDescriptorSets(renderCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &material->GetSet(), 0, VT_NULL_HANDLE);
+
 		auto& submeshes = model->GetSubmeshes();
 		for (auto& submesh : submeshes)
 		{

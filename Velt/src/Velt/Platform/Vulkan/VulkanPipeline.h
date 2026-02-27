@@ -45,6 +45,8 @@ namespace Velt::RHI
 			virtual VkPipelineLayout& GetVulkanPipelineLayout() override { return m_ConfigInfo.pipelineLayout; };
 			PipelineSpecification& GetSpecification() override { return m_Specification;  };
 			const PipelineSpecification& GetSpecification() const override { return m_Specification; };
+			virtual const std::vector<VkDescriptorSetLayout>& GetSetLayouts() const override { return m_Specification.SetLayouts; }
+
 
 		private:
 			static std::vector<char> ReadFile(const std::string& filepath);
