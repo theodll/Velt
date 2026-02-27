@@ -56,9 +56,9 @@ namespace Velt::RHI
 		auto& app = Velt::Application::Get();
 		auto& window = app.GetWindow();
 		auto& swapchain = window.GetSwapchain();
-		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
 
 		swapchain.BeginFrame();
+		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
 
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -242,7 +242,7 @@ namespace Velt::RHI
 		swapchain.Present();
 	}
 
-	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform)
+	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, const Matrix& transform)
 	{
 		auto pp = SceneRenderer::GetPipeline(); 
 		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
@@ -264,7 +264,7 @@ namespace Velt::RHI
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 	}
 
-	void VulkanRenderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model)
+	void VulkanRenderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model> model, const Ref<Material> material)
 	{
 		auto pp = SceneRenderer::GetPipeline(); 
 		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
@@ -273,6 +273,8 @@ namespace Velt::RHI
 
 		auto transform = model->GetTransform().mat4();
 		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
+
+		vkCmdBindDescriptorSets(renderCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &material->GetSet(), 0, VT_NULL_HANDLE);
 
 		auto& submeshes = model->GetSubmeshes();
 		for (auto& submesh : submeshes)

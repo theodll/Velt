@@ -1,6 +1,7 @@
 #include "EditorLayer.h"
 #include "Velt/Core/Input.h"
 #include "Velt/Core/Application.h"
+#include "Velt/Renderer/Material.h"
 #include <imgui.h>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -18,6 +19,9 @@ namespace Editor
 
 		VT_PROFILE_FUNCTION();
         index++;
+
+        Velt::HVector color = { 1.0f, 0.0f, 0.0f, 1.0f };
+        m_Material = Velt::CreateRef<Velt::Material>(color); 
 
 		// Note [5.02.26, Theo] This will be substantially different because all these things we have to do 
 		// manually right now will be automatically done by a loader of models eg. glTF or obj.
@@ -151,9 +155,11 @@ namespace Editor
 		// It causes immense performance loss
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+;
+        
 
 		for (int i{}; i < index; i++)
-			Velt::Renderer::DrawStaticModel(commandBuffer, m_Cube);
+			Velt::Renderer::DrawStaticModel(commandBuffer, m_Cube, m_Material);
 	}
 
     void EditorLayer::OnImGuiRender2()
@@ -345,7 +351,31 @@ namespace Editor
         tr.translation = m_Translation;
         tr.scale = m_Scale;
         tr.SetEulerDegrees(m_Rotation);
+
+        ImGui::Begin("Material Settings");
+        {
+            ImGui::PushID("Material");
+
+            Velt::HVector color = m_Material->GetColor();
+            float colorArray[4] = { color.x, color.y, color.z, color.w };
+
+            ImGui::Columns(2);
+            ImGui::SetColumnWidth(0, 95.0f);
+            ImGui::TextUnformatted("Color (RGBA)");
+            ImGui::NextColumn();
+
+            if (ImGui::ColorEdit4("##RGBA", colorArray))
+            {
+                m_Material->SetColor(Velt::HVector(colorArray[0], colorArray[1], colorArray[2], colorArray[3]));
+            }
+
+            ImGui::Columns(1);
+            ImGui::PopID();
+        }
+        ImGui::End();
     }
+
+
 
 
 }

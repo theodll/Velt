@@ -1,15 +1,19 @@
 #include "vtpch.h"
 #include "VulkanContext.h"
+#include "DescriptorSetManager.h"
+#include "DescriptorLayoutCache.h"
 #include "Core/Application.h"
 #include <SDL3/SDL_vulkan.h>
 
 
 namespace Velt::RHI
 {
-	VulkanDevice* VulkanContext::m_Device = nullptr;
+	VulkanDevice* VulkanContext::m_Device { VT_NULL_HANDLE };
 	VkInstance VulkanContext::m_Instance; 
 	VkSurfaceKHR VulkanContext::m_Surface;
-	std::unique_ptr<VulkanResourceUploader> VulkanContext::m_ResourceUploader = nullptr;
+	std::unique_ptr<VulkanResourceUploader> VulkanContext::m_ResourceUploader{ VT_NULL_HANDLE };
+	Scope<DescriptorLayoutCache> VulkanContext::m_DescriptorLayoutCache{ VT_NULL_HANDLE } ;
+	Scope<DescriptorSetManager> VulkanContext::m_DescriptorSetManager{ VT_NULL_HANDLE };
 	
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 		VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -60,6 +64,12 @@ namespace Velt::RHI
 		m_ResourceUploader = std::make_unique<VulkanResourceUploader>();
 		m_ResourceUploader->Init();
 
+		m_DescriptorSetManager = CreateScope<DescriptorSetManager>();
+		m_DescriptorSetManager->Init();
+
+		m_DescriptorLayoutCache = CreateScope<DescriptorLayoutCache>();
+		m_DescriptorLayoutCache->Init();
+
 	}
 
 
@@ -73,7 +83,6 @@ namespace Velt::RHI
 			DestroyDebugUtilsMessengerEXT(m_Instance, m_DebugMessenger, nullptr);
 		}
 
-		delete m_Swapchain;
 		delete m_Device;
 
 		vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);

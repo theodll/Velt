@@ -29,7 +29,9 @@ namespace Velt {
 		static Ref<OrthographicCamera> m_Camera;
 
 		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
+		std::vector<VkDescriptorSet> m_GlobalSets;
 
+		
 		i32 m_Rotation{};
 		glm::vec3 m_CameraPosition{};
 

@@ -145,7 +145,7 @@ namespace Velt::Windows
 	{
 		m_Swapchain = std::make_unique<RHI::VulkanSwapchain>();
 
-		RHI::SwapchainCreateInfo createInfo{};
+		SwapchainCreateInfo createInfo{};
 
 		createInfo.Height = m_Data.Height;
 		createInfo.Width = m_Data.Width;

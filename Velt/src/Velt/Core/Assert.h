@@ -20,7 +20,9 @@
 #define VT_ENABLE_ASSERTS 1
 #ifdef VT_ENABLE_ASSERTS
 
-#define VT_CORE_ASSERT(condition, ...) { if(!(condition)) { VT_CORE_ERROR(__VA_ARGS__); VT_DEBUG_BREAK; } }
+// Note [21.02.26, Theo]: Do not use VT_CORE_ASSERT / VT_ASSERT when a function/check also needs to be run in a dist
+// build. e.g. vkCreatePipeline. For Vulkan Functions use VT_VK_CHECK (Core.h)
+#define VT_CORE_ASSERT(condition, ...) { if(!(condition)) { VT_CORE_ERROR(__VA_ARGS__); VT_DEBUG_BREAK; } } 
 #define VT_ASSERT(condition, ...) { if(!(condition)) { VT_ERROR(__VA_ARGS__); VT_DEBUG_BREAK; } }
 #else
 #define VT_CORE_ASSERT(condition, ...)

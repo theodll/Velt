@@ -1,6 +1,7 @@
 #include "SceneRenderer.h"
 #include "Buffer.h"
 #include "Core/Core.h"
+#include "Platform/Vulkan/DescriptorLayoutCache.h"
 #include "Core/Application.h"
 #include "Core/Input.h"
 
@@ -14,19 +15,51 @@ namespace Velt {
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Init SceneRenderer");
 
-		BufferLayout layout{
 
+
+		BufferLayout layout
+		{
 				{ ShaderDataType::Float3, "a_Position" }
 		};
+
+		// Todo [25.02, Theo]: Move this somewhere else 
+
+		std::vector<RHI::DescriptorBinding> globalBindings{};
+		RHI::DescriptorBinding viewProj;
+		viewProj.type = RHI::DescriptorType::UNIFORM_BUFFER;
+		viewProj.binding = 0;
+		viewProj.count = 1;
+		viewProj.stage = RHI::ShaderStage::VERTEX;
 		
+		globalBindings.emplace_back(viewProj);
 
-		PipelineSpecification specs{};
-		specs.FragmentShaderPath = { "Shaders/fragment.glsl.spv" };
-		specs.VertexShaderPath = { "Shaders/vertex.glsl.spv" };
-		specs.Layout = layout;
+		std::vector<RHI::DescriptorBinding> materialBindings{};
+		RHI::DescriptorBinding color;
+		color.type = RHI::DescriptorType::UNIFORM_BUFFER;
+		color.binding = 0;
+		color.count = 1;
+		color.stage = RHI::ShaderStage::VERTEX;
 
-		s_Pipeline = Pipeline::Create(specs);
-		s_Pipeline->Init();
+		materialBindings.emplace_back(color);
+		
+		auto globalLayout = RHI::VulkanContext::GetLayoutCache()->CreateLayout(&globalBindings);
+		auto materialLayout = RHI::VulkanContext::GetLayoutCache()->CreateLayout(&materialBindings);
+
+		{
+			std::vector<DescriptorSetLayoutHandle> setLayouts;
+			setLayouts.emplace_back(globalLayout);
+			setLayouts.emplace_back(materialLayout);
+
+			PipelineSpecification specs{};
+			specs.FragmentShaderPath = { "Shaders/fragment.glsl.spv" };
+			specs.VertexShaderPath = { "Shaders/vertex.glsl.spv" };
+			specs.SetLayouts = setLayouts;
+			specs.Layout = layout;
+
+
+			s_Pipeline = Pipeline::Create(specs);
+			s_Pipeline->Init();
+		}
 		
 		float width, height{};
 
@@ -58,10 +91,20 @@ namespace Velt {
 
 		const u32 mfif = sc.GetMaxFrameInFlight();
 		m_CameraUBOs.resize(mfif);
+		m_GlobalSets.resize(mfif);
 		for (u32 i = 0; i < mfif; i++)
 		{
 			m_CameraUBOs[i] = UniformBuffer::Create(sizeof(CameraUBO));
-			s_Pipeline->UpdateDescriptorSet(i, 0, m_CameraUBOs[i]);
+			m_GlobalSets[i] = RHI::VulkanContext::GetSetManager()->Allocate(globalLayout);
+			
+
+			RHI::VulkanContext::GetSetManager()->WriteBuffer(
+				m_GlobalSets[i],
+				0,
+				m_CameraUBOs[i]->GetVulkanBuffer(),
+				sizeof(CameraUBO)
+			);
+		
 		}
 	}
 
@@ -106,14 +149,27 @@ namespace Velt {
 		m_Rotation++;
 		auto cmd = Velt::Application::Get().GetWindow().GetSwapchain().GetCurrentDrawCommandBuffer();
 		auto frameIndex = Velt::Application::Get().GetWindow().GetSwapchain().GetCurrentFrameIndex();
+		auto pipelineLayout = s_Pipeline->GetVulkanPipelineLayout();
 
 		CameraUBO ubo{};
 		ubo.viewProj = m_Camera->GetViewProjectionMatrix();
 
 		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
-		
+
 		s_Pipeline->Bind(cmd);
-		s_Pipeline->BindDescriptorSet(cmd, frameIndex);
+
+		// Todo [25.02, Theo]: Make this platform independent
+		vkCmdBindDescriptorSets(
+			cmd,
+			VK_PIPELINE_BIND_POINT_GRAPHICS,
+			pipelineLayout,
+			0,
+			1,
+			&m_GlobalSets[frameIndex],
+			0,
+			nullptr
+		);
+
 	}
 
 	void SceneRenderer::EndScene()

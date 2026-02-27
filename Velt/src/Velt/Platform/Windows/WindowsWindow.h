@@ -43,7 +43,7 @@ namespace Velt::Windows
 			std::string Title;
 			u32 Width, Height;
 			bool bVsync;
-			bool bResizable = false;
+			bool bResizable = true;
 
 			// EventCallbackFn EventCallback;
 		};

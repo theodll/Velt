@@ -22,6 +22,7 @@ namespace Editor {
 		float m_CameraRot{};
 
 		Velt::Ref<Velt::Model> m_Cube;
+		Velt::Ref<Velt::Material> m_Material;
 		int index{1};
 
 		glm::vec3 m_Rotation{-25.f, 45.f, 25.f};

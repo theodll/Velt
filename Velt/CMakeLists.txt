@@ -71,6 +71,8 @@ add_library(Velt SHARED
         "src/Velt/Renderer/UniformBuffer.cpp"
         "src/Velt/Platform/Vulkan/Buffer/VulkanUniformBuffer.h"
         "src/Velt/Platform/Vulkan/Buffer/VulkanUniformBuffer.cpp"
+        "src/Velt/Platform/Vulkan/DescriptorSetManager.h"
+        "src/Velt/Platform/Vulkan/DescriptorSetManager.cpp"
         "src/Velt/Renderer/OrthographicCamera.h"
         "src/Velt/Renderer/OrthographicCamera.cpp"
  "src/Velt/Core/Timestep.h" "src/Velt/Core/Input.h" "src/Velt/Core/Scancodes.h" "src/Velt/Platform/SDL/SDLInput.h" "src/Velt/Platform/SDL/SDLInput.cpp" "src/Velt/Core/Input.cpp"
@@ -83,7 +85,9 @@ add_library(Velt SHARED
         src/Velt/Platform/SDL/SDLEventTranslator.h
         src/Velt/Events/KeyEvents.h
         src/Velt/Events/MouseEvents.h
-  "src/Velt/Renderer/Mesh.cpp" "src/Velt/Renderer/Mesh.h" "src/Velt/Renderer/Model.h" "src/Velt/Renderer/Model.cpp")
+  "src/Velt/Renderer/Mesh.cpp" "src/Velt/Renderer/Mesh.h" "src/Velt/Renderer/Model.h" "src/Velt/Renderer/Model.cpp" 
+ "src/Velt/Platform/Vulkan/DescriptorLayoutCache.cpp"
+"src/Velt/Platform/Vulkan/DescriptorLayoutCache.h" "src/Velt/Renderer/Material.h" "src/Velt/Core/Math.h" "src/Velt/Renderer/Material.cpp")
 
 if(WIN32 OR UNIX)
     set(SHADER_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Shaders)

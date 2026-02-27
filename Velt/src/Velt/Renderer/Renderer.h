@@ -1,10 +1,12 @@
 #pragma once
 #include "vtpch.h"
+#include "Core/Core.h"
 #include "RenderCommandBuffer.h"
 #include "VertexBuffer.h"
 #include "SceneRenderer.h"
 #include "IndexBuffer.h"
 #include "RenderAPI.h"
+#include "Material.h"
 #include "Model.h"
 
 namespace Velt
@@ -36,8 +38,8 @@ namespace Velt
 		static void BeginGuiPass();
 		static void EndGuiPass();
 
-		static void DrawQuad(VkCommandBuffer& renderCommandBuffer, const glm::mat4& transform = glm::mat4(1.0f));
-		static void DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model>& model);
+		static void DrawQuad(VkCommandBuffer& renderCommandBuffer, const Matrix& transform = glm::mat4(1.0f));
+		static void DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model> model, const Ref<Material> material);
 		
 		inline static RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); };
 

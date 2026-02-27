@@ -1,25 +1,68 @@
 #pragma once
 #include "Velt/Core/Core.h"
+#include <SDL3/SDL.h>
 
 namespace Velt
 {
+
+    struct SwapchainExtent
+    {
+        u32 Height;
+        u32 Width;
+    };
+
+    struct SwapchainCreateInfo
+    {
+        u32 Width;
+        u32 Height;
+        bool VSync;
+    };
+
+    struct SwapchainCommandBuffer
+    {
+        VkCommandBuffer CommandBuffer = nullptr;
+        VkCommandPool CommandPool = nullptr;
+    };
+
+    struct SwapchainImage
+    {
+        VkImage Image = nullptr;
+        VkImageView ImageView = nullptr;
+    };
+
+    struct DepthStencilImage
+    {
+        VkImage DepthImage = nullptr;
+        VkDeviceMemory DepthImageMemory = nullptr;
+        VkImageView DepthImageView = nullptr;
+    };
+
 	class VELT_API Swapchain
 	{
 	public:
-		virtual ~Swapchain() = default;
+        virtual void Init(SwapchainCreateInfo& createInfo) = 0;
+        virtual void InitSurface(SDL_Window* windowHandle) = 0;
+        virtual void Create(SwapchainCreateInfo& createInfo) = 0;
+        virtual void Destroy() = 0;
 
-		virtual void* GetFramebuffer(int index) = 0;
-		virtual void* GetRenderPass() = 0;
-		virtual void* GetImageView(int index) = 0;
-		virtual size_t GetImageCount() const = 0;
-		virtual u32 GetWidth() const = 0;
-		virtual u32 GetHeight() const = 0;
-		virtual float GetAspectRatio() const = 0;
+        virtual void OnResize(SwapchainExtent& extend) = 0;
 
-		virtual int AcquireNextImage(u32& imageIndex) = 0;
-		virtual int SubmitCommandBuffers(const void* buffers, u32* imageIndex) = 0;
+        virtual void BeginFrame() = 0;
+        virtual void Present() = 0;
 
-		static Ref<Swapchain> Create(void* device, void* windowExtent);
-		static Ref<Swapchain> Create(void* device, void* windowExtent, Ref<Swapchain> oldSwapchain);
+        inline virtual u32 GetWidth() const = 0;
+        inline virtual u32 GetHeight() const = 0;
+        inline virtual u32 GetImageCount() const = 0;
+        inline virtual u32 GetMaxFrameInFlight() const = 0;
+        inline virtual float GetAspectRatio() const = 0;
+
+        inline virtual u32 GetCurrentFrameIndex() const = 0;
+        inline virtual u32 GetCurrentImageIndex() const = 0;
+        inline virtual bool IsFirstFrameForImage(u32 imageIndex) const = 0;
+
+        inline virtual SwapchainImage GetSwapchainImage(int index) = 0;
+        inline virtual SwapchainImage GetCurrentSwapchainImage() = 0;
+        inline virtual VkCommandBuffer GetCurrentDrawCommandBuffer() = 0;
+
 	};
 }
