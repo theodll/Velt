@@ -3,7 +3,6 @@
 #include "vtpch.h"
 #include "Velt/Layers/Layer.h"
 #include "ImGuiRenderer.h"
-#include "Widgets/DemoWidget.h"
 #include "SceneViewport.h"
 
 #include "Velt/Platform/Vulkan/VulkanDevice.h"	
@@ -21,13 +20,13 @@ namespace Velt {
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
-		virtual void OnEvent(Event& event) override;
+		virtual void OnEvent(Event& rEvent) override;
 		virtual void OnUpdate(Timestep ts) override;
 		
 		virtual void OnRender(VkCommandBuffer commandBuffer) override;
 		virtual void OnImGuiRender() override;
 
-		static void ProcessSDLEvent(const SDL_Event* event);
+		static void ProcessSDLEvent(const SDL_Event* pEvent);
 
 		static void Begin();
 		static void End();
@@ -50,8 +49,6 @@ namespace Velt {
 		static u32 m_PendingViewportW;
 		static u32 m_PendingViewportH;
 		static bool m_ViewportResizePending;
-
-		DemoWidget m_DemoWidget;
 
 	}; 
 }

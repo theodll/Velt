@@ -16,8 +16,7 @@ namespace Velt {
 	public:
 		ImGuiRenderer();
 		~ImGuiRenderer() = default;
-
-		
+	
 		void Init();
 		// void Render(VkCommandBuffer commandBuffer);
 		void Shutdown();

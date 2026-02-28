@@ -29,8 +29,6 @@ namespace Velt {
 
 	void SceneViewport::Resize(u32 width, u32 height)
 	{
-		VT_PROFILE_FUNCTION();
-
 		if (width == m_Width && height == m_Height)
 			return;
 
@@ -45,7 +43,6 @@ namespace Velt {
 	{
 		VT_PROFILE_FUNCTION();
 
-		// Create image
 		VkImageCreateInfo imageInfo{};
 		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 		imageInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -63,7 +60,6 @@ namespace Velt {
 
 		m_Device.createImageWithInfo(imageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_Image, m_ImageMemory);
 
-		// Create image view
 		VkImageViewCreateInfo viewInfo{};
 		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 		viewInfo.image = m_Image;
@@ -80,7 +76,6 @@ namespace Velt {
 			VT_CORE_ERROR("Failed to create image view for scene viewport!");
 		}
 
-		// Create sampler
 		VkSamplerCreateInfo samplerInfo{};
 		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 		samplerInfo.magFilter = VK_FILTER_LINEAR;
@@ -101,7 +96,6 @@ namespace Velt {
 			VT_CORE_ERROR("Failed to create sampler for scene viewport!");
 		}
 
-		// Transition image to SHADER_READ_ONLY_OPTIMAL for the first time
 		auto& resourceUploader = RHI::VulkanContext::GetResourceUploader();
 		resourceUploader.Begin();
 

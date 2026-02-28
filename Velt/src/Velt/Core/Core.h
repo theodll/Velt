@@ -13,7 +13,7 @@ typedef int16_t i16;
 typedef int32_t i32;
 typedef int64_t i64;
 
-constexpr i64 MAX_FRAMES_IN_FLIGHT{ 3 };
+constexpr u32 MAX_FRAMES_IN_FLIGHT{ 3 };
 
 #if VT_PLATFORM_WINDOWS
 	#ifdef VT_BUILD_DLL

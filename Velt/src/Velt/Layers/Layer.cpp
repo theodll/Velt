@@ -8,7 +8,7 @@
 
 namespace Velt
 {
-    Layer::Layer(const std::string& debugName) : m_DebugName(debugName)
+    Layer::Layer(const std::string& rDebugName) : m_DebugName(rDebugName)
     {
         VT_PROFILE_FUNCTION();
     }

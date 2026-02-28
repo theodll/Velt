@@ -21,28 +21,28 @@ namespace Velt
         }
     }
 
-    void LayerStack::PushLayer(Layer* layer)
+    void LayerStack::PushLayer(Layer* pLayer)
     {
         VT_PROFILE_FUNCTION();
-        m_LayerInsertIndex = m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer) - m_Layers.begin();
+        m_LayerInsertIndex = m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, pLayer) - m_Layers.begin();
         ++m_LayerInsertIndex;
-        layer->OnAttach();
+        pLayer->OnAttach();
     }
 
-    void LayerStack::PushOverlay(Layer* overlay)
+    void LayerStack::PushOverlay(Layer* pOverlay)
     {
         VT_PROFILE_FUNCTION();
-        m_Layers.emplace_back(overlay);
-        overlay->OnAttach();
+        m_Layers.emplace_back(pOverlay);
+        pOverlay->OnAttach();
     }
 
-    void LayerStack::PopLayer(Layer* layer)
+    void LayerStack::PopLayer(Layer* pLayer)
     {
         VT_PROFILE_FUNCTION();
-        auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
+        auto it = std::find(m_Layers.begin(), m_Layers.end(), pLayer);
         if (it != m_Layers.end()) {
             const auto index = it - m_Layers.begin();
-            layer->OnDetach();
+            pLayer->OnDetach();
             m_Layers.erase(it);
             if (m_LayerInsertIndex > 0 && index < m_LayerInsertIndex) {
                 --m_LayerInsertIndex;
@@ -50,12 +50,12 @@ namespace Velt
         }
     }
 
-    void LayerStack::PopOverlay(Layer* overlay)
+    void LayerStack::PopOverlay(Layer* pOverlay)
     {
         VT_PROFILE_FUNCTION();
-        auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);
+        auto it = std::find(m_Layers.begin(), m_Layers.end(), pOverlay);
         if (it != m_Layers.end()) {
-            overlay->OnDetach();
+            pOverlay->OnDetach();
             m_Layers.erase(it);
         }
     }

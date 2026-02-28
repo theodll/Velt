@@ -18,8 +18,6 @@ Velt::Application* Velt::Application::s_Instance;
 
 namespace Velt {
 
-
-
 	VkFormat ShaderDataTypeToVulkanBaseType(ShaderDataType type) {
 		switch(type) {
 			case ShaderDataType::Float:   return VK_FORMAT_R32_SFLOAT;
@@ -59,7 +57,6 @@ namespace Velt {
 
 	void Application::OnEvent(Event& e)
 	{
-		VT_PROFILE_FUNCTION();
 		EventDispatcher dispatcher(e);
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
@@ -95,7 +92,7 @@ namespace Velt {
 
 	void Application::Init() 
 	{
-
+		VT_PROFILE_FUNCTION();
 		m_Context->Init(); 
 		m_Window->CreateSwapchain(); 
 		Renderer::Init();
@@ -107,15 +104,12 @@ namespace Velt {
 
 	void Application::Run()
 	{
-		VT_PROFILE_FUNCTION();
-		
 		bool running = true;
 		for (Layer* layer : m_LayerStack)
 						layer->Init();
 
 		while (running)
 		{
-			VT_PROFILE_SCOPE("Application::Run Loop");
 			// TODO: Move to a Platform Independent Place
 
 			static const double invFreq = 1.0 / (double)SDL_GetPerformanceFrequency();

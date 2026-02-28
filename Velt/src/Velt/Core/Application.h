@@ -24,7 +24,7 @@ namespace Velt
 		
 			void OnEvent(Event& e);
 		
-			static inline Application& Get() { if (s_Instance) { return *s_Instance; } else VT_CORE_ASSERT(s_Instance, "Application Instance is null.") }
+			static inline Application* Get() { if (s_Instance) { return s_Instance; } else VT_CORE_ASSERT(s_Instance, "Application Instance is null.") }
 			static inline void UpdateTitle(std::string s, bool updateTitle = true)
 			{
 				if (updateTitle)
@@ -36,7 +36,7 @@ namespace Velt
 			void RenderImGui();
 			void PushLayer(Layer* layer);
 			void PushOverlay(Layer* overlay);
-			Window& GetWindow() { return *m_Window; }
+			Window* GetWindow() { return m_Window.get(); }
 
 			void RenderStatisticsWidget(Timestep ts);
 		
@@ -47,22 +47,16 @@ namespace Velt
 			std::string TITLE { "Velt Engine" };
 
 	private:
-		// Window Things
 		static Application* s_Instance;
-		std::unique_ptr<RHI::VulkanContext> m_Context;
-		std::unique_ptr<Window> m_Window;
+		Scope<RHI::VulkanContext> m_Context;
+		Scope<Window> m_Window;
 		
-		// Layers
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer = nullptr;
 
-		// Misc 
 		double m_LastFrameTime;
 
-		// Properties
-		WindowProps m_WindowProps;
-
-		
+		WindowProps m_WindowProps;		
 	};
 
 	Application* CreateApplication();
