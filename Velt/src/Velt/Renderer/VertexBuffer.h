@@ -1,5 +1,6 @@
 #pragma once
 #include "Velt/Core/Core.h"
+#include "Core/Math.h"
 #include "Buffer.h"
 
 namespace Velt
@@ -7,13 +8,13 @@ namespace Velt
 
     struct VertexBufferElement
     {
-        void* data;
+        void* Data;
         u32 Size;
     };
 
     struct Vertex
     {
-        glm::vec3 position;
+        Vector Position;
     };
 
 
@@ -30,6 +31,6 @@ namespace Velt
         virtual BufferLayout GetLayout() const = 0;
         virtual VkBuffer GetVulkanBuffer() const = 0;
         
-        static std::shared_ptr<VertexBuffer> Create(void* vertexData, u64 vertexCount, u64 vertexStride, bool autoupload = false); 
+        static Ref<VertexBuffer> Create(void* vertexData, u64 vertexCount, u64 vertexStride, bool autoupload = false); 
     };
 } 

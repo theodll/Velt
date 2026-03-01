@@ -10,43 +10,42 @@
 
 namespace Velt::SDL {
 
-    inline std::unique_ptr<Event> TranslateSDLEvent(const SDL_Event& e) {
-        ImGuiLayer::ProcessSDLEvent(&e);
-        Input::ProcessEvent(e);
+    inline Scope<Event> TranslateSDLEvent(const SDL_Event* pEvent) {
+        ImGuiLayer::ProcessSDLEvent(pEvent);
+        Input::ProcessEvent(pEvent);
 
-        switch (e.type) {
+        switch (pEvent->type) {
 
             case SDL_EVENT_QUIT:
-                return std::make_unique<WindowCloseEvent>();
+                return CreateScope<WindowCloseEvent>();
 
             case SDL_EVENT_WINDOW_RESIZED:
             case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
-                return std::make_unique<WindowResizeEvent>(
-                    (int)e.window.data1, (int)e.window.data2
+                return CreateScope<WindowResizeEvent>(
+                    (int)pEvent->window.data1, (int)pEvent->window.data2
                 );
             case SDL_EVENT_KEY_DOWN: {
-                const bool repeat = e.key.repeat != 0;
-                return std::make_unique<KeyPressedEvent>((int)e.key.key, repeat);
+                const bool repeat = pEvent->key.repeat != 0;
+                return CreateScope<KeyPressedEvent>((int)pEvent->key.key, repeat);
             }
 
             case SDL_EVENT_KEY_UP:
-                return std::make_unique<KeyReleasedEvent>((int)e.key.key);
+                return CreateScope<KeyReleasedEvent>((int)pEvent->key.key);
 
             case SDL_EVENT_MOUSE_MOTION:
-                return std::make_unique<MouseMovedEvent>((float)e.motion.x, (float)e.motion.y);
+                return CreateScope<MouseMovedEvent>((float)pEvent->motion.x, (float)pEvent->motion.y);
 
             case SDL_EVENT_MOUSE_WHEEL:
-                return std::make_unique<MouseScrolledEvent>((float)e.wheel.x, (float)e.wheel.y);
+                return CreateScope<MouseScrolledEvent>((float)pEvent->wheel.x, (float)pEvent->wheel.y);
 
             case SDL_EVENT_MOUSE_BUTTON_DOWN:
-                return std::make_unique<MouseButtonPressedEvent>((int)e.button.button);
+                return CreateScope<MouseButtonPressedEvent>((int)pEvent->button.button);
 
             case SDL_EVENT_MOUSE_BUTTON_UP:
-                return std::make_unique<MouseButtonReleasedEvent>((int)e.button.button);
+                return CreateScope<MouseButtonReleasedEvent>((int)pEvent->button.button);
 
             default:
                 return nullptr;
         }
     }
-
-} // namespace Velt
+} 

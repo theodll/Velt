@@ -1,7 +1,7 @@
 #include "RenderCommandBuffer.h"
 #include "Renderer.h"
-#include "Platform/Vulkan/VulkanCommandBuffer.h"
 
+/*
 namespace Velt 
 {
 	Ref<RenderCommandBuffer> RenderCommandBuffer::Create()
@@ -15,4 +15,4 @@ namespace Velt
 		VT_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;
 	}
-}
+} */

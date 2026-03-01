@@ -12,12 +12,12 @@ namespace Velt::RHI
 	{
 		VT_PROFILE_FUNCTION();
 
-		auto& device = VulkanContext::GetDevice();
+		const auto& device = VulkanContext::GetDevice();
 
 		if (m_UseStaging)
 		{
-			device.createBuffer(
-				device.device(),
+			device->CreateBuffer(
+				device->device(),
 				size,
 				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 				VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -27,8 +27,8 @@ namespace Velt::RHI
 		}
 		else
 		{
-			device.createBuffer(
-				device.device(),
+			device->CreateBuffer(
+				device->device(),
 				size,
 				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
 				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
@@ -36,7 +36,7 @@ namespace Velt::RHI
 				m_UniformBufferMemory
 			);
 
-			VkResult res = vkMapMemory(device.device(), m_UniformBufferMemory, 0, size, 0, &m_Mapped);
+			VkResult res = vkMapMemory(device->device(), m_UniformBufferMemory, 0, size, 0, &m_Mapped);
 			VT_CORE_ASSERT(res == VK_SUCCESS && m_Mapped != nullptr, "Failed to map uniform buffer memory!");
 		}
 	}
@@ -45,10 +45,10 @@ namespace Velt::RHI
 	{
 		VT_PROFILE_FUNCTION();
 
-		auto device = VulkanContext::GetDevice();
+		const auto& device = VulkanContext::GetDevice();
 		if (m_Mapped)
 		{
-			vkUnmapMemory(device.device(), m_UniformBufferMemory);
+			vkUnmapMemory(device->device(), m_UniformBufferMemory);
 			m_Mapped = nullptr;
 		}
 
@@ -56,8 +56,8 @@ namespace Velt::RHI
 
 		if (m_UniformBuffer != VK_NULL_HANDLE)
 		{
-			vkDestroyBuffer(device.device(), m_UniformBuffer, nullptr);
-			vkFreeMemory(device.device(), m_UniformBufferMemory, nullptr);
+			vkDestroyBuffer(device->device(), m_UniformBuffer, nullptr);
+			vkFreeMemory(device->device(), m_UniformBufferMemory, nullptr);
 			m_UniformBuffer = VK_NULL_HANDLE;
 			m_UniformBufferMemory = VK_NULL_HANDLE;
 		}
@@ -69,8 +69,8 @@ namespace Velt::RHI
 
 		if (m_StagingBuffer != VK_NULL_HANDLE)
 		{
-			vkDestroyBuffer(device.device(), m_StagingBuffer, nullptr);
-			vkFreeMemory(device.device(), m_StagingBufferMemory, nullptr);
+			vkDestroyBuffer(device->device(), m_StagingBuffer, nullptr);
+			vkFreeMemory(device->device(), m_StagingBufferMemory, nullptr);
 			m_StagingBuffer = VK_NULL_HANDLE;
 			m_StagingBufferMemory = VK_NULL_HANDLE;
 			m_StagingBufferSize = 0;
@@ -79,14 +79,14 @@ namespace Velt::RHI
 
 	void VulkanUniformBuffer::CreateOrResizeStaging(u64 size)
 	{
-		auto& device = VulkanContext::GetDevice();
+		const auto& device = VulkanContext::GetDevice();
 
 		if (m_StagingBuffer == VK_NULL_HANDLE || m_StagingBufferSize < size)
 		{
 			DestroyStaging();
 
-			device.createBuffer(
-				device.device(),
+			device->CreateBuffer(
+				device->device(),
 				size,
 				VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
@@ -109,7 +109,7 @@ namespace Velt::RHI
 		m_UploadSize = size;
 		m_Offset = offset;
 
-		auto& device = VulkanContext::GetDevice();
+		const auto& device = VulkanContext::GetDevice();
 
 		if (!m_UseStaging)
 		{
@@ -121,11 +121,11 @@ namespace Velt::RHI
 		CreateOrResizeStaging(size);
 
 		void* mapped = nullptr;
-		VkResult res = vkMapMemory(device.device(), m_StagingBufferMemory, 0, size, 0, &mapped);
-		VT_CORE_ASSERT(res == VK_SUCCESS && mapped != nullptr, "Failed to map staging buffer memory!");
+		VkResult res = vkMapMemory(device->device(), m_StagingBufferMemory, 0, size, 0, &mapped);
+		VT_CORE_ASSERT(res == VK_SUCCESS && mapped != nullptr, "Failed to map staging buffer memory");
 
 		std::memcpy(mapped, data, static_cast<size_t>(size));
-		vkUnmapMemory(device.device(), m_StagingBufferMemory);
+		vkUnmapMemory(device->device(), m_StagingBufferMemory);
 	}
 
 	void VulkanUniformBuffer::Upload(VkCommandBuffer commandBuffer)

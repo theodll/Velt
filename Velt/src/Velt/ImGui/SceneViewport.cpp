@@ -6,7 +6,7 @@
 
 namespace Velt {
 
-	SceneViewport::SceneViewport() : m_Width(0), m_Height(0), m_Device(RHI::VulkanContext::GetDevice())
+	SceneViewport::SceneViewport() : m_Width(0), m_Height(0), m_Device(*RHI::VulkanContext::GetDevice())
 	{
 
 	}
@@ -58,7 +58,7 @@ namespace Velt {
 		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
-		m_Device.createImageWithInfo(imageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_Image, m_ImageMemory);
+		m_Device.CreateImageWithInfo(imageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_Image, m_ImageMemory);
 
 		VkImageViewCreateInfo viewInfo{};
 		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -96,8 +96,8 @@ namespace Velt {
 			VT_CORE_ERROR("Failed to create sampler for scene viewport!");
 		}
 
-		auto& resourceUploader = RHI::VulkanContext::GetResourceUploader();
-		resourceUploader.Begin();
+		const auto& resourceUploader = RHI::VulkanContext::GetResourceUploader();
+		resourceUploader->Begin();
 
 		VkImageMemoryBarrier barrier{};
 		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -115,7 +115,7 @@ namespace Velt {
 		barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 
 		vkCmdPipelineBarrier(
-			resourceUploader.GetCommandBuffer(),
+			resourceUploader->GetCommandBuffer(),
 			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
 			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
 			0,
@@ -124,7 +124,7 @@ namespace Velt {
 			1, &barrier
 		);
 
-		resourceUploader.End();
+		resourceUploader->End();
 		CreateDescriptorSet();
 	}
 

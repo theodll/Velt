@@ -128,7 +128,7 @@ namespace Velt {
 			SDL_Event sdl;
 			while (SDL_PollEvent(&sdl))
 			{
-				if (auto evt = SDL::TranslateSDLEvent(sdl)) {
+				if (auto evt = SDL::TranslateSDLEvent(&sdl)) {
 					OnEvent(*evt);
 				}
 			}
@@ -144,11 +144,11 @@ namespace Velt {
 					continue;
 				}
 
-				auto& swapchain = m_Window->GetSwapchain();
-				if ((u32)pixelW != swapchain.GetWidth() || (u32)pixelH != swapchain.GetHeight())
+				const auto& swapchain = m_Window->GetSwapchain();
+				if ((u32)pixelW != swapchain->GetWidth() || (u32)pixelH != swapchain->GetHeight())
 				{
 					SwapchainExtent extent{ (u32)pixelW, (u32)pixelH };
-					swapchain.OnResize(extent);
+					swapchain->OnResize(&extent);
 				}
 			}
 
@@ -163,7 +163,7 @@ namespace Velt {
 			// Scene Pass
 
 			for (Layer* layer : m_LayerStack)
-				layer->OnRender(m_Window->GetSwapchain().GetCurrentDrawCommandBuffer());
+				layer->OnRender(m_Window->GetSwapchain()->GetCurrentDrawCommandBuffer());
 			
 			Renderer::EndScenePass();
 			Renderer::BeginGuiPass();
@@ -205,7 +205,7 @@ namespace Velt {
 		ImGui::Text("Camera Position: X: %.2f Y: %.2f Z: %.2f", SceneRenderer::GetCamera()->GetPosition().x, SceneRenderer::GetCamera()->GetPosition().y, SceneRenderer::GetCamera()->GetPosition().z);
 		ImGui::End();
 
-		Velt::Application::UpdateTitle(Velt::Application::Get().TITLE + " - " + std::to_string((int)s), false);
+		Velt::Application::UpdateTitle(Velt::Application::Get()->TITLE + " - " + std::to_string((int)s), false);
 	}
 
 

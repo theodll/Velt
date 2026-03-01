@@ -36,7 +36,7 @@ namespace Velt {
 		VT_CORE_TRACE("Attach ImGuiLayer");
 
 
-		auto& device = RHI::VulkanContext::GetDevice();
+		const auto& device = RHI::VulkanContext::GetDevice();
 		SDL_Window* window = nullptr;
 	
 		window = reinterpret_cast<SDL_Window*>(Application::Get()->GetWindow()->GetNativeHandle());
@@ -208,7 +208,7 @@ namespace Velt {
 	{
 		VT_PROFILE_FUNCTION();
 
-		auto&& cmd = Velt::Application::Get()->GetWindow()->GetSwapchain().GetCurrentDrawCommandBuffer();
+		auto&& cmd = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentDrawCommandBuffer();
 		m_Renderer->RenderDrawData(cmd);
 	}
 }

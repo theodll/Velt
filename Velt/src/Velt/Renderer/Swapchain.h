@@ -40,12 +40,12 @@ namespace Velt
 	class VELT_API Swapchain
 	{
 	public:
-        virtual void Init(SwapchainCreateInfo& createInfo) = 0;
-        virtual void InitSurface(SDL_Window* windowHandle) = 0;
-        virtual void Create(SwapchainCreateInfo& createInfo) = 0;
+        virtual void Init(SwapchainCreateInfo* pCreateInfo) = 0;
+        virtual void InitSurface(SDL_Window* pWindowHandle) = 0;
+        virtual void Create(SwapchainCreateInfo* pCreateInfo) = 0;
         virtual void Destroy() = 0;
 
-        virtual void OnResize(SwapchainExtent& extend) = 0;
+        virtual void OnResize(SwapchainExtent* pExtend) = 0;
 
         virtual void BeginFrame() = 0;
         virtual void Present() = 0;

@@ -34,7 +34,7 @@ namespace Velt
 		virtual VkPipelineLayout& GetVulkanPipelineLayout() = 0;
 		virtual const std::vector<VkDescriptorSetLayout>& GetSetLayouts() const = 0;
 
-		static Ref<Pipeline> Create(const PipelineSpecification& spec);
+		static Ref<Pipeline> Create(const PipelineSpecification* pSpec);
 	};
 
 }

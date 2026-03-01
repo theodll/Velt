@@ -2,7 +2,6 @@
 
 #include "vtpch.h"
 #include "Velt/Core/Core.h"
-#include "VulkanCommandBuffer.h"
 
 namespace Velt::RHI {
 
@@ -37,7 +36,7 @@ namespace Velt::RHI {
 		~VulkanDevice();
 
 
-		VkCommandPool getCommandPool() { return m_CommandPool; }
+		VkCommandPool GetCommandPool() { return m_CommandPool; }
 		VkDevice& device() { return m_Device; }
 		VkSurfaceKHR surface() { return m_Surface; }
 		VkQueue graphicsQueue() { return m_GraphicsQueue; }
@@ -54,7 +53,7 @@ namespace Velt::RHI {
 			const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
 		// Buffer Helper Functions
-		void createBuffer(
+		void CreateBuffer(
 			VkDevice& device,
 			VkDeviceSize size,
 			VkBufferUsageFlags usage,
@@ -62,13 +61,13 @@ namespace Velt::RHI {
 			VkBuffer& buffer,
 			VkDeviceMemory& bufferMemory);
 
-		VkCommandBuffer beginSingleTimeCommands();
-		void endSingleTimeCommands(VkCommandBuffer commandBuffer);
-		void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-		void copyBufferToImage(
+		VkCommandBuffer BeginSingleTimeCommands();
+		void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
+		void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+		void CopyBufferToImage(
 			VkBuffer buffer, VkImage image, u32 width, u32 height, u32 layerCount);
 
-		void createImageWithInfo(
+		void CreateImageWithInfo(
 			const VkImageCreateInfo& imageInfo,
 			VkMemoryPropertyFlags properties,
 			VkImage& image,
@@ -80,12 +79,12 @@ namespace Velt::RHI {
        
 
 	private:
-		void pickPhysicalDevice();
-		void createLogicalDevice();
-		void createCommandPool();
+		void PickPhysicalDevice();
+		void CreateLogicalDevice();
+		void CreateCommandPool();
 
 		// helper functions
-		bool isDeviceSuitable(VkPhysicalDevice device);
+		bool IsDeviceSuitable(VkPhysicalDevice device);
 		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 		SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
 		

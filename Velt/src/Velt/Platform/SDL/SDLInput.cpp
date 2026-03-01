@@ -24,19 +24,19 @@ namespace Velt::SDL
 		return s_Down[(size_t)code];
 	}
 
-	void Input::ProcessEventImpl(const SDL_Event& e)
+	void Input::ProcessEventImpl(const SDL_Event* pEvent)
 	{
 		VT_PROFILE_FUNCTION();
-		switch (e.type)
+		switch (pEvent->type)
 		{
 		case SDL_EVENT_KEY_DOWN:
 		{
-			HandleKeyDown(e);
+			HandleKeyDown(pEvent);
 			break;
 		}
 		case SDL_EVENT_KEY_UP:
 		{
-			HandleKeyUp(e);
+			HandleKeyUp(pEvent);
 			break;
 		};
 		}
@@ -51,12 +51,12 @@ namespace Velt::SDL
 		s_Down.fill(false);
 	}
 
-	void Input::HandleKeyDown(const SDL_Event& e)
+	void Input::HandleKeyDown(const SDL_Event* pEvent)
 	{
 		VT_PROFILE_FUNCTION();
-		if (!e.key.repeat)
+		if (!pEvent->key.repeat)
 		{
-			SDL_Scancode sc = e.key.scancode;
+			SDL_Scancode sc = pEvent->key.scancode;
 
 			if (!s_Down[sc])
 				s_Pressed[sc] = true;
@@ -65,11 +65,11 @@ namespace Velt::SDL
 		}
 	}
 
-	void Input::HandleKeyUp(const SDL_Event& e)
+	void Input::HandleKeyUp(const SDL_Event* pEvent)
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Key Up Handeled");
-		SDL_Scancode sc = e.key.scancode;
+		SDL_Scancode sc = pEvent->key.scancode;
 
 		if (s_Down[sc])
 			s_Released[sc] = true;

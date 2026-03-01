@@ -15,8 +15,6 @@ namespace Velt {
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Init SceneRenderer");
 
-
-
 		BufferLayout layout
 		{
 				{ ShaderDataType::Float3, "a_Position" }
@@ -57,7 +55,7 @@ namespace Velt {
 			specs.Layout = layout;
 
 
-			s_Pipeline = Pipeline::Create(specs);
+			s_Pipeline = Pipeline::Create(&specs);
 			s_Pipeline->Init();
 		}
 		
@@ -87,9 +85,9 @@ namespace Velt {
 		);
 		m_Camera->SetRotation(0);
 
-		auto& sc = Velt::Application::Get().GetWindow().GetSwapchain();
+		const auto& sc = Velt::Application::Get()->GetWindow()->GetSwapchain();
 
-		const u32 mfif = sc.GetMaxFrameInFlight();
+		const u32 mfif = sc->GetMaxFrameInFlight();
 		m_CameraUBOs.resize(mfif);
 		m_GlobalSets.resize(mfif);
 		for (u32 i = 0; i < mfif; i++)
@@ -147,8 +145,8 @@ namespace Velt {
 
 		// m_Camera->SetRotation(m_Rotation);
 		m_Rotation++;
-		auto cmd = Velt::Application::Get().GetWindow().GetSwapchain().GetCurrentDrawCommandBuffer();
-		auto frameIndex = Velt::Application::Get().GetWindow().GetSwapchain().GetCurrentFrameIndex();
+		auto cmd = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentDrawCommandBuffer();
+		auto frameIndex = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex();
 		auto pipelineLayout = s_Pipeline->GetVulkanPipelineLayout();
 
 		CameraUBO ubo{};
@@ -174,7 +172,6 @@ namespace Velt {
 
 	void SceneRenderer::EndScene()
 	{
-		VT_PROFILE_FUNCTION();
 	}
 
 }

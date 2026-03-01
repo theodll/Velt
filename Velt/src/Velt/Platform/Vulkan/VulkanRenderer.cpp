@@ -37,11 +37,11 @@ namespace Velt::RHI
 		s_RenderData->QuadIndexBuffer = IndexBuffer::Create(quadIndices.data(), quadIndices.size());
 
 		// Upload quad buffers
-		auto& uploader = VulkanContext::GetResourceUploader();
-		uploader.Begin();
-		s_RenderData->QuadVertexBuffer->Upload(uploader.GetCommandBuffer());
-		s_RenderData->QuadIndexBuffer->Upload(uploader.GetCommandBuffer());
-		uploader.End();
+		const auto& uploader = VulkanContext::GetResourceUploader();
+		uploader->Begin();
+		s_RenderData->QuadVertexBuffer->Upload(uploader->GetCommandBuffer());
+		s_RenderData->QuadIndexBuffer->Upload(uploader->GetCommandBuffer());
+		uploader->End();
 	}
 
 	void VulkanRenderer::Shutdown()
@@ -53,12 +53,12 @@ namespace Velt::RHI
 		// Handle any pending viewport resize before starting command recording
 		ImGuiLayer::ProcessPendingResize();
 		
-		auto& app = Velt::Application::Get();
-		auto& window = app.GetWindow();
-		auto& swapchain = window.GetSwapchain();
+		const auto& app = Velt::Application::Get();
+		const auto& window = app->GetWindow();
+		const auto& swapchain = window->GetSwapchain();
 
-		swapchain.BeginFrame();
-		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
+		swapchain->BeginFrame();
+		auto&& currentCommandBuffer = swapchain->GetCurrentDrawCommandBuffer();
 
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -70,13 +70,13 @@ namespace Velt::RHI
 
 	void VulkanRenderer::BeginScenePass() 
 	{
-		auto& app = Velt::Application::Get();
-		auto& window = app.GetWindow();
-		auto& sc = window.GetSwapchain();
-		auto&& cmd = sc.GetCurrentDrawCommandBuffer();
-		auto* viewport = ImGuiLayer::GetViewport();
+		const auto& app = Velt::Application::Get();
+		const auto& window = app->GetWindow();
+		const auto& sc = window->GetSwapchain();
+		const auto&& cmd = sc->GetCurrentDrawCommandBuffer();
+		const auto* viewport = ImGuiLayer::GetViewport();
 
-		sc.TransitionImageLayout(
+		sc->TransitionImageLayout(
     	cmd,
     	viewport->GetImage(),
     	VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
@@ -126,10 +126,10 @@ namespace Velt::RHI
 
 	void VulkanRenderer::EndScenePass() 
 	{
-		auto& app = Velt::Application::Get();
-		auto& window = app.GetWindow();
-		auto& sc = window.GetSwapchain();
-		auto&& cmd = sc.GetCurrentDrawCommandBuffer();
+		const auto& app = Velt::Application::Get();
+		const auto& window = app->GetWindow();
+		const auto& sc = window->GetSwapchain();
+		const auto&& cmd = sc->GetCurrentDrawCommandBuffer();
 
 		vkCmdEndRendering(cmd);
 
@@ -137,7 +137,7 @@ namespace Velt::RHI
 		auto* viewport = ImGuiLayer::GetViewport();
 		VkImage sceneImg = viewport->GetImage();
 
-		sc.TransitionImageLayout(
+		sc->TransitionImageLayout(
 			cmd,
 			sceneImg,
 			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
@@ -149,19 +149,19 @@ namespace Velt::RHI
 
 	void VulkanRenderer::BeginGuiPass()
 	{
-		auto& app = Velt::Application::Get();
-		auto& window = app.GetWindow();
-		auto& sc = window.GetSwapchain();
-		auto&& cmd = sc.GetCurrentDrawCommandBuffer();
-
-		auto&& img = sc.GetCurrentSwapchainImage(); 
+		const auto& app = Velt::Application::Get();
+		const auto& window = app->GetWindow();
+		const auto& sc = window->GetSwapchain();
+		const auto&& cmd = sc->GetCurrentDrawCommandBuffer();
+		const 
+		const auto&& img = sc->GetCurrentSwapchainImage(); 
 
 		// On first frame for this image, it's in UNDEFINED layout, not PRESENT_SRC_KHR
-		VkImageLayout oldLayout = sc.IsFirstFrameForImage(sc.GetCurrentImageIndex()) 
+		VkImageLayout oldLayout = sc->IsFirstFrameForImage(sc->GetCurrentImageIndex()) 
 			? VK_IMAGE_LAYOUT_UNDEFINED 
 			: VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-		sc.TransitionImageLayout(
+		sc->TransitionImageLayout(
 			cmd,
 			img.Image,
 			oldLayout,
@@ -175,7 +175,7 @@ namespace Velt::RHI
 
 		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
 		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
-		colorAttachmentInfo.imageView = sc.GetCurrentSwapchainImage().ImageView;
+		colorAttachmentInfo.imageView = sc->GetCurrentSwapchainImage().ImageView;
 		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 		colorAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		colorAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -183,7 +183,7 @@ namespace Velt::RHI
 
 		VkRenderingInfoKHR renderInfo{};
 		renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
-		renderInfo.renderArea.extent = { sc.GetWidth(), sc.GetHeight() };
+		renderInfo.renderArea.extent = { sc->GetWidth(), sc->GetHeight() };
 		renderInfo.renderArea.offset = { 0, 0 };
 		renderInfo.layerCount = 1;
 		renderInfo.colorAttachmentCount = 1;
@@ -191,8 +191,8 @@ namespace Velt::RHI
 
 		vkCmdBeginRendering(cmd, &renderInfo);
 
-		u32 width = sc.GetWidth();
-		u32 height = sc.GetHeight();
+		u32 width = sc->GetWidth();
+		u32 height = sc->GetHeight();
 
 		VkRect2D scissor{};
 		scissor.extent = { width, height };
@@ -213,15 +213,15 @@ namespace Velt::RHI
 
 	void VulkanRenderer::EndGuiPass() 
 	{
-		auto& app = Velt::Application::Get();
-		auto& window = app.GetWindow();
-		auto& sc = window.GetSwapchain();
-		auto&& cmd = sc.GetCurrentDrawCommandBuffer();
+		const auto& app = Velt::Application::Get();
+		const auto& window = app->GetWindow();
+		const auto& sc = window->GetSwapchain();
+		const auto&& cmd = sc->GetCurrentDrawCommandBuffer();
 
 		vkCmdEndRendering(cmd);
 
-		auto&& img = sc.GetCurrentSwapchainImage();
-		sc.TransitionImageLayout(
+		auto&& img = sc->GetCurrentSwapchainImage();
+		sc->TransitionImageLayout(
 			cmd,
 			img.Image,
 			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
@@ -233,13 +233,13 @@ namespace Velt::RHI
 
 	void VulkanRenderer::EndFrame()
 	{
-		auto& app = Velt::Application::Get();
-		auto& window = app.GetWindow();
-		auto& swapchain = window.GetSwapchain();
-		auto&& currentCommandBuffer = swapchain.GetCurrentDrawCommandBuffer();
+		const auto& app = Velt::Application::Get();
+		const auto& window = app->GetWindow();
+		const auto& swapchain = window->GetSwapchain();
+		const auto&& currentCommandBuffer = swapchain->GetCurrentDrawCommandBuffer();
 
 		vkEndCommandBuffer(currentCommandBuffer);
-		swapchain.Present();
+		swapchain->Present();
 	}
 
 	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, const Matrix& transform)
@@ -271,7 +271,7 @@ namespace Velt::RHI
 
 		VkCommandBuffer commandBuffer = renderCommandBuffer;
 
-		auto transform = model->GetTransform().mat4();
+		auto transform = model->GetTransform().Matrix();
 		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
 
 		vkCmdBindDescriptorSets(renderCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &material->GetSet(), 0, VT_NULL_HANDLE);

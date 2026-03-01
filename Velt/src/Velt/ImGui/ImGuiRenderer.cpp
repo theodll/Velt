@@ -44,7 +44,7 @@ namespace Velt {
 		pool_info.poolSizeCount = std::size(pool_sizes);
 		pool_info.pPoolSizes = pool_sizes;
 
-		if (vkCreateDescriptorPool(device.device(), &pool_info, nullptr, &m_DescriptorPool) != VK_SUCCESS)
+		if (vkCreateDescriptorPool(device->device(), &pool_info, nullptr, &m_DescriptorPool) != VK_SUCCESS)
 		{
 			VT_CORE_ERROR("Failed to create ImGui descriptor pool");
 		}
@@ -58,11 +58,11 @@ namespace Velt {
 
 		// Initialize ImGui for Vulkan
 		ImGui_ImplVulkan_InitInfo init_info = {};
-		init_info.Instance = RHI::VulkanContext::GetInstance();
-		init_info.PhysicalDevice = device.GetPhysicalDevice();
-		init_info.Device = device.device();
-		init_info.QueueFamily = device.GetQueueFamilyIndex();
-		init_info.Queue = device.GetGraphicsQueue();
+		init_info.Instance = *RHI::VulkanContext::GetInstance();
+		init_info.PhysicalDevice = device->GetPhysicalDevice();
+		init_info.Device = device->device();
+		init_info.QueueFamily = device->GetQueueFamilyIndex();
+		init_info.Queue = device->GetGraphicsQueue();
 		init_info.DescriptorPool = m_DescriptorPool;
 		init_info.MinImageCount = 3;
 		init_info.ImageCount = 3;

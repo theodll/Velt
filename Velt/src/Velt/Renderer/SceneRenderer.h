@@ -18,12 +18,12 @@ namespace Velt {
 		void EndScene();
 
 		static Ref<Pipeline> GetPipeline() { return s_Pipeline; };
-		static OrthographicCamera* GetCamera() { return m_Camera.get(); };
+		static Ref<OrthographicCamera> GetCamera() { return m_Camera; };
 
 	private:
 		struct alignas(16) CameraUBO
 		{
-			glm::mat4 viewProj;
+			Matrix viewProj;
 		};
 
 		static Ref<OrthographicCamera> m_Camera;
@@ -33,7 +33,7 @@ namespace Velt {
 
 		
 		i32 m_Rotation{};
-		glm::vec3 m_CameraPosition{};
+		Vector m_CameraPosition{};
 
 		static Ref<Pipeline> s_Pipeline;
 		
