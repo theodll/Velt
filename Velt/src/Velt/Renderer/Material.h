@@ -15,9 +15,9 @@ namespace Velt
 	class VELT_API Material
 	{
 	public:
-		Material(const HVector* pColor);
+		Material(const HVector& pColor);
 
-		void SetColor(const HVector* pColor);
+		void SetColor(const HVector& pColor);
 
 		const HVector* GetColor() const { return &m_Data.Color; }
 		const VkDescriptorSet& GetSet() const;

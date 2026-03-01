@@ -48,6 +48,7 @@ namespace Velt {
 
 		m_Context = std::make_unique<RHI::VulkanContext>();
 		m_Window = std::unique_ptr<Window>(Window::Create(m_WindowProps));
+		m_Context->Init();
 	}
 
 	Application::~Application()
@@ -93,7 +94,6 @@ namespace Velt {
 	void Application::Init() 
 	{
 		VT_PROFILE_FUNCTION();
-		m_Context->Init(); 
 		m_Window->CreateSwapchain(); 
 		Renderer::Init();
 
