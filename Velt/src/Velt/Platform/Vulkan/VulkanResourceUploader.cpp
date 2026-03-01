@@ -124,7 +124,7 @@ namespace Velt::RHI
         m_Commandbuffer = VK_NULL_HANDLE;
     }
 
-    VulkanResourceUploader::VulkanResourceUploader() : m_Device(VulkanContext::GetDevice())
+    VulkanResourceUploader::VulkanResourceUploader() : m_Device(*VulkanContext::GetDevice())
     {
     }
 

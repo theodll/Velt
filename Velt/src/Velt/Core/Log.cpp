@@ -11,7 +11,6 @@ namespace Velt {
     {
         VT_PROFILE_FUNCTION();
 
-
         auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
         consoleSink->set_pattern("%^[%T] %n: %v%$");
 
@@ -30,7 +29,6 @@ namespace Velt {
         s_ClientLogger->set_level(spdlog::level::trace);
         s_ClientLogger->flush_on(spdlog::level::trace);
         spdlog::register_logger(s_ClientLogger);
-
     }
 
     void Log::Flush()

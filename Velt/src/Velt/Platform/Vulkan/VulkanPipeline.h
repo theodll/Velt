@@ -29,7 +29,7 @@ namespace Velt::RHI
 		class VELT_API VulkanPipeline : public Pipeline
 		{
 		public:
-			VulkanPipeline(const PipelineSpecification& specs); 
+			VulkanPipeline(const PipelineSpecification* pSpecs); 
 			~VulkanPipeline();
 
 			VulkanPipeline(const VulkanPipeline&) = delete;
@@ -39,7 +39,7 @@ namespace Velt::RHI
 			virtual void Invalidate() override; 
 
 			virtual void Bind(VkCommandBuffer& commandBuffer) override;
-			static void SetDefaultVulkanPipelineConfigInfo(VulkanPipelineConfigInfo& configInfo);
+			static void SetDefaultVulkanPipelineConfigInfo(VulkanPipelineConfigInfo* pConfigInfo);
 
 			virtual VkPipeline& GetVulkanPipeline() override { return m_VulkanPipeline; };
 			virtual VkPipelineLayout& GetVulkanPipelineLayout() override { return m_ConfigInfo.pipelineLayout; };
@@ -50,7 +50,7 @@ namespace Velt::RHI
 
 		private:
 			static std::vector<char> ReadFile(const std::string& filepath);
-			void CreateShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
+			void CreateShaderModule(const std::vector<char>& code, VkShaderModule* pShaderModule);
 			void CreatePipelineLayout();
 
 			VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;

@@ -8,13 +8,14 @@
 
 namespace Velt::RHI
 {
-	VulkanDevice* VulkanContext::m_Device { VT_NULL_HANDLE };
+	
 	VkInstance VulkanContext::m_Instance; 
 	VkSurfaceKHR VulkanContext::m_Surface;
-	std::unique_ptr<VulkanResourceUploader> VulkanContext::m_ResourceUploader{ VT_NULL_HANDLE };
+	Scope<VulkanResourceUploader> VulkanContext::m_ResourceUploader{ VT_NULL_HANDLE };
 	Scope<DescriptorLayoutCache> VulkanContext::m_DescriptorLayoutCache{ VT_NULL_HANDLE } ;
 	Scope<DescriptorSetManager> VulkanContext::m_DescriptorSetManager{ VT_NULL_HANDLE };
-	
+	Scope<VulkanDevice> VulkanContext::m_Device{ VT_NULL_HANDLE };
+
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 		VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
 		VkDebugUtilsMessageTypeFlagsEXT messageType,
@@ -48,19 +49,20 @@ namespace Velt::RHI
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Initializing Vulkan Context");
 
-		auto& window = Velt::Application::Get().GetWindow();
+		const auto& window = Velt::Application::Get()->GetWindow();
 
 		CreateInstance();
 		SetupDebugMessenger();
 
 		VT_CORE_TRACE("Create Surface");
 
-		if (!SDL_Vulkan_CreateSurface(static_cast<SDL_Window*>(Velt::Application::Get().GetWindow().GetNativeHandle()), m_Instance, nullptr, &m_Surface))
+		if (!SDL_Vulkan_CreateSurface(static_cast<SDL_Window*>(window->GetNativeHandle()), m_Instance, nullptr, &m_Surface))
 		{
 			VT_CORE_ERROR("Failed to create window surface: {}", SDL_GetError());
 		}
 
-		m_Device = new VulkanDevice();
+		m_Device = CreateScope<VulkanDevice>();
+
 		m_ResourceUploader = std::make_unique<VulkanResourceUploader>();
 		m_ResourceUploader->Init();
 
@@ -69,7 +71,6 @@ namespace Velt::RHI
 
 		m_DescriptorLayoutCache = CreateScope<DescriptorLayoutCache>();
 		m_DescriptorLayoutCache->Init();
-
 	}
 
 
@@ -82,8 +83,6 @@ namespace Velt::RHI
 		{
 			DestroyDebugUtilsMessengerEXT(m_Instance, m_DebugMessenger, nullptr);
 		}
-
-		delete m_Device;
 
 		vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
 		vkDestroyInstance(m_Instance, nullptr);

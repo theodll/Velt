@@ -8,10 +8,7 @@
 
 namespace Velt {
 
-	ImGuiRenderer::ImGuiRenderer()
-	{
-		VT_PROFILE_FUNCTION();
-	}
+	ImGuiRenderer::ImGuiRenderer() {}
 
 	void ImGuiRenderer::Init()
 	{
@@ -19,15 +16,13 @@ namespace Velt {
 		VT_CORE_TRACE("Init ImGUI Renderer");
 
 		auto&& device = RHI::VulkanContext::GetDevice();
-		auto&& window = Application::Get().GetWindow();
+		auto&& window = Application::Get()->GetWindow();
 
-		// Initialize ImGui SDL3 backend first
-		if (!ImGui_ImplSDL3_InitForVulkan(static_cast<SDL_Window*>(window.GetNativeHandle())))
+		if (!ImGui_ImplSDL3_InitForVulkan(static_cast<SDL_Window*>(window->GetNativeHandle())))
 		{
 			VT_CORE_ERROR("Failed to initialize ImGui SDL3 backend!");
 		}
 
-		// Create descriptor pool for ImGui
 		VkDescriptorPoolSize pool_sizes[] = {
 			{ VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
 			{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
@@ -49,10 +44,9 @@ namespace Velt {
 		pool_info.poolSizeCount = std::size(pool_sizes);
 		pool_info.pPoolSizes = pool_sizes;
 
-		if (vkCreateDescriptorPool(device.device(), &pool_info, nullptr, &m_DescriptorPool) != VK_SUCCESS)
+		if (vkCreateDescriptorPool(device->device(), &pool_info, nullptr, &m_DescriptorPool) != VK_SUCCESS)
 		{
-			VT_CORE_ERROR("Failed to create ImGui descriptor pool!");
-			throw std::runtime_error("Failed to create ImGui descriptor pool!");
+			VT_CORE_ERROR("Failed to create ImGui descriptor pool");
 		}
 
 		// Setup dynamic rendering format
@@ -64,11 +58,11 @@ namespace Velt {
 
 		// Initialize ImGui for Vulkan
 		ImGui_ImplVulkan_InitInfo init_info = {};
-		init_info.Instance = RHI::VulkanContext::GetInstance();
-		init_info.PhysicalDevice = device.GetPhysicalDevice();
-		init_info.Device = device.device();
-		init_info.QueueFamily = device.GetQueueFamilyIndex();
-		init_info.Queue = device.GetGraphicsQueue();
+		init_info.Instance = *RHI::VulkanContext::GetInstance();
+		init_info.PhysicalDevice = device->GetPhysicalDevice();
+		init_info.Device = device->device();
+		init_info.QueueFamily = device->GetQueueFamilyIndex();
+		init_info.Queue = device->GetGraphicsQueue();
 		init_info.DescriptorPool = m_DescriptorPool;
 		init_info.MinImageCount = 3;
 		init_info.ImageCount = 3;
@@ -77,8 +71,7 @@ namespace Velt {
 
 		if (!ImGui_ImplVulkan_Init(&init_info))
 		{
-			VT_CORE_ERROR("Failed to initialize ImGui Vulkan backend!");
-			throw std::runtime_error("Failed to initialize ImGui Vulkan backend!");
+			VT_CORE_ERROR("Failed to initialize ImGui Vulkan backend");
 		}
 
 		VT_CORE_INFO("ImGuiRenderer initialized");
@@ -92,8 +85,6 @@ namespace Velt {
 		
 		if (m_DescriptorPool != nullptr)
 		{
-			// Get device handle from ImGui Vulkan backend or store it
-			// For now, we'll let Vulkan validation layers handle cleanup
 			m_DescriptorPool = nullptr;
 		}
 
@@ -102,7 +93,6 @@ namespace Velt {
 
 	void ImGuiRenderer::Begin()
 	{
-		VT_PROFILE_FUNCTION();
 		ImGui_ImplSDL3_NewFrame();
 		ImGui_ImplVulkan_NewFrame();
 		ImGui::NewFrame();
@@ -110,8 +100,6 @@ namespace Velt {
 
 	void ImGuiRenderer::End()
 	{
-		VT_PROFILE_FUNCTION();
-
 		ImGui::Render();
 	}
 

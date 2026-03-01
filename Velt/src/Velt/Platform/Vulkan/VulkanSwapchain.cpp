@@ -8,20 +8,20 @@
 namespace Velt::RHI
 {
 
-    void VulkanSwapchain::Init(SwapchainCreateInfo& createInfo)
+    void VulkanSwapchain::Init(SwapchainCreateInfo* pCreateInfo)
     {
         VT_PROFILE_FUNCTION();
         VT_CORE_TRACE("Swapchain Created");
-        auto&& window = (SDL_Window*)Velt::Application::Get().GetWindow().GetNativeHandle();
+        auto&& window = (SDL_Window*)Velt::Application::Get()->GetWindow()->GetNativeHandle();
         m_WindowHandle = window;
         i32 w{}, h{};
         SDL_GetWindowSizeInPixels(window, &w, &h);
         m_WindowExtent = { (u32)w, (u32)h };
 
-        m_VSync = createInfo.VSync;
+        m_VSync = pCreateInfo->VSync;
 
-        Create(createInfo);
-        m_Instance = VulkanContext::GetInstance();
+        Create(pCreateInfo);
+        m_Instance = *VulkanContext::GetInstance();
 
         VT_CORE_ERROR("Swapchain Size: {0}, {1}", GetWidth(), GetHeight());
         VT_CORE_ERROR("Swapchain Extend: {0}, {1}", m_WindowExtent.width, m_WindowExtent.height);
@@ -191,13 +191,13 @@ namespace Velt::RHI
         return result;
     }
 
-    void VulkanSwapchain::Create(SwapchainCreateInfo& createInfo)
+    void VulkanSwapchain::Create(SwapchainCreateInfo* pCreateInfo)
     {
         VT_PROFILE_FUNCTION();
         VT_PROFILE_FUNCTION();
         SwapChainSupportDetails swapChainSupport = m_Device.GetSwapChainSupport();
 
-        VT_CORE_ERROR("Swapchain Creation Info Extend: {0}, {1}", createInfo.Width, createInfo.Height);
+        VT_CORE_ERROR("Swapchain Creation Info Extend: {0}, {1}", pCreateInfo->Width, pCreateInfo->Height);
         VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
         VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
         VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
@@ -287,7 +287,7 @@ namespace Velt::RHI
         }
 
         // Create depth resources
-        VkFormat depthFormat = findDepthFormat();
+        VkFormat depthFormat = FindDepthFormat();
         VkExtent2D swapChainExtent = m_WindowExtent;
 
         m_DepthStencilImages.resize(imageCount);
@@ -310,7 +310,7 @@ namespace Velt::RHI
             imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
             imageInfo.flags = 0;
 
-            m_Device.createImageWithInfo(
+            m_Device.CreateImageWithInfo(
                 imageInfo,
                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                 m_DepthStencilImages[i].DepthImage,
@@ -401,7 +401,7 @@ namespace Velt::RHI
             if (w > 0 && h > 0 && ((u32)w != m_WindowExtent.width || (u32)h != m_WindowExtent.height))
             {
                 SwapchainExtent extent{ (u32)h, (u32)w };
-                OnResize(extent);
+                OnResize(&extent);
             }
         }
 
@@ -416,7 +416,7 @@ namespace Velt::RHI
                 if (w > 0 && h > 0)
                 {
                     SwapchainExtent extent{ (u32)h, (u32)w };
-                    OnResize(extent);
+                    OnResize(&extent);
                     result = AcquireNextImage();
                 }
             }
@@ -484,7 +484,7 @@ namespace Velt::RHI
         }
     }
 
-    VkFormat VulkanSwapchain::findDepthFormat()
+    VkFormat VulkanSwapchain::FindDepthFormat()
     {
         VT_PROFILE_FUNCTION();
         return m_Device.FindSupportedFormat(
@@ -513,7 +513,7 @@ namespace Velt::RHI
                 if (w > 0 && h > 0)
                 {
                     SwapchainExtent extent{ (u32)h, (u32)w };
-                    OnResize(extent);
+                    OnResize(&extent);
                 }
             }
         }
@@ -579,30 +579,30 @@ namespace Velt::RHI
     }
 
 
-    void VulkanSwapchain::OnResize(SwapchainExtent& extend)
+    void VulkanSwapchain::OnResize(SwapchainExtent* pExtend)
     {
         VT_PROFILE_FUNCTION();
 
-        if (extend.Width == 0 || extend.Height == 0)
+        if (pExtend->Width == 0 || pExtend->Height == 0)
         {
             m_WindowExtent = { 0, 0 };
             return;
         }
 
-        m_WindowExtent = { extend.Width, extend.Height };
+        m_WindowExtent = { pExtend->Width, pExtend->Height };
 
-        VT_CORE_INFO("Recreating swapchain: {0}x{1}", extend.Width, extend.Height);
+        VT_CORE_INFO("Recreating swapchain: {0}x{1}", pExtend->Width, pExtend->Height);
 
         vkDeviceWaitIdle(m_Device.device());
 
         Destroy();
 
         SwapchainCreateInfo createInfo{};
-        createInfo.Width = extend.Width;
-        createInfo.Height = extend.Height;
+        createInfo.Width = pExtend->Width;
+        createInfo.Height = pExtend->Height;
         createInfo.VSync = m_VSync;
 
-        Create(createInfo);
+        Create(&createInfo);
 
         m_CurrentFrameIndex = 0;
         m_CurrentImageIndex = 0;
@@ -718,7 +718,7 @@ namespace Velt::RHI
 		);
 	}
 
-    VulkanSwapchain::VulkanSwapchain() : m_Device(VulkanContext::GetDevice()), m_Instance(VulkanContext::GetInstance()), m_Surface(VulkanContext::GetSurface())
+    VulkanSwapchain::VulkanSwapchain() : m_Device(*VulkanContext::GetDevice()), m_Instance(*VulkanContext::GetInstance()), m_Surface(*VulkanContext::GetSurface())
     {
 
     }

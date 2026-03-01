@@ -12,25 +12,25 @@ namespace Velt
     // Todo [08.02.26, Theo]: Move this to some component / ecs implementation
     struct TransformComponent
     {
-        glm::vec3 translation{ 0.0f };
-        glm::quat rotation{ 1.0f, 0.0f, 0.0f, 0.0f }; // identity (w,x,y,z)
-        glm::vec3 scale{ 1.0f };
+        Vector Translation{ 0.0f };
+        Quaternion Rotation{ 1.0f, 0.0f, 0.0f, 0.0f }; // identity (w,x,y,z)
+        Vector Scale{ 1.0f };
 
         // only for editor
-        glm::vec3 eulerDegrees{ 0.0f };
+        Vector EulerDegrees{ 0.0f };
 
-        void SetEulerDegrees(const glm::vec3& deg)
+        void SetEulerDegrees(const Vector& deg)
         {
-            eulerDegrees = deg;
-            rotation = glm::quat(glm::radians(deg)); 
-            rotation = glm::normalize(rotation);
+            EulerDegrees = deg;
+            Rotation = glm::quat(glm::radians(deg));
+            Rotation = glm::normalize(Rotation);
         }
 
-        glm::mat4 mat4() const
+        Matrix Matrix() const
         {
-            return glm::translate(glm::mat4(1.0f), translation)
-                * glm::toMat4(rotation)
-                * glm::scale(glm::mat4(1.0f), scale);
+            return glm::translate(glm::mat4(1.0f), Translation)
+                * glm::toMat4(Rotation)
+                * glm::scale(glm::mat4(1.0f), Scale);
         }
     };
 }

@@ -26,13 +26,11 @@ add_library(Velt SHARED
         "src/Velt/ImGui/ImGuiLayer.cpp"
         "src/Velt/ImGui/ImGuiRenderer.h"
         "src/Velt/ImGui/ImGuiRenderer.cpp"
-        "src/Velt/ImGui/Widgets/DemoWidget.h"
-        "src/Velt/ImGui/Widgets/DemoWidget.cpp" 
         "src/Velt/Utils/Profiling/Instrumentor.h"
-        "src/Velt/Renderer/Framebuffer.h"
-        "src/Velt/Renderer/Framebuffer.cpp"
-        "src/Velt/Platform/Vulkan/VulkanFramebuffer.cpp"
-        "src/Velt/Platform/Vulkan/VulkanFramebuffer.h"
+        
+        
+        
+        
         "src/Velt/Renderer/RenderContext.h"
         "src/Velt/Renderer/RenderContext.cpp"
         "src/Velt/Renderer/Pipeline.h"
@@ -44,8 +42,8 @@ add_library(Velt SHARED
         "src/Velt/Renderer/RenderCommandBuffer.h"
         "src/Velt/Renderer/RenderCommandBuffer.cpp" 
         "Velt.h" 
-        "src/Velt/Platform/Vulkan/VulkanCommandBuffer.cpp" 
-        "src/Velt/Platform/Vulkan/VulkanCommandBuffer.h"
+         
+        
         "src/Velt/Renderer/Buffer.h"
         "src/Velt/Renderer/Buffer.cpp"
         "src/Velt/Platform/Vulkan/Buffer/VulkanVertexBuffer.cpp"
@@ -64,7 +62,7 @@ add_library(Velt SHARED
         "src/Velt/Platform/Vulkan/VulkanResourceUploader.cpp"
         "src/Velt/Renderer/SceneRenderer.cpp" 
         "src/Velt/Renderer/SceneRenderer.h" 
-        "src/Velt/Renderer/ShaderLibary.cpp"
+        
         "src/Velt/ImGui/SceneViewport.h"
         "src/Velt/ImGui/SceneViewport.cpp"
         "src/Velt/Renderer/UniformBuffer.h"
@@ -76,10 +74,8 @@ add_library(Velt SHARED
         "src/Velt/Renderer/OrthographicCamera.h"
         "src/Velt/Renderer/OrthographicCamera.cpp"
  "src/Velt/Core/Timestep.h" "src/Velt/Core/Input.h" "src/Velt/Core/Scancodes.h" "src/Velt/Platform/SDL/SDLInput.h" "src/Velt/Platform/SDL/SDLInput.cpp" "src/Velt/Core/Input.cpp"
-        src/Velt/Events/Event.cpp
         src/Velt/Events/Event.h
         src/Velt/Events/EventHandler.h
-        src/Velt/Events/EventHandler.cpp
         src/Velt/Events/EventDispatcher.h
         src/Velt/Events/ApplicationEvents.h
         src/Velt/Platform/SDL/SDLEventTranslator.h

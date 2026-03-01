@@ -36,15 +36,15 @@ namespace Velt {
 		VT_CORE_TRACE("Attach ImGuiLayer");
 
 
-		auto& device = RHI::VulkanContext::GetDevice();
+		const auto& device = RHI::VulkanContext::GetDevice();
 		SDL_Window* window = nullptr;
 	
-		window = reinterpret_cast<SDL_Window*>(Application::Get().GetWindow().GetNativeHandle());
+		window = reinterpret_cast<SDL_Window*>(Application::Get()->GetWindow()->GetNativeHandle());
 		
 
 		m_Renderer = CreateRef<ImGuiRenderer>();
 		m_SceneViewport = CreateScope<SceneViewport>();
-		// Setup Dear ImGui context
+		
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -74,18 +74,18 @@ namespace Velt {
 		VT_CORE_INFO("ImGuiLayer detached");
 	}
 
-	void ImGuiLayer::OnEvent(Event& event)
+	void ImGuiLayer::OnEvent(Event& rEvent)
 	{
 		VT_PROFILE_FUNCTION();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 
 	}
 
-	void ImGuiLayer::ProcessSDLEvent(const SDL_Event* event)
+	void ImGuiLayer::ProcessSDLEvent(const SDL_Event* pEvent)
 	{
 		VT_PROFILE_FUNCTION();
 		// Forward raw SDL event to ImGui SDL3 backend
-		ImGui_ImplSDL3_ProcessEvent(reinterpret_cast<SDL_Event*>(const_cast<SDL_Event*>(event)));
+		ImGui_ImplSDL3_ProcessEvent(reinterpret_cast<SDL_Event*>(const_cast<SDL_Event*>(pEvent)));
 	}
 
 	void ImGuiLayer::OnUpdate(Timestep ts)
@@ -125,7 +125,6 @@ namespace Velt {
 		ImGui::PopStyleVar();
 		ImGui::PopStyleVar(2);
 
-		// Submit the DockSpace
 		ImGuiIO& io = ImGui::GetIO();
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
@@ -209,7 +208,7 @@ namespace Velt {
 	{
 		VT_PROFILE_FUNCTION();
 
-		auto&& cmd = Velt::Application::Get().GetWindow().GetSwapchain().GetCurrentDrawCommandBuffer();
+		auto&& cmd = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentDrawCommandBuffer();
 		m_Renderer->RenderDrawData(cmd);
 	}
 }

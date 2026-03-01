@@ -3,7 +3,6 @@
 #include "Core/Core.h"
 #include "VulkanDevice.h"
 #include "Velt/Renderer/Swapchain.h"
-#include "Velt/Renderer/Framebuffer.h"
 #include <SDL3/SDL.h>
 
 namespace Velt::RHI {
@@ -19,12 +18,12 @@ namespace Velt::RHI {
         VulkanSwapchain(const VulkanSwapchain&) = delete;
         void operator=(const VulkanSwapchain&) = delete;
 
-        void Init(SwapchainCreateInfo& createInfo) override;
-        void InitSurface(SDL_Window* windowHandle);
-        void Create(SwapchainCreateInfo& createInfo) override;
+        void Init(SwapchainCreateInfo* pCreateInfo) override;
+        void InitSurface(SDL_Window* pWindowHandle);
+        void Create(SwapchainCreateInfo* pCreateInfo) override;
         void Destroy() override;
 
-        void OnResize(SwapchainExtent& extend) override;
+        void OnResize(SwapchainExtent* pExtend) override;
 
         void BeginFrame() override;
         void Present() override;
@@ -58,7 +57,7 @@ namespace Velt::RHI {
         }
         
 
-        VkFormat findDepthFormat();
+        VkFormat FindDepthFormat();
         
     private:
 		VkResult AcquireNextImage();
@@ -99,7 +98,7 @@ namespace Velt::RHI {
         u32 m_CurrentImageIndex = 0; // Frame currently displayed
         u32 m_CurrentFrameIndex = 0; // Frame that is being worked on
         
-        std::vector<bool> m_ImagePresentedOnce; // Track if each image has been presented at least once
+        std::vector<u32> m_ImagePresentedOnce; // Track if each image has been presented at least once
     };
     
 }

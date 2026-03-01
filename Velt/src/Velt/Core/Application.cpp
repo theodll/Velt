@@ -18,8 +18,6 @@ Velt::Application* Velt::Application::s_Instance;
 
 namespace Velt {
 
-
-
 	VkFormat ShaderDataTypeToVulkanBaseType(ShaderDataType type) {
 		switch(type) {
 			case ShaderDataType::Float:   return VK_FORMAT_R32_SFLOAT;
@@ -50,6 +48,7 @@ namespace Velt {
 
 		m_Context = std::make_unique<RHI::VulkanContext>();
 		m_Window = std::unique_ptr<Window>(Window::Create(m_WindowProps));
+		m_Context->Init();
 	}
 
 	Application::~Application()
@@ -59,7 +58,6 @@ namespace Velt {
 
 	void Application::OnEvent(Event& e)
 	{
-		VT_PROFILE_FUNCTION();
 		EventDispatcher dispatcher(e);
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
@@ -95,8 +93,7 @@ namespace Velt {
 
 	void Application::Init() 
 	{
-
-		m_Context->Init(); 
+		VT_PROFILE_FUNCTION();
 		m_Window->CreateSwapchain(); 
 		Renderer::Init();
 
@@ -107,15 +104,12 @@ namespace Velt {
 
 	void Application::Run()
 	{
-		VT_PROFILE_FUNCTION();
-		
 		bool running = true;
 		for (Layer* layer : m_LayerStack)
 						layer->Init();
 
 		while (running)
 		{
-			VT_PROFILE_SCOPE("Application::Run Loop");
 			// TODO: Move to a Platform Independent Place
 
 			static const double invFreq = 1.0 / (double)SDL_GetPerformanceFrequency();
@@ -134,7 +128,7 @@ namespace Velt {
 			SDL_Event sdl;
 			while (SDL_PollEvent(&sdl))
 			{
-				if (auto evt = SDL::TranslateSDLEvent(sdl)) {
+				if (auto evt = SDL::TranslateSDLEvent(&sdl)) {
 					OnEvent(*evt);
 				}
 			}
@@ -150,11 +144,11 @@ namespace Velt {
 					continue;
 				}
 
-				auto& swapchain = m_Window->GetSwapchain();
-				if ((u32)pixelW != swapchain.GetWidth() || (u32)pixelH != swapchain.GetHeight())
+				const auto& swapchain = m_Window->GetSwapchain();
+				if ((u32)pixelW != swapchain->GetWidth() || (u32)pixelH != swapchain->GetHeight())
 				{
 					SwapchainExtent extent{ (u32)pixelW, (u32)pixelH };
-					swapchain.OnResize(extent);
+					swapchain->OnResize(&extent);
 				}
 			}
 
@@ -169,7 +163,7 @@ namespace Velt {
 			// Scene Pass
 
 			for (Layer* layer : m_LayerStack)
-				layer->OnRender(m_Window->GetSwapchain().GetCurrentDrawCommandBuffer());
+				layer->OnRender(m_Window->GetSwapchain()->GetCurrentDrawCommandBuffer());
 			
 			Renderer::EndScenePass();
 			Renderer::BeginGuiPass();
@@ -211,7 +205,7 @@ namespace Velt {
 		ImGui::Text("Camera Position: X: %.2f Y: %.2f Z: %.2f", SceneRenderer::GetCamera()->GetPosition().x, SceneRenderer::GetCamera()->GetPosition().y, SceneRenderer::GetCamera()->GetPosition().z);
 		ImGui::End();
 
-		Velt::Application::UpdateTitle(Velt::Application::Get().TITLE + " - " + std::to_string((int)s), false);
+		Velt::Application::UpdateTitle(Velt::Application::Get()->TITLE + " - " + std::to_string((int)s), false);
 	}
 
 

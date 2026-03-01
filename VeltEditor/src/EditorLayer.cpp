@@ -96,10 +96,10 @@ namespace Editor
 		Velt::ModelCreateInfo info{};
 		info.Parts = { smInfo };
 		
-		m_Cube = Velt::Model::Create(info);
+		m_Cube = Velt::Model::Create(&info);
 
-		m_Cube->GetTransform().translation = { 0.0f, 0.0f, .5f }; 
-		m_Cube->GetTransform().scale = { .5f, .5f, .5f };
+		m_Cube->GetTransform().Translation = { 0.0f, 0.0f, .5f }; 
+		m_Cube->GetTransform().Scale = { .5f, .5f, .5f };
 	}
 
 	void EditorLayer::OnUpdate(Velt::Timestep ts)
@@ -171,8 +171,8 @@ namespace Editor
 
         {
             auto& tr = m_Cube->GetTransform();
-            m_Translation = tr.translation;
-            m_Scale = tr.scale;
+            m_Translation = tr.Translation;
+            m_Scale = tr.Scale;
         }
 
         {
@@ -348,16 +348,16 @@ namespace Editor
 
         m_Rotation.x++;
 
-        tr.translation = m_Translation;
-        tr.scale = m_Scale;
+        tr.Translation = m_Translation;
+        tr.Scale = m_Scale;
         tr.SetEulerDegrees(m_Rotation);
 
         ImGui::Begin("Material Settings");
         {
             ImGui::PushID("Material");
 
-            Velt::HVector color = m_Material->GetColor();
-            float colorArray[4] = { color.x, color.y, color.z, color.w };
+            const Velt::HVector* color = m_Material->GetColor();
+            float colorArray[4] = { color->x, color->y, color->z, color->w };
 
             ImGui::Columns(2);
             ImGui::SetColumnWidth(0, 95.0f);

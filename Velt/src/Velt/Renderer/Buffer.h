@@ -37,10 +37,10 @@ namespace Velt
 		ShaderDataType Type;
 		u32 Size;
 		u32 Count;
-		u32 Offset;
-
+		u32 Offset{};
+		
 		BufferElement(ShaderDataType type, const std::string& name)
-			: Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0) {};
+			: Name(name), Type(type), Size(ShaderDataTypeSize(type)) {};
 
 		u32 getComponentCount() const 
 		{
@@ -80,7 +80,7 @@ namespace Velt
 
 		inline const std::vector<BufferElement>& GetElements() const { return m_Elements; }
 		u32 GetElementCount() const { return (u32)m_Elements.size(); }
-		u64 getStride() const { return m_Stride; }
+		u64 GetStride() const { return m_Stride; }
 
 		std::vector<BufferElement>::iterator begin() {  return m_Elements.begin(); }
 		std::vector<BufferElement>::iterator end() {	return m_Elements.end(); }

@@ -41,18 +41,15 @@ namespace Velt {
 		VT_CORE_TRACE("Shutdown Static Renderer");
 		s_SceneRenderer->Shutdown();
 		s_RenderAPI->Shutdown();
-
 	}
 
 	void Renderer::BeginScene()
 	{
-		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Begin Scene");
 	}
 
 	void Renderer::EndScene()
 	{
-		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("End Scene");
 	}
 
@@ -70,34 +67,29 @@ namespace Velt {
 
 	void Renderer::BeginFrame()
 	{
-		VT_PROFILE_FUNCTION();
 		s_RenderAPI->BeginFrame();
 	}
 
 	void Renderer::BeginScenePass()
 	{
-		VT_PROFILE_FUNCTION();
 		s_RenderAPI->BeginScenePass();
 		s_SceneRenderer->BeginScene();
 	}
 
 	void Renderer::EndScenePass()
 	{
-		VT_PROFILE_FUNCTION();
 		s_SceneRenderer->EndScene();
 		s_RenderAPI->EndScenePass();
 	}
 
 	void Renderer::BeginGuiPass()
 	{
-		VT_PROFILE_FUNCTION();
 		s_RenderAPI->BeginGuiPass();
 		ImGuiLayer::Begin();
 	}
 
 	void Renderer::EndGuiPass()
 	{
-		VT_PROFILE_FUNCTION();
 		ImGuiLayer::End();
 		ImGuiLayer::Render();
 
@@ -106,7 +98,6 @@ namespace Velt {
 
 	void Renderer::EndFrame()
 	{
-		VT_PROFILE_FUNCTION();
 		s_RenderAPI->EndFrame();
 	}
 

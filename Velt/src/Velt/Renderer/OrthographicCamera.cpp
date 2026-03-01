@@ -24,13 +24,12 @@ namespace Velt {
 
 	void OrthographicCamera::RecalculateViewMatrix()
 	{
-		glm::mat4 transform =
-			glm::translate(glm::mat4(1.0f), m_Position) *
-			glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation), glm::vec3(0, 0, 1)) *
-			glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, -1.0f)); 
+		Matrix transform =
+			glm::translate(Matrix(1.0f), m_Position) *
+			glm::rotate(Matrix(1.0f), glm::radians(m_Rotation), Vector(0, 0, 1)) *
+			glm::scale(Matrix(1.0f), Vector(1.0f, 1.0f, -1.0f)); 
 
 		m_ViewMatrix = glm::inverse(transform);
 		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 	}
-
 }

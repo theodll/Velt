@@ -12,16 +12,14 @@ namespace Velt::RHI
 
 
 
-    VulkanDevice::VulkanDevice() : m_Instance(VulkanContext::GetInstance()), m_Surface(VulkanContext::GetSurface())
+    VulkanDevice::VulkanDevice() : m_Instance(*VulkanContext::GetInstance()), m_Surface(*VulkanContext::GetSurface())
     {
         VT_PROFILE_FUNCTION();
         VT_CORE_TRACE("Creating VulkanDevice...");
 
-       
-
-        pickPhysicalDevice();
-        createLogicalDevice();
-        createCommandPool();
+        PickPhysicalDevice();
+        CreateLogicalDevice();
+        CreateCommandPool();
     }
 
     VulkanDevice::~VulkanDevice()
@@ -34,7 +32,7 @@ namespace Velt::RHI
 
     }
 
-    void VulkanDevice::pickPhysicalDevice()
+    void VulkanDevice::PickPhysicalDevice()
     {
         VT_PROFILE_FUNCTION();
         u32 deviceCount = 0;
@@ -49,7 +47,7 @@ namespace Velt::RHI
 
         for (const auto &device : devices)
         {
-            if (isDeviceSuitable(device))
+            if (IsDeviceSuitable(device))
             {
                 m_PhysicalDevice = device;
                 break;
@@ -65,7 +63,7 @@ namespace Velt::RHI
         VT_CORE_INFO("Physical Device: {}", properties.deviceName);
     }
 
-    void VulkanDevice::createLogicalDevice()
+    void VulkanDevice::CreateLogicalDevice()
     {
         VT_PROFILE_FUNCTION();
         QueueFamilyIndices indices = FindQueueFamilies(m_PhysicalDevice);
@@ -128,7 +126,7 @@ namespace Velt::RHI
         vkGetDeviceQueue(m_Device, indices.presentFamily, 0, &m_PresentQueue);
     }
 
-    void VulkanDevice::createCommandPool()
+    void VulkanDevice::CreateCommandPool()
     {
         VT_PROFILE_FUNCTION();
         QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(m_PhysicalDevice);
@@ -147,7 +145,7 @@ namespace Velt::RHI
 
 
 
-    bool VulkanDevice:: isDeviceSuitable(VkPhysicalDevice device)
+    bool VulkanDevice::IsDeviceSuitable(VkPhysicalDevice device)
     {
         VT_PROFILE_FUNCTION();
         QueueFamilyIndices indices = FindQueueFamilies(device);
@@ -200,7 +198,7 @@ namespace Velt::RHI
                 indices.graphicsFamilyHasValue = true;
             }
             VkBool32 presentSupport = false;
-            vkGetPhysicalDeviceSurfaceSupportKHR(device, i, VulkanContext::GetSurface(), &presentSupport);
+            vkGetPhysicalDeviceSurfaceSupportKHR(device, i, *VulkanContext::GetSurface(), &presentSupport);
             if (queueFamily.queueCount > 0 && presentSupport)
             {
                 indices.presentFamily = i;
@@ -310,7 +308,7 @@ namespace Velt::RHI
         VT_CORE_ASSERT(false, "Failed to find suitable memory type!");
     }
 
-    void VulkanDevice::createBuffer(
+    void VulkanDevice::CreateBuffer(
         VkDevice& device,
         VkDeviceSize size,
         VkBufferUsageFlags usage,
@@ -348,7 +346,7 @@ namespace Velt::RHI
         vkBindBufferMemory(m_Device, buffer, bufferMemory, 0);
     }
 
-    VkCommandBuffer VulkanDevice::beginSingleTimeCommands()
+    VkCommandBuffer VulkanDevice::BeginSingleTimeCommands()
     {
         VT_PROFILE_FUNCTION();
         VkCommandBufferAllocateInfo allocInfo{};
@@ -368,7 +366,7 @@ namespace Velt::RHI
         return commandBuffer;
     }
 
-    void VulkanDevice::endSingleTimeCommands(VkCommandBuffer commandBuffer)
+    void VulkanDevice::EndSingleTimeCommands(VkCommandBuffer commandBuffer)
     {
         VT_PROFILE_FUNCTION();
         vkEndCommandBuffer(commandBuffer);
@@ -384,10 +382,10 @@ namespace Velt::RHI
         vkFreeCommandBuffers(m_Device, m_CommandPool, 1, &commandBuffer);
     }
 
-    void VulkanDevice::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+    void VulkanDevice::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
     {
         VT_PROFILE_FUNCTION();
-        VkCommandBuffer commandBuffer = beginSingleTimeCommands();
+        VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
 
         VkBufferCopy copyRegion{};
         copyRegion.srcOffset = 0; // Optional
@@ -395,14 +393,14 @@ namespace Velt::RHI
         copyRegion.size = size;
         vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
 
-        endSingleTimeCommands(commandBuffer);
+        EndSingleTimeCommands(commandBuffer);
     }
 
-    void VulkanDevice::copyBufferToImage(
+    void VulkanDevice::CopyBufferToImage(
         VkBuffer buffer, VkImage image, u32 width, u32 height, u32 layerCount)
     {
         VT_PROFILE_FUNCTION();
-        VkCommandBuffer commandBuffer = beginSingleTimeCommands();
+        VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
 
         VkBufferImageCopy region{};
         region.bufferOffset = 0;
@@ -424,10 +422,10 @@ namespace Velt::RHI
             VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
             1,
             &region);
-        endSingleTimeCommands(commandBuffer);
+        EndSingleTimeCommands(commandBuffer);
     }
 
-    void VulkanDevice::createImageWithInfo(
+    void VulkanDevice::CreateImageWithInfo(
         const VkImageCreateInfo &imageInfo,
         VkMemoryPropertyFlags properties,
         VkImage &image,

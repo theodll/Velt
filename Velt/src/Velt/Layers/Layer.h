@@ -8,14 +8,14 @@ namespace Velt
 {
     class VELT_API Layer {
     public:
-        Layer(const std::string& debugName = "Layer" );
+        Layer(const std::string& rDebugName = "Layer" );
         virtual ~Layer();
 
         virtual void Init() {};
         virtual void OnAttach() {};
         virtual void OnDetach() {};
         virtual void OnUpdate(Timestep ts) {};
-        virtual void OnEvent(Event& event) {};
+        virtual void OnEvent(Event& rEvent) {};
         virtual void OnImGuiRender() {};
         virtual void OnImGuiRender2() {};
         virtual void OnRender(VkCommandBuffer commandBuffer) {};

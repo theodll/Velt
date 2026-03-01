@@ -24,13 +24,13 @@ namespace Velt::Windows
 		void SetVsync(bool enable) override;
 		void SetResizable(bool enable) override;
 		void* GetNativeHandle() const override;
-		VkExtent2D GetExtent() const { return { Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight() }; }
+		VkExtent2D GetExtent() const { return { Application::Get()->GetWindow()->GetWidth(), Application::Get()->GetWindow()->GetHeight() }; }
 
 		void CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 		void CreateSwapchain() override;
 
 
-		RHI::VulkanSwapchain& GetSwapchain() override;
+		RHI::VulkanSwapchain* GetSwapchain() override;
 	private:
 		SDL_Window* m_Window = nullptr;
 		std::unique_ptr<RHI::VulkanSwapchain> m_Swapchain;

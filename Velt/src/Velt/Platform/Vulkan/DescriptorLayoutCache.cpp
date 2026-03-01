@@ -120,7 +120,7 @@ namespace Velt::RHI
 		info.pBindings = vkBindings.data();
 
 		VkDescriptorSetLayout layout;
-		VT_VK_CHECK(vkCreateDescriptorSetLayout(VulkanContext::GetDevice().device(), &info, VT_NULL_HANDLE, &layout), "Failed to create Descriptor Set Layouts");
+		VT_VK_CHECK(vkCreateDescriptorSetLayout(VulkanContext::GetDevice()->device(), &info, VT_NULL_HANDLE, &layout), "Failed to create Descriptor Set Layouts");
 		return layout;
 	}
 }

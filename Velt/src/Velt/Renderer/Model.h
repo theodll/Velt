@@ -25,7 +25,7 @@ namespace Velt
 	class VELT_API Model
 	{
 	public:
-		static Ref<Model> Create(const ModelCreateInfo& info);
+		static Ref<Model> Create(const ModelCreateInfo* pInfo);
 
 		Model() {};
 		virtual ~Model() = default;

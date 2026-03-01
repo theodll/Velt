@@ -4,12 +4,12 @@
 namespace Velt {
 	
 	
-	Ref<Model> Model::Create(const ModelCreateInfo& info)
+	Ref<Model> Model::Create(const ModelCreateInfo* pInfo)
 	{
 		Ref<Model> model = CreateRef<Model>();
-		model->m_Submeshes.reserve(info.Parts.size());
+		model->m_Submeshes.reserve(pInfo->Parts.size());
 
-		for (const auto& part : info.Parts)
+		for (const auto& part : pInfo->Parts)
 		{
 			Submesh sm{};
 			sm.Mesh = CreateRef<Mesh>(part.Vertices, part.Indices);

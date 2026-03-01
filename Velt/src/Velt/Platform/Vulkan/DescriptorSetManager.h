@@ -42,7 +42,7 @@ namespace Velt::RHI
     class DescriptorSetManager
     {
     public:
-        DescriptorSetManager() : m_Device(VulkanContext::GetDevice()) {};
+        DescriptorSetManager() : m_Device(*VulkanContext::GetDevice()) {};
         virtual ~DescriptorSetManager() {};
 
         void Init();

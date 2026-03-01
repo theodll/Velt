@@ -7,7 +7,6 @@
 
 namespace Velt
 {
-
 	Ref<UniformBuffer> UniformBuffer::Create(u64 size, u64 offset)
 	{
 		VT_PROFILE_FUNCTION();
@@ -20,5 +19,4 @@ namespace Velt
 		VT_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;
 	}
-
 }

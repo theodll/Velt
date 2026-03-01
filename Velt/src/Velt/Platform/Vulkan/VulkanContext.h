@@ -23,10 +23,10 @@ namespace Velt::RHI
 		virtual void Shutdown() override;
 
 		void CreateInstance();
-		static VulkanDevice& GetDevice() { return *m_Device; }
-		static VkInstance& GetInstance() { return m_Instance; }
-		static VkSurfaceKHR& GetSurface() { return m_Surface; }
-		static VulkanResourceUploader& GetResourceUploader() { return *m_ResourceUploader; }
+		static VulkanDevice* GetDevice() { return m_Device.get(); }
+		static VkInstance* GetInstance() { return &m_Instance; }
+		static VkSurfaceKHR* GetSurface() { return &m_Surface; }
+		static VulkanResourceUploader* GetResourceUploader() { return m_ResourceUploader.get(); }
 		static DescriptorLayoutCache* GetLayoutCache() { return m_DescriptorLayoutCache.get(); }
 		static DescriptorSetManager* GetSetManager() { return m_DescriptorSetManager.get(); }
 
@@ -35,17 +35,17 @@ namespace Velt::RHI
 		void SDLRequiredInstanceExtensions();
 		std::vector<const char*> GetRequiredExtensions();
 		bool CheckValidationLayerSupport();
-		void CreateSurface(SDL_Window* handle);
+		void CreateSurface(SDL_Window* pHandle);
 
 
-		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& pCreateInfo);
 		void SetupDebugMessenger();
 		VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
 		void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
 
 		VkDebugUtilsMessengerEXT m_DebugMessenger;
 		static VkInstance m_Instance;
-		static VulkanDevice* m_Device;
+		static Scope<VulkanDevice> m_Device;
 		static VkSurfaceKHR m_Surface;
 		static Scope<VulkanResourceUploader> m_ResourceUploader;
 		static Scope<DescriptorLayoutCache> m_DescriptorLayoutCache;

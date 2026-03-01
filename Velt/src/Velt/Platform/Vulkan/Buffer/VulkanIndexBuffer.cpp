@@ -11,10 +11,10 @@ namespace Velt::RHI
 		m_UploadBytes(count * sizeof(u32)),
 		m_Offset(offsetBytes)
 	{
-		auto& device = VulkanContext::GetDevice();
+		const auto& device = VulkanContext::GetDevice();
 
-		device.createBuffer(
-			device.device(),
+		device->CreateBuffer(
+			device->device(),
 			m_SizeBytes,
 			VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -29,11 +29,11 @@ namespace Velt::RHI
 
 		if (autoupload)
 		{
-			auto& uploader = VulkanContext::GetResourceUploader();
+			const auto& uploader = VulkanContext::GetResourceUploader();
 
-			uploader.Begin();
-			Upload(uploader.GetCommandBuffer());
-			uploader.End();
+			uploader->Begin();
+			Upload(uploader->GetCommandBuffer());
+			uploader->End();
 		}
 	}
 
@@ -49,31 +49,31 @@ namespace Velt::RHI
 
 		if (m_StagingBuffer != VK_NULL_HANDLE)
 		{
-			vkDestroyBuffer(device.device(), m_StagingBuffer, nullptr);
-			vkFreeMemory(device.device(), m_StagingBufferMemory, nullptr);
+			vkDestroyBuffer(device->device(), m_StagingBuffer, nullptr);
+			vkFreeMemory(device->device(), m_StagingBufferMemory, nullptr);
 		}
 
 		if (m_IndexBuffer != VK_NULL_HANDLE)
 		{
-			vkDestroyBuffer(device.device(), m_IndexBuffer, nullptr);
-			vkFreeMemory(device.device(), m_IndexBufferMemory, nullptr);
+			vkDestroyBuffer(device->device(), m_IndexBuffer, nullptr);
+			vkFreeMemory(device->device(), m_IndexBufferMemory, nullptr);
 		}
 	}
 
 	void VulkanIndexBuffer::SetData(void* data, u64 size, u64 offset)
 	{
-		auto& device = VulkanContext::GetDevice();
+		const auto& device = VulkanContext::GetDevice();
 
 		if (m_StagingBuffer == VK_NULL_HANDLE || m_StagingBufferSize < size) {
 			if (m_StagingBuffer != VK_NULL_HANDLE) {
 
-				vkDestroyBuffer(device.device(), m_StagingBuffer, nullptr);
-				vkFreeMemory(device.device(), m_StagingBufferMemory, nullptr);
+				vkDestroyBuffer(device->device(), m_StagingBuffer, nullptr);
+				vkFreeMemory(device->device(), m_StagingBufferMemory, nullptr);
 
 			}
 
-			device.createBuffer(
-				device.device(),
+			device->CreateBuffer(
+				device->device(),
 				size,
 				VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
@@ -84,9 +84,9 @@ namespace Velt::RHI
 		}
 
 		void* mapped = nullptr;
-		vkMapMemory(device.device(), m_StagingBufferMemory, 0, size, 0, &mapped);
+		vkMapMemory(device->device(), m_StagingBufferMemory, 0, size, 0, &mapped);
 		memcpy(mapped, data, (size_t)size);
-		vkUnmapMemory(device.device(), m_StagingBufferMemory);
+		vkUnmapMemory(device->device(), m_StagingBufferMemory);
 	}
 
 	void VulkanIndexBuffer::Upload(VkCommandBuffer commandBuffer)

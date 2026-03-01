@@ -15,14 +15,14 @@ namespace Velt
 		static bool IsKeyReleased(Scancode code) { if (s_Instance) return s_Instance->IsKeyReleasedImpl(code); else return false; }
 
 		static void BeginFrame() { return s_Instance->BeginFrameImpl(); }
-		static void ProcessEvent(const SDL_Event& e) { return s_Instance->ProcessEventImpl(e); }
+		static void ProcessEvent(const SDL_Event* pEvent) { return s_Instance->ProcessEventImpl(pEvent); }
 	protected:
 		virtual bool IsKeyDownImpl(Scancode code) = 0;
 		virtual bool IsKeyPressedImpl(Scancode code) = 0;
 		virtual bool IsKeyReleasedImpl(Scancode code) = 0;
 
 		virtual void BeginFrameImpl() = 0;
-		virtual void ProcessEventImpl(const SDL_Event& e) = 0;
+		virtual void ProcessEventImpl(const SDL_Event* pEvent) = 0;
 	private:
 		static Scope<Input> s_Instance;
 	};
