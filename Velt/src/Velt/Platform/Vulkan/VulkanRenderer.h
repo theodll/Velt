@@ -11,8 +11,9 @@ namespace Velt::RHI
 		virtual void Init() override;
 		virtual void Shutdown() override;
 
-		virtual void DrawQuad(VkCommandBuffer& renderCommandBuffer, const Matrix& transform) override;
-		virtual void DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model> model, const Ref<Material> material) override;
+		virtual void DrawQuad(VkCommandBuffer renderCommandBuffer, const Matrix& transform) override;
+		virtual void DrawTexturedQuad(VkCommandBuffer renderCommandBuffer, const Ref<Texture2D> texture, const Matrix& transform) override;
+		virtual void DrawStaticModel(VkCommandBuffer renderCommandBuffer, const Ref<Model> model, const Ref<Material> material) override;
 		
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;

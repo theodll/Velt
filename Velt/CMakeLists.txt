@@ -83,7 +83,10 @@ add_library(Velt SHARED
         src/Velt/Events/MouseEvents.h
   "src/Velt/Renderer/Mesh.cpp" "src/Velt/Renderer/Mesh.h" "src/Velt/Renderer/Model.h" "src/Velt/Renderer/Model.cpp" 
  "src/Velt/Platform/Vulkan/DescriptorLayoutCache.cpp"
-"src/Velt/Platform/Vulkan/DescriptorLayoutCache.h" "src/Velt/Renderer/Material.h" "src/Velt/Core/Math.h" "src/Velt/Renderer/Material.cpp")
+"src/Velt/Platform/Vulkan/DescriptorLayoutCache.h" "src/Velt/Renderer/Material.h" "src/Velt/Core/Math.h" "src/Velt/Renderer/Material.cpp"
+"src/Velt/Renderer/Texture.h"
+)
+
 
 if(WIN32 OR UNIX)
     set(SHADER_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Shaders)

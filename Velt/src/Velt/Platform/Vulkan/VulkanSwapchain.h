@@ -8,7 +8,7 @@
 namespace Velt::RHI {
 
 
-    class VELT_API VulkanSwapchain : Swapchain
+    class VulkanSwapchain : Swapchain
     {
     public:
         static constexpr int MAX_FRAMES_IN_FLIGHT = 3;

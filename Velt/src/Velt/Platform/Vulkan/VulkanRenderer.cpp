@@ -242,7 +242,7 @@ namespace Velt::RHI
 		swapchain->Present();
 	}
 
-	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, const Matrix& transform)
+	void VulkanRenderer::DrawQuad(VkCommandBuffer renderCommandBuffer, const Matrix& transform)
 	{
 		auto pp = SceneRenderer::GetPipeline(); 
 		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
@@ -264,7 +264,29 @@ namespace Velt::RHI
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 	}
 
-	void VulkanRenderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model> model, const Ref<Material> material)
+	void VulkanRenderer::DrawTexturedQuad(VkCommandBuffer renderCommandBuffer, const Ref<Texture2D>, const Matrix& transform)
+	{
+		auto pp = SceneRenderer::GetPipeline();
+		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
+
+		VkPipelineLayout pipelineLayout = pp->GetVulkanPipelineLayout();
+		VkBuffer vertexBuffer = s_RenderData->QuadVertexBuffer->GetVulkanBuffer();
+		VkCommandBuffer commandBuffer = renderCommandBuffer;
+
+		VkDeviceSize offsets[1] = { 0 };
+		vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer, offsets);
+
+		VkBuffer indexBuffer = s_RenderData->QuadIndexBuffer->GetVulkanBuffer();
+		vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+		uint32_t indexCount = s_RenderData->QuadIndexBuffer->GetCount();
+		// VT_CORE_ERROR("{}", indexCount);
+
+		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
+		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
+	}
+
+	void VulkanRenderer::DrawStaticModel(VkCommandBuffer renderCommandBuffer, const Ref<Model> model, const Ref<Material> material)
 	{
 		auto pp = SceneRenderer::GetPipeline(); 
 		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
