@@ -85,7 +85,7 @@ add_library(Velt SHARED
  "src/Velt/Platform/Vulkan/DescriptorLayoutCache.cpp"
 "src/Velt/Platform/Vulkan/DescriptorLayoutCache.h" "src/Velt/Renderer/Material.h" "src/Velt/Core/Math.h" "src/Velt/Renderer/Material.cpp"
 "src/Velt/Renderer/Texture.h"
-)
+ "src/Velt/Renderer/Texture.cpp")
 
 
 if(WIN32 OR UNIX)

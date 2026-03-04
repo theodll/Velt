@@ -15,6 +15,7 @@ namespace Velt
     struct Vertex
     {
         Vector Position;
+        Point UV;
     };
 
 

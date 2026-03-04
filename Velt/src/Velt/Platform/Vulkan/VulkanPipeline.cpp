@@ -55,7 +55,7 @@ namespace Velt::RHI {
 		VT_PROFILE_FUNCTION();
 
 		VkPushConstantRange range = {};
-		range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT /* | VK_SHADER_STAGE_FRAGMENT_BIT */;
+		range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
 		range.offset = 0;
 		range.size = sizeof(glm::mat4);
 

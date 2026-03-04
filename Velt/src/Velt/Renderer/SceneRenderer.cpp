@@ -17,7 +17,8 @@ namespace Velt {
 
 		BufferLayout layout
 		{
-				{ ShaderDataType::Float3, "a_Position" }
+				{ ShaderDataType::Float3, "a_Position" },
+				{ ShaderDataType::Float2, "a_UV"}
 		};
 
 		// Todo [25.02, Theo]: Move this somewhere else 
@@ -36,7 +37,7 @@ namespace Velt {
 		color.type = RHI::DescriptorType::UNIFORM_BUFFER;
 		color.binding = 0;
 		color.count = 1;
-		color.stage = RHI::ShaderStage::VERTEX;
+		color.stage = RHI::ShaderStage::FRAGMENT;
 
 		materialBindings.emplace_back(color);
 		
