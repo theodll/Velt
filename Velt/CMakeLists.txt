@@ -27,10 +27,6 @@ add_library(Velt SHARED
         "src/Velt/ImGui/ImGuiRenderer.h"
         "src/Velt/ImGui/ImGuiRenderer.cpp"
         "src/Velt/Utils/Profiling/Instrumentor.h"
-        
-        
-        
-        
         "src/Velt/Renderer/RenderContext.h"
         "src/Velt/Renderer/RenderContext.cpp"
         "src/Velt/Renderer/Pipeline.h"
@@ -42,8 +38,6 @@ add_library(Velt SHARED
         "src/Velt/Renderer/RenderCommandBuffer.h"
         "src/Velt/Renderer/RenderCommandBuffer.cpp" 
         "Velt.h" 
-         
-        
         "src/Velt/Renderer/Buffer.h"
         "src/Velt/Renderer/Buffer.cpp"
         "src/Velt/Platform/Vulkan/Buffer/VulkanVertexBuffer.cpp"
@@ -61,8 +55,7 @@ add_library(Velt SHARED
         "src/Velt/Platform/Vulkan/VulkanResourceUploader.h"
         "src/Velt/Platform/Vulkan/VulkanResourceUploader.cpp"
         "src/Velt/Renderer/SceneRenderer.cpp" 
-        "src/Velt/Renderer/SceneRenderer.h" 
-        
+        "src/Velt/Renderer/SceneRenderer.h"   
         "src/Velt/ImGui/SceneViewport.h"
         "src/Velt/ImGui/SceneViewport.cpp"
         "src/Velt/Renderer/UniformBuffer.h"
@@ -85,7 +78,7 @@ add_library(Velt SHARED
  "src/Velt/Platform/Vulkan/DescriptorLayoutCache.cpp"
 "src/Velt/Platform/Vulkan/DescriptorLayoutCache.h" "src/Velt/Renderer/Material.h" "src/Velt/Core/Math.h" "src/Velt/Renderer/Material.cpp"
 "src/Velt/Renderer/Texture.h"
- "src/Velt/Renderer/Texture.cpp")
+ "src/Velt/Renderer/Texture.cpp" "src/Velt/Platform/Vulkan/VulkanTexture.h" "src/Velt/Platform/Vulkan/VulkanTexture.cpp" "vendor/stb_image/stb_image.h" "vendor/stb_image/stb_image.cpp")
 
 
 if(WIN32 OR UNIX)
@@ -154,6 +147,7 @@ target_include_directories(Velt
         ${CMAKE_SOURCE_DIR}/Velt/vendor/spdlog/include/
         ${CMAKE_SOURCE_DIR}/Velt/vendor/glfw/include/
         ${CMAKE_SOURCE_DIR}/Velt/vendor/glm/
+        ${CMAKE_SOURCE_DIR}/Velt/vendor/stb_image/
         ${CMAKE_SOURCE_DIR}/Velt/src/
         ${CMAKE_SOURCE_DIR}/Velt/src/Velt
 )

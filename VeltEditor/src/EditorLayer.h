@@ -23,6 +23,8 @@ namespace Editor {
 
 		Velt::Ref<Velt::Model> m_Cube;
 		Velt::Ref<Velt::Material> m_Material;
+
+		Velt::Ref<Velt::Texture2D> m_Texture;
 		int index{1};
 
 		glm::vec3 m_Rotation{-25.f, 45.f, 25.f};

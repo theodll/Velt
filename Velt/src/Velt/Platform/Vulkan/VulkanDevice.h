@@ -65,7 +65,7 @@ namespace Velt::RHI {
 		void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
 		void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 		void CopyBufferToImage(
-			VkBuffer buffer, VkImage image, u32 width, u32 height, u32 layerCount);
+			VkCommandBuffer commandBuffer, VkBuffer buffer, VkImage image, u32 width, u32 height, u32 layerCount);
 
 		void CreateImageWithInfo(
 			const VkImageCreateInfo& imageInfo,

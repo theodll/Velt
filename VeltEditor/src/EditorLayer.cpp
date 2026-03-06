@@ -22,6 +22,7 @@ namespace Editor
 
         Velt::HVector color = { 1.0f, 0.0f, 0.0f, 1.0f };
         m_Material = Velt::CreateRef<Velt::Material>(color); 
+        m_Texture = Velt::Texture2D::Create("Images/texture.jpg");
 
 		// Note [5.02.26, Theo] This will be substantially different because all these things we have to do 
 		// manually right now will be automatically done by a loader of models eg. glTF or obj.
@@ -145,10 +146,12 @@ namespace Editor
 ;
         
 
-		for (int i{}; i < index; i++)
-    		Velt::Renderer::DrawStaticModel(commandBuffer, m_Cube, m_Material);
+	//	for (int i{}; i < index; i++)
+    //		Velt::Renderer::DrawStaticModel(commandBuffer, m_Cube, m_Material);
 
-    //    Velt::Renderer::DrawQuad(commandBuffer, glm::mat4(1.0f), *m_Material.get());
+        
+
+        Velt::Renderer::DrawQuad(commandBuffer, glm::mat4(1.0f), *m_Material.get());
 	}
 
     void EditorLayer::OnImGuiRender2()
