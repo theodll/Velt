@@ -67,24 +67,40 @@ namespace Velt::RHI
 		stbi_uc* pixels = stbi_load(path.string().c_str(), &width, &height, &channels, STBI_rgb_alpha);
 		VT_CORE_ASSERT(pixels, "Failed to load image");
 
-		VkDeviceSize imageSize = width * height * 4;
 		m_Width = width;
 		m_Height = height;
+
+		CreateImage(pixels);
+		CreateImageView();
+		CreateImageSampler();
+	}
+
+	VulkanTexture2D::~VulkanTexture2D() 
+	{
+		auto&& pDevice = VulkanContext::GetDevice();
+		vkDestroyImage(pDevice->device(), m_Image, VT_NULL_HANDLE);
+		vkDestroyImageView(pDevice->device(), m_ImageView, VT_NULL_HANDLE);
+		vkDestroySampler(pDevice->device(), m_Sampler, VT_NULL_HANDLE);
+	}
+
+	void VulkanTexture2D::CreateImage(stbi_uc* pPixelData) 
+	{
+		VkDeviceSize imageSize = m_Width * m_Height * 4;
 
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingBufferMemory;
 
-		auto&& device = VulkanContext::GetDevice();
-		device->CreateBuffer(device->device(), imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+		auto&& pDevice = VulkanContext::GetDevice();
+		pDevice->CreateBuffer(pDevice->device(), imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 			stagingBuffer, stagingBufferMemory);
 
-		void* data;
-		vkMapMemory(device->device(), stagingBufferMemory, 0, imageSize, 0, &data);
-		memcpy(data, pixels, (size_t)imageSize); 
-		vkUnmapMemory(device->device(), stagingBufferMemory);
+		void* pData;
+		vkMapMemory(pDevice->device(), stagingBufferMemory, 0, imageSize, 0, &pData);
+		memcpy(pData, pPixelData, (size_t)imageSize);
+		vkUnmapMemory(pDevice->device(), stagingBufferMemory);
 
-		stbi_image_free(pixels);
+		stbi_image_free(pPixelData);
 
 		VkImageCreateInfo imageInfo{};
 		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -107,14 +123,62 @@ namespace Velt::RHI
 		auto&& uploader = VulkanContext::GetResourceUploader();
 		uploader->Begin();
 
-		device->CreateImageWithInfo(imageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_Image, imageMemory);
-	
+		pDevice->CreateImageWithInfo(imageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_Image, imageMemory);
+
 		TransitionImageLayout(uploader->GetCommandBuffer(), m_Image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-		device->CopyBufferToImage(uploader->GetCommandBuffer(), stagingBuffer, m_Image, m_Width, m_Height, 1);
+		pDevice->CopyBufferToImage(uploader->GetCommandBuffer(), stagingBuffer, m_Image, m_Width, m_Height, 1);
 
 		TransitionImageLayout(uploader->GetCommandBuffer(), m_Image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 		uploader->End();
+	}
+
+	void VulkanTexture2D::CreateImageView() 
+	{
+		auto&& pDevice = VulkanContext::GetDevice();
+
+		VkImageViewCreateInfo viewInfo{};
+		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		viewInfo.image = m_Image;
+		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		viewInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
+		viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		viewInfo.subresourceRange.baseMipLevel = 0;
+		viewInfo.subresourceRange.levelCount = 1;
+		viewInfo.subresourceRange.baseArrayLayer = 0;
+		viewInfo.subresourceRange.layerCount = 1;
+
+		VT_VK_CHECK(vkCreateImageView(pDevice->device(), &viewInfo, VT_NULL_HANDLE, &m_ImageView), "Failed to create Image View");
+	}
+
+	void VulkanTexture2D::CreateImageSampler() 
+	{
+		auto&& pDevice = VulkanContext::GetDevice();
+
+		// Todo [07.03.26, Theo]: Make this flexible and adjustable in settings
+		VkSamplerCreateInfo samplerInfo{};
+		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+		samplerInfo.magFilter = VK_FILTER_LINEAR;
+		samplerInfo.minFilter = VK_FILTER_LINEAR;
+		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.anisotropyEnable = VK_TRUE;
+
+		VkPhysicalDeviceProperties properties{};
+		vkGetPhysicalDeviceProperties(pDevice->GetPhysicalDevice(), &properties);
+
+		samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
+		samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+		samplerInfo.unnormalizedCoordinates = VK_FALSE;
+		samplerInfo.compareEnable = VK_FALSE;
+		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+		samplerInfo.mipLodBias = 0.0f;
+		samplerInfo.minLod = 0.0f;
+		samplerInfo.maxLod = 0.0f;
+
+		VT_VK_CHECK(vkCreateSampler(pDevice->device(), &samplerInfo, VT_NULL_HANDLE, &m_Sampler), "Failed to create Texture Sampler")
 	}
 }

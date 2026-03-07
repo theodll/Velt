@@ -10,6 +10,10 @@ namespace Velt
 		virtual ~Texture() = default;
 		virtual u32 GetWidth() const = 0;
 		virtual u32 GetHeight() const = 0;
+
+		virtual VkSampler GetSampler() const = 0;
+		virtual VkImage GetImage() const = 0;
+		virtual VkImageView GetImageView() const = 0;
 	};
 
 	class VELT_API Texture2D : public Texture 
