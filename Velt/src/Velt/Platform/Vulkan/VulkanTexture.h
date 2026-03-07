@@ -33,6 +33,7 @@ namespace Velt::RHI
 		u32 m_Width{}, m_Height{};
 
 		VkImage m_Image;
+		VkDeviceMemory m_ImageMemory;
 		VkImageView m_ImageView;
 		VkSampler m_Sampler;
 	};

@@ -129,7 +129,7 @@ namespace Velt::RHI {
 				attr.binding = 0;
 				attr.location = location++;
 				attr.format = ShaderDataTypeToVulkanFormat(element.Type);
-				attr.offset = 0;
+				attr.offset = element.Offset;
 				attributeDescs.push_back(attr);
 			}
 		}

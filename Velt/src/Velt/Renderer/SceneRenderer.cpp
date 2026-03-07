@@ -24,22 +24,28 @@ namespace Velt {
 		// Todo [25.02, Theo]: Move this somewhere else 
 
 		std::vector<RHI::DescriptorBinding> globalBindings{};
-		RHI::DescriptorBinding viewProj;
+		RHI::DescriptorBinding viewProj{};
 		viewProj.type = RHI::DescriptorType::UNIFORM_BUFFER;
 		viewProj.binding = 0;
 		viewProj.count = 1;
 		viewProj.stage = RHI::ShaderStage::VERTEX;
-		
+
 		globalBindings.emplace_back(viewProj);
 
 		std::vector<RHI::DescriptorBinding> materialBindings{};
-		RHI::DescriptorBinding color;
+		RHI::DescriptorBinding color{};
 		color.type = RHI::DescriptorType::UNIFORM_BUFFER;
 		color.binding = 0;
 		color.count = 1;
 		color.stage = RHI::ShaderStage::FRAGMENT;
-
 		materialBindings.emplace_back(color);
+
+		RHI::DescriptorBinding albedoTexture{};
+		albedoTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
+		albedoTexture.binding = 1; 
+		albedoTexture.count = 1;
+		albedoTexture.stage = RHI::ShaderStage::FRAGMENT;
+		materialBindings.emplace_back(albedoTexture);
 		
 		auto globalLayout = RHI::VulkanContext::GetLayoutCache()->CreateLayout(&globalBindings);
 		auto materialLayout = RHI::VulkanContext::GetLayoutCache()->CreateLayout(&materialBindings);

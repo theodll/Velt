@@ -55,8 +55,8 @@ namespace Velt::RHI
 			sourceStage,
 			destinationStage,
 			0,
-			0, nullptr,
-			0, nullptr,
+			0, VT_NULL_HANDLE,
+			0, VT_NULL_HANDLE,
 			1, &barrier
 		);
 	}
@@ -79,6 +79,7 @@ namespace Velt::RHI
 	{
 		auto&& pDevice = VulkanContext::GetDevice();
 		vkDestroyImage(pDevice->device(), m_Image, VT_NULL_HANDLE);
+		vkFreeMemory(pDevice->device(), m_ImageMemory, VT_NULL_HANDLE);
 		vkDestroyImageView(pDevice->device(), m_ImageView, VT_NULL_HANDLE);
 		vkDestroySampler(pDevice->device(), m_Sampler, VT_NULL_HANDLE);
 	}
@@ -118,12 +119,10 @@ namespace Velt::RHI
 		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 		imageInfo.flags = 0;
 
-		VkDeviceMemory imageMemory;
-
 		auto&& uploader = VulkanContext::GetResourceUploader();
 		uploader->Begin();
 
-		pDevice->CreateImageWithInfo(imageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_Image, imageMemory);
+		pDevice->CreateImageWithInfo(imageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_Image, m_ImageMemory);
 
 		TransitionImageLayout(uploader->GetCommandBuffer(), m_Image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
@@ -132,6 +131,9 @@ namespace Velt::RHI
 		TransitionImageLayout(uploader->GetCommandBuffer(), m_Image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 		uploader->End();
+
+		vkDestroyBuffer(pDevice->device(), stagingBuffer, VT_NULL_HANDLE);
+		vkFreeMemory(pDevice->device(), stagingBufferMemory, VT_NULL_HANDLE);
 	}
 
 	void VulkanTexture2D::CreateImageView() 

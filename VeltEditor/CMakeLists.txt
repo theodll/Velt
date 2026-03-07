@@ -25,3 +25,14 @@ endif()
 
 target_link_libraries(VeltEditor PRIVATE Velt SDL3::SDL3)
 
+set_target_properties(VeltEditor PROPERTIES
+    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+)
+
+add_custom_command(TARGET VeltEditor POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/Images
+    $<TARGET_FILE_DIR:VeltEditor>/Images
+    COMMENT "Copying Images to output directory"
+)
+

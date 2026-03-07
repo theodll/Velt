@@ -24,6 +24,8 @@ namespace Editor
         m_Material = Velt::CreateRef<Velt::Material>(color); 
         m_Texture = Velt::Texture2D::Create("Images/texture.jpg");
 
+        m_Material->SetTexture(1, m_Texture);
+
 		// Note [5.02.26, Theo] This will be substantially different because all these things we have to do 
 		// manually right now will be automatically done by a loader of models eg. glTF or obj.
 
