@@ -14,3 +14,9 @@
 	path = Velt/vendor/ImGui
 	url = https://github.com/ocornut/imgui
 	branch = docking
+[submodule "stb"]
+	path = stb
+	url = https://github.com/nothings/stb
+[submodule "Velt/vendor/stb"]
+	path = Velt/vendor/stb
+	url = https://github.com/nothings/stb

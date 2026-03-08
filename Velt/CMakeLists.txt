@@ -78,7 +78,7 @@ add_library(Velt SHARED
  "src/Velt/Platform/Vulkan/DescriptorLayoutCache.cpp"
 "src/Velt/Platform/Vulkan/DescriptorLayoutCache.h" "src/Velt/Renderer/Material.h" "src/Velt/Core/Math.h" "src/Velt/Renderer/Material.cpp"
 "src/Velt/Renderer/Texture.h"
- "src/Velt/Renderer/Texture.cpp" "src/Velt/Platform/Vulkan/VulkanTexture.h" "src/Velt/Platform/Vulkan/VulkanTexture.cpp" "vendor/stb_image/stb_image.h" "vendor/stb_image/stb_image.cpp")
+ "src/Velt/Renderer/Texture.cpp" "src/Velt/Platform/Vulkan/VulkanTexture.h" "src/Velt/Platform/Vulkan/VulkanTexture.cpp" "vendor/stb/stb_image.h" "vendor/stb/stb.cpp")
 
 
 if(WIN32 OR UNIX)
@@ -157,7 +157,7 @@ target_include_directories(Velt
         ${CMAKE_SOURCE_DIR}/Velt/vendor/spdlog/include/
         ${CMAKE_SOURCE_DIR}/Velt/vendor/glfw/include/
         ${CMAKE_SOURCE_DIR}/Velt/vendor/glm/
-        ${CMAKE_SOURCE_DIR}/Velt/vendor/stb_image/
+        ${CMAKE_SOURCE_DIR}/Velt/vendor/stb/
         ${CMAKE_SOURCE_DIR}/Velt/src/
         ${CMAKE_SOURCE_DIR}/Velt/src/Velt
 )
