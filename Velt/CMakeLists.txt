@@ -78,8 +78,11 @@ add_library(Velt SHARED
  "src/Velt/Platform/Vulkan/DescriptorLayoutCache.cpp"
 "src/Velt/Platform/Vulkan/DescriptorLayoutCache.h" "src/Velt/Renderer/Material.h" "src/Velt/Core/Math.h" "src/Velt/Renderer/Material.cpp"
 "src/Velt/Renderer/Texture.h"
- "src/Velt/Renderer/Texture.cpp" "src/Velt/Platform/Vulkan/VulkanTexture.h" "src/Velt/Platform/Vulkan/VulkanTexture.cpp" "vendor/stb/stb_image.h" "vendor/stb/stb.cpp")
+ "src/Velt/Renderer/Texture.cpp" "src/Velt/Platform/Vulkan/VulkanTexture.h" "src/Velt/Platform/Vulkan/VulkanTexture.cpp" "vendor/stb/stb_image.h" "vendor/stb/stb.cpp" "src/Velt/Renderer/ShaderLibrary.cpp")
 
+
+ # "vendor/spirv-reflect/spirv_reflect.h" "vendor/spirv-reflect/spirv_reflect.c" 
+target_compile_definitions(Velt PUBLIC SPIRV_REFLECT_USE_SYSTEM_SPIRV_H)
 
 if(WIN32 OR UNIX)
     set(SHADER_SRC_DIR ${CMAKE_SOURCE_DIR}/Shaders)
@@ -93,6 +96,13 @@ if(WIN32 OR UNIX)
 
     add_custom_target(
         CompileShaders ALL
+    )
+
+    add_library(spirv-reflect "vendor/spirv-reflect/spirv_reflect.c" "vendor/spirv-reflect/spirv_reflect.h")
+    
+    set_source_files_properties(
+    vendor/spirv-reflect/spirv_reflect.c
+    PROPERTIES LANGUAGE CXX
     )
 
     foreach(SHADER_FILE ${SHADER_FILES})

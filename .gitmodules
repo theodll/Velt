@@ -20,3 +20,6 @@
 [submodule "Velt/vendor/stb"]
 	path = Velt/vendor/stb
 	url = https://github.com/nothings/stb
+[submodule "Velt/vendor/spirv-reflect"]
+	path = Velt/vendor/spirv-reflect
+	url = https://github.com/KhronosGroup/SPIRV-Reflect
