@@ -13,6 +13,6 @@ layout(set = 1, binding = 1) uniform sampler2D u_Albedo;
 
 void main()
 {
-   outColor = texture(u_Albedo, v_UV);
-   // outColor = vec4(v_UV, 0.0, 1.0);
+   outColor = texture(u_Albedo, v_UV) * u_Material.color;
+   //outColor = vec4(v_UV, 0.0, 1.0);
 }

@@ -36,7 +36,7 @@ namespace Velt
 
 		struct MaterialUBO
 		{
-			HVector Color;
+			HVector Color{glm::vec4(1.0f)};
 		};
 
 		Ref<UniformBuffer> m_UBOs[MAX_FRAMES_IN_FLIGHT];

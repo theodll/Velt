@@ -26,10 +26,10 @@ namespace Velt::RHI
 		s_RenderData = CreateScope<RenderData>();
 
 		Vertex quadVerticesData[] = {
-			{ {-0.5f, -0.5f, 0.5f}, {0.0f, 1.0f} },
-			{ { 0.5f, -0.5f, 0.5f}, {1.0f, 1.0f} },
-			{ { 0.5f,  0.5f, 0.5f}, {1.0f, 0.0f} },
-			{ {-0.5f,  0.5f, 0.5f}, {0.0f, 0.0f} }
+			{ {-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f} },
+			{ { 0.5f, -0.5f, 0.5f}, {1.0f, 0.0f} },
+			{ { 0.5f,  0.5f, 0.5f}, {1.0f, 1.0f} },
+			{ {-0.5f,  0.5f, 0.5f}, {0.0f, 1.0f} }
 		};
 
 		std::vector<Vertex> quadVertices(quadVerticesData, quadVerticesData + 4);

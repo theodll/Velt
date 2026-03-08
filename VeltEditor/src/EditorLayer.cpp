@@ -20,7 +20,7 @@ namespace Editor
 		VT_PROFILE_FUNCTION();
         index++;
 
-        Velt::HVector color = { 1.0f, 0.0f, 0.0f, 1.0f };
+        Velt::HVector color = { 1.0f, 1.0f, 1.0f, 1.0f };
         m_Material = Velt::CreateRef<Velt::Material>(color); 
         m_Texture = Velt::Texture2D::Create("Images/texture.jpg");
 

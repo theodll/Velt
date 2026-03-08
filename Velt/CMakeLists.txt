@@ -82,11 +82,14 @@ add_library(Velt SHARED
 
 
 if(WIN32 OR UNIX)
-    set(SHADER_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Shaders)
+    set(SHADER_SRC_DIR ${CMAKE_SOURCE_DIR}/Shaders)
     set(SHADER_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/Shaders)
     file(MAKE_DIRECTORY ${SHADER_OUT_DIR})
 
-    file(GLOB SHADER_FILES "${SHADER_SRC_DIR}/*.vert" "${SHADER_SRC_DIR}/*.frag")
+    set(SHADER_FILES
+        "${SHADER_SRC_DIR}/vertex.glsl"
+        "${SHADER_SRC_DIR}/fragment.glsl"
+    )
 
     add_custom_target(
         CompileShaders ALL
@@ -94,18 +97,25 @@ if(WIN32 OR UNIX)
 
     foreach(SHADER_FILE ${SHADER_FILES})
         get_filename_component(SHADER_NAME ${SHADER_FILE} NAME)
+
+        if(SHADER_NAME MATCHES "vertex")
+            set(SHADER_STAGE "vertex")
+        elseif(SHADER_NAME MATCHES "fragment")
+            set(SHADER_STAGE "fragment")
+        endif()
+
         if(WIN32)
             add_custom_command(
-                TARGET CompileShaders
+                TARGET CompileShaders POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E echo "Compiling ${SHADER_NAME}..."
-                COMMAND C:/VulkanSDK/1.4.328.1/Bin/glslc.exe ${SHADER_FILE} -o ${SHADER_OUT_DIR}/${SHADER_NAME}.spv
+                COMMAND C:/VulkanSDK/1.4.328.1/Bin/glslc.exe -fshader-stage=${SHADER_STAGE} ${SHADER_FILE} -o ${SHADER_OUT_DIR}/${SHADER_NAME}.spv
                 VERBATIM
             )
         else()
             add_custom_command(
-                TARGET CompileShaders
+                TARGET CompileShaders POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E echo "Compiling ${SHADER_NAME}..."
-                COMMAND glslc ${SHADER_FILE} -o ${SHADER_OUT_DIR}/${SHADER_NAME}.spv
+                COMMAND glslc -fshader-stage=${SHADER_STAGE} ${SHADER_FILE} -o ${SHADER_OUT_DIR}/${SHADER_NAME}.spv
                 VERBATIM
             )
         endif()
