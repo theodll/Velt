@@ -13,6 +13,8 @@ namespace Velt::RHI
 	{
 		Ref<VertexBuffer> QuadVertexBuffer;
 		Ref<IndexBuffer> QuadIndexBuffer;
+		Ref<VertexBuffer> TexuredQuadVertexBuffer;
+		Ref<IndexBuffer> TexturedQuadIndexBuffer;
 	};
 
 	static Scope<RenderData> s_RenderData = nullptr;
@@ -24,16 +26,16 @@ namespace Velt::RHI
 		s_RenderData = CreateScope<RenderData>();
 
 		Vertex quadVerticesData[] = {
-			{ {-0.5f, -0.5f, 0.5f} },
-			{ { 0.5f, -0.5f, 0.5f} },
-			{ { 0.5f,  0.5f, 0.5f} },
-			{ {-0.5f,  0.5f, 0.5f} }
+			{ {-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f} },
+			{ { 0.5f, -0.5f, 0.5f}, {1.0f, 0.0f} },
+			{ { 0.5f,  0.5f, 0.5f}, {1.0f, 1.0f} },
+			{ {-0.5f,  0.5f, 0.5f}, {0.0f, 1.0f} }
 		};
 
 		std::vector<Vertex> quadVertices(quadVerticesData, quadVerticesData + 4);
 		s_RenderData->QuadVertexBuffer = VertexBuffer::Create(quadVertices.data(), quadVertices.size(), sizeof(Vertex));
 
-		std::vector<u32> quadIndices = { 0, 1, 2, 2, 3, 0 };
+		std::vector<Index> quadIndices = { 0, 1, 2, 2, 3, 0 };
 		s_RenderData->QuadIndexBuffer = IndexBuffer::Create(quadIndices.data(), quadIndices.size());
 
 		// Upload quad buffers
@@ -242,7 +244,7 @@ namespace Velt::RHI
 		swapchain->Present();
 	}
 
-	void VulkanRenderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, const Matrix& transform)
+	void VulkanRenderer::DrawQuad(VkCommandBuffer renderCommandBuffer, const Matrix& transform, const Material& material)
 	{
 		auto pp = SceneRenderer::GetPipeline(); 
 		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
@@ -259,12 +261,35 @@ namespace Velt::RHI
 
 		uint32_t indexCount = s_RenderData->QuadIndexBuffer->GetCount();
 		// VT_CORE_ERROR("{}", indexCount);
+		vkCmdBindDescriptorSets(renderCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &material.GetSet(), 0, VT_NULL_HANDLE);
 
-		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
+		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(glm::mat4), &transform);
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 	}
 
-	void VulkanRenderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model> model, const Ref<Material> material)
+	void VulkanRenderer::DrawTexturedQuad(VkCommandBuffer renderCommandBuffer, const Ref<Texture2D>, const Matrix& transform)
+	{
+		auto pp = SceneRenderer::GetPipeline();
+		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
+
+		VkPipelineLayout pipelineLayout = pp->GetVulkanPipelineLayout();
+		VkBuffer vertexBuffer = s_RenderData->QuadVertexBuffer->GetVulkanBuffer();
+		VkCommandBuffer commandBuffer = renderCommandBuffer;
+
+		VkDeviceSize offsets[1] = { 0 };
+		vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer, offsets);
+
+		VkBuffer indexBuffer = s_RenderData->QuadIndexBuffer->GetVulkanBuffer();
+		vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+		uint32_t indexCount = s_RenderData->QuadIndexBuffer->GetCount();
+		// VT_CORE_ERROR("{}", indexCount);
+
+		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(glm::mat4), &transform);
+		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
+	}
+
+	void VulkanRenderer::DrawStaticModel(VkCommandBuffer renderCommandBuffer, const Ref<Model> model, const Ref<Material> material)
 	{
 		auto pp = SceneRenderer::GetPipeline(); 
 		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
@@ -272,7 +297,7 @@ namespace Velt::RHI
 		VkCommandBuffer commandBuffer = renderCommandBuffer;
 
 		auto transform = model->GetTransform().Matrix();
-		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
+		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(glm::mat4), &transform);
 
 		vkCmdBindDescriptorSets(renderCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &material->GetSet(), 0, VT_NULL_HANDLE);
 

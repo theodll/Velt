@@ -397,10 +397,9 @@ namespace Velt::RHI
     }
 
     void VulkanDevice::CopyBufferToImage(
-        VkBuffer buffer, VkImage image, u32 width, u32 height, u32 layerCount)
+        VkCommandBuffer commandBuffer, VkBuffer buffer, VkImage image, u32 width, u32 height, u32 layerCount)
     {
         VT_PROFILE_FUNCTION();
-        VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
 
         VkBufferImageCopy region{};
         region.bufferOffset = 0;
@@ -422,7 +421,7 @@ namespace Velt::RHI
             VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
             1,
             &region);
-        EndSingleTimeCommands(commandBuffer);
+
     }
 
     void VulkanDevice::CreateImageWithInfo(

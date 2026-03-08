@@ -32,6 +32,25 @@ namespace Velt
 			}
 		};
 
+		void Material::SetTexture(u32 binding, Ref<Texture2D> pTexture)
+		{
+			m_Textures[binding] = pTexture;
+
+			for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+			{
+				VkDescriptorImageInfo info{};
+				info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+				info.imageView = pTexture->GetImageView();
+				info.sampler = pTexture->GetSampler();
+
+				RHI::VulkanContext::GetSetManager()->WriteImage(
+					m_Sets[i],
+					binding,
+					info
+				);
+			}
+		}
+
 		const VkDescriptorSet& Material::GetSet() const { return m_Sets[Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex()]; }
 
 		void Material::SetColor(const HVector& pColor)

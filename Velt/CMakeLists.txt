@@ -27,10 +27,6 @@ add_library(Velt SHARED
         "src/Velt/ImGui/ImGuiRenderer.h"
         "src/Velt/ImGui/ImGuiRenderer.cpp"
         "src/Velt/Utils/Profiling/Instrumentor.h"
-        
-        
-        
-        
         "src/Velt/Renderer/RenderContext.h"
         "src/Velt/Renderer/RenderContext.cpp"
         "src/Velt/Renderer/Pipeline.h"
@@ -42,8 +38,6 @@ add_library(Velt SHARED
         "src/Velt/Renderer/RenderCommandBuffer.h"
         "src/Velt/Renderer/RenderCommandBuffer.cpp" 
         "Velt.h" 
-         
-        
         "src/Velt/Renderer/Buffer.h"
         "src/Velt/Renderer/Buffer.cpp"
         "src/Velt/Platform/Vulkan/Buffer/VulkanVertexBuffer.cpp"
@@ -61,8 +55,7 @@ add_library(Velt SHARED
         "src/Velt/Platform/Vulkan/VulkanResourceUploader.h"
         "src/Velt/Platform/Vulkan/VulkanResourceUploader.cpp"
         "src/Velt/Renderer/SceneRenderer.cpp" 
-        "src/Velt/Renderer/SceneRenderer.h" 
-        
+        "src/Velt/Renderer/SceneRenderer.h"   
         "src/Velt/ImGui/SceneViewport.h"
         "src/Velt/ImGui/SceneViewport.cpp"
         "src/Velt/Renderer/UniformBuffer.h"
@@ -83,14 +76,20 @@ add_library(Velt SHARED
         src/Velt/Events/MouseEvents.h
   "src/Velt/Renderer/Mesh.cpp" "src/Velt/Renderer/Mesh.h" "src/Velt/Renderer/Model.h" "src/Velt/Renderer/Model.cpp" 
  "src/Velt/Platform/Vulkan/DescriptorLayoutCache.cpp"
-"src/Velt/Platform/Vulkan/DescriptorLayoutCache.h" "src/Velt/Renderer/Material.h" "src/Velt/Core/Math.h" "src/Velt/Renderer/Material.cpp")
+"src/Velt/Platform/Vulkan/DescriptorLayoutCache.h" "src/Velt/Renderer/Material.h" "src/Velt/Core/Math.h" "src/Velt/Renderer/Material.cpp"
+"src/Velt/Renderer/Texture.h"
+ "src/Velt/Renderer/Texture.cpp" "src/Velt/Platform/Vulkan/VulkanTexture.h" "src/Velt/Platform/Vulkan/VulkanTexture.cpp" "vendor/stb_image/stb_image.h" "vendor/stb_image/stb_image.cpp")
+
 
 if(WIN32 OR UNIX)
-    set(SHADER_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Shaders)
+    set(SHADER_SRC_DIR ${CMAKE_SOURCE_DIR}/Shaders)
     set(SHADER_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/Shaders)
     file(MAKE_DIRECTORY ${SHADER_OUT_DIR})
 
-    file(GLOB SHADER_FILES "${SHADER_SRC_DIR}/*.vert" "${SHADER_SRC_DIR}/*.frag")
+    set(SHADER_FILES
+        "${SHADER_SRC_DIR}/vertex.glsl"
+        "${SHADER_SRC_DIR}/fragment.glsl"
+    )
 
     add_custom_target(
         CompileShaders ALL
@@ -98,18 +97,25 @@ if(WIN32 OR UNIX)
 
     foreach(SHADER_FILE ${SHADER_FILES})
         get_filename_component(SHADER_NAME ${SHADER_FILE} NAME)
+
+        if(SHADER_NAME MATCHES "vertex")
+            set(SHADER_STAGE "vertex")
+        elseif(SHADER_NAME MATCHES "fragment")
+            set(SHADER_STAGE "fragment")
+        endif()
+
         if(WIN32)
             add_custom_command(
-                TARGET CompileShaders
+                TARGET CompileShaders POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E echo "Compiling ${SHADER_NAME}..."
-                COMMAND C:/VulkanSDK/1.4.328.1/Bin/glslc.exe ${SHADER_FILE} -o ${SHADER_OUT_DIR}/${SHADER_NAME}.spv
+                COMMAND C:/VulkanSDK/1.4.328.1/Bin/glslc.exe -fshader-stage=${SHADER_STAGE} ${SHADER_FILE} -o ${SHADER_OUT_DIR}/${SHADER_NAME}.spv
                 VERBATIM
             )
         else()
             add_custom_command(
-                TARGET CompileShaders
+                TARGET CompileShaders POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E echo "Compiling ${SHADER_NAME}..."
-                COMMAND glslc ${SHADER_FILE} -o ${SHADER_OUT_DIR}/${SHADER_NAME}.spv
+                COMMAND glslc -fshader-stage=${SHADER_STAGE} ${SHADER_FILE} -o ${SHADER_OUT_DIR}/${SHADER_NAME}.spv
                 VERBATIM
             )
         endif()
@@ -151,6 +157,7 @@ target_include_directories(Velt
         ${CMAKE_SOURCE_DIR}/Velt/vendor/spdlog/include/
         ${CMAKE_SOURCE_DIR}/Velt/vendor/glfw/include/
         ${CMAKE_SOURCE_DIR}/Velt/vendor/glm/
+        ${CMAKE_SOURCE_DIR}/Velt/vendor/stb_image/
         ${CMAKE_SOURCE_DIR}/Velt/src/
         ${CMAKE_SOURCE_DIR}/Velt/src/Velt
 )

@@ -22,6 +22,19 @@ namespace Velt::RHI
         m_CurrentPool = VK_NULL_HANDLE; 
     }
 
+    void DescriptorSetManager::WriteImage(VkDescriptorSet set, u32 binding, const VkDescriptorImageInfo& info)
+    {
+        VkWriteDescriptorSet write{};
+        write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        write.dstSet = set;
+        write.dstBinding = binding;
+        write.descriptorCount = 1;
+        write.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        write.pImageInfo = &info;
+
+        vkUpdateDescriptorSets(m_Device.device(), 1, &write, 0, nullptr);
+    }
+
     void DescriptorSetManager::WriteBuffer(VkDescriptorSet set, uint32_t binding, VkBuffer buffer, VkDeviceSize size)
     {
         VkDescriptorBufferInfo bufferInfo{};
