@@ -168,6 +168,7 @@ target_include_directories(Velt
         ${CMAKE_SOURCE_DIR}/Velt/vendor/glfw/include/
         ${CMAKE_SOURCE_DIR}/Velt/vendor/glm/
         ${CMAKE_SOURCE_DIR}/Velt/vendor/stb/
+        ${CMAKE_SOURCE_DIR}/Velt/vendor/spirv-reflect/
         ${CMAKE_SOURCE_DIR}/Velt/src/
         ${CMAKE_SOURCE_DIR}/Velt/src/Velt
 )
