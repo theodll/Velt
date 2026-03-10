@@ -78,15 +78,31 @@ add_library(Velt SHARED
  "src/Velt/Platform/Vulkan/DescriptorLayoutCache.cpp"
 "src/Velt/Platform/Vulkan/DescriptorLayoutCache.h" "src/Velt/Renderer/Material.h" "src/Velt/Core/Math.h" "src/Velt/Renderer/Material.cpp"
 "src/Velt/Renderer/Texture.h"
- "src/Velt/Renderer/Texture.cpp" "src/Velt/Platform/Vulkan/VulkanTexture.h" "src/Velt/Platform/Vulkan/VulkanTexture.cpp" "vendor/stb/stb_image.h" "vendor/stb/stb.cpp" "src/Velt/Renderer/ShaderLibrary.cpp")
+ "src/Velt/Renderer/Texture.cpp" "src/Velt/Platform/Vulkan/VulkanTexture.h" "src/Velt/Platform/Vulkan/VulkanTexture.cpp" "vendor/stb/stb_image.h" "vendor/stb/stb.cpp" "src/Velt/Renderer/ShaderLibrary.cpp" "src/Velt/Renderer/ShaderLibrary.h"  "vendor/spirv-reflect/spirv_reflect.h" "vendor/spirv-reflect/spirv_reflect.cpp" 
+) 
 
-
- # "vendor/spirv-reflect/spirv_reflect.h" "vendor/spirv-reflect/spirv_reflect.c" 
-target_compile_definitions(Velt PUBLIC SPIRV_REFLECT_USE_SYSTEM_SPIRV_H)
 
 if(WIN32 OR UNIX)
-    set(SHADER_SRC_DIR ${CMAKE_SOURCE_DIR}/Shaders)
-    set(SHADER_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/Shaders)
+    if(WIN32)
+        find_program(GLSLC_EXECUTABLE
+            NAMES glslc glslc.exe
+            HINTS
+                "$ENV{VULKAN_SDK}/Bin"
+                "C:/VulkanSDK/1.4.328.1/Bin"
+            REQUIRED
+        )
+    else()
+        find_program(GLSLC_EXECUTABLE
+            NAMES glslc
+            REQUIRED
+        )
+    endif()
+
+    message(STATUS "glslc found at: ${GLSLC_EXECUTABLE}")
+
+    set(SHADER_SRC_DIR  ${CMAKE_SOURCE_DIR}/Shaders)
+    
+    set(SHADER_OUT_DIR  ${CMAKE_CURRENT_BINARY_DIR}/Shaders)
     file(MAKE_DIRECTORY ${SHADER_OUT_DIR})
 
     set(SHADER_FILES
@@ -94,44 +110,52 @@ if(WIN32 OR UNIX)
         "${SHADER_SRC_DIR}/fragment.glsl"
     )
 
-    add_custom_target(
-        CompileShaders ALL
-    )
-
-    add_library(spirv-reflect "vendor/spirv-reflect/spirv_reflect.c" "vendor/spirv-reflect/spirv_reflect.h")
-    
-    set_source_files_properties(
-    vendor/spirv-reflect/spirv_reflect.c
-    PROPERTIES LANGUAGE CXX
-    )
+    set(SHADER_SPV_FILES)
 
     foreach(SHADER_FILE ${SHADER_FILES})
         get_filename_component(SHADER_NAME ${SHADER_FILE} NAME)
 
-        if(SHADER_NAME MATCHES "vertex")
+        if(SHADER_NAME MATCHES "vert")
             set(SHADER_STAGE "vertex")
-        elseif(SHADER_NAME MATCHES "fragment")
+        elseif(SHADER_NAME MATCHES "frag")
             set(SHADER_STAGE "fragment")
+        elseif(SHADER_NAME MATCHES "comp")
+            set(SHADER_STAGE "compute")
+        else()
+            message(WARNING "Cannot determine shader stage for ${SHADER_NAME}; skipping.")
+            continue()
         endif()
 
-        if(WIN32)
-            add_custom_command(
-                TARGET CompileShaders POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E echo "Compiling ${SHADER_NAME}..."
-                COMMAND C:/VulkanSDK/1.4.328.1/Bin/glslc.exe -fshader-stage=${SHADER_STAGE} ${SHADER_FILE} -o ${SHADER_OUT_DIR}/${SHADER_NAME}.spv
-                VERBATIM
-            )
-        else()
-            add_custom_command(
-                TARGET CompileShaders POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E echo "Compiling ${SHADER_NAME}..."
-                COMMAND glslc -fshader-stage=${SHADER_STAGE} ${SHADER_FILE} -o ${SHADER_OUT_DIR}/${SHADER_NAME}.spv
-                VERBATIM
-            )
-        endif()
+        set(SPV_OUTPUT "${SHADER_OUT_DIR}/${SHADER_NAME}.spv")
+        list(APPEND SHADER_SPV_FILES ${SPV_OUTPUT})
+
+        add_custom_command(
+            OUTPUT  ${SPV_OUTPUT}
+            COMMAND ${CMAKE_COMMAND} -E echo "Compiling shader: ${SHADER_NAME} (stage=${SHADER_STAGE})"
+            COMMAND ${GLSLC_EXECUTABLE}
+                        -fshader-stage=${SHADER_STAGE}
+                        ${SHADER_FILE}
+                        -o ${SPV_OUTPUT}
+            DEPENDS ${SHADER_FILE}
+            VERBATIM
+        )
     endforeach()
 
+    add_custom_target(CompileShaders ALL DEPENDS ${SHADER_SPV_FILES})
+    
+    add_custom_command(
+        TARGET Velt POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory
+                "$<TARGET_FILE_DIR:Velt>/Shaders"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                ${SHADER_SPV_FILES}
+                "$<TARGET_FILE_DIR:Velt>/Shaders/"
+        COMMENT "Copying compiled shaders to output directory"
+        VERBATIM
+    )
+
     add_dependencies(Velt CompileShaders)
+
     target_compile_definitions(Velt PRIVATE VL_BUILD_DLL)
     add_definitions(-DVL_BUILD_DLL)
 endif()

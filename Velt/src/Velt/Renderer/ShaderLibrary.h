@@ -5,39 +5,38 @@
 #include <vector>
 #include <unordered_map>
 #include <filesystem>
-
-// Todo [08.03.26, Theo] Make platform independent
-
+#include <string>
 
 namespace Velt
 {
-	struct DescriptorSetLayoutData 
+	struct DescriptorSetLayoutData
 	{
 		u32 SetNumber;
 		std::vector<RHI::DescriptorBinding> Bindings;
 	};
 
-	struct Shader 
+	struct Shader
 	{
 		VkShaderModule Module{};
 		RHI::ShaderStage Stage{};
 
-		std::vector<DescriptorSetLayoutData> ReflectData{}; 
-		std::vector<VkPushConstantRange> PushConstats{};
+		std::unordered_map<u32, DescriptorSetLayoutData> ReflectData{};
+
+		// Todo [09.03.26, Theo]: make push constants
+		// std::vector<VkPushConstantRange> PushConstants{};
 	};
 
-	class ShaderLibrary 
+	class ShaderLibrary
 	{
 	public:
 		static Ref<Shader> Get(const std::filesystem::path& path);
 
-	private: 
+	private:
 		static std::vector<u32> ReadSpirvFile(const std::filesystem::path& path);
 		static VkShaderModule CreateVulkanModule(const std::vector<u32>& bytes);
-		static DescriptorSetLayoutData ReflectShader(const std::vector<u32>& bytes);
 
-		static std::unordered_map<std::filesystem::path, Ref<Shader>> m_Shaders;
+		static std::unordered_map<u32, DescriptorSetLayoutData> ReflectShader(const std::vector<u32>& bytes, RHI::ShaderStage& outStage);
 
-
+		static std::unordered_map<std::string, Ref<Shader>> m_Shaders;
 	};
 }
