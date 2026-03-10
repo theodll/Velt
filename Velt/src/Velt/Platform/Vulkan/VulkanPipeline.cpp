@@ -18,7 +18,7 @@ namespace Velt::RHI {
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Create Pipeline");
-		VT_CORE_ERROR("{}", m_Specification.Layout.GetStride());
+	//	VT_CORE_ERROR("{}", m_Specification.Layout.GetStride());
 	}
 
 	void VulkanPipeline::Init()
@@ -69,7 +69,7 @@ namespace Velt::RHI {
 		pipelineLayoutInfo.pPushConstantRanges = &range;
 		if (vkCreatePipelineLayout(VulkanContext::GetDevice()->device(), &pipelineLayoutInfo, nullptr, &m_PipelineLayout) != VK_SUCCESS)
 		{
-			VT_CORE_ERROR("Failed to create pipeline layout!");
+			VT_CORE_ASSERT(false, "Failed to create pipeline layout");
 		};
 
 		m_ConfigInfo.pipelineLayout = m_PipelineLayout;
@@ -77,17 +77,10 @@ namespace Velt::RHI {
 
 	void VulkanPipeline::Invalidate()
 	{
-		auto vertCode = ReadFile(m_Specification.VertexShaderPath);
-		auto fragCode = ReadFile(m_Specification.FragmentShaderPath);
-
-		VkShaderModule vertModule, fragModule;
-		CreateShaderModule(vertCode, &vertModule);
-		CreateShaderModule(fragCode, &fragModule);
-
 		VkPipelineShaderStageCreateInfo shaderStages[2] = {};
 		shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		shaderStages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
-		shaderStages[0].module = vertModule;
+		shaderStages[0].module = m_Specification.VertexShader->Module;
 		shaderStages[0].pName = "main";
 		shaderStages[0].pNext = nullptr;
 		shaderStages[0].flags = 0;
@@ -95,7 +88,7 @@ namespace Velt::RHI {
 
 		shaderStages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		shaderStages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-		shaderStages[1].module = fragModule;
+		shaderStages[1].module = m_Specification.FragmentShader->Module;
 		shaderStages[1].pName = "main";
 		shaderStages[1].pNext = nullptr;
 		shaderStages[1].flags = 0;
@@ -177,8 +170,8 @@ namespace Velt::RHI {
 			VT_CORE_ASSERT(false, "Failed to create Graphics Pipeline")
 		}
 
-		vkDestroyShaderModule(VulkanContext::GetDevice()->device(), vertModule, nullptr);
-		vkDestroyShaderModule(VulkanContext::GetDevice()->device(), fragModule, nullptr);
+		vkDestroyShaderModule(VulkanContext::GetDevice()->device(), m_Specification.VertexShader->Module, nullptr);
+		vkDestroyShaderModule(VulkanContext::GetDevice()->device(), m_Specification.FragmentShader->Module, nullptr);
 	}
 
 	void VulkanPipeline::Bind(VkCommandBuffer& commandBuffer)
@@ -298,38 +291,5 @@ namespace Velt::RHI {
 		pConfigInfo->dynamicStateInfo.pDynamicStates = pConfigInfo->dynamicStatesEnable.data();
 		pConfigInfo->dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(pConfigInfo->dynamicStatesEnable.size());
 	}
-
-	std::vector<char> VulkanPipeline::ReadFile(const std::string& filepath)
-	{
-		auto file = std::ifstream(filepath, std::ios::ate | std::ios::binary);
-
-		VT_CORE_ASSERT(file, "Failed to open file: {}", filepath);
-
-		size_t fileSize = (size_t)file.tellg();
-		std::vector<char> buffer(fileSize);
-
-		file.seekg(0);
-		file.read(buffer.data(), fileSize);
-		file.close();
-
-		return buffer;
-	}
-
-	void VulkanPipeline::CreateShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule)
-	{
-		VkShaderModuleCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-		createInfo.pNext = nullptr;
-		createInfo.flags = 0;
-		createInfo.codeSize = code.size();
-		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
-
-		VT_VK_CHECK(
-			vkCreateShaderModule(VulkanContext::GetDevice()->device(), &createInfo, nullptr, shaderModule),
-			"Failed to create shader module!"
-		);
-	}
-
-
 
 }

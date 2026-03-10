@@ -10,7 +10,7 @@ namespace Velt
 
 namespace Velt::RHI
 {
-    enum class DescriptorType : u8
+    enum class DescriptorType
 	{
         SAMPLER,                    // VK_DESCRIPTOR_TYPE_SAMPLER
         COMBINED_IMAGE_SAMPLER,     // VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER
@@ -25,7 +25,7 @@ namespace Velt::RHI
         INPUT_ATTACHMENT            // VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT
     };
 
-    enum class ShaderStage : u8
+    enum class ShaderStage
     {
 	    VERTEX, 
         FRAGMENT

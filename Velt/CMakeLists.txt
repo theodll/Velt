@@ -79,7 +79,7 @@ add_library(Velt SHARED
 "src/Velt/Platform/Vulkan/DescriptorLayoutCache.h" "src/Velt/Renderer/Material.h" "src/Velt/Core/Math.h" "src/Velt/Renderer/Material.cpp"
 "src/Velt/Renderer/Texture.h"
  "src/Velt/Renderer/Texture.cpp" "src/Velt/Platform/Vulkan/VulkanTexture.h" "src/Velt/Platform/Vulkan/VulkanTexture.cpp" "vendor/stb/stb_image.h" "vendor/stb/stb.cpp" "src/Velt/Renderer/ShaderLibrary.cpp" "src/Velt/Renderer/ShaderLibrary.h"  "vendor/spirv-reflect/spirv_reflect.h" "vendor/spirv-reflect/spirv_reflect.cpp" 
-) 
+ "src/Velt/Renderer/PipelineManager.h" "src/Velt/Renderer/PipelineManager.cpp") 
 
 
 if(WIN32 OR UNIX)

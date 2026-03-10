@@ -49,18 +49,14 @@ namespace Velt::RHI
 
 
 		private:
-			static std::vector<char> ReadFile(const std::string& filepath);
-			void CreateShaderModule(const std::vector<char>& code, VkShaderModule* pShaderModule);
 			void CreatePipelineLayout();
 
 			VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;
 			PipelineSpecification m_Specification;
-			BufferLayout m_Layout;
+			VertexLayout m_Layout;
 			VulkanPipelineConfigInfo m_ConfigInfo;
 			VkPipeline m_VulkanPipeline;
-			VkShaderModule m_VertexShaderModule;
-			VkShaderModule m_FragmentShaderModule;
-
+			
 		};
 }
 

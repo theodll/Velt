@@ -2,6 +2,7 @@
 #include "Velt/Core/Core.h"
 #include <string>
 #include "Buffer.h"
+#include "ShaderLibrary.h"
 #include "UniformBuffer.h"
 
 namespace Velt
@@ -11,11 +12,34 @@ namespace Velt
 
 	struct PipelineSpecification
 	{
-		BufferLayout Layout;	
-		std::string VertexShaderPath; // this has to be the compiled binary right now, not the Source ! 
-		std::string FragmentShaderPath; // this too
-		std::string DebugName;
+		VertexLayout Layout;	
+		Ref<Shader> VertexShader;
+		Ref<Shader> FragmentShader;
 		std::vector<DescriptorSetLayoutHandle> SetLayouts;
+	};
+
+	// Todo [10.03.26, Theo]: move somewhere else
+
+	struct BlendState
+	{
+		bool enable;
+
+		VkBlendFactor srcColor;
+		VkBlendFactor dstColor;
+		VkBlendOp colorOp;
+
+		VkBlendFactor srcAlpha;
+		VkBlendFactor dstAlpha;
+		VkBlendOp alphaOp;
+
+		VkColorComponentFlags writeMask;
+	};
+
+	struct DepthState
+	{
+		bool depthTest;
+		bool depthWrite;
+		VkCompareOp compare;
 	};
 
 	class VELT_API Pipeline
