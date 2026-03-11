@@ -212,6 +212,7 @@ namespace Velt {
 	void Application::Shutdown()
 	{
 		VT_PROFILE_FUNCTION();
+		Renderer::Shutdown(); 
 		s_ShutdownRequested = true; 
 	}
 }

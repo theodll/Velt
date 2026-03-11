@@ -1,6 +1,7 @@
 #include "vtpch.h"
 #include "Core/Core.h"
 #include "VulkanPipeline.h"
+#include "Renderer/PipelineManager.h"
 #include "VulkanContext.h"
 #include "Core/Application.h"
 
@@ -165,7 +166,7 @@ namespace Velt::RHI {
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 		pipelineInfo.basePipelineIndex = -1;
 
-		if (vkCreateGraphicsPipelines(VulkanContext::GetDevice()->device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_VulkanPipeline) != VK_SUCCESS)
+		if (vkCreateGraphicsPipelines(VulkanContext::GetDevice()->device(), PipelineManager::GetVulkanCache(), 1, &pipelineInfo, nullptr, &m_VulkanPipeline) != VK_SUCCESS)
 		{
 			VT_CORE_ASSERT(false, "Failed to create Graphics Pipeline")
 		}

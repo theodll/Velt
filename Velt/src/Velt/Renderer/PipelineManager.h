@@ -13,13 +13,13 @@ namespace Velt
 	public:
 		PipelineManager() = default;
 		virtual ~PipelineManager() {};
-		void Init();
-		void Shutdown();
+		static void Init();
+		static void Shutdown();
 
 		static VkPipelineCache GetVulkanCache() { return m_PipelineCache; }
 		static void SaveCache();
 	private:
 		static VkPipelineCache m_PipelineCache;
-		static std::filesystem::path m_CachedFilePath;
+		static std::filesystem::path m_CacheFilePath;
 	};
 }
