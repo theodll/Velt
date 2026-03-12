@@ -99,7 +99,7 @@ namespace Velt {
 
 		PushOverlay(new Velt::ImGuiLayer);
 
-		SDL::Input::Init();
+		Input::Init();
 	}
 
 	void Application::Run()
@@ -120,7 +120,7 @@ namespace Velt {
 			Timestep ts = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
-			if (SDL::Input::IsKeyDown(Scancode::VELT_SCANCODE_ESCAPE))
+			if (Input::IsKeyDown(Scancode::VELT_SCANCODE_ESCAPE))
 			{
 				s_ShutdownRequested = true;
 			}

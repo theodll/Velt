@@ -7,25 +7,25 @@
 
 namespace Velt::SDL
 {
-	bool Input::IsKeyPressedImpl(Scancode code)
+	bool SDLInput::IsKeyPressedImpl(Scancode code)
 	{
 		VT_PROFILE_FUNCTION();
 		return s_Pressed[(size_t)code];
 	}
 
-	bool Input::IsKeyReleasedImpl(Scancode code)
+	bool SDLInput::IsKeyReleasedImpl(Scancode code)
 	{
 		VT_PROFILE_FUNCTION();
 		return s_Released[(size_t)code];
 	}
 
-	bool Input::IsKeyDownImpl(Scancode code)
+	bool SDLInput::IsKeyDownImpl(Scancode code)
 	{
 		VT_PROFILE_FUNCTION();
 		return s_Down[(size_t)code];
 	}
 
-	void Input::ProcessEventImpl(const SDL_Event* pEvent)
+	void SDLInput::ProcessEventImpl(const SDL_Event* pEvent)
 	{
 		VT_PROFILE_FUNCTION();
 		switch (pEvent->type)
@@ -43,7 +43,7 @@ namespace Velt::SDL
 		}
 	}
 
-	void Input::BeginFrameImpl()
+	void SDLInput::BeginFrameImpl()
 	{
 		VT_PROFILE_FUNCTION();
 
@@ -52,7 +52,7 @@ namespace Velt::SDL
 		s_Down.fill(false);
 	}
 
-	void Input::HandleKeyDown(const SDL_Event* pEvent)
+	void SDLInput::HandleKeyDown(const SDL_Event* pEvent)
 	{
 		VT_PROFILE_FUNCTION();
 		if (!pEvent->key.repeat)
@@ -66,7 +66,7 @@ namespace Velt::SDL
 		}
 	}
 
-	void Input::HandleKeyUp(const SDL_Event* pEvent)
+	void SDLInput::HandleKeyUp(const SDL_Event* pEvent)
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Key Up Handeled");
@@ -78,36 +78,52 @@ namespace Velt::SDL
 		s_Down[sc] = false;
 	}
 
-	float Input::GetMouseXImpl()
+	float SDLInput::GetMouseXImpl()
 	{
 		float x{};
 		SDL_GetMouseState(&x, VT_NULL_HANDLE);
 		return x; 
 	}
 
-	float Input::GetMouseYImpl()
+	float SDLInput::GetMouseYImpl()
 	{
 		float y{};
 		SDL_GetMouseState(VT_NULL_HANDLE, &y);
 		return y;
 	}
 
-	bool Input::IsMouseKeyPressedImpl(MouseButton button)
+	bool SDLInput::IsMouseKeyPressedImpl(MouseButton button)
 	{
 		u32 buttonState = SDL_GetMouseState(VT_NULL_HANDLE, VT_NULL_HANDLE);
 		return buttonState & SDL_BUTTON_MASK(button);
 	}
 
-	bool Input::IsMouseKeyReleasedImpl(MouseButton button)
+	bool SDLInput::IsMouseKeyReleasedImpl(MouseButton button)
 	{
 		u32 buttonState = SDL_GetMouseState(VT_NULL_HANDLE, VT_NULL_HANDLE);
 		return buttonState & SDL_BUTTON_MASK(button);
 	}
 
-	bool Input::IsMouseKeyDownImpl(MouseButton button)
+	bool SDLInput::IsMouseKeyDownImpl(MouseButton button)
 	{
 		u32 buttonState = SDL_GetMouseState(VT_NULL_HANDLE, VT_NULL_HANDLE);
 		return buttonState & SDL_BUTTON_MASK(button);
 	}
 
+	void SDLInput::LockMouseImpl() 
+	{
+		SDL_HideCursor();
+	};
+
+	void SDLInput::UnlockMouseImpl() 
+	{
+		SDL_ShowCursor();
+	};
+	void SDLInput::TriggerMouseLockImpl() 
+	{
+		m_bIsMouseLock = SDL_CursorVisible();
+		
+		m_bIsMouseLock ? Velt::Input::LockMouse() : Velt::Input::UnlockMouse();
+		
+	};
 }

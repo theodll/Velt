@@ -9,6 +9,6 @@ namespace Velt
 
 	void Input::Init()
 	{
-		s_Instance = CreateScope<SDL::Input>();
+		s_Instance = CreateScope<SDL::SDLInput>();
 	};
 }

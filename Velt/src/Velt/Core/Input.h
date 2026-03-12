@@ -8,6 +8,7 @@ namespace Velt
 	class VELT_API Input
 	{
 	public:
+		virtual ~Input() = default; 
 		static void Init();
 
 		static bool IsKeyDown(Scancode code) { if (s_Instance) return s_Instance->IsKeyDownImpl(code); else return false; }
@@ -20,6 +21,10 @@ namespace Velt
 		static bool IsMouseKeyPressed(MouseButton button) { if (s_Instance) return s_Instance->IsMouseKeyPressedImpl(button); else return false; }
 		static bool IsMouseKeyReleased(MouseButton button) { if (s_Instance) return s_Instance->IsMouseKeyReleasedImpl(button); else return false; }
 		static bool IsMouseKeyDown(MouseButton button) { if (s_Instance) return s_Instance->IsMouseKeyDownImpl(button); else return false; }
+
+		static void LockMouse() { if (s_Instance) return s_Instance->LockMouseImpl(); }
+		static void UnlockMouse() { if (s_Instance) return s_Instance->UnlockMouseImpl();}
+		static void TriggerMouseLock() { if (s_Instance) return s_Instance->TriggerMouseLockImpl();}
 
 		static void BeginFrame() { return s_Instance->BeginFrameImpl(); }
 		static void ProcessEvent(const SDL_Event* pEvent) { return s_Instance->ProcessEventImpl(pEvent); }
@@ -35,6 +40,10 @@ namespace Velt
 		virtual bool IsMouseKeyPressedImpl(MouseButton button) = 0;
 		virtual bool IsMouseKeyReleasedImpl(MouseButton button) = 0;
 		virtual bool IsMouseKeyDownImpl(MouseButton button) = 0;
+
+		virtual void LockMouseImpl() = 0;
+		virtual void UnlockMouseImpl() = 0;
+		virtual void TriggerMouseLockImpl() = 0;
 
 		virtual void BeginFrameImpl() = 0;
 		virtual void ProcessEventImpl(const SDL_Event* pEvent) = 0;

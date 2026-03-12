@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Core/Core.h"
 #include "Core/Math.h"
 #include "Renderer/Camera.h"
@@ -7,59 +9,113 @@
 
 namespace Velt 
 {
+    enum class CameraMode
+    {
+        None,
+        Flycam,
+        Arcball
+    };
+
     class EditorCamera : public Camera
     {
     public:
         EditorCamera() = default;
         EditorCamera(float fovY, float aspect, float near, float far);
 
+        void Init();
+
+        void Focus(const Vector& focusPoint);
+
         void OnUpdate(Timestep ts);
         void OnEvent(Event& e);
 
-        inline float GetDistance() const { return m_Distance; };
-        inline void SetDistance(float distance) { m_Distance = distance; }; 
+        bool IsActive() const { return m_IsActive; }
+        void SetActive(bool active) { m_IsActive = active; }
 
-        inline void SetViewportSize(float width, float height) { m_ViewportWidth = width; m_ViewportHeight = height; UpdateProjection(); };
+        CameraMode GetCurrentMode() const { return m_CameraMode; }
+
+        float GetDistance() const { return m_Distance; }
+        void SetDistance(float distance) { m_Distance = distance; }
+
+        const Vector& GetFocalPoint() const { return m_FocalPoint; }
+
+        inline void SetViewportSize(float width, float height) 
+        { 
+            if (m_ViewportWidth == width && m_ViewportHeight == height)
+                return;
+
+            m_ViewportWidth = width; 
+            m_ViewportHeight = height; 
+            UpdateProjection(); 
+        }
+
         const Matrix& GetViewMatrix() const { return m_ViewMatrix; }
-        Matrix GetViewProjection() const { return m_Projection * m_ViewMatrix; };
+        Matrix GetViewProjection() const { return m_Projection * m_ViewMatrix; }
 
         Vector GetUpDirection() const; 
         Vector GetRightDirection() const; 
         Vector GetForwardDirection() const; 
-        const Vector& GetPosition() const { return m_Position; };
+        const Vector& GetPosition() const { return m_Position; }
         Quaternion GetOrientation() const;
 
-        float GetPitch() const { return m_Pitch; };
+        float GetVerticalFOV() const { return m_VerticalFOV; }
+        float GetAspectRatio() const { return m_AspectRatio; }
+        float GetNearClip() const { return m_NearClip; }
+        float GetFarClip() const { return m_FarClip; }
+
+        float GetPitch() const { return m_Pitch; }
         float GetYaw() const { return m_Yaw; }
+
+        float GetCameraSpeed() const;
 
     private:
         void UpdateProjection(); 
         void UpdateView();
-
         bool OnMouseScroll(MouseScrolledEvent& e);
 
-        void MousePan(const Point& delta);
-        void MouseRotate(const Point& delta);
+        void MousePan(const glm::vec2& delta);
+        void MouseRotate(const glm::vec2& delta);
         void MouseZoom(float delta);
 
-		float m_FOV = 45.0f, m_AspectRatio = 1.778f, m_NearClip = 0.1f, m_FarClip = 1000.0f;
-
-        Vector CalculatePosition() const; 
+        Vector CalculatePosition() const;
 
         std::pair<float, float> PanSpeed() const;
         float RotationSpeed() const;
         float ZoomSpeed() const;
 
-        Vector m_Position{ 0.0f };
-        Vector m_FocalPoint{ 0.0f }; 
+        Matrix m_ViewMatrix{ 1.0f };
+        Vector m_Position{ 0.0f, 0.0f, 5.0f };
+        Vector m_Direction{};
+        Vector m_FocalPoint{};
 
-		Point m_InitialMousePosition = { 0.0f, 0.0f };
+        float m_VerticalFOV = glm::radians(45.0f);
+        float m_AspectRatio = 1.778f;
+        float m_NearClip = 0.1f;
+        float m_FarClip = 1000.0f;
 
+        bool m_IsActive = true;
 
-        Matrix m_ViewMatrix{1.0f};
+        bool m_Panning = false;
+        bool m_Rotating = false;
+        glm::vec2 m_InitialMousePosition{};
+
+        float m_Distance = 10.0f;
+        float m_NormalSpeed = 0.002f;
         
-        float m_ViewportWidth{}, m_ViewportHeight{}; 
-        float m_Distance{ 10.0f };
-        float m_Pitch{}, m_Yaw{}; 
+        float m_ViewportWidth = 1280.0f;
+        float m_ViewportHeight = 720.0f;
+        
+        float m_Pitch{};
+        float m_Yaw{}; 
+        float m_PitchDelta{};
+        float m_YawDelta{};
+        Vector m_PositionDelta{};
+        Vector m_RightDirection{};
+
+        CameraMode m_CameraMode = CameraMode::Flycam;
+        float m_MinFocusDistance = 100.0f;
+
+        static constexpr float MIN_SPEED = 0.0005f;
+        static constexpr float MAX_SPEED = 2.0f;
     };
 }

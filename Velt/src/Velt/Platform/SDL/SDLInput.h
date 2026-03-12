@@ -5,9 +5,13 @@
 
 namespace Velt::SDL
 {
-	class Input : public Velt::Input
+	class SDLInput : public Velt::Input
 	{
+	public: 
+		virtual ~SDLInput() = default; 
 	protected:
+		
+
 		virtual void ProcessEventImpl(const SDL_Event* pEvent) override;
 		virtual void BeginFrameImpl() override;
 
@@ -25,7 +29,12 @@ namespace Velt::SDL
 		virtual bool IsMouseKeyReleasedImpl(MouseButton button) override;
 		virtual bool IsMouseKeyDownImpl(MouseButton button) override;
 		
+		virtual void LockMouseImpl() override;
+		virtual void UnlockMouseImpl() override;
+		virtual void TriggerMouseLockImpl() override;
 	private:
+
+		bool m_bIsMouseLock;
 		std::array<bool, SDL_SCANCODE_COUNT> s_Down{};
 		std::array<bool, SDL_SCANCODE_COUNT> s_Pressed{};
 		std::array<bool, SDL_SCANCODE_COUNT> s_Released{};
