@@ -3,6 +3,8 @@
 #include <filesystem>
 #include "Renderer.h"
 #include "Platform/Vulkan/VulkanTexture.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 namespace Velt 
 {

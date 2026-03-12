@@ -9,7 +9,7 @@
 namespace Velt {
 	
 	Ref<Pipeline> SceneRenderer::s_Pipeline = nullptr;
-	Ref<OrthographicCamera> SceneRenderer::m_Camera = nullptr;
+	Ref<Camera> SceneRenderer::m_Camera = nullptr;
 
 	void SceneRenderer::Init()
 	{
@@ -87,11 +87,11 @@ namespace Velt {
 		float halfHeight = 1.0f;
 		float halfWidth = aspect * halfHeight;
 
-		m_Camera = CreateRef<OrthographicCamera>(
-			-halfWidth,
-			halfWidth,
-			-halfHeight,
-			halfHeight
+		m_Camera = CreateRef<Camera>(
+			90,
+			width,
+			height,
+			0, 10
 		);
 		m_Camera->SetRotation(0);
 

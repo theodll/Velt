@@ -25,6 +25,7 @@ namespace Editor
         m_Texture = Velt::Texture2D::Create("Assets/Textures/error.png");
 
         m_Material->SetTexture(1, m_Texture);
+        m_Material->SetColor(color);
 
 		// Note [5.02.26, Theo] This will be substantially different because all these things we have to do 
 		// manually right now will be automatically done by a loader of models eg. glTF or obj.
