@@ -28,9 +28,12 @@ Scripts/VulkanSDKInstaller.exe
 imgui.ini
 VeltProfile-Runtime.json
 VeltProfile-Startup.json
+VeltProfile-Shutdown.json
 
 .cache/
 .zed/
+
+Velt.log
 
 
 cmake/

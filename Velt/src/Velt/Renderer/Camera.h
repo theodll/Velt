@@ -9,6 +9,7 @@ namespace Velt
 	{
 	public:
 		Camera() = default; 
+        virtual ~Camera();
 
 		void SetOrthographicProjection(float left, float right, float top, float bottom, float near, float far); 
 		void SetPerspectiveProjection(float fovY, float aspect, float near, float far);
