@@ -90,4 +90,6 @@ namespace Velt
 		std::vector<BufferElement> m_Elements;
 		u64 m_Stride;
 	};
+
+	typedef BufferLayout VertexLayout;
 }

@@ -31,8 +31,8 @@ set_target_properties(VeltEditor PROPERTIES
 
 add_custom_command(TARGET VeltEditor POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/Images
-    $<TARGET_FILE_DIR:VeltEditor>/Images
-    COMMENT "Copying Images to output directory"
+    ${CMAKE_SOURCE_DIR}/Assets
+    $<TARGET_FILE_DIR:VeltEditor>/Assets
+    COMMENT "Copying Assets to output directory"
 )
 

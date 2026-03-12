@@ -5,7 +5,7 @@
 #include "Velt/Renderer/RenderContext.h"
 #include "Velt/Platform/Vulkan/VulkanSwapchain.h"
 #include "VulkanResourceUploader.h"
-#include "Velt/Platform/Vulkan/VulkanPipeline.h"
+
 
 
 namespace Velt::RHI

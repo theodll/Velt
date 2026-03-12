@@ -4,6 +4,7 @@
 #include "Platform/Vulkan/DescriptorLayoutCache.h"
 #include "Core/Application.h"
 #include "Core/Input.h"
+#include "PipelineManager.h"
 
 namespace Velt {
 	
@@ -20,6 +21,8 @@ namespace Velt {
 				{ ShaderDataType::Float3, "a_Position" },
 				{ ShaderDataType::Float2, "a_UV"}
 		};
+
+		PipelineManager::Init();
 
 		// Todo [25.02, Theo]: Move this somewhere else 
 
@@ -56,8 +59,8 @@ namespace Velt {
 			setLayouts.emplace_back(materialLayout);
 
 			PipelineSpecification specs{};
-			specs.FragmentShaderPath = { "Shaders/fragment.glsl.spv" };
-			specs.VertexShaderPath = { "Shaders/vertex.glsl.spv" };
+			specs.VertexShader = ShaderLibrary::Get("Assets/Shader/basic_vertex_shader.hlsl.spv");
+			specs.FragmentShader = ShaderLibrary::Get("Assets/Shader/basic_fragment_shader.hlsl.spv");
 			specs.SetLayouts = setLayouts;
 			specs.Layout = layout;
 
@@ -115,7 +118,8 @@ namespace Velt {
 
 	void SceneRenderer::Shutdown()
 	{
-
+		VT_CORE_TRACE("Shutdown Scene Renderer");
+		PipelineManager::Shutdown();
 	}
 
 	glm::vec2 GetAspectPair(u32 width, u32 height, float targetY = 0.9f)

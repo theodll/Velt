@@ -15,14 +15,14 @@ namespace Editor
 
 	void EditorLayer::Init()
 	{
-		VT_CORE_TRACE("goon");
+		VT_CORE_TRACE("");
 
 		VT_PROFILE_FUNCTION();
         index++;
 
         Velt::HVector color = { 1.0f, 1.0f, 1.0f, 1.0f };
         m_Material = Velt::CreateRef<Velt::Material>(color); 
-        m_Texture = Velt::Texture2D::Create("Images/texture.jpg");
+        m_Texture = Velt::Texture2D::Create("Assets/Textures/error.png");
 
         m_Material->SetTexture(1, m_Texture);
 
@@ -32,28 +32,28 @@ namespace Editor
         std::vector<Velt::Vertex> vertices = {
 
             // +X (right)
-            {{ 0.5f,-0.5f,-0.5f}, {0.0f,0.0f}},
-            {{ 0.5f, 0.5f,-0.5f}, {1.0f,0.0f}},
+            {{ 0.5f,-0.5f,-0.5f}, {1.0f,0.0f}},
+            {{ 0.5f, 0.5f,-0.5f}, {1.0f,1.0f}},
             {{ 0.5f, 0.5f, 0.5f}, {1.0f,1.0f}},
-            {{ 0.5f,-0.5f, 0.5f}, {0.0f,1.0f}},
+            {{ 0.5f,-0.5f, 0.5f}, {1.0f,0.0f}},
 
             // -X (left)
             {{-0.5f,-0.5f, 0.5f}, {0.0f,0.0f}},
-            {{-0.5f, 0.5f, 0.5f}, {1.0f,0.0f}},
-            {{-0.5f, 0.5f,-0.5f}, {1.0f,1.0f}},
-            {{-0.5f,-0.5f,-0.5f}, {0.0f,1.0f}},
+            {{-0.5f, 0.5f, 0.5f}, {0.0f,1.0f}},
+            {{-0.5f, 0.5f,-0.5f}, {0.0f,1.0f}},
+            {{-0.5f,-0.5f,-0.5f}, {0.0f,0.0f}},
 
             // +Y (bottom)
-            {{-0.5f, 0.5f,-0.5f}, {0.0f,0.0f}},
-            {{-0.5f, 0.5f, 0.5f}, {1.0f,0.0f}},
+            {{-0.5f, 0.5f,-0.5f}, {0.0f,1.0f}},
+            {{-0.5f, 0.5f, 0.5f}, {0.0f,1.0f}},
             {{ 0.5f, 0.5f, 0.5f}, {1.0f,1.0f}},
-            {{ 0.5f, 0.5f,-0.5f}, {0.0f,1.0f}},
+            {{ 0.5f, 0.5f,-0.5f}, {1.0f,1.0f}},
 
             // -Y (top)
             {{-0.5f,-0.5f, 0.5f}, {0.0f,0.0f}},
-            {{-0.5f,-0.5f,-0.5f}, {1.0f,0.0f}},
-            {{ 0.5f,-0.5f,-0.5f}, {1.0f,1.0f}},
-            {{ 0.5f,-0.5f, 0.5f}, {0.0f,1.0f}},
+            {{-0.5f,-0.5f,-0.5f}, {0.0f,0.0f}},
+            {{ 0.5f,-0.5f,-0.5f}, {1.0f,0.0f}},
+            {{ 0.5f,-0.5f, 0.5f}, {1.0f,0.0f}},
 
             // +Z (front)
             {{-0.5f,-0.5f, 0.5f}, {0.0f,0.0f}},
@@ -62,10 +62,10 @@ namespace Editor
             {{-0.5f, 0.5f, 0.5f}, {0.0f,1.0f}},
 
             // -Z (back)
-            {{ 0.5f,-0.5f,-0.5f}, {0.0f,0.0f}},
-            {{-0.5f,-0.5f,-0.5f}, {1.0f,0.0f}},
-            {{-0.5f, 0.5f,-0.5f}, {1.0f,1.0f}},
-            {{ 0.5f, 0.5f,-0.5f}, {0.0f,1.0f}},
+            {{ 0.5f,-0.5f,-0.5f}, {1.0f,0.0f}},
+            {{-0.5f,-0.5f,-0.5f}, {0.0f,0.0f}},
+            {{-0.5f, 0.5f,-0.5f}, {0.0f,1.0f}},
+            {{ 0.5f, 0.5f,-0.5f}, {1.0f,1.0f}},
         };
 
 		std::vector<Velt::Index> indices{
@@ -145,15 +145,11 @@ namespace Editor
 		// It causes immense performance loss
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
-;
         
-
 	//	for (int i{}; i < index; i++)
     //		Velt::Renderer::DrawStaticModel(commandBuffer, m_Cube, m_Material);
 
-        
-
-        Velt::Renderer::DrawQuad(commandBuffer, glm::mat4(1.0f), *m_Material.get());
+      Velt::Renderer::DrawQuad(commandBuffer, glm::mat4(1.0f), *m_Material.get());
 	}
 
     void EditorLayer::OnImGuiRender2()
