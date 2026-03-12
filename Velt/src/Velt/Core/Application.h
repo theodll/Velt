@@ -5,7 +5,7 @@
 #include "Layers/LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
 #include "Timestep.h"
-#include "Renderer/OrthographicCamera.h"
+#include "Renderer/Camera.h"
 
 namespace Velt
 {	

@@ -2,7 +2,6 @@
 #include "Core/Core.h"
 #include "Core/Math.h"
 #include "Camera.h"
-#include "math.h"
 
 namespace Velt 
 {
@@ -28,4 +27,42 @@ namespace Velt
 		 m_ProjectionMatrix[2][3] = 1.0f;
 		 m_ProjectionMatrix[3][2] = -(far * near) / (far - near);
 	 }
+
+     void Camera::SetViewQuat(Vector position, Quaternion quaternion) 
+     {
+        m_ViewMatrix =
+        glm::mat4_cast(glm::conjugate(quaternion)) *
+        glm::translate(glm::mat4(1.f), -position);
+     }
+
+     void Camera::SetViewYXZ(Vector position, EAngle euler) 
+     {
+        Quaternion quat = Quaternion(euler);
+        SetViewQuat(position, quat);
+     }
+
+     void Camera::SetViewDirection(Vector position, Vector direction, Vector up) {
+        const glm::vec3 w{glm::normalize(direction)};
+        const glm::vec3 u{glm::normalize(glm::cross(w, up))};
+        const glm::vec3 v{glm::cross(w, u)};
+
+        m_ViewMatrix = glm::mat4{1.f};
+        m_ViewMatrix[0][0] = u.x;
+        m_ViewMatrix[1][0] = u.y;
+        m_ViewMatrix[2][0] = u.z;
+        m_ViewMatrix[0][1] = v.x;
+        m_ViewMatrix[1][1] = v.y;
+        m_ViewMatrix[2][1] = v.z;
+        m_ViewMatrix[0][2] = w.x;
+        m_ViewMatrix[1][2] = w.y;
+        m_ViewMatrix[2][2] = w.z;
+        m_ViewMatrix[3][0] = -glm::dot(u, position);
+        m_ViewMatrix[3][1] = -glm::dot(v, position);
+        m_ViewMatrix[3][2] = -glm::dot(w, position);
+    }
+
+    void Camera::SetViewTarget(Vector position, Vector target, Vector up) {
+        SetViewDirection(position, target - position, up);
+    }
+
 }

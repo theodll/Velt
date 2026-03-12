@@ -161,7 +161,7 @@ namespace Velt {
 		auto pipelineLayout = s_Pipeline->GetVulkanPipelineLayout();
 
 		CameraUBO ubo{};
-		ubo.viewProj = m_Camera->GetProjectionMatrix();
+		ubo.viewProj = m_Camera->GetProjectionMatrix() * m_Camera->GetViewMatrix();
 
 		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
 

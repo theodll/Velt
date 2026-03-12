@@ -2,6 +2,7 @@
 #include "Velt/Core/Input.h"
 #include "Velt/Core/Application.h"
 #include "Velt/Renderer/Material.h"
+#include "Core/Math.h"
 #include <imgui.h>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -116,6 +117,9 @@ namespace Editor
 
 		m_Cube->GetTransform().Translation = { 0.0f, 0.0f, .5f }; 
 		m_Cube->GetTransform().Scale = { .5f, .5f, .5f };
+
+        auto camera = Velt::SceneRenderer::GetCamera(); 
+     //   camera->SetViewDirection(Velt::Vector(0.0f), Velt::Vector(0.5f, 0.0f, 1.0f));
 	}
 
 	void EditorLayer::OnUpdate(Velt::Timestep ts)
@@ -180,6 +184,7 @@ namespace Editor
 
     void EditorLayer::OnImGuiRender2()
     {
+
         ImGui::Begin("Transform");
 
         if (ImGui::Button("Cube"))
