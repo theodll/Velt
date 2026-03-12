@@ -59,8 +59,8 @@ namespace Velt {
 			setLayouts.emplace_back(materialLayout);
 
 			PipelineSpecification specs{};
-			specs.VertexShader = ShaderLibrary::Get("Shaders/vertex.glsl.spv");
-			specs.FragmentShader = ShaderLibrary::Get("Shaders/fragment.glsl.spv");
+			specs.VertexShader = ShaderLibrary::Get("Assets/Shader/basic_vertex_shader.hlsl.spv");
+			specs.FragmentShader = ShaderLibrary::Get("Assets/Shader/basic_fragment_shader.hlsl.spv");
 			specs.SetLayouts = setLayouts;
 			specs.Layout = layout;
 
