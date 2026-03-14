@@ -87,14 +87,7 @@ namespace Velt {
 		float halfHeight = 1.0f;
 		float halfWidth = aspect * halfHeight;
 
-		m_Camera = CreateRef<Camera>(
-			90,
-			width,
-			height,
-			0, 10
-		);
-		m_Camera->SetRotation(0);
-
+		m_Camera = CreateRef<Camera>();
 		const auto& sc = Velt::Application::Get()->GetWindow()->GetSwapchain();
 
 		const u32 mfif = sc->GetMaxFrameInFlight();
@@ -145,14 +138,21 @@ namespace Velt {
 
 		glm::vec2 aspect = GetAspectPair(w, h);
 
+		float aspectF = w / h;
 		// VT_CORE_ERROR("ax: {0} ay:, {1}", aspect.x, aspect.y);
-
-		m_Camera->SetProjection(
+		
+		/*
+		m_Camera->SetOrthographicProjection(
 			-aspect.x,
 			aspect.x,
 			-aspect.y,
-			aspect.y
+			aspect.y,
+			-1,
+			1
 		);
+		*/
+
+		m_Camera->SetPerspectiveProjection(glm::radians(50.0f), aspectF, 0.1f, 1000.0f);
 
 		// m_Camera->SetRotation(m_Rotation);
 		m_Rotation++;
@@ -161,7 +161,7 @@ namespace Velt {
 		auto pipelineLayout = s_Pipeline->GetVulkanPipelineLayout();
 
 		CameraUBO ubo{};
-		ubo.viewProj = m_Camera->GetViewProjectionMatrix();
+		ubo.viewProj = m_Camera->GetProjectionMatrix();
 
 		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
 

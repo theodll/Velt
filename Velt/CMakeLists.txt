@@ -100,7 +100,7 @@ add_library(Velt SHARED
     "vendor/spirv-reflect/spirv_reflect.cpp" 
     "src/Velt/Renderer/PipelineManager.h" 
     "src/Velt/Renderer/PipelineManager.cpp"
-)
+ "src/Velt/Renderer/Camera.h" "src/Velt/Renderer/Camera.cpp")
 
 # --- Dependencies (Subdirectories) ---
 add_subdirectory(vendor/spdlog)

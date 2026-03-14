@@ -30,52 +30,77 @@ namespace Editor
 		// Note [5.02.26, Theo] This will be substantially different because all these things we have to do 
 		// manually right now will be automatically done by a loader of models eg. glTF or obj.
 
-        std::vector<Velt::Vertex> vertices = {
+        std::vector<Velt::Vertex> vertices{
+            // left face (x = -0.5)
+            {{-.5f, -.5f, -.5f}, {0.0f, .0f}},
+            {{-.5f, -.5f, .5f}, {1.0f, .0f}},
+            {{-.5f, .5f, .5f}, {1.0f, 1.f}},
 
-            // +X (right)
-            {{ 0.5f,-0.5f,-0.5f}, {1.0f,0.0f}},
-            {{ 0.5f, 0.5f,-0.5f}, {1.0f,1.0f}},
-            {{ 0.5f, 0.5f, 0.5f}, {1.0f,1.0f}},
-            {{ 0.5f,-0.5f, 0.5f}, {1.0f,0.0f}},
+            {{-.5f, -.5f, -.5f}, {0.0f, .0f}},
+            {{-.5f, .5f, .5f}, {1.0f, 1.f}},
+            {{-.5f, .5f, -.5f}, {0.0f, 1.f}},
 
-            // -X (left)
-            {{-0.5f,-0.5f, 0.5f}, {0.0f,0.0f}},
-            {{-0.5f, 0.5f, 0.5f}, {0.0f,1.0f}},
-            {{-0.5f, 0.5f,-0.5f}, {0.0f,1.0f}},
-            {{-0.5f,-0.5f,-0.5f}, {0.0f,0.0f}},
+            // right face (x = 0.5)
+            {{.5f, -.5f, .5f}, {0.0f, .0f}},
+            {{.5f, -.5f, -.5f}, {1.0f, .0f}},
+            {{.5f, .5f, -.5f}, {1.0f, 1.f}},
 
-            // +Y (bottom)
-            {{-0.5f, 0.5f,-0.5f}, {0.0f,1.0f}},
-            {{-0.5f, 0.5f, 0.5f}, {0.0f,1.0f}},
-            {{ 0.5f, 0.5f, 0.5f}, {1.0f,1.0f}},
-            {{ 0.5f, 0.5f,-0.5f}, {1.0f,1.0f}},
+            {{.5f, -.5f, .5f}, {0.0f, .0f}},
+            {{.5f, .5f, -.5f}, {1.0f, 1.f}},
+            {{.5f, .5f, .5f}, {0.0f, 1.f}},
 
-            // -Y (top)
-            {{-0.5f,-0.5f, 0.5f}, {0.0f,0.0f}},
-            {{-0.5f,-0.5f,-0.5f}, {0.0f,0.0f}},
-            {{ 0.5f,-0.5f,-0.5f}, {1.0f,0.0f}},
-            {{ 0.5f,-0.5f, 0.5f}, {1.0f,0.0f}},
+            // top face (y = -0.5)
+            {{-.5f, -.5f, -.5f}, {0.0f, 1.f}},
+            {{.5f, -.5f, -.5f}, {1.0f, 1.f}},
+            {{.5f, -.5f, .5f}, {1.0f, .0f}},
 
-            // +Z (front)
-            {{-0.5f,-0.5f, 0.5f}, {0.0f,0.0f}},
-            {{ 0.5f,-0.5f, 0.5f}, {1.0f,0.0f}},
-            {{ 0.5f, 0.5f, 0.5f}, {1.0f,1.0f}},
-            {{-0.5f, 0.5f, 0.5f}, {0.0f,1.0f}},
+            {{-.5f, -.5f, -.5f}, {0.0f, 1.f}},
+            {{.5f, -.5f, .5f}, {1.0f, .0f}},
+            {{-.5f, -.5f, .5f}, {0.0f, .0f}},
 
-            // -Z (back)
-            {{ 0.5f,-0.5f,-0.5f}, {1.0f,0.0f}},
-            {{-0.5f,-0.5f,-0.5f}, {0.0f,0.0f}},
-            {{-0.5f, 0.5f,-0.5f}, {0.0f,1.0f}},
-            {{ 0.5f, 0.5f,-0.5f}, {1.0f,1.0f}},
+            // bottom face (y = 0.5)
+            {{-.5f, .5f, .5f}, {0.0f, .0f}},
+            {{.5f, .5f, .5f}, {1.0f, .0f}},
+            {{.5f, .5f, -.5f}, {1.0f, 1.f}},
+
+            {{-.5f, .5f, .5f}, {0.0f, .0f}},
+            {{.5f, .5f, -.5f}, {1.0f, 1.f}},
+            {{-.5f, .5f, -.5f}, {0.0f, 1.f}},
+
+            // front face (z = 0.5)
+            {{-.5f, -.5f, .5f}, {0.0f, .0f}},
+            {{.5f, -.5f, .5f}, {1.0f, .0f}},
+            {{.5f, .5f, .5f}, {1.0f, 1.f}},
+
+            {{-.5f, -.5f, .5f}, {0.0f, .0f}},
+            {{.5f, .5f, .5f}, {1.0f, 1.f}},
+            {{-.5f, .5f, .5f}, {0.0f, 1.f}},
+
+            // back face (z = -0.5)
+            {{.5f, -.5f, -.5f}, {0.0f, .0f}},
+            {{-.5f, -.5f, -.5f}, {1.0f, .0f}},
+            {{-.5f, .5f, -.5f}, {1.0f, 1.f}},
+
+            {{.5f, -.5f, -.5f}, {0.0f, .0f}},
+            {{-.5f, .5f, -.5f}, {1.0f, 1.f}},
+            {{.5f, .5f, -.5f}, {0.0f, 1.f}},
         };
 
+     
+
 		std::vector<Velt::Index> indices{
-            0,1,2, 0,2,3,       
-            4,5,6, 4,6,7,        
-            8,9,10, 8,10,11,     
-            12,13,14, 12,14,15,  
-            16,17,18, 16,18,19,  
-            20,21,22, 20,22,23   
+            0, 1, 2,
+            3, 4, 5,
+            6, 7, 8,
+            9, 10, 11,
+            12, 13, 14,
+            15, 16, 17,
+            18, 19, 20,
+            21, 22, 23,
+            24, 25, 26,
+            27, 28, 29,
+            30, 31, 32,
+            33, 34, 35,
 		};
 
 
@@ -129,8 +154,8 @@ namespace Editor
 			m_SquarePos.y += 1.f * ts;
 
 		auto&& camera = Velt::SceneRenderer::GetCamera();
-		camera->SetPosition(m_CameraPos);
-		camera->SetRotation(m_CameraRot);
+//		camera->SetPosition(m_CameraPos);
+	//	camera->SetRotation(m_CameraRot);
 
 	}
 
@@ -146,11 +171,11 @@ namespace Editor
 		// It causes immense performance loss
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
-        
-	//	for (int i{}; i < index; i++)
-    //		Velt::Renderer::DrawStaticModel(commandBuffer, m_Cube, m_Material);
 
-      Velt::Renderer::DrawQuad(commandBuffer, glm::mat4(1.0f), *m_Material.get());
+       // Velt::Renderer::DrawQuad(commandBuffer, glm::mat4(1.0f), *m_Material.get());
+
+		for (int i{}; i < index; i++)
+    		Velt::Renderer::DrawStaticModel(commandBuffer, m_Cube, m_Material);
 	}
 
     void EditorLayer::OnImGuiRender2()

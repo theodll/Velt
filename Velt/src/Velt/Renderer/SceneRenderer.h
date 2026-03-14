@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/Core.h"
+#include "Camera.h"
 #include "Pipeline.h"
 #include "Platform/Vulkan/VulkanPipeline.h"
 #include "Renderer/UniformBuffer.h"

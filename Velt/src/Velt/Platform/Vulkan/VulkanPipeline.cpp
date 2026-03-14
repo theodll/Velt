@@ -217,8 +217,8 @@ namespace Velt::RHI {
 		pConfigInfo->rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
 		pConfigInfo->rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
 		pConfigInfo->rasterizationInfo.lineWidth = 1.0f;
-		pConfigInfo->rasterizationInfo.cullMode = VK_CULL_MODE_NONE;
-		pConfigInfo->rasterizationInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
+		pConfigInfo->rasterizationInfo.cullMode = VK_CULL_MODE_BACK_BIT;
+		pConfigInfo->rasterizationInfo.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 		pConfigInfo->rasterizationInfo.depthBiasEnable = VK_FALSE;
 		pConfigInfo->rasterizationInfo.depthBiasConstantFactor = 0.0f;
 		pConfigInfo->rasterizationInfo.depthBiasClamp = 0.0f;
