@@ -17,6 +17,13 @@ namespace Velt::SDL
 
 		void HandleKeyDown(const SDL_Event* pEvent);
 		void HandleKeyUp(const SDL_Event* pEvent);
+
+		virtual float GetMouseXImpl() override;
+		virtual float GetMouseYImpl() override;
+
+		virtual bool IsMouseKeyPressedImpl(MouseButton button) override;
+		virtual bool IsMouseKeyReleasedImpl(MouseButton button) override;
+		virtual bool IsMouseKeyDownImpl(MouseButton button) override;
 		
 	private:
 		std::array<bool, SDL_SCANCODE_COUNT> s_Down{};

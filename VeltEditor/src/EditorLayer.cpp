@@ -125,6 +125,9 @@ namespace Editor
 	void EditorLayer::OnUpdate(Velt::Timestep ts)
 	{
 		VT_PROFILE_FUNCTION();
+
+
+
 		//VT_CORE_INFO("ExampleLayer::Update");
 
 		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_W))
@@ -157,7 +160,12 @@ namespace Editor
 		if (Velt::Input::IsKeyDown(Velt::Scancode::VELT_SCANCODE_K))
 			m_SquarePos.y += 1.f * ts;
 
+    
+        
+
 		auto&& camera = Velt::SceneRenderer::GetCamera();
+        camera->OnUpdate(ts);
+        camera->SetViewportSize(Velt::ImGuiLayer::GetViewport()->GetWidth(), Velt::ImGuiLayer::GetViewport()->GetHeight());
 //		camera->SetPosition(m_CameraPos);
 	//	camera->SetRotation(m_CameraRot);
 
@@ -367,8 +375,7 @@ namespace Editor
         m_Scale.z = (m_Scale.z < 0.001f) ? 0.001f : m_Scale.z;
 
 
-        m_Rotation.x++;
-
+      
         tr.Translation = m_Translation;
         tr.Scale = m_Scale;
         tr.SetEulerDegrees(m_Rotation);

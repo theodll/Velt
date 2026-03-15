@@ -1,6 +1,7 @@
 #include "vtpch.h"
 #include "Core/Input.h"
 #include "SDLInput.h"
+#include "Core/Scancodes.h"
 
 #include <SDL3/SDL.h>
 
@@ -75,6 +76,38 @@ namespace Velt::SDL
 			s_Released[sc] = true;
 
 		s_Down[sc] = false;
+	}
+
+	float Input::GetMouseXImpl()
+	{
+		float x{};
+		SDL_GetMouseState(&x, VT_NULL_HANDLE);
+		return x; 
+	}
+
+	float Input::GetMouseYImpl()
+	{
+		float y{};
+		SDL_GetMouseState(VT_NULL_HANDLE, &y);
+		return y;
+	}
+
+	bool Input::IsMouseKeyPressedImpl(MouseButton button)
+	{
+		u32 buttonState = SDL_GetMouseState(VT_NULL_HANDLE, VT_NULL_HANDLE);
+		return buttonState & SDL_BUTTON_MASK(button);
+	}
+
+	bool Input::IsMouseKeyReleasedImpl(MouseButton button)
+	{
+		u32 buttonState = SDL_GetMouseState(VT_NULL_HANDLE, VT_NULL_HANDLE);
+		return buttonState & SDL_BUTTON_MASK(button);
+	}
+
+	bool Input::IsMouseKeyDownImpl(MouseButton button)
+	{
+		u32 buttonState = SDL_GetMouseState(VT_NULL_HANDLE, VT_NULL_HANDLE);
+		return buttonState & SDL_BUTTON_MASK(button);
 	}
 
 }

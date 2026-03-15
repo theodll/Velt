@@ -4,7 +4,7 @@
 #include "Pipeline.h"
 #include "Platform/Vulkan/VulkanPipeline.h"
 #include "Renderer/UniformBuffer.h"
-#include "Renderer/Camera.h"
+#include "Editor/EditorCamera.h"
 
 namespace Velt {
 
@@ -19,7 +19,7 @@ namespace Velt {
 		void EndScene();
 
 		static Ref<Pipeline> GetPipeline() { return s_Pipeline; };
-		static Ref<Camera> GetCamera() { return m_Camera; };
+		static Ref<EditorCamera> GetCamera() { return m_Camera; };
 
 	private:
 		struct alignas(16) CameraUBO
@@ -27,7 +27,7 @@ namespace Velt {
 			Matrix viewProj;
 		};
 
-		static Ref<Camera> m_Camera;
+		static Ref<EditorCamera> m_Camera;
 
 		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
 		std::vector<VkDescriptorSet> m_GlobalSets;

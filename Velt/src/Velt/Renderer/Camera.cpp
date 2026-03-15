@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "Core/Math.h"
 #include "Camera.h"
-
+/*
 namespace Velt 
 {
 	 void Camera::SetOrthographicProjection(float left, float right, float top, float bottom, float near, float far) 
@@ -65,4 +65,4 @@ namespace Velt
         SetViewDirection(position, target - position, up);
     }
 
-}
+} */

@@ -5,11 +5,27 @@
 
 namespace Velt 
 {
+	class Camera
+	{
+	public:
+		Camera() = default;
+		Camera(const Matrix& projection)
+			: m_Projection(projection) {
+		}
+
+		virtual ~Camera() = default;
+			
+		const Matrix& GetProjection() const { return m_Projection; }
+	protected:
+		Matrix m_Projection = glm::mat4(1.0f);
+	};
+
+	/*
 	class Camera 
 	{
 	public:
 		Camera() = default; 
-        virtual ~Camera();
+        virtual ~Camera() = default;
 
 		void SetOrthographicProjection(float left, float right, float top, float bottom, float near, float far); 
 		void SetPerspectiveProjection(float fovY, float aspect, float near, float far);
@@ -25,5 +41,5 @@ namespace Velt
 	private: 
 		Matrix m_ProjectionMatrix{ 1.0f };
         Matrix m_ViewMatrix{1.0f};  
-	};
+	};*/
 }

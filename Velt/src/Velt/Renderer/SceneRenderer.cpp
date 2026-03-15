@@ -9,7 +9,7 @@
 namespace Velt {
 	
 	Ref<Pipeline> SceneRenderer::s_Pipeline = nullptr;
-	Ref<Camera> SceneRenderer::m_Camera = nullptr;
+	Ref<EditorCamera> SceneRenderer::m_Camera = nullptr;
 
 	void SceneRenderer::Init()
 	{
@@ -84,10 +84,8 @@ namespace Velt {
 
 		float aspect = width / height;
 
-		float halfHeight = 1.0f;
-		float halfWidth = aspect * halfHeight;
 
-		m_Camera = CreateRef<Camera>();
+		m_Camera = CreateRef<EditorCamera>(glm::radians(50.0f), aspect, 0.1f, 1000.0f);
 		const auto& sc = Velt::Application::Get()->GetWindow()->GetSwapchain();
 
 		const u32 mfif = sc->GetMaxFrameInFlight();
@@ -152,7 +150,7 @@ namespace Velt {
 		);
 		*/
 
-		m_Camera->SetPerspectiveProjection(glm::radians(50.0f), aspectF, 0.1f, 1000.0f);
+//		m_Camera->SetPerspectiveProjection(glm::radians(50.0f), aspectF, 0.1f, 1000.0f);
 
 		// m_Camera->SetRotation(m_Rotation);
 		m_Rotation++;
@@ -161,7 +159,7 @@ namespace Velt {
 		auto pipelineLayout = s_Pipeline->GetVulkanPipelineLayout();
 
 		CameraUBO ubo{};
-		ubo.viewProj = m_Camera->GetProjectionMatrix() * m_Camera->GetViewMatrix();
+		ubo.viewProj = m_Camera->GetViewProjection();
 
 		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
 

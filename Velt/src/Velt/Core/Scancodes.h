@@ -21,6 +21,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+#include <SDL3/SDL_mouse.h>
+
 namespace Velt
 {
 	enum class Scancode
@@ -398,5 +400,17 @@ namespace Velt
 
         VELT_SCANCODE_COUNT = 512 /**< not a key, just marks the number of scancodes for array bounds */
 
+    };
+
+
+    // Note [14.03, Theo] The Velt part is the right mouse button on the mouse and the assigned number is the part sdl expects
+
+    enum MouseButton
+    {
+        VELT_MOUSE1 = SDL_BUTTON_LEFT,
+        VELT_MOUSE2 = SDL_BUTTON_RIGHT,
+        VELT_MOUSE3 = SDL_BUTTON_MIDDLE,
+        VELT_MOUSE4 = SDL_BUTTON_X1,
+        VELT_MOUSE5 = SDL_BUTTON_X2
     };
 }
