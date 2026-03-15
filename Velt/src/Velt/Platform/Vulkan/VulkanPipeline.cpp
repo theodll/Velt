@@ -213,7 +213,7 @@ namespace Velt::RHI {
 		pConfigInfo->rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 		pConfigInfo->rasterizationInfo.pNext = nullptr;
 		pConfigInfo->rasterizationInfo.flags = 0;
-		pConfigInfo->rasterizationInfo.depthClampEnable = VK_TRUE;
+		pConfigInfo->rasterizationInfo.depthClampEnable = VK_FALSE;
 		pConfigInfo->rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
 		pConfigInfo->rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
 		pConfigInfo->rasterizationInfo.lineWidth = 1.0f;

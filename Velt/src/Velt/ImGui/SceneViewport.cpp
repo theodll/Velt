@@ -154,6 +154,29 @@ namespace Velt {
 			1, &barrier
 		);
 
+
+		VkImageMemoryBarrier depthBarrier{};
+		depthBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+		depthBarrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		depthBarrier.newLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+		depthBarrier.srcAccessMask = 0;
+		depthBarrier.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+		depthBarrier.image = m_DepthImage;
+		depthBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		depthBarrier.subresourceRange.baseMipLevel = 0;
+		depthBarrier.subresourceRange.levelCount = 1;
+		depthBarrier.subresourceRange.baseArrayLayer = 0;
+		depthBarrier.subresourceRange.layerCount = 1;
+
+		vkCmdPipelineBarrier(
+			resourceUploader->GetCommandBuffer(),
+			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+			VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
+			0,
+			0, nullptr,
+			0, nullptr,
+			1, &depthBarrier
+		);
 		resourceUploader->End();
 		CreateDescriptorSet();
 	}
