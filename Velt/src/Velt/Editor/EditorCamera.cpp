@@ -100,7 +100,7 @@ namespace Velt
             m_PitchDelta += glm::clamp(delta.y * RotationSpeed(), -maxRate, maxRate);
 
             m_RightDirection = glm::cross(m_Direction, glm::vec3{ 0.0f, yawSign, 0.0f });
-            m_Direction = glm::rotate(
+            m_Direction = -glm::rotate(
                 glm::normalize(glm::cross(
                     glm::angleAxis(-m_PitchDelta, m_RightDirection),
                     glm::angleAxis(-m_YawDelta, glm::vec3{ 0.0f, yawSign, 0.0f })
@@ -203,7 +203,7 @@ namespace Velt
         const float y = glm::min(m_ViewportHeight / 1000.0f, 2.4f);
         const float yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
 
-        return { xFactor, yFactor };
+        return { -xFactor * 0.01, -yFactor * 0.01 };
     }
 
     float EditorCamera::RotationSpeed() const
@@ -265,8 +265,8 @@ namespace Velt
     void EditorCamera::MousePan(const glm::vec2& delta)
     {
         auto [xSpeed, ySpeed] = PanSpeed();
-        m_FocalPoint -= GetRightDirection() * delta.x * xSpeed * m_Distance;
-        m_FocalPoint += GetUpDirection() * delta.y * ySpeed * m_Distance;
+        m_FocalPoint += GetRightDirection() * delta.x * xSpeed * m_Distance;
+        m_FocalPoint -= GetUpDirection() * delta.y * ySpeed * m_Distance;
     }
 
     void EditorCamera::MouseRotate(const glm::vec2& delta)

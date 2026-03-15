@@ -22,6 +22,7 @@ namespace Editor {
 		float m_CameraRot{};
 
 		Velt::Ref<Velt::Model> m_Cube;
+		Velt::Ref<Velt::Model> m_Plane;
 		Velt::Ref<Velt::Material> m_Material;
 
 		Velt::Ref<Velt::Texture2D> m_Texture;

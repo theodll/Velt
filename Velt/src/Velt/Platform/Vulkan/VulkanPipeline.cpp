@@ -213,13 +213,13 @@ namespace Velt::RHI {
 		pConfigInfo->rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 		pConfigInfo->rasterizationInfo.pNext = nullptr;
 		pConfigInfo->rasterizationInfo.flags = 0;
-		pConfigInfo->rasterizationInfo.depthClampEnable = VK_FALSE;
+		pConfigInfo->rasterizationInfo.depthClampEnable = VK_TRUE;
 		pConfigInfo->rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
 		pConfigInfo->rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
 		pConfigInfo->rasterizationInfo.lineWidth = 1.0f;
 		pConfigInfo->rasterizationInfo.cullMode = VK_CULL_MODE_BACK_BIT;
 		pConfigInfo->rasterizationInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
-		pConfigInfo->rasterizationInfo.depthBiasEnable = VK_FALSE;
+		pConfigInfo->rasterizationInfo.depthBiasEnable = VK_TRUE;
 		pConfigInfo->rasterizationInfo.depthBiasConstantFactor = 0.0f;
 		pConfigInfo->rasterizationInfo.depthBiasClamp = 0.0f;
 		pConfigInfo->rasterizationInfo.depthBiasSlopeFactor = 0.0f;
@@ -270,13 +270,13 @@ namespace Velt::RHI {
 		pConfigInfo->depthStencilInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 		pConfigInfo->depthStencilInfo.pNext = nullptr;
 		pConfigInfo->depthStencilInfo.flags = 0;
-		pConfigInfo->depthStencilInfo.depthTestEnable = VK_FALSE;
-		pConfigInfo->depthStencilInfo.depthWriteEnable = VK_FALSE;
+		pConfigInfo->depthStencilInfo.depthTestEnable = VK_TRUE;
+		pConfigInfo->depthStencilInfo.depthWriteEnable = VK_TRUE;
 		pConfigInfo->depthStencilInfo.depthCompareOp = VK_COMPARE_OP_LESS;
-		pConfigInfo->depthStencilInfo.depthBoundsTestEnable = VK_FALSE;
+		pConfigInfo->depthStencilInfo.depthBoundsTestEnable = VK_TRUE;
 		pConfigInfo->depthStencilInfo.minDepthBounds = 0.0f;
 		pConfigInfo->depthStencilInfo.maxDepthBounds = 1.0f;
-		pConfigInfo->depthStencilInfo.stencilTestEnable = VK_FALSE;
+		pConfigInfo->depthStencilInfo.stencilTestEnable = VK_TRUE;
 		pConfigInfo->depthStencilInfo.front = {};
 		pConfigInfo->depthStencilInfo.back = {};
 

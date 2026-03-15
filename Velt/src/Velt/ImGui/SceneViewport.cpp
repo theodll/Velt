@@ -96,6 +96,36 @@ namespace Velt {
 			VT_CORE_ERROR("Failed to create sampler for scene viewport!");
 		}
 
+		VkImageCreateInfo depthImageInfo{};
+		depthImageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+		depthImageInfo.imageType = VK_IMAGE_TYPE_2D;
+		depthImageInfo.format = VK_FORMAT_D32_SFLOAT;
+		depthImageInfo.extent.width = m_Width;
+		depthImageInfo.extent.height = m_Height;
+		depthImageInfo.extent.depth = 1;
+		depthImageInfo.mipLevels = 1;
+		depthImageInfo.arrayLayers = 1;
+		depthImageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+		depthImageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+		depthImageInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+		depthImageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		depthImageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+		m_Device.CreateImageWithInfo(depthImageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_DepthImage, m_DepthImageMemory);
+
+		VkImageViewCreateInfo depthViewInfo{};
+		depthViewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		depthViewInfo.image = m_DepthImage;          
+		depthViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		depthViewInfo.format = VK_FORMAT_D32_SFLOAT;
+		depthViewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		depthViewInfo.subresourceRange.baseMipLevel = 0;
+		depthViewInfo.subresourceRange.levelCount = 1;
+		depthViewInfo.subresourceRange.baseArrayLayer = 0;
+		depthViewInfo.subresourceRange.layerCount = 1;
+
+		VT_VK_CHECK(vkCreateImageView(m_Device.device(), &depthViewInfo, nullptr, &m_DepthImageView), "Failed to create depth image view for scene viewport!");
+	
 		const auto& resourceUploader = RHI::VulkanContext::GetResourceUploader();
 		resourceUploader->Begin();
 

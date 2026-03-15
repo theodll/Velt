@@ -114,6 +114,10 @@ namespace Editor
 		info.Parts = { smInfo };
 		
 		m_Cube = Velt::Model::Create(&info);
+        m_Plane = Velt::Model::Create(&info);
+
+        m_Plane->GetTransform().Translation = { 0.0f, -1.0f, 0.0f };
+        m_Plane->GetTransform().Scale = { 2.0f, 0.2f, 2.0f };
 
 		m_Cube->GetTransform().Translation = { 0.0f, 0.0f, .5f }; 
 		m_Cube->GetTransform().Scale = { .5f, .5f, .5f };
@@ -188,6 +192,8 @@ namespace Editor
 
 		for (int i{}; i < index; i++)
     		Velt::Renderer::DrawStaticModel(commandBuffer, m_Cube, m_Material);
+
+        Velt::Renderer::DrawStaticModel(commandBuffer, m_Plane, m_Material);
 	}
 
     void EditorLayer::OnImGuiRender2()

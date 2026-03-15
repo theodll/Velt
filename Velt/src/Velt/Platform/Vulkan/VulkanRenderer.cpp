@@ -88,7 +88,7 @@ namespace Velt::RHI
 		);
 
 		// Rendering Info Setup
-		VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
+		VkClearValue clearColor = { {{0.0f, 1.0f, 0.0f, 1.0f}} };
 
 		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
 		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
@@ -98,6 +98,14 @@ namespace Velt::RHI
 		colorAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 		colorAttachmentInfo.clearValue = clearColor;
 
+		VkRenderingAttachmentInfoKHR depthAttachmentInfo{};
+		depthAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO; 
+		depthAttachmentInfo.imageView = viewport->GetDepthImageView();
+		depthAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL;
+		depthAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		depthAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		depthAttachmentInfo.clearValue.depthStencil = { 1.0f, 0 };
+
 		VkRenderingInfoKHR renderInfo{};
 		renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
 		renderInfo.renderArea.extent = { viewport->GetWidth(), viewport->GetHeight() };
@@ -105,6 +113,7 @@ namespace Velt::RHI
 		renderInfo.layerCount = 1;
 		renderInfo.colorAttachmentCount = 1;
 		renderInfo.pColorAttachments = &colorAttachmentInfo;
+		renderInfo.pDepthAttachment = &depthAttachmentInfo;
 
 		vkCmdBeginRendering(cmd, &renderInfo);
 
