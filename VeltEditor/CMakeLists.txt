@@ -23,6 +23,12 @@ if (NOT TARGET Velt)
     add_subdirectory("${CMAKE_SOURCE_DIR}/Velt")
 endif()
 
+if(APPLE)
+
+    find_package(SDL3 REQUIRED)
+    
+endif()
+
 target_link_libraries(VeltEditor PRIVATE Velt SDL3::SDL3)
 
 set_target_properties(VeltEditor PROPERTIES

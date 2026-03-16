@@ -107,9 +107,21 @@ add_library(Velt SHARED
 
 # --- Dependencies (Subdirectories) ---
 add_subdirectory(vendor/spdlog)
-add_subdirectory(vendor/volk)
 add_subdirectory(vendor/glm)
-add_subdirectory(vendor/sdl3 EXCLUDE_FROM_ALL)
+
+if(APPLE)
+
+    find_package(SDL3 REQUIRED)
+
+else()
+
+    set(SDL_TEST OFF CACHE BOOL "" FORCE)
+    set(SDL_TEST_LIBRARY OFF CACHE BOOL "" FORCE)
+    set(SDL_DISABLE_INSTALL ON CACHE BOOL "" FORCE)
+
+    add_subdirectory(vendor/sdl3 EXCLUDE_FROM_ALL)
+
+endif()
 
 # --- Vulkan Find & Link ---
 find_package(Vulkan REQUIRED)
