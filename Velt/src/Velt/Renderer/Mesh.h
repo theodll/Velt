@@ -8,6 +8,11 @@ namespace Velt
 	// mesh/animation system) and I could not bother less to rename this to StaticMesh. 
 	// Well get there sometime hopefully (: 
 
+	struct Submesh
+	{
+
+	};
+
 	class Mesh
 	{
 	public:
@@ -26,5 +31,10 @@ namespace Velt
 
 		Ref<VertexBuffer> m_VertexBuffer;
 		Ref<IndexBuffer> m_IndexBuffer;
+	};
+
+	class MeshSource
+	{
+
 	};
 }
