@@ -27,7 +27,7 @@ namespace Velt {
 		virtual EventType GetEventType() const = 0;
 		virtual const char* GetName() const = 0;
 		virtual uint32_t GetCategoryFlags() const = 0;
-		virtual std::string ToString() const { return GetName(); }
+		virtual std::string ToString() const { return ""; }
 
 		bool IsInCategory(EventCategory cat) const { return (GetCategoryFlags() & cat) != 0; }
 
