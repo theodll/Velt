@@ -4,36 +4,20 @@
 
 namespace Velt
 {
-	struct Submesh
-	{
-		Ref<Mesh> Mesh;
-		u32 MatIndex;
-	};
-
-	struct SubmeshCreateInfo
-	{
-		std::vector<Vertex> Vertices;
-		std::vector<Index> Indices;
-		u32 MaterialIndex = 0;
-	};
-
-	struct ModelCreateInfo
-	{
-		std::vector<SubmeshCreateInfo> Parts;
-	};
-
+	// Note [16.03.26, Theo]: this is the "meta" file for the mesh. Comperable to Mesh from Hazel 
 	class VELT_API Model
 	{
 	public:
-		static Ref<Model> Create(const ModelCreateInfo* pInfo);
-
-		Model() {};
+		explicit Model(Ref<Mesh> meshSource);
+		Model(Ref<Mesh> meshSource, const std::vector<uint32_t>& submeshes);
 		virtual ~Model() = default;
 
 		TransformComponent& GetTransform() { return m_Transform; }
-		const std::vector<Submesh>& GetSubmeshes() const { return m_Submeshes; }
+		const std::vector<u32>& GetSubmeshes() const { return m_Submeshes; }
 	private:
-		std::vector<Submesh> m_Submeshes;
+		std::vector<u32> m_Submeshes;
 		TransformComponent m_Transform{};
+
+
 	};
 }
