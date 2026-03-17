@@ -80,8 +80,6 @@ add_library(Velt SHARED
     "src/Velt/Platform/SDL/SDLEventTranslator.h"
     "src/Velt/Events/KeyEvents.h"
     "src/Velt/Events/MouseEvents.h"
-    "src/Velt/Renderer/Mesh.cpp" 
-    "src/Velt/Renderer/Mesh.h" 
     "src/Velt/Renderer/Model.h" 
     "src/Velt/Renderer/Model.cpp" 
     "src/Velt/Platform/Vulkan/DescriptorLayoutCache.cpp"

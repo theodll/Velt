@@ -62,4 +62,37 @@ namespace Velt
 			}
 
 		}
+
+		MaterialTable::MaterialTable(uint32_t materialCount)
+			: m_MaterialCount(materialCount)
+		{
+		}
+
+		MaterialTable::MaterialTable(Ref<MaterialTable> other)
+			: m_MaterialCount(other->m_MaterialCount)
+		{
+			const auto& meshMaterials = other->GetMaterials();
+			for (auto [index, materialAsset] : meshMaterials)
+				SetMaterial(index, materialAsset);
+		}
+
+		void MaterialTable::SetMaterial(uint32_t index, Ref<Material> material)
+		{
+			m_Materials[index] = material;
+			if (index >= m_MaterialCount)
+				m_MaterialCount = index + 1;
+		}
+
+		void MaterialTable::ClearMaterial(uint32_t index)
+		{
+			VT_CORE_ASSERT(HasMaterial(index), "");
+			m_Materials.erase(index);
+			if (index >= m_MaterialCount)
+				m_MaterialCount = index + 1;
+		}
+
+		void MaterialTable::Clear()
+		{
+			m_Materials.clear();
+		}
 }
