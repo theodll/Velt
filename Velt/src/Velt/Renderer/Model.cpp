@@ -38,7 +38,7 @@ namespace Velt {
 		}
 	}
 
-	Model::Model(Ref<Mesh> meshSource, const std::vector<uint32_t>& submeshes)
+	Model::Model(Ref<Mesh> meshSource, const std::vector<uint32_t>& submeshes) : m_MeshSource(meshSource)
 	{
 		m_Materials = CreateRef<MaterialTable>(0);
 
@@ -52,7 +52,7 @@ namespace Velt {
 		}
 	}
 
-	void Model::SetSubmeshes(const std::vector<uint32_t>& submeshes, Ref<Mesh> meshSource)
+	void Model::SetSubmeshes(const std::vector<u32>& submeshes, Ref<Mesh> meshSource)
 	{
 		if (!submeshes.empty())
 		{
@@ -62,7 +62,7 @@ namespace Velt {
 		{
 			const auto& submeshes = meshSource->GetSubmeshes();
 			m_Submeshes.resize(submeshes.size());
-			for (uint32_t i = 0; i < submeshes.size(); i++)
+			for (u32 i = 0; i < submeshes.size(); i++)
 				m_Submeshes[i] = i;
 		}
 	}

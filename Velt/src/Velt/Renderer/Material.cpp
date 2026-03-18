@@ -8,9 +8,8 @@
 namespace Velt
 {
 
-		Material::Material(const HVector& pColor)
+		Material::Material()
 		{
-			m_Data.Color = pColor;
 			for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 			{
 				m_UBOs[i] = UniformBuffer::Create(sizeof(MaterialUBO));
@@ -53,9 +52,8 @@ namespace Velt
 
 		const VkDescriptorSet& Material::GetSet() const { return m_Sets[Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex()]; }
 
-		void Material::SetColor(const HVector& pColor)
+		void Material::UpdateData()
 		{
-			m_Data.Color = pColor;
 			for (int i{ 0 }; i < MAX_FRAMES_IN_FLIGHT; i++)
 			{
 				m_UBOs[i]->SetData(&m_Data, sizeof(MaterialUBO), 0);

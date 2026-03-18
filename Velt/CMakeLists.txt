@@ -20,15 +20,15 @@ add_library(Velt SHARED
     "src/Velt/Platform/Vulkan/VulkanSwapchain.h"
     "src/vtpch.cpp"
     "src/vtpch.h"
-    "src/Velt/Layers/Layer.cpp"
-    "src/Velt/Layers/Layer.h"
-    "src/Velt/Layers/LayerStack.cpp"
-    "src/Velt/Layers/LayerStack.h"
+    "src/Velt/Core/Layer.cpp"
+    "src/Velt/Core/Layer.h"
+    "src/Velt/Core/LayerStack.cpp"
+    "src/Velt/Core/LayerStack.h"
     "src/Velt/ImGui/ImGuiLayer.h"
     "src/Velt/ImGui/ImGuiLayer.cpp"
     "src/Velt/ImGui/ImGuiRenderer.h"
     "src/Velt/ImGui/ImGuiRenderer.cpp"
-    "src/Velt/Utils/Profiling/Instrumentor.h"
+    "src/Velt/Core/Instrumentor.h"
     "src/Velt/Renderer/RenderContext.h"
     "src/Velt/Renderer/RenderContext.cpp"
     "src/Velt/Renderer/Pipeline.h"
@@ -101,11 +101,12 @@ add_library(Velt SHARED
  "src/Velt/Renderer/Camera.h" "src/Velt/Renderer/Camera.cpp"
  "src/Velt/Editor/EditorCamera.h"
  "src/Velt/Editor/EditorCamera.cpp"
- )
+  "src/Velt/Asset/AssimpMeshImporter.h" "src/Velt/Asset/AssimpMeshImporter.cpp")
 
 # --- Dependencies (Subdirectories) ---
 add_subdirectory(vendor/spdlog)
 add_subdirectory(vendor/glm)
+add_subdirectory(vendor/assimp)
 
 if(APPLE)
 
@@ -137,6 +138,7 @@ target_include_directories(Velt PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/sdl3/include
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/backends
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp/include
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 

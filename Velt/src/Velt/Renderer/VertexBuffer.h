@@ -15,6 +15,9 @@ namespace Velt
     struct Vertex
     {
         Vector Position;
+        Vector Normal;
+        Vector Tangent;
+        Vector Binormal; 
         Point UV;
     };
 

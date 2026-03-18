@@ -10,7 +10,19 @@ namespace Velt
 	// mesh/animation system) and I could not bother less to rename this to StaticMesh. 
 	// Well get there sometime hopefully (: 
 
-	// Note [16.03.26, Theo]: this is the "source" file for the mesh. Comperable to MeshSource from Hazel 
+	struct MeshNode
+	{
+		uint32_t Parent = 0xffffffff;
+		std::vector<u32> Children;
+		std::vector<u32> Submeshes;
+
+		std::string Name;
+		glm::mat4 LocalTransform;
+
+		inline bool IsRoot() const { return Parent == 0xffffffff; }
+	};
+
+	// Note [16.03.26, Theo]: this is the "source" file for the mesh. Comparable to MeshSource from Hazel 
 	struct Submesh
 	{
 		u32 BaseVertex;
@@ -39,7 +51,7 @@ namespace Velt
 		const std::vector<Vertex>& GetVertices() const { return m_Vertices; }
 		const std::vector<Index>& GetIndices() const { return m_Indices; }
 
-		std::vector<Material>& GetMaterial() { return m_Materials; }
+		std::vector<Ref<Material>>& GetMaterial() { return m_Materials; }
 		const std::vector<Ref<Material>>& GetMaterials() const { return m_Materials; }
 
 		const std::filesystem::path& GetFilePath() const { return m_FilePath; }
@@ -47,7 +59,8 @@ namespace Velt
 		Ref<VertexBuffer> GetVertexBuffer() { return m_VertexBuffer; }
 		Ref<IndexBuffer> GetIndexBuffer() { return m_IndexBuffer; }
 
-	private:
+	// Node [18.03.26, Theo]: change to private and friend class
+	public:
 		std::filesystem::path m_FilePath;
 
 		std::vector<Submesh> m_Submeshes;
@@ -60,14 +73,15 @@ namespace Velt
 		Ref<VertexBuffer> m_VertexBuffer;
 		Ref<IndexBuffer> m_IndexBuffer;
 
+		std::vector<MeshNode> m_Nodes;
 	};
 
-	// Note [16.03.26, Theo]: this is the "meta" file for the mesh. Comperable to Mesh from Hazel 
+	// Note [16.03.26, Theo]: this is the "meta" file for the mesh. Comparable to Mesh from Hazel 
 	class VELT_API Model
 	{
 	public:
 		explicit Model(Ref<Mesh> meshSource);
-		Model(Ref<Mesh> meshSource, const std::vector<uint32_t>& submeshes);
+		Model(Ref<Mesh> meshSource, const std::vector<u32>& submeshes);
 		virtual ~Model() = default;
 
 		void SetSubmeshes(const std::vector<u32>& submeshes, Ref<Mesh> meshSourceAsset);
@@ -75,10 +89,12 @@ namespace Velt
 		Ref<Mesh> GetMeshSource() const { return m_MeshSource; }
 		const std::vector<u32>& GetSubmeshes() const { return m_Submeshes; }
 		Ref<MaterialTable> GetMaterials() { return m_Materials; }
-	private:
+	public:
 		Ref<Mesh> m_MeshSource;
 		std::vector<u32> m_Submeshes;
 
 		Ref<MaterialTable> m_Materials;
+
+		
 	};
 }
