@@ -106,9 +106,9 @@ namespace Velt {
 		s_RenderAPI->DrawQuad(renderCommandBuffer, transform, material);
 	}
 
-	void Renderer::DrawStaticModel(VkCommandBuffer& renderCommandBuffer, Ref<Model> model, Ref<Material> material)
+	void Renderer::DrawStaticModel(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<Model>& model, const Ref<Mesh>& meshSource, u32 submeshIndex, const Ref<MaterialTable>& materialTable)
 	{
-		s_RenderAPI->DrawStaticModel(renderCommandBuffer, model, material);
+		s_RenderAPI->DrawStaticModel(renderCommandBuffer, pipeline, model, meshSource, submeshIndex, materialTable);
 	}
 
 	void Renderer::RequestShutdown()

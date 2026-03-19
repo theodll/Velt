@@ -99,12 +99,11 @@ namespace Velt {
 				// Load indices
 				for (uint32_t i = 0; i < aiMesh->mNumFaces; i++)
 				{
-					Index index = {
-						aiMesh->mFaces[i].mIndices[0],
-						aiMesh->mFaces[i].mIndices[1],
-						aiMesh->mFaces[i].mIndices[2]
-					};
-					mesh->m_Indices.push_back(index);
+					const aiFace& face = aiMesh->mFaces[i];
+
+					mesh->m_Indices.push_back(face.mIndices[0]);
+					mesh->m_Indices.push_back(face.mIndices[1]);
+					mesh->m_Indices.push_back(face.mIndices[2]);
 				}
 			}
 

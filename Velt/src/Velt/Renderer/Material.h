@@ -11,10 +11,10 @@ namespace Velt
 
 	enum MaterialTextureSlot : u8
 	{
-		BINDING_ALBEDO = 0,
-		BINDING_NORMAL = 1,
-		BINDING_ROUGHNESS = 2,
-		BINDING_METALLIC = 3
+		BINDING_ALBEDO = 1,
+		BINDING_NORMAL = 2,
+		BINDING_ROUGHNESS = 3,
+		BINDING_METALLIC = 4
 	};
 
 	class VELT_API Material

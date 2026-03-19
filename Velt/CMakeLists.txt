@@ -65,8 +65,6 @@ add_library(Velt SHARED
     "src/Velt/Platform/Vulkan/Buffer/VulkanUniformBuffer.cpp"
     "src/Velt/Platform/Vulkan/DescriptorSetManager.h"
     "src/Velt/Platform/Vulkan/DescriptorSetManager.cpp"
-    "src/Velt/Renderer/Camera.h"
-    "src/Velt/Renderer/Camera.cpp"
     "src/Velt/Core/Timestep.h" 
     "src/Velt/Core/Input.h" 
     "src/Velt/Core/Scancodes.h" 
@@ -124,7 +122,8 @@ endif()
 
 # --- Vulkan Find & Link ---
 find_package(Vulkan REQUIRED)
-target_link_libraries(Velt PUBLIC Vulkan::Vulkan spdlog::spdlog SDL3::SDL3 volk)
+target_link_libraries(Velt PUBLIC Vulkan::Vulkan)
+target_link_libraries(Velt PRIVATE spdlog::spdlog SDL3::SDL3 assimp)
 
 # --- Unified Include Paths ---
 # Wir nutzen CMAKE_CURRENT_SOURCE_DIR, da wir uns in /Velt befinden
@@ -138,7 +137,7 @@ target_include_directories(Velt PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/sdl3/include
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/backends
-    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp/include
+    ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
@@ -205,10 +204,6 @@ target_compile_definitions(Velt PRIVATE
     $<$<CONFIG:Debug>:VL_DEBUG>
     $<$<CONFIG:Release>:VL_RELEASE>
 )
-
-if(MSVC)
-    target_compile_options(Velt PRIVATE /utf-8)
-endif()
 
 target_precompile_headers(Velt PUBLIC src/vtpch.h)
 

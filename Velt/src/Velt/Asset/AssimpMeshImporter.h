@@ -5,7 +5,8 @@
 
 namespace Velt 
 {
-	class AssimpMeshImporter 
+;
+	class VELT_API AssimpMeshImporter 
 	{
 	public:
 		AssimpMeshImporter(const std::filesystem::path& path);
