@@ -7,6 +7,14 @@
 
 namespace Velt
 {
+		namespace
+		{
+			Ref<Texture2D> GetDefaultMaterialTexture()
+			{
+				static Ref<Texture2D> s_DefaultTexture = Texture2D::Create("Assets/Textures/error.png");
+				return s_DefaultTexture;
+			}
+		}
 
 		Material::Material()
 		{
@@ -29,6 +37,9 @@ namespace Velt
 					sizeof(MaterialUBO)
 				);
 			}
+
+			SetAlbedoTexture(GetDefaultMaterialTexture());
+			UpdateData();
 		};
 
 		void Material::SetTexture(u32 binding, Ref<Texture2D> pTexture)
@@ -48,6 +59,48 @@ namespace Velt
 					info
 				);
 			}
+		}
+
+		std::vector<Velt::RHI::DescriptorBinding> Material::GetMaterialBindings()
+		{
+			std::vector<Velt::RHI::DescriptorBinding> materialBindings{};
+
+			RHI::DescriptorBinding uninformData{};
+			uninformData.type = RHI::DescriptorType::UNIFORM_BUFFER;
+			uninformData.binding = VT_MATERIAL_SLOTS_BINDING_UBO;
+			uninformData.count = 1;
+			uninformData.stage = RHI::ShaderStage::FRAGMENT;
+			materialBindings.push_back(uninformData);
+
+			RHI::DescriptorBinding albedoTexture{};
+			albedoTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
+			albedoTexture.binding = VT_MATERIAL_SLOTS_BINDING_ALBEDO;
+			albedoTexture.count = 1;
+			albedoTexture.stage = RHI::ShaderStage::FRAGMENT;
+			materialBindings.push_back(albedoTexture);
+
+			RHI::DescriptorBinding normalTexture{};
+			normalTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
+			normalTexture.binding = VT_MATERIAL_SLOTS_BINDING_NORMAL;
+			normalTexture.count = 1;
+			normalTexture.stage = RHI::ShaderStage::FRAGMENT;
+			materialBindings.push_back(normalTexture);
+
+			RHI::DescriptorBinding roughnessTexture{};
+			roughnessTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
+			roughnessTexture.binding = VT_MATERIAL_SLOTS_BINDING_ROUGHNESS;
+			roughnessTexture.count = 1;
+			roughnessTexture.stage = RHI::ShaderStage::FRAGMENT;
+			materialBindings.push_back(roughnessTexture);
+
+			RHI::DescriptorBinding metallicTexture{};
+			metallicTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
+			metallicTexture.binding = VT_MATERIAL_SLOTS_BINDING_METALLIC;
+			metallicTexture.count = 1;
+			metallicTexture.stage = RHI::ShaderStage::FRAGMENT;
+			materialBindings.push_back(metallicTexture);
+
+			return materialBindings;
 		}
 
 		const VkDescriptorSet& Material::GetSet() const { return m_Sets[Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex()]; }

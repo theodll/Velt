@@ -9,19 +9,19 @@ namespace Velt {
 		Submesh submesh;
 		submesh.BaseVertex = 0;
 		submesh.BaseIndex = 0;
-		submesh.IndexCount = (uint32_t)indices.size() * 3u;
+		submesh.IndexCount = (uint32_t)indices.size();
 		submesh.Transform = transform;
 		m_Submeshes.push_back(submesh);
 
 		m_VertexBuffer = VertexBuffer::Create(m_Vertices.data(), (uint32_t)(m_Vertices.size()), sizeof(Vertex));
-		m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), (uint32_t)(m_Indices.size() * sizeof(Index)));
+		m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), (uint32_t)m_Indices.size());
 	}
 
 	Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const std::vector<Submesh>& submeshes)
 		: m_Vertices(vertices), m_Indices(indices), m_Submeshes(submeshes)
 	{
 		m_VertexBuffer = VertexBuffer::Create(m_Vertices.data(), (uint32_t)(m_Vertices.size()), sizeof(Vertex));
-		m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), (uint32_t)(m_Indices.size() * sizeof(Index)));
+		m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), (uint32_t)m_Indices.size());
 	}
 
 	Model::Model(Ref<Mesh> meshSource) : m_MeshSource(meshSource)

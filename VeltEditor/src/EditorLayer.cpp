@@ -22,10 +22,11 @@ namespace Editor
 
         auto camera = Velt::SceneRenderer::GetCamera(); 
 
-        Velt::AssimpMeshImporter importer("Assets/Models/error.glb");
+        Velt::AssimpMeshImporter importer("Assets/Models/Sponza/Sponza.gltf");
         m_Mesh = importer.ImportToMesh();
 
         m_Model = CreateRef<Velt::Model>(m_Mesh);
+        m_Model->SetRotationEulerDegrees({ 180.0f, 180.0f, 0.0f });
 
      //   camera->SetViewDirection(Velt::Vector(0.0f), Velt::Vector(0.5f, 0.0f, 1.0f));
 	}
@@ -90,12 +91,24 @@ namespace Editor
 		// Note [6.02.26]: Never EVER use a VT_PROFILE_FUNCTION() in a per frame performance thing!
 		// It causes immense performance loss
 
-		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
-        
+		if (!m_Model || !m_Mesh)
+			return;
 
-        Velt::Renderer::DrawStaticModel(commandBuffer, Velt::SceneRenderer::GetPipeline(), m_Model, m_Mesh, 0, VT_NULL_HANDLE);
+		const auto& submeshes = m_Model->GetSubmeshes();
+		auto materialTable = m_Model->GetMaterials();
+		for (u32 submeshIndex : submeshes)
+		{
+			Velt::Renderer::DrawStaticModel(
+				commandBuffer,
+				Velt::SceneRenderer::GetPipeline(),
+				m_Model,
+				m_Mesh,
+				submeshIndex,
+				materialTable
+			);
+		}
 
-       // Velt::Renderer::DrawQuad(commandBuffer, glm::mat4(1.0f), *m_Material.get());
+	   // Velt::Renderer::DrawQuad(commandBuffer, glm::mat4(1.0f), *m_Material.get());
 	}
 
     void EditorLayer::OnImGuiRender2()

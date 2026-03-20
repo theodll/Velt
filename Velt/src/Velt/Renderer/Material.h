@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/Core.h"
 #include "Core/Math.h"
+#include "Platform/Vulkan/DescriptorLayoutCache.h"
 #include "Texture.h"
 #include <map>
 
@@ -8,13 +9,16 @@ namespace Velt
 {
 	class UniformBuffer;
 	class Application;
+	
 
-	enum MaterialTextureSlot : u8
+
+	enum MaterialSlotS : u8
 	{
-		BINDING_ALBEDO = 1,
-		BINDING_NORMAL = 2,
-		BINDING_ROUGHNESS = 3,
-		BINDING_METALLIC = 4
+		VT_MATERIAL_SLOTS_BINDING_UBO = 0,
+		VT_MATERIAL_SLOTS_BINDING_ALBEDO = 1,
+		VT_MATERIAL_SLOTS_BINDING_NORMAL = 2,
+		VT_MATERIAL_SLOTS_BINDING_ROUGHNESS = 3,
+		VT_MATERIAL_SLOTS_BINDING_METALLIC = 4
 	};
 
 	class VELT_API Material
@@ -29,13 +33,17 @@ namespace Velt
 		void SetAbientOcclusionFactor(float ao) { m_Data.AbientOcclusionFactor = ao; UpdateData(); };
 		void SetEmissiveColor(const Vector& emissiveColor) { m_Data.EmissiveColor = emissiveColor; };
 		
-		void SetAlbedoTexture(Ref<Texture2D> pTexture) { SetTexture(BINDING_ALBEDO, pTexture); }
-		void SetNormalTexture(Ref<Texture2D> pTexture) { SetTexture(BINDING_NORMAL , pTexture); }
-		void SetRoughnessTexture(Ref<Texture2D> pTexture) { SetTexture(BINDING_ROUGHNESS, pTexture); }
-		void SetMetalllicTexture(Ref<Texture2D> pTexture) { SetTexture(BINDING_METALLIC, pTexture); }
+		void SetAlbedoTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_ALBEDO, pTexture); }
+		void SetNormalTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_NORMAL, pTexture); }
+		void SetRoughnessTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_ROUGHNESS, pTexture); }
+		void SetMetalllicTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_METALLIC, pTexture); }
 
 		void SetTexture(u32 binding, Ref<Texture2D> pTexture);
 		void SetName(const std::string& name) { m_Name = name; }
+		
+		static std::vector<RHI::DescriptorBinding> GetMaterialBindings();
+
+
 
 		const VkDescriptorSet& GetSet() const;
 	private:
@@ -46,13 +54,15 @@ namespace Velt
 
 		std::unordered_map<u32, Ref<Texture2D>> m_Textures;
 
-		struct MaterialUBO
+		struct alignas(16) MaterialUBO
 		{
 			HVector BaseColorFactor{glm::vec4(1.0f)};
 			float Metallic{};
 			float Roughness{};
 			float AbientOcclusionFactor{};
-			Vector EmissiveColor; 
+			float _padding0;
+
+			alignas(16) Vector EmissiveColor; 
 		};
 
 		Ref<UniformBuffer> m_UBOs[MAX_FRAMES_IN_FLIGHT];
@@ -73,7 +83,7 @@ namespace Velt
 
 		Ref<Material> GetMaterial(uint32_t materialIndex) const
 		{
-			VT_CORE_ASSERT(!HasMaterial(materialIndex), "");
+			VT_CORE_ASSERT(HasMaterial(materialIndex), "");
 			return m_Materials.at(materialIndex);
 		}
 		std::map<uint32_t, Ref<Material>>& GetMaterials() { return m_Materials; }

@@ -89,7 +89,7 @@ namespace Velt::RHI
 		);
 
 		// Rendering Info Setup
-		VkClearValue clearColor = { {{0.0f, 1.0f, 0.0f, 1.0f}} };
+		VkClearValue clearColor = { {{0.0f, 1.0f, 0.992f, 1.0f}} };
 
 		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
 		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
@@ -182,7 +182,7 @@ namespace Velt::RHI
 		);
 
 		// Rendering Info Setup
-		VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
+		VkClearValue clearColor = { {{0.0f, 1.0f, 0.992f, 1.0f}} };
 
 		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
 		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
@@ -321,6 +321,7 @@ namespace Velt::RHI
 		VkBuffer ibBuffer = meshSource->GetIndexBuffer()->GetVulkanBuffer();
 		vkCmdBindIndexBuffer(commandBuffer, ibBuffer, 0, VK_INDEX_TYPE_UINT32);
 
+
 		if (!s_RenderData->FallBackMaterial)
 		{
 			s_RenderData->FallBackMaterial = CreateRef<Material>();
@@ -344,7 +345,7 @@ namespace Velt::RHI
 		VkDescriptorSet descriptorSet = selectedMaterial->GetSet();
 		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &descriptorSet, 0, nullptr);
 
-		const Matrix transform = submesh.Transform;
+		const Matrix transform = model->GetTransformMatrix() * submesh.Transform;
 		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Matrix), &transform);
 
 		vkCmdDrawIndexed(commandBuffer, submesh.IndexCount, 1, submesh.BaseIndex, submesh.BaseVertex, 0);

@@ -4,10 +4,13 @@
 #include "Renderer/VertexBuffer.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Material.h"
+#include "Renderer/Texture.h"
+#include "Platform/Vulkan/VulkanContext.h"
 
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/Importer.hpp>
+#include <unordered_map>
 
 namespace Velt {
 
@@ -17,10 +20,8 @@ namespace Velt {
 		| aiProcess_SortByPType
 		| aiProcess_GenNormals
 		| aiProcess_GenUVCoords
-		| aiProcess_OptimizeMeshes
 		| aiProcess_JoinIdenticalVertices
-		| aiProcess_ValidateDataStructure
-		| aiProcess_GlobalScale;
+		| aiProcess_ValidateDataStructure;
 
 	namespace Utils {
 		glm::mat4 Mat4FromAIMatrix4x4(const aiMatrix4x4& matrix)
@@ -31,6 +32,55 @@ namespace Velt {
 			result[0][2] = matrix.c1; result[1][2] = matrix.c2; result[2][2] = matrix.c3; result[3][2] = matrix.c4;
 			result[0][3] = matrix.d1; result[1][3] = matrix.d2; result[2][3] = matrix.d3; result[3][3] = matrix.d4;
 			return result;
+		}
+
+		std::filesystem::path ResolveTexturePath(const std::filesystem::path& modelPath, const aiString& texturePath)
+		{
+			std::filesystem::path path(texturePath.C_Str());
+			if (path.is_absolute())
+				return path;
+
+			auto resolved = modelPath.parent_path() / path;
+			return resolved;
+		}
+
+		Ref<Texture2D> LoadMaterialTexture(
+			aiMaterial* aiMat,
+			const std::filesystem::path& modelPath,
+			const std::initializer_list<aiTextureType>& types,
+			std::unordered_map<std::string, Ref<Texture2D>>& textureCache)
+		{
+			for (auto type : types)
+			{
+				if (aiMat->GetTextureCount(type) == 0)
+					continue;
+
+				aiString texturePath;
+				if (aiMat->GetTexture(type, 0, &texturePath) != AI_SUCCESS)
+					continue;
+
+				auto resolvedPath = ResolveTexturePath(modelPath, texturePath);
+				const std::string cacheKey = resolvedPath.lexically_normal().string();
+
+				auto it = textureCache.find(cacheKey);
+				if (it != textureCache.end())
+					return it->second;
+
+				if (!std::filesystem::exists(resolvedPath))
+				{
+					VT_CORE_WARN("Material texture not found: {}", resolvedPath.string());
+					continue;
+				}
+
+				auto texture = Texture2D::Create(resolvedPath);
+				if (!texture)
+					continue;
+
+				textureCache[cacheKey] = texture;
+				return texture;
+			}
+
+			return nullptr;
 		}
 	}
 
@@ -91,7 +141,7 @@ namespace Velt {
 					}
 
 					if (aiMesh->HasTextureCoords(0))
-						vertex.UV = { aiMesh->mTextureCoords[0][i].x, aiMesh->mTextureCoords[0][i].y };
+						vertex.UV = { aiMesh->mTextureCoords[0][i].x, 1.0f - aiMesh->mTextureCoords[0][i].y };
 
 					mesh->m_Vertices.push_back(vertex);
 				}
@@ -109,13 +159,14 @@ namespace Velt {
 
 			// Traverse scene graph
 			MeshNode& rootNode = mesh->m_Nodes.emplace_back();
-			TraverseNodes(mesh, scene->mRootNode, 0);
+			TraverseNodes(mesh, scene->mRootNode, 0, glm::mat4(1.0f));
 		}
 
 		// Load materials
 		if (scene->HasMaterials())
 		{
 			mesh->m_Materials.resize(scene->mNumMaterials);
+			std::unordered_map<std::string, Ref<Texture2D>> textureCache;
 
 			for (uint32_t i = 0; i < scene->mNumMaterials; i++)
 			{
@@ -141,6 +192,18 @@ namespace Velt {
 					metalness = 1.0f;
 				material->SetMetallic(metalness);
 
+				if (auto albedo = Utils::LoadMaterialTexture(aiMat, m_Path, { aiTextureType_BASE_COLOR, aiTextureType_DIFFUSE }, textureCache))
+					material->SetAlbedoTexture(albedo);
+
+				if (auto normal = Utils::LoadMaterialTexture(aiMat, m_Path, { aiTextureType_NORMALS, aiTextureType_HEIGHT }, textureCache))
+					material->SetNormalTexture(normal);
+
+				if (auto roughnessTexture = Utils::LoadMaterialTexture(aiMat, m_Path, { aiTextureType_DIFFUSE_ROUGHNESS }, textureCache))
+					material->SetRoughnessTexture(roughnessTexture);
+
+				if (auto metallicTexture = Utils::LoadMaterialTexture(aiMat, m_Path, { aiTextureType_METALNESS }, textureCache))
+					material->SetMetalllicTexture(metallicTexture);
+
 				mesh->m_Materials[i] = material;
 			}
 		}
@@ -152,41 +215,47 @@ namespace Velt {
 
 		if (!mesh->m_Indices.empty())
 			mesh->m_IndexBuffer = IndexBuffer::Create(mesh->m_Indices.data(),
-				static_cast<uint32_t>(mesh->m_Indices.size()), sizeof(Index));
+				static_cast<uint32_t>(mesh->m_Indices.size()));
+
+		if (mesh->m_VertexBuffer || mesh->m_IndexBuffer)
+		{
+			auto uploader = RHI::VulkanContext::GetResourceUploader();
+			uploader->Begin();
+			if (mesh->m_VertexBuffer)
+				mesh->m_VertexBuffer->Upload(uploader->GetCommandBuffer());
+			if (mesh->m_IndexBuffer)
+				mesh->m_IndexBuffer->Upload(uploader->GetCommandBuffer());
+			uploader->End();
+		}
 
 		return mesh;
 	}
 
-	void AssimpMeshImporter::TraverseNodes(Ref<Mesh> mesh, void* assimpNode, uint32_t nodeIndex,
-		const Matrix& parentTransform, uint32_t level)
+	void AssimpMeshImporter::TraverseNodes(Ref<Mesh> mesh, aiNode* aNode, uint32_t nodeIndex, const Matrix& parentTransform)
 	{
-		aiNode* aNode = static_cast<aiNode*>(assimpNode);
-
 		MeshNode& node = mesh->m_Nodes[nodeIndex];
 		node.Name = aNode->mName.C_Str();
 		node.LocalTransform = Utils::Mat4FromAIMatrix4x4(aNode->mTransformation);
 
 		Matrix transform = parentTransform * node.LocalTransform;
+
 		for (uint32_t i = 0; i < aNode->mNumMeshes; i++)
 		{
 			uint32_t submeshIndex = aNode->mMeshes[i];
 			auto& submesh = mesh->m_Submeshes[submeshIndex];
-			submesh.NodeName = aNode->mName.C_Str();
-			submesh.Transform = transform;
-			submesh.LocalTransform = node.LocalTransform;
-
-			node.Submeshes.push_back(submeshIndex);
+			submesh.Transform = transform; 
 		}
 
-		uint32_t parentNodeIndex = static_cast<uint32_t>(mesh->m_Nodes.size() - 1);
 		node.Children.resize(aNode->mNumChildren);
 		for (uint32_t i = 0; i < aNode->mNumChildren; i++)
 		{
-			MeshNode& child = mesh->m_Nodes.emplace_back();
-			uint32_t childIndex = static_cast<uint32_t>(mesh->m_Nodes.size() - 1);
-			child.Parent = parentNodeIndex;
+			uint32_t childIndex = (uint32_t)mesh->m_Nodes.size();
+			mesh->m_Nodes.emplace_back();
+
+			mesh->m_Nodes[childIndex].Parent = nodeIndex;
 			mesh->m_Nodes[nodeIndex].Children[i] = childIndex;
-			TraverseNodes(mesh, aNode->mChildren[i], childIndex, transform, level + 1);
+
+			TraverseNodes(mesh, aNode->mChildren[i], childIndex, transform);
 		}
 	}
 

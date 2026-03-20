@@ -3,6 +3,7 @@
 #include "Material.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "Tools.h"
 
 namespace Velt
 {
@@ -86,6 +87,15 @@ namespace Velt
 
 		void SetSubmeshes(const std::vector<u32>& submeshes, Ref<Mesh> meshSourceAsset);
 
+		void SetTransform(const TransformComponent& transform) { m_Transform = transform; }
+		TransformComponent& GetTransform() { return m_Transform; }
+		const TransformComponent& GetTransform() const { return m_Transform; }
+		Matrix GetTransformMatrix() const { return m_Transform.Matrix(); }
+
+		void SetTranslation(const Vector& translation) { m_Transform.Translation = translation; }
+		void SetScale(const Vector& scale) { m_Transform.Scale = scale; }
+		void SetRotationEulerDegrees(const Vector& degrees) { m_Transform.SetEulerDegrees(degrees); }
+
 		Ref<Mesh> GetMeshSource() const { return m_MeshSource; }
 		const std::vector<u32>& GetSubmeshes() const { return m_Submeshes; }
 		Ref<MaterialTable> GetMaterials() { return m_Materials; }
@@ -94,7 +104,6 @@ namespace Velt
 		std::vector<u32> m_Submeshes;
 
 		Ref<MaterialTable> m_Materials;
-
-		
+		TransformComponent m_Transform{};
 	};
 }
