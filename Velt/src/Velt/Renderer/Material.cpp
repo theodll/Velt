@@ -7,10 +7,17 @@
 
 namespace Velt
 {
-
-		Material::Material(const HVector& pColor)
+		namespace
 		{
-			m_Data.Color = pColor;
+			Ref<Texture2D> GetDefaultMaterialTexture()
+			{
+				static Ref<Texture2D> s_DefaultTexture = Texture2D::Create("Assets/Textures/error.png");
+				return s_DefaultTexture;
+			}
+		}
+
+		Material::Material()
+		{
 			for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 			{
 				m_UBOs[i] = UniformBuffer::Create(sizeof(MaterialUBO));
@@ -30,6 +37,9 @@ namespace Velt
 					sizeof(MaterialUBO)
 				);
 			}
+
+			SetAlbedoTexture(GetDefaultMaterialTexture());
+			UpdateData();
 		};
 
 		void Material::SetTexture(u32 binding, Ref<Texture2D> pTexture)
@@ -51,15 +61,89 @@ namespace Velt
 			}
 		}
 
+		std::vector<Velt::RHI::DescriptorBinding> Material::GetMaterialBindings()
+		{
+			std::vector<Velt::RHI::DescriptorBinding> materialBindings{};
+
+			RHI::DescriptorBinding uninformData{};
+			uninformData.type = RHI::DescriptorType::UNIFORM_BUFFER;
+			uninformData.binding = VT_MATERIAL_SLOTS_BINDING_UBO;
+			uninformData.count = 1;
+			uninformData.stage = RHI::ShaderStage::FRAGMENT;
+			materialBindings.push_back(uninformData);
+
+			RHI::DescriptorBinding albedoTexture{};
+			albedoTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
+			albedoTexture.binding = VT_MATERIAL_SLOTS_BINDING_ALBEDO;
+			albedoTexture.count = 1;
+			albedoTexture.stage = RHI::ShaderStage::FRAGMENT;
+			materialBindings.push_back(albedoTexture);
+
+			RHI::DescriptorBinding normalTexture{};
+			normalTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
+			normalTexture.binding = VT_MATERIAL_SLOTS_BINDING_NORMAL;
+			normalTexture.count = 1;
+			normalTexture.stage = RHI::ShaderStage::FRAGMENT;
+			materialBindings.push_back(normalTexture);
+
+			RHI::DescriptorBinding roughnessTexture{};
+			roughnessTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
+			roughnessTexture.binding = VT_MATERIAL_SLOTS_BINDING_ROUGHNESS;
+			roughnessTexture.count = 1;
+			roughnessTexture.stage = RHI::ShaderStage::FRAGMENT;
+			materialBindings.push_back(roughnessTexture);
+
+			RHI::DescriptorBinding metallicTexture{};
+			metallicTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
+			metallicTexture.binding = VT_MATERIAL_SLOTS_BINDING_METALLIC;
+			metallicTexture.count = 1;
+			metallicTexture.stage = RHI::ShaderStage::FRAGMENT;
+			materialBindings.push_back(metallicTexture);
+
+			return materialBindings;
+		}
+
 		const VkDescriptorSet& Material::GetSet() const { return m_Sets[Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex()]; }
 
-		void Material::SetColor(const HVector& pColor)
+		void Material::UpdateData()
 		{
-			m_Data.Color = pColor;
 			for (int i{ 0 }; i < MAX_FRAMES_IN_FLIGHT; i++)
 			{
 				m_UBOs[i]->SetData(&m_Data, sizeof(MaterialUBO), 0);
 			}
 
+		}
+
+		MaterialTable::MaterialTable(uint32_t materialCount)
+			: m_MaterialCount(materialCount)
+		{
+		}
+
+		MaterialTable::MaterialTable(Ref<MaterialTable> other)
+			: m_MaterialCount(other->m_MaterialCount)
+		{
+			const auto& meshMaterials = other->GetMaterials();
+			for (auto [index, materialAsset] : meshMaterials)
+				SetMaterial(index, materialAsset);
+		}
+
+		void MaterialTable::SetMaterial(uint32_t index, Ref<Material> material)
+		{
+			m_Materials[index] = material;
+			if (index >= m_MaterialCount)
+				m_MaterialCount = index + 1;
+		}
+
+		void MaterialTable::ClearMaterial(uint32_t index)
+		{
+			VT_CORE_ASSERT(HasMaterial(index), "");
+			m_Materials.erase(index);
+			if (index >= m_MaterialCount)
+				m_MaterialCount = index + 1;
+		}
+
+		void MaterialTable::Clear()
+		{
+			m_Materials.clear();
 		}
 }

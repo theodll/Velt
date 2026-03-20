@@ -36,4 +36,4 @@
 #include "Velt/Core/Log.h"
 #include "Velt/Core/Core.h"
 #include "Velt/Core/Assert.h"
-#include "Velt/Utils/Profiling/Instrumentor.h"
+#include "Velt/Core/Instrumentor.h"

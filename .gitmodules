@@ -20,3 +20,6 @@
 [submodule "Velt/vendor/spirv-reflect"]
 	path = Velt/vendor/spirv-reflect
 	url = https://github.com/KhronosGroup/SPIRV-Reflect
+[submodule "Velt/vendor/assimp"]
+	path = Velt/vendor/assimp
+	url = https://github.com/assimp/assimp

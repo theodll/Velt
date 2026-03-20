@@ -19,6 +19,9 @@ namespace Velt {
 		BufferLayout layout
 		{
 				{ ShaderDataType::Float3, "a_Position" },
+				{ ShaderDataType::Float3, "a_Normal" },
+				{ ShaderDataType::Float3, "a_Tangent" },
+				{ ShaderDataType::Float3, "a_Binormal" },
 				{ ShaderDataType::Float2, "a_UV"}
 		};
 
@@ -35,20 +38,7 @@ namespace Velt {
 
 		globalBindings.emplace_back(viewProj);
 
-		std::vector<RHI::DescriptorBinding> materialBindings{};
-		RHI::DescriptorBinding color{};
-		color.type = RHI::DescriptorType::UNIFORM_BUFFER;
-		color.binding = 0;
-		color.count = 1;
-		color.stage = RHI::ShaderStage::FRAGMENT;
-		materialBindings.emplace_back(color);
-
-		RHI::DescriptorBinding albedoTexture{};
-		albedoTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
-		albedoTexture.binding = 1; 
-		albedoTexture.count = 1;
-		albedoTexture.stage = RHI::ShaderStage::FRAGMENT;
-		materialBindings.emplace_back(albedoTexture);
+		auto materialBindings = Material::GetMaterialBindings();
 		
 		auto globalLayout = RHI::VulkanContext::GetLayoutCache()->CreateLayout(&globalBindings);
 		auto materialLayout = RHI::VulkanContext::GetLayoutCache()->CreateLayout(&materialBindings);

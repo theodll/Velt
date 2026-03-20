@@ -1,6 +1,6 @@
 #pragma once
 #include <Velt/Core/Core.h>
-#include <Velt/Layers/Layer.h>
+#include <Velt/Core/Layer.h>
 #include <Velt/Core/Timestep.h>
 #include <Velt/Renderer/Renderer.h>
 
@@ -21,12 +21,9 @@ namespace Editor {
 		glm::vec3 m_CameraPos{};
 		float m_CameraRot{};
 
-		Velt::Ref<Velt::Model> m_Cube;
-		Velt::Ref<Velt::Model> m_Plane;
-		Velt::Ref<Velt::Material> m_Material;
+		Velt::Ref<Velt::Model> m_Model;
+		Velt::Ref<Velt::Mesh> m_Mesh;
 
-		Velt::Ref<Velt::Texture2D> m_Texture;
-		int index{1};
 
 		glm::vec3 m_Rotation{-25.f, 45.f, 25.f};
 		glm::vec3 m_Scale{};

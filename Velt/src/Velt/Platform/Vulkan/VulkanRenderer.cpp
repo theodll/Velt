@@ -15,6 +15,8 @@ namespace Velt::RHI
 		Ref<IndexBuffer> QuadIndexBuffer;
 		Ref<VertexBuffer> TexuredQuadVertexBuffer;
 		Ref<IndexBuffer> TexturedQuadIndexBuffer;
+
+		Ref<Material> FallBackMaterial;
 	};
 
 	static Scope<RenderData> s_RenderData = nullptr;
@@ -25,14 +27,13 @@ namespace Velt::RHI
 
 		s_RenderData = CreateScope<RenderData>();
 
-		Vertex quadVerticesData[] = {
-			{ {-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f} },
-			{ { 0.5f, -0.5f, 0.5f}, {1.0f, 0.0f} },
-			{ { 0.5f,  0.5f, 0.5f}, {1.0f, 1.0f} },
-			{ {-0.5f,  0.5f, 0.5f}, {0.0f, 1.0f} }
-		};
 
-		std::vector<Vertex> quadVertices(quadVerticesData, quadVerticesData + 4);
+		std::vector<Vertex> quadVertices = {
+			{ Vector(-0.5f, -0.5f, 0.5f), Vector(0.0f, 0.0f, 1.0f), Vector(1.0f, 0.0f, 0.0f), Vector(0.0f, 1.0f, 0.0f), Point(0.0f, 0.0f) },
+			{ Vector( 0.5f, -0.5f, 0.5f), Vector(0.0f, 0.0f, 1.0f), Vector(1.0f, 0.0f, 0.0f), Vector(0.0f, 1.0f, 0.0f), Point(1.0f, 0.0f) },
+			{ Vector( 0.5f,  0.5f, 0.5f), Vector(0.0f, 0.0f, 1.0f), Vector(1.0f, 0.0f, 0.0f), Vector(0.0f, 1.0f, 0.0f), Point(1.0f, 1.0f) },
+			{ Vector(-0.5f,  0.5f, 0.5f), Vector(0.0f, 0.0f, 1.0f), Vector(1.0f, 0.0f, 0.0f), Vector(0.0f, 1.0f, 0.0f), Point(0.0f, 1.0f) }
+		};
 		s_RenderData->QuadVertexBuffer = VertexBuffer::Create(quadVertices.data(), quadVertices.size(), sizeof(Vertex));
 
 		std::vector<Index> quadIndices = { 0, 1, 2, 2, 3, 0 };
@@ -88,7 +89,7 @@ namespace Velt::RHI
 		);
 
 		// Rendering Info Setup
-		VkClearValue clearColor = { {{0.0f, 1.0f, 0.0f, 1.0f}} };
+		VkClearValue clearColor = { {{0.0f, 1.0f, 0.992f, 1.0f}} };
 
 		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
 		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
@@ -164,7 +165,6 @@ namespace Velt::RHI
 		const auto& window = app->GetWindow();
 		const auto& sc = window->GetSwapchain();
 		const auto&& cmd = sc->GetCurrentDrawCommandBuffer();
-		const 
 		const auto&& img = sc->GetCurrentSwapchainImage(); 
 
 		// On first frame for this image, it's in UNDEFINED layout, not PRESENT_SRC_KHR
@@ -182,7 +182,7 @@ namespace Velt::RHI
 		);
 
 		// Rendering Info Setup
-		VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
+		VkClearValue clearColor = { {{0.0f, 1.0f, 0.992f, 1.0f}} };
 
 		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
 		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
@@ -298,32 +298,57 @@ namespace Velt::RHI
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 	}
 
-	void VulkanRenderer::DrawStaticModel(VkCommandBuffer renderCommandBuffer, const Ref<Model> model, const Ref<Material> material)
+	void VulkanRenderer::DrawStaticModel(
+		VkCommandBuffer commandBuffer,
+		const Ref<Pipeline>& pipeline,
+		const Ref<Model>& model,
+		const Ref<Mesh>& meshSource,
+		u32 submeshIndex,
+		const Ref<MaterialTable>& materialTable)
 	{
-		auto pp = SceneRenderer::GetPipeline(); 
-		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
+		VT_CORE_ASSERT(pipeline, "Pipeline is null");
+		VT_CORE_ASSERT(model, "Model is null");
+		VT_CORE_ASSERT(meshSource, "MeshSource is null");
 
-		VkCommandBuffer commandBuffer = renderCommandBuffer;
+		const auto& meshSubmeshes = meshSource->GetSubmeshes();
+		VT_CORE_ASSERT(submeshIndex < meshSubmeshes.size(), "Submesh index out of range");
+		const Submesh& submesh = meshSubmeshes[submeshIndex];
 
-		auto transform = model->GetTransform().Matrix();
-		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(glm::mat4), &transform);
+		VkBuffer vbBuffer = meshSource->GetVertexBuffer()->GetVulkanBuffer();
+		VkDeviceSize vbOffsets[1] = { 0 };
+		vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vbBuffer, vbOffsets);
 
-		vkCmdBindDescriptorSets(renderCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &material->GetSet(), 0, VT_NULL_HANDLE);
+		VkBuffer ibBuffer = meshSource->GetIndexBuffer()->GetVulkanBuffer();
+		vkCmdBindIndexBuffer(commandBuffer, ibBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-		auto& submeshes = model->GetSubmeshes();
-		for (auto& submesh : submeshes)
+
+		if (!s_RenderData->FallBackMaterial)
 		{
-			VkBuffer vertexBuffer = submesh.Mesh->GetVertexBuffer()->GetVulkanBuffer();
-			VkDeviceSize offsets[1] = { 0 };
-			vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer, offsets);
+			s_RenderData->FallBackMaterial = CreateRef<Material>();
 
-			VkBuffer indexBuffer = submesh.Mesh->GetIndexBuffer()->GetVulkanBuffer();
-			vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+			Ref<Texture2D> errorTexture = Texture2D::Create("Assets/Textures/error.png");
 
-			uint32_t indexCount = (uint32_t)submesh.Mesh->GetIndexBuffer()->GetCount();
-
-			vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
+			s_RenderData->FallBackMaterial->SetAlbedoTexture(errorTexture);
+			s_RenderData->FallBackMaterial->SetBaseColorFactor(HVector(1.0f));
 		}
+
+		Ref<Material> selectedMaterial = s_RenderData->FallBackMaterial;
+		if (materialTable && materialTable->HasMaterial(submesh.MaterialIndex))
+			selectedMaterial = materialTable->GetMaterial(submesh.MaterialIndex);
+
+		if (!selectedMaterial)
+			selectedMaterial = s_RenderData->FallBackMaterial;
+
+		VT_CORE_ASSERT(selectedMaterial, "Material is null");
+
+		VkPipelineLayout layout = pipeline->GetVulkanPipelineLayout();
+		VkDescriptorSet descriptorSet = selectedMaterial->GetSet();
+		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &descriptorSet, 0, nullptr);
+
+		const Matrix transform = model->GetTransformMatrix() * submesh.Transform;
+		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Matrix), &transform);
+
+		vkCmdDrawIndexed(commandBuffer, submesh.IndexCount, 1, submesh.BaseIndex, submesh.BaseVertex, 0);
 	}
 
 	void VulkanRenderer::ClearScreen(VkCommandBuffer& renderCommandBuffer)

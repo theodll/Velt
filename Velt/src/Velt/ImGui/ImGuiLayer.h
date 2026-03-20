@@ -1,7 +1,7 @@
 #pragma once
 
 #include "vtpch.h"
-#include "Velt/Layers/Layer.h"
+#include "Velt/Core/Layer.h"
 #include "ImGuiRenderer.h"
 #include "SceneViewport.h"
 

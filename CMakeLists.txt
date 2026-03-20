@@ -7,13 +7,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)
 
-if(WIN32)
-    add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
-    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
-    add_compile_options(/UTF-8)
-endif()
 # === CONFIGURATIONS ===
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release;Dist" CACHE STRING "" FORCE)
 
@@ -38,6 +33,7 @@ elseif(UNIX)
 endif()
 
 add_compile_definitions(
+    FMT_UNICODE=0
     $<$<CONFIG:Debug>:LM_DEBUG>
     $<$<CONFIG:Release>:LM_RELEASE>
     $<$<CONFIG:Dist>:LM_DIST>

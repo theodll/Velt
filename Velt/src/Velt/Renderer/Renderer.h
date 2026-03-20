@@ -38,8 +38,8 @@ namespace Velt
 		static void BeginGuiPass();
 		static void EndGuiPass();
 
-		static void DrawQuad(VkCommandBuffer& renderCommandBuffer, const Matrix& transform = glm::mat4(1.0f), const Material& material = Material({1.0f, 0.0f, 0.0f, 1.0f}));
-		static void DrawStaticModel(VkCommandBuffer& renderCommandBuffer, const Ref<Model> model, const Ref<Material> material);
+		static void DrawQuad(VkCommandBuffer& renderCommandBuffer, const Matrix& transform = glm::mat4(1.0f), const Material& material = Material());
+		static void DrawStaticModel(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<Model>& model, const Ref<Mesh>& meshSource, u32 submeshIndex, const Ref<MaterialTable>& materialTable);
 		
 		inline static RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); };
 

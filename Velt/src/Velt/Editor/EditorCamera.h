@@ -16,7 +16,7 @@ namespace Velt
         Arcball
     };
 
-    class EditorCamera : public Camera
+    class VELT_API EditorCamera : public Camera
     {
     public:
         EditorCamera() = default;

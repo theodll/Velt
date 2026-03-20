@@ -2,7 +2,7 @@
 
 // ====== CORE INCLUDES ====== //
 #include "Velt/Core/Core.h"
-#include "Velt/Layers/Layer.h"
+#include "Velt/Core/Layer.h"
 
 // ====== APPLICATION INCLUDES ====== //
 #include "Velt/Core/Application.h"

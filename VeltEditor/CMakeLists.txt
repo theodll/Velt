@@ -26,7 +26,7 @@ endif()
 if(APPLE)
 
     find_package(SDL3 REQUIRED)
-    
+
 endif()
 
 target_link_libraries(VeltEditor PRIVATE Velt SDL3::SDL3)

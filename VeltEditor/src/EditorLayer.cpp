@@ -2,6 +2,7 @@
 #include "Velt/Core/Input.h"
 #include "Velt/Core/Application.h"
 #include "Velt/Renderer/Material.h"
+#include "Velt/Asset/AssimpMeshImporter.h"
 #include "Core/Math.h"
 #include <imgui.h>
 #include <glm/gtc/matrix_transform.hpp>
@@ -16,113 +17,17 @@ namespace Editor
 
 	void EditorLayer::Init()
 	{
-		VT_CORE_TRACE("");
-
 		VT_PROFILE_FUNCTION();
-        index++;
-
-        Velt::HVector color = { 1.0f, 1.0f, 1.0f, 1.0f };
-        m_Material = Velt::CreateRef<Velt::Material>(color); 
-        m_Texture = Velt::Texture2D::Create("Assets/Textures/error.png");
-
-        m_Material->SetTexture(1, m_Texture);
-        m_Material->SetColor(color);
-
-		// Note [5.02.26, Theo] This will be substantially different because all these things we have to do 
-		// manually right now will be automatically done by a loader of models eg. glTF or obj.
-
-        std::vector<Velt::Vertex> vertices{
-            // left face (x = -0.5)
-            {{-.5f, -.5f, -.5f}, {0.0f, .0f}},
-            {{-.5f, -.5f, .5f}, {1.0f, .0f}},
-            {{-.5f, .5f, .5f}, {1.0f, 1.f}},
-
-            {{-.5f, -.5f, -.5f}, {0.0f, .0f}},
-            {{-.5f, .5f, .5f}, {1.0f, 1.f}},
-            {{-.5f, .5f, -.5f}, {0.0f, 1.f}},
-
-            // right face (x = 0.5)
-            {{.5f, -.5f, .5f}, {0.0f, .0f}},
-            {{.5f, -.5f, -.5f}, {1.0f, .0f}},
-            {{.5f, .5f, -.5f}, {1.0f, 1.f}},
-
-            {{.5f, -.5f, .5f}, {0.0f, .0f}},
-            {{.5f, .5f, -.5f}, {1.0f, 1.f}},
-            {{.5f, .5f, .5f}, {0.0f, 1.f}},
-
-            // top face (y = -0.5)
-            {{-.5f, -.5f, -.5f}, {0.0f, 1.f}},
-            {{.5f, -.5f, -.5f}, {1.0f, 1.f}},
-            {{.5f, -.5f, .5f}, {1.0f, .0f}},
-
-            {{-.5f, -.5f, -.5f}, {0.0f, 1.f}},
-            {{.5f, -.5f, .5f}, {1.0f, .0f}},
-            {{-.5f, -.5f, .5f}, {0.0f, .0f}},
-
-            // bottom face (y = 0.5)
-            {{-.5f, .5f, .5f}, {0.0f, .0f}},
-            {{.5f, .5f, .5f}, {1.0f, .0f}},
-            {{.5f, .5f, -.5f}, {1.0f, 1.f}},
-
-            {{-.5f, .5f, .5f}, {0.0f, .0f}},
-            {{.5f, .5f, -.5f}, {1.0f, 1.f}},
-            {{-.5f, .5f, -.5f}, {0.0f, 1.f}},
-
-            // front face (z = 0.5)
-            {{-.5f, -.5f, .5f}, {0.0f, .0f}},
-            {{.5f, -.5f, .5f}, {1.0f, .0f}},
-            {{.5f, .5f, .5f}, {1.0f, 1.f}},
-
-            {{-.5f, -.5f, .5f}, {0.0f, .0f}},
-            {{.5f, .5f, .5f}, {1.0f, 1.f}},
-            {{-.5f, .5f, .5f}, {0.0f, 1.f}},
-
-            // back face (z = -0.5)
-            {{.5f, -.5f, -.5f}, {0.0f, .0f}},
-            {{-.5f, -.5f, -.5f}, {1.0f, .0f}},
-            {{-.5f, .5f, -.5f}, {1.0f, 1.f}},
-
-            {{.5f, -.5f, -.5f}, {0.0f, .0f}},
-            {{-.5f, .5f, -.5f}, {1.0f, 1.f}},
-            {{.5f, .5f, -.5f}, {0.0f, 1.f}},
-        };
-
-     
-
-		std::vector<Velt::Index> indices{
-            0, 1, 2,
-            3, 4, 5,
-            6, 7, 8,
-            9, 10, 11,
-            12, 13, 14,
-            15, 16, 17,
-            18, 19, 20,
-            21, 22, 23,
-            24, 25, 26,
-            27, 28, 29,
-            30, 31, 32,
-            33, 34, 35,
-		};
-
-
-		Velt::SubmeshCreateInfo smInfo{};
-
-		smInfo.Vertices = vertices;
-		smInfo.Indices = indices;
-
-		Velt::ModelCreateInfo info{};
-		info.Parts = { smInfo };
-		
-		m_Cube = Velt::Model::Create(&info);
-        m_Plane = Velt::Model::Create(&info);
-
-        m_Plane->GetTransform().Translation = { 0.0f, -1.0f, 0.0f };
-        m_Plane->GetTransform().Scale = { 2.0f, 0.2f, 2.0f };
-
-		m_Cube->GetTransform().Translation = { 0.0f, 0.0f, .5f }; 
-		m_Cube->GetTransform().Scale = { .5f, .5f, .5f };
+        
 
         auto camera = Velt::SceneRenderer::GetCamera(); 
+
+        Velt::AssimpMeshImporter importer("Assets/Models/Sponza/Sponza.gltf");
+        m_Mesh = importer.ImportToMesh();
+
+        m_Model = CreateRef<Velt::Model>(m_Mesh);
+        m_Model->SetRotationEulerDegrees({ 180.0f, 180.0f, 0.0f });
+
      //   camera->SetViewDirection(Velt::Vector(0.0f), Velt::Vector(0.5f, 0.0f, 1.0f));
 	}
 
@@ -186,26 +91,35 @@ namespace Editor
 		// Note [6.02.26]: Never EVER use a VT_PROFILE_FUNCTION() in a per frame performance thing!
 		// It causes immense performance loss
 
-		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+		if (!m_Model || !m_Mesh)
+			return;
 
-       // Velt::Renderer::DrawQuad(commandBuffer, glm::mat4(1.0f), *m_Material.get());
+		const auto& submeshes = m_Model->GetSubmeshes();
+		auto materialTable = m_Model->GetMaterials();
+		for (u32 submeshIndex : submeshes)
+		{
+			Velt::Renderer::DrawStaticModel(
+				commandBuffer,
+				Velt::SceneRenderer::GetPipeline(),
+				m_Model,
+				m_Mesh,
+				submeshIndex,
+				materialTable
+			);
+		}
 
-		for (int i{}; i < index; i++)
-    		Velt::Renderer::DrawStaticModel(commandBuffer, m_Cube, m_Material);
-
-        Velt::Renderer::DrawStaticModel(commandBuffer, m_Plane, m_Material);
+	   // Velt::Renderer::DrawQuad(commandBuffer, glm::mat4(1.0f), *m_Material.get());
 	}
 
     void EditorLayer::OnImGuiRender2()
     {
-
+        /*
         ImGui::Begin("Transform");
 
         if (ImGui::Button("Cube"))
             index++;
 
         {
-            auto& tr = m_Cube->GetTransform();
             m_Translation = tr.Translation;
             m_Scale = tr.Scale;
         }
@@ -381,7 +295,7 @@ namespace Editor
         m_Scale.z = (m_Scale.z < 0.001f) ? 0.001f : m_Scale.z;
 
 
-      
+
         tr.Translation = m_Translation;
         tr.Scale = m_Scale;
         tr.SetEulerDegrees(m_Rotation);
@@ -410,6 +324,6 @@ namespace Editor
     }
 
 
-
-
+    */
+    }
 }

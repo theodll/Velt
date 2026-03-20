@@ -1,6 +1,9 @@
 struct VertInput {
     [[vk::location(0)]] float3 a_Position : POSITION; 
-    [[vk::location(1)]] float2 a_UV       : TEXCOORD0;
+    [[vk::location(1)]] float3 a_Normal   : NORMAL;
+    [[vk::location(2)]] float3 a_Tangent  : TANGENT;
+    [[vk::location(3)]] float3 a_Binormal : BINORMAL;
+    [[vk::location(4)]] float2 a_UV       : TEXCOORD0;
 };
 
 struct FragInput {

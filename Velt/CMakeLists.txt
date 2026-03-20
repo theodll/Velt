@@ -20,15 +20,15 @@ add_library(Velt SHARED
     "src/Velt/Platform/Vulkan/VulkanSwapchain.h"
     "src/vtpch.cpp"
     "src/vtpch.h"
-    "src/Velt/Layers/Layer.cpp"
-    "src/Velt/Layers/Layer.h"
-    "src/Velt/Layers/LayerStack.cpp"
-    "src/Velt/Layers/LayerStack.h"
+    "src/Velt/Core/Layer.cpp"
+    "src/Velt/Core/Layer.h"
+    "src/Velt/Core/LayerStack.cpp"
+    "src/Velt/Core/LayerStack.h"
     "src/Velt/ImGui/ImGuiLayer.h"
     "src/Velt/ImGui/ImGuiLayer.cpp"
     "src/Velt/ImGui/ImGuiRenderer.h"
     "src/Velt/ImGui/ImGuiRenderer.cpp"
-    "src/Velt/Utils/Profiling/Instrumentor.h"
+    "src/Velt/Core/Instrumentor.h"
     "src/Velt/Renderer/RenderContext.h"
     "src/Velt/Renderer/RenderContext.cpp"
     "src/Velt/Renderer/Pipeline.h"
@@ -65,8 +65,6 @@ add_library(Velt SHARED
     "src/Velt/Platform/Vulkan/Buffer/VulkanUniformBuffer.cpp"
     "src/Velt/Platform/Vulkan/DescriptorSetManager.h"
     "src/Velt/Platform/Vulkan/DescriptorSetManager.cpp"
-    "src/Velt/Renderer/Camera.h"
-    "src/Velt/Renderer/Camera.cpp"
     "src/Velt/Core/Timestep.h" 
     "src/Velt/Core/Input.h" 
     "src/Velt/Core/Scancodes.h" 
@@ -80,8 +78,6 @@ add_library(Velt SHARED
     "src/Velt/Platform/SDL/SDLEventTranslator.h"
     "src/Velt/Events/KeyEvents.h"
     "src/Velt/Events/MouseEvents.h"
-    "src/Velt/Renderer/Mesh.cpp" 
-    "src/Velt/Renderer/Mesh.h" 
     "src/Velt/Renderer/Model.h" 
     "src/Velt/Renderer/Model.cpp" 
     "src/Velt/Platform/Vulkan/DescriptorLayoutCache.cpp"
@@ -103,11 +99,12 @@ add_library(Velt SHARED
  "src/Velt/Renderer/Camera.h" "src/Velt/Renderer/Camera.cpp"
  "src/Velt/Editor/EditorCamera.h"
  "src/Velt/Editor/EditorCamera.cpp"
- )
+  "src/Velt/Asset/AssimpMeshImporter.h" "src/Velt/Asset/AssimpMeshImporter.cpp")
 
 # --- Dependencies (Subdirectories) ---
 add_subdirectory(vendor/spdlog)
 add_subdirectory(vendor/glm)
+add_subdirectory(vendor/assimp)
 
 if(APPLE)
 
@@ -125,7 +122,8 @@ endif()
 
 # --- Vulkan Find & Link ---
 find_package(Vulkan REQUIRED)
-target_link_libraries(Velt PUBLIC Vulkan::Vulkan spdlog::spdlog SDL3::SDL3 volk)
+target_link_libraries(Velt PUBLIC Vulkan::Vulkan)
+target_link_libraries(Velt PRIVATE spdlog::spdlog SDL3::SDL3 assimp)
 
 # --- Unified Include Paths ---
 # Wir nutzen CMAKE_CURRENT_SOURCE_DIR, da wir uns in /Velt befinden
@@ -139,6 +137,7 @@ target_include_directories(Velt PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/sdl3/include
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/backends
+    ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
@@ -205,10 +204,6 @@ target_compile_definitions(Velt PRIVATE
     $<$<CONFIG:Debug>:VL_DEBUG>
     $<$<CONFIG:Release>:VL_RELEASE>
 )
-
-if(MSVC)
-    target_compile_options(Velt PRIVATE /utf-8)
-endif()
 
 target_precompile_headers(Velt PUBLIC src/vtpch.h)
 
