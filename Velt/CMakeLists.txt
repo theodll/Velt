@@ -151,6 +151,8 @@ file(MAKE_DIRECTORY ${SHADER_BIN_DIR})
 set(HLSL_FILES 
     "basic_vertex_shader.hlsl" "vs_6_0"
     "basic_fragment_shader.hlsl" "ps_6_0"
+    "gbuffer_vertex.hlsl" "vs_6_0"
+    "gbuffer_pixel.hlsl" "ps_6_0"
 )
 
 set(SPIRV_BINARY_FILES "")

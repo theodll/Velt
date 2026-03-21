@@ -156,7 +156,7 @@ namespace Velt::RHI
 			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
 			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
-		);
+		); 
 	}
 
 	void VulkanRenderer::BeginGuiPass()
@@ -167,7 +167,6 @@ namespace Velt::RHI
 		const auto&& cmd = sc->GetCurrentDrawCommandBuffer();
 		const auto&& img = sc->GetCurrentSwapchainImage(); 
 
-		// On first frame for this image, it's in UNDEFINED layout, not PRESENT_SRC_KHR
 		VkImageLayout oldLayout = sc->IsFirstFrameForImage(sc->GetCurrentImageIndex()) 
 			? VK_IMAGE_LAYOUT_UNDEFINED 
 			: VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
@@ -278,24 +277,7 @@ namespace Velt::RHI
 
 	void VulkanRenderer::DrawTexturedQuad(VkCommandBuffer renderCommandBuffer, const Ref<Texture2D>, const Matrix& transform)
 	{
-		auto pp = SceneRenderer::GetPipeline();
-		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
-
-		VkPipelineLayout pipelineLayout = pp->GetVulkanPipelineLayout();
-		VkBuffer vertexBuffer = s_RenderData->QuadVertexBuffer->GetVulkanBuffer();
-		VkCommandBuffer commandBuffer = renderCommandBuffer;
-
-		VkDeviceSize offsets[1] = { 0 };
-		vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer, offsets);
-
-		VkBuffer indexBuffer = s_RenderData->QuadIndexBuffer->GetVulkanBuffer();
-		vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-
-		uint32_t indexCount = s_RenderData->QuadIndexBuffer->GetCount();
-		// VT_CORE_ERROR("{}", indexCount);
-
-		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(glm::mat4), &transform);
-		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
+		VT_CORE_ASSERT(false, "doesnt even work in theory");
 	}
 
 	void VulkanRenderer::DrawStaticModel(

@@ -18,7 +18,9 @@ namespace Velt
 		VT_MATERIAL_SLOTS_BINDING_ALBEDO = 1,
 		VT_MATERIAL_SLOTS_BINDING_NORMAL = 2,
 		VT_MATERIAL_SLOTS_BINDING_ROUGHNESS = 3,
-		VT_MATERIAL_SLOTS_BINDING_METALLIC = 4
+		VT_MATERIAL_SLOTS_BINDING_METALLIC = 4,
+		VT_MATERIAL_SLOTS_BINDING_AMBIENT_OCCLUSION = 10,
+		VT_MATERIAL_SLOTS_BINDING_SAMPLER = 5
 	};
 
 	class VELT_API Material
@@ -33,10 +35,10 @@ namespace Velt
 		void SetAbientOcclusionFactor(float ao) { m_Data.AbientOcclusionFactor = ao; UpdateData(); };
 		void SetEmissiveColor(const Vector& emissiveColor) { m_Data.EmissiveColor = emissiveColor; };
 		
-		void SetAlbedoTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_ALBEDO, pTexture); }
-		void SetNormalTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_NORMAL, pTexture); }
-		void SetRoughnessTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_ROUGHNESS, pTexture); }
-		void SetMetalllicTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_METALLIC, pTexture); }
+		void SetAlbedoTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_ALBEDO, pTexture); VT_CORE_TRACE("Set Albedo Texture"); }
+		void SetNormalTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_NORMAL, pTexture); VT_CORE_TRACE("Set Normal Texture"); }
+		void SetRoughnessTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_ROUGHNESS, pTexture); VT_CORE_TRACE("Set Roughness Texture"); }
+		void SetMetalllicTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_METALLIC, pTexture); VT_CORE_TRACE("Set Roughness Texture");}
 
 		void SetTexture(u32 binding, Ref<Texture2D> pTexture);
 		void SetName(const std::string& name) { m_Name = name; }
@@ -53,6 +55,9 @@ namespace Velt
 		std::string m_Name;
 
 		std::unordered_map<u32, Ref<Texture2D>> m_Textures;
+
+		// Note [21.03.26, Theo]: kind of hacky because we only use the texture for the sampler and not for the image itself
+		Ref<Texture2D> m_Sampler;
 
 		struct alignas(16) MaterialUBO
 		{

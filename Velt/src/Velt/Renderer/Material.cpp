@@ -1,3 +1,4 @@
+#include "Core/Core.h"
 #include "Material.h"
 #include "UniformBuffer.h"
 #include "SceneRenderer.h"
@@ -11,7 +12,7 @@ namespace Velt
 		{
 			Ref<Texture2D> GetDefaultMaterialTexture()
 			{
-				static Ref<Texture2D> s_DefaultTexture = Texture2D::Create("Assets/Textures/error.png");
+				static Ref<Texture2D> s_DefaultTexture = Texture2D::Create(ERROR_TEXTURE_PATH);
 				return s_DefaultTexture;
 			}
 		}
@@ -38,7 +39,22 @@ namespace Velt
 				);
 			}
 
-			SetAlbedoTexture(GetDefaultMaterialTexture());
+			m_Sampler = Texture2D::Create(ERROR_TEXTURE_PATH);
+			for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+			{
+				RHI::VulkanContext::GetSetManager()->WriteSampler(
+					m_Sets[i],
+					VT_MATERIAL_SLOTS_BINDING_SAMPLER,
+					m_Sampler->GetSampler()
+				);
+			}
+
+			const auto defaultTexture = GetDefaultMaterialTexture();
+			SetAlbedoTexture(defaultTexture);
+			SetNormalTexture(defaultTexture);
+			SetMetalllicTexture(defaultTexture);
+			SetRoughnessTexture(defaultTexture);
+
 			UpdateData();
 		};
 
@@ -51,7 +67,7 @@ namespace Velt
 				VkDescriptorImageInfo info{};
 				info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 				info.imageView = pTexture->GetImageView();
-				info.sampler = pTexture->GetSampler();
+				info.sampler = VT_NULL_HANDLE;
 
 				RHI::VulkanContext::GetSetManager()->WriteImage(
 					m_Sets[i],
@@ -73,33 +89,48 @@ namespace Velt
 			materialBindings.push_back(uninformData);
 
 			RHI::DescriptorBinding albedoTexture{};
-			albedoTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
+			albedoTexture.type = RHI::DescriptorType::SAMPLED_IMAGE;
 			albedoTexture.binding = VT_MATERIAL_SLOTS_BINDING_ALBEDO;
 			albedoTexture.count = 1;
 			albedoTexture.stage = RHI::ShaderStage::FRAGMENT;
 			materialBindings.push_back(albedoTexture);
 
 			RHI::DescriptorBinding normalTexture{};
-			normalTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
+			normalTexture.type = RHI::DescriptorType::SAMPLED_IMAGE;
 			normalTexture.binding = VT_MATERIAL_SLOTS_BINDING_NORMAL;
 			normalTexture.count = 1;
 			normalTexture.stage = RHI::ShaderStage::FRAGMENT;
 			materialBindings.push_back(normalTexture);
 
 			RHI::DescriptorBinding roughnessTexture{};
-			roughnessTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
+			roughnessTexture.type = RHI::DescriptorType::SAMPLED_IMAGE;
 			roughnessTexture.binding = VT_MATERIAL_SLOTS_BINDING_ROUGHNESS;
 			roughnessTexture.count = 1;
 			roughnessTexture.stage = RHI::ShaderStage::FRAGMENT;
 			materialBindings.push_back(roughnessTexture);
 
 			RHI::DescriptorBinding metallicTexture{};
-			metallicTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
+			metallicTexture.type = RHI::DescriptorType::SAMPLED_IMAGE;
 			metallicTexture.binding = VT_MATERIAL_SLOTS_BINDING_METALLIC;
 			metallicTexture.count = 1;
 			metallicTexture.stage = RHI::ShaderStage::FRAGMENT;
 			materialBindings.push_back(metallicTexture);
 
+			/*
+			RHI::DescriptorBinding aoTexture{};
+			aoTexture.type = RHI::DescriptorType::SAMPLED_IMAGE;
+			aoTexture.binding = VT_MATERIAL_SLOTS_BINDING_AMBIENT_OCCLUSION;
+			aoTexture.count = 1;
+			aoTexture.stage = RHI::ShaderStage::FRAGMENT;
+			materialBindings.push_back(aoTexture); */
+
+			RHI::DescriptorBinding textureSampler{};
+			textureSampler.type = RHI::DescriptorType::SAMPLER;
+			textureSampler.binding = VT_MATERIAL_SLOTS_BINDING_SAMPLER;
+			textureSampler.count = 1;
+			textureSampler.stage = RHI::ShaderStage::FRAGMENT;
+			materialBindings.push_back(textureSampler);
+			
 			return materialBindings;
 		}
 
