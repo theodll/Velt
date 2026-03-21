@@ -151,10 +151,13 @@ namespace Velt {
 
 	void ImGuiLayer::RenderSceneViewport()
 	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
+
 		ImGui::Begin("Scene Viewport", nullptr,
 			ImGuiWindowFlags_NoScrollbar |
 			ImGuiWindowFlags_NoScrollWithMouse);
 
+		
 		ImVec2 avail = ImGui::GetContentRegionAvail();
 
 		u32 newW = (u32)glm::max(1.0f, avail.x);
@@ -173,6 +176,8 @@ namespace Velt {
 			ImGui::Text("Scene viewport not initialized");
 
 		ImGui::End();
+
+		ImGui::PopStyleVar();
 	}
 	void ImGuiLayer::OnRender(VkCommandBuffer commandBuffer)
 	{
