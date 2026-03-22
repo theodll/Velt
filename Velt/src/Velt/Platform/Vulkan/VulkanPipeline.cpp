@@ -186,7 +186,7 @@ namespace Velt::RHI {
 		VT_PROFILE_FUNCTION();
 
 		// Set default color and depth formats for dynamic rendering
-		pConfigInfo->colorAttachmentFormats = { VK_FORMAT_B8G8R8A8_SRGB }; // Common swapchain format
+		pConfigInfo->colorAttachmentFormats = { VK_FORMAT_B8G8R8A8_SRGB, VK_FORMAT_B8G8R8A8_SRGB, VK_FORMAT_B8G8R8A8_SRGB }; // Common swapchain format
 		pConfigInfo->depthAttachmentFormat = VK_FORMAT_D32_SFLOAT; // Or VK_FORMAT_D24_UNORM_S8_UINT
 		pConfigInfo->stencilAttachmentFormat = VK_FORMAT_UNDEFINED; // Set to depth format if using combined depth-stencil
 

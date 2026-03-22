@@ -91,13 +91,27 @@ namespace Velt::RHI
 		// Rendering Info Setup
 		VkClearValue clearColor = { {{0.0f, 1.0f, 0.992f, 1.0f}} };
 
-		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
-		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
-		colorAttachmentInfo.imageView = viewport->GetImageView();
-		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-		colorAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		colorAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-		colorAttachmentInfo.clearValue = clearColor;
+		VkRenderingAttachmentInfoKHR colorAttachmentInfos[3]{};
+		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].imageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_ALBEDO_AO)->GetImageView();
+		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].clearValue = clearColor;
+
+		colorAttachmentInfos[VT_RENDER_TARGET_NORMAL_ROUGH].sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+		colorAttachmentInfos[VT_RENDER_TARGET_NORMAL_ROUGH].imageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_NORMAL_ROUGH)->GetImageView();
+		colorAttachmentInfos[VT_RENDER_TARGET_NORMAL_ROUGH].imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		colorAttachmentInfos[VT_RENDER_TARGET_NORMAL_ROUGH].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachmentInfos[VT_RENDER_TARGET_NORMAL_ROUGH].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachmentInfos[VT_RENDER_TARGET_NORMAL_ROUGH].clearValue = clearColor;
+
+		colorAttachmentInfos[VT_RENDER_TARGET_METAL_EMIT].sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+		colorAttachmentInfos[VT_RENDER_TARGET_METAL_EMIT].imageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_METAL_EMIT)->GetImageView();
+		colorAttachmentInfos[VT_RENDER_TARGET_METAL_EMIT].imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		colorAttachmentInfos[VT_RENDER_TARGET_METAL_EMIT].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachmentInfos[VT_RENDER_TARGET_METAL_EMIT].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachmentInfos[VT_RENDER_TARGET_METAL_EMIT].clearValue = clearColor;
 
 		VkRenderingAttachmentInfoKHR depthAttachmentInfo{};
 		depthAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO; 
@@ -112,8 +126,8 @@ namespace Velt::RHI
 		renderInfo.renderArea.extent = { viewport->GetWidth(), viewport->GetHeight() };
 		renderInfo.renderArea.offset = { 0, 0 };
 		renderInfo.layerCount = 1;
-		renderInfo.colorAttachmentCount = 1;
-		renderInfo.pColorAttachments = &colorAttachmentInfo;
+		renderInfo.colorAttachmentCount = 3;
+		renderInfo.pColorAttachments = colorAttachmentInfos;
 		renderInfo.pDepthAttachment = &depthAttachmentInfo;
 
 		vkCmdBeginRendering(cmd, &renderInfo);

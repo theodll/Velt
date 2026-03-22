@@ -30,7 +30,7 @@ namespace Velt {
 		TextureCreateInfo albedoAO;
 		albedoAO.AspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		albedoAO.Extent = {width, height, 1};
-		albedoAO.Format = VK_FORMAT_R8G8B8A8_SRGB;
+		albedoAO.Format = VK_FORMAT_B8G8R8A8_SRGB;
 		albedoAO.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		albedoAO.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 		s_RenderTargets[VT_RENDER_TARGET_ALBEDO_AO] = Texture2D::Create(&albedoAO);
@@ -38,7 +38,7 @@ namespace Velt {
 		TextureCreateInfo normalRough;
 		normalRough.AspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		normalRough.Extent = {width, height, 1};
-		normalRough.Format = VK_FORMAT_R8G8B8A8_SRGB;
+		normalRough.Format = VK_FORMAT_B8G8R8A8_SRGB;
 		normalRough.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		normalRough.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 		s_RenderTargets[VT_RENDER_TARGET_NORMAL_ROUGH] = Texture2D::Create(&normalRough);
@@ -46,7 +46,7 @@ namespace Velt {
 		TextureCreateInfo metalEmit;
 		metalEmit.AspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		metalEmit.Extent = {width, height, 1};
-		metalEmit.Format = VK_FORMAT_R8G8B8A8_SRGB;
+		metalEmit.Format = VK_FORMAT_B8G8R8A8_SRGB;
 		metalEmit.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		metalEmit.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 		s_RenderTargets[VT_RENDER_TARGET_METAL_EMIT] = Texture2D::Create(&metalEmit);
@@ -62,7 +62,7 @@ namespace Velt {
 		TextureCreateInfo composite;
 		composite.AspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		composite.Extent = {width, height, 1};
-		composite.Format = VK_FORMAT_R8G8B8A8_SRGB;
+		composite.Format = VK_FORMAT_B8G8R8A8_SRGB;
 		composite.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		composite.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 		s_RenderTargets[VT_RENDER_TARGET_COMPOSITE] = Texture2D::Create(&composite);

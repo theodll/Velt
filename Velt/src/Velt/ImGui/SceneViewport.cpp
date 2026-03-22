@@ -46,9 +46,9 @@ namespace Velt {
 
 		Renderer::RecreateRenderTargets(m_Width, m_Height); 
 
-		m_Image = Renderer::GetRenderTarget(VT_RENDER_TARGET_COMPOSITE)->GetImage();
-		m_ImageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_COMPOSITE)->GetImageView();
-		m_Sampler = Renderer::GetRenderTarget(VT_RENDER_TARGET_COMPOSITE)->GetSampler();
+		m_Image = Renderer::GetRenderTarget(VT_RENDER_TARGET_ALBEDO_AO)->GetImage();
+		m_ImageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_ALBEDO_AO)->GetImageView();
+		m_Sampler = Renderer::GetRenderTarget(VT_RENDER_TARGET_ALBEDO_AO)->GetSampler();
 
 		m_DepthImage = Renderer::GetRenderTarget(VT_RENDER_TARGET_DEPTH)->GetImage();
 		m_DepthImageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_DEPTH)->GetImageView();
