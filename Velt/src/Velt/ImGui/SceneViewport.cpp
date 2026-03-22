@@ -46,9 +46,9 @@ namespace Velt {
 
 		Renderer::RecreateRenderTargets(m_Width, m_Height); 
 
-		m_Image = Renderer::GetRenderTarget(VT_RENDER_TARGET_ALBEDO_AO)->GetImage();
-		m_ImageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_ALBEDO_AO)->GetImageView();
-		m_Sampler = Renderer::GetRenderTarget(VT_RENDER_TARGET_ALBEDO_AO)->GetSampler();
+		m_Image = Renderer::GetRenderTarget(m_RenderTarget)->GetImage();
+		m_ImageView = Renderer::GetRenderTarget(m_RenderTarget)->GetImageView();
+		m_Sampler = Renderer::GetRenderTarget(m_RenderTarget)->GetSampler();
 
 		m_DepthImage = Renderer::GetRenderTarget(VT_RENDER_TARGET_DEPTH)->GetImage();
 		m_DepthImageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_DEPTH)->GetImageView();
@@ -183,6 +183,17 @@ namespace Velt {
 			0, nullptr,
 			1, &barrier
 		);
+	}
+
+	void SceneViewport::SetRenderTarget(RenderTarget target)
+	{
+		if (target == m_RenderTarget)
+			return;
+
+		m_RenderTarget = target;
+
+		CleanupResources();
+		CreateResources();
 	}
 
 }

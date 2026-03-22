@@ -96,10 +96,10 @@ add_library(Velt SHARED
     "vendor/spirv-reflect/spirv_reflect.cpp" 
     "src/Velt/Renderer/PipelineManager.h" 
     "src/Velt/Renderer/PipelineManager.cpp"
- "src/Velt/Renderer/Camera.h" "src/Velt/Renderer/Camera.cpp"
- "src/Velt/Editor/EditorCamera.h"
- "src/Velt/Editor/EditorCamera.cpp"
-  "src/Velt/Asset/AssimpMeshImporter.h" "src/Velt/Asset/AssimpMeshImporter.cpp")
+    "src/Velt/Renderer/Camera.h" "src/Velt/Renderer/Camera.cpp"
+    "src/Velt/Editor/EditorCamera.h"
+    "src/Velt/Editor/EditorCamera.cpp"
+    "src/Velt/Asset/AssimpMeshImporter.h" "src/Velt/Asset/AssimpMeshImporter.cpp")
 
 # --- Dependencies (Subdirectories) ---
 add_subdirectory(vendor/spdlog)
@@ -107,17 +107,12 @@ add_subdirectory(vendor/glm)
 add_subdirectory(vendor/assimp)
 
 if(APPLE)
-
     find_package(SDL3 REQUIRED)
-
 else()
-
     set(SDL_TEST OFF CACHE BOOL "" FORCE)
     set(SDL_TEST_LIBRARY OFF CACHE BOOL "" FORCE)
     set(SDL_DISABLE_INSTALL ON CACHE BOOL "" FORCE)
-
     add_subdirectory(vendor/sdl3 EXCLUDE_FROM_ALL)
-
 endif()
 
 # --- Vulkan Find & Link ---
@@ -126,7 +121,6 @@ target_link_libraries(Velt PUBLIC Vulkan::Vulkan)
 target_link_libraries(Velt PRIVATE spdlog::spdlog SDL3::SDL3 assimp)
 
 # --- Unified Include Paths ---
-# Wir nutzen CMAKE_CURRENT_SOURCE_DIR, da wir uns in /Velt befinden
 target_include_directories(Velt PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Velt
@@ -137,7 +131,6 @@ target_include_directories(Velt PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/sdl3/include
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/backends
-    ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
@@ -168,11 +161,14 @@ foreach(_i RANGE 0 ${_hlsl_max} 2)
     set(OUT_PATH "${SHADER_BIN_DIR}/${HLSL_FILE}.spv")
     list(APPEND SPIRV_BINARY_FILES ${OUT_PATH})
 
+    # We add a dummy output file that never exists to force CMake to always re-run the command
+    set(FORCE_FILE "${OUT_PATH}.force")
+
     add_custom_command(
-        OUTPUT ${OUT_PATH}
+        OUTPUT ${OUT_PATH} ${FORCE_FILE}
         COMMAND ${DXC_EXECUTABLE} -T ${HLSL_PROFILE} -E main -spirv -fspv-target-env=vulkan1.3 "${SRC_PATH}" -Fo "${OUT_PATH}"
         DEPENDS "${SRC_PATH}"
-        COMMENT "Compiling HLSL: ${HLSL_FILE}"
+        COMMENT "Compiling HLSL: ${HLSL_FILE} (Forced Rebuild)"
         VERBATIM
     )
 endforeach()

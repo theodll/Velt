@@ -1,10 +1,10 @@
-struct VS_INPUT 
+struct VS_INPUT
 {
-    [[vk::location(0)]] float3 a_Position : POSITION; 
-    [[vk::location(1)]] float3 a_Normal   : NORMAL;
-    [[vk::location(2)]] float3 a_Tangent  : TANGENT;
+    [[vk::location(0)]] float3 a_Position : POSITION;
+    [[vk::location(1)]] float3 a_Normal : NORMAL;
+    [[vk::location(2)]] float3 a_Tangent : TANGENT;
     [[vk::location(3)]] float3 a_Binormal : BINORMAL;
-    [[vk::location(4)]] float2 a_UV       : TEXCOORD0;
+    [[vk::location(4)]] float2 a_UV : TEXCOORD0;
 };
 
 struct VS_OUTPUT
@@ -26,7 +26,7 @@ struct CAMERA_UBO
     float4x4 viewProj;
 };
 
-cbuffer u_ViewProjection : register(b0, space0) 
+cbuffer u_ViewProjection : register(b0, space0)
 {
     CAMERA_UBO u_ViewProjection;
 };
@@ -37,17 +37,15 @@ VS_OUTPUT main(VS_INPUT input)
 {
     VS_OUTPUT output;
     
-    float4 worldPos = mul(input.a_Position, pc_ModelTransform.transform);
-    output.v_Position = mul(worldPos, u_ViewProjection.viewProj);
+    float4 worldPos = mul(pc_ModelTransform.transform, float4(input.a_Position, 1.0));
+    output.v_Position = mul(u_ViewProjection.viewProj, worldPos);
      
-    output.v_Normal = mul(input.a_Normal, pc_ModelTransform.transform);
-    
-    output.v_Tangent = mul(input.a_Tangent, pc_ModelTransform.transform);
-    
-    output.v_Binormal = mul(input.a_Binormal, pc_ModelTransform.transform);
+    float3x3 normalMatrix = (float3x3) pc_ModelTransform.transform;
+    output.v_Normal = mul(normalMatrix, input.a_Normal);
+    output.v_Tangent = mul(normalMatrix, input.a_Tangent);
+    output.v_Binormal = mul(normalMatrix, input.a_Binormal);
     
     output.v_UV = input.a_UV;
     
     return output;
-};
-
+}

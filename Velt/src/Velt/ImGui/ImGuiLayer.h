@@ -25,6 +25,7 @@ namespace Velt {
 		
 		virtual void OnRender(VkCommandBuffer commandBuffer) override;
 		virtual void OnImGuiRender() override;
+		virtual void OnImGuiRender2() override;
 
 		static void ProcessSDLEvent(const SDL_Event* pEvent);
 
@@ -49,6 +50,7 @@ namespace Velt {
 		static u32 m_PendingViewportW;
 		static u32 m_PendingViewportH;
 		static bool m_ViewportResizePending;
-
+		static bool m_RenderTargetChangePending;
+		static RenderTarget m_PendingRenderTarget;
 	}; 
 }

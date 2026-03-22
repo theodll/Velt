@@ -2,64 +2,59 @@
 #include "vtpch.h"
 #include "Velt/Renderer/Pipeline.h"
 
-namespace Velt::RHI 
+namespace Velt::RHI
 {
+	class VELT_API VulkanDevice;
 
-		class VELT_API VulkanDevice;
+	struct VulkanPipelineConfigInfo
+	{
+		std::vector<VkFormat> colorAttachmentFormats;
+		VkFormat depthAttachmentFormat;
+		VkFormat stencilAttachmentFormat;
+		VkPipelineViewportStateCreateInfo viewportInfo;
+		VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
+		VkPipelineRasterizationStateCreateInfo rasterizationInfo;
+		VkPipelineMultisampleStateCreateInfo multisampleInfo;
 
-		struct VulkanPipelineConfigInfo
-		{
-			std::vector<VkFormat> colorAttachmentFormats;
-			VkFormat depthAttachmentFormat;
-			VkFormat stencilAttachmentFormat;
-			VkPipelineViewportStateCreateInfo viewportInfo;
-			VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
-			VkPipelineRasterizationStateCreateInfo rasterizationInfo;
-			VkPipelineMultisampleStateCreateInfo multisampleInfo;
-			VkPipelineColorBlendAttachmentState colorBlendAttachment;
-			VkPipelineColorBlendStateCreateInfo colorBlendInfo;
-			VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
-			std::vector<VkDynamicState> dynamicStatesEnable;
-			VkPipelineDynamicStateCreateInfo dynamicStateInfo;
-			VkPipelineLayout pipelineLayout = nullptr;
-			VkRenderPass renderPass = nullptr;
-			u32 subpass = 0;
-		};
+		std::vector<VkPipelineColorBlendAttachmentState> colorBlendAttachments;
 
-		class VELT_API VulkanPipeline : public Pipeline
-		{
-		public:
-			VulkanPipeline(const PipelineSpecification* pSpecs); 
-			~VulkanPipeline();
+		VkPipelineColorBlendStateCreateInfo colorBlendInfo;
+		VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
+		std::vector<VkDynamicState> dynamicStatesEnable;
+		VkPipelineDynamicStateCreateInfo dynamicStateInfo;
+		VkPipelineLayout pipelineLayout = nullptr;
+		VkRenderPass renderPass = nullptr;
+		u32 subpass = 0;
+	};
 
-			VulkanPipeline(const VulkanPipeline&) = delete;
-			void operator=(const VulkanPipeline&) = delete;
+	class VELT_API VulkanPipeline : public Pipeline
+	{
+	public:
+		VulkanPipeline(const PipelineSpecification* pSpecs);
+		~VulkanPipeline();
 
-			void Init() override;
-			virtual void Invalidate() override; 
+		VulkanPipeline(const VulkanPipeline&) = delete;
+		void operator=(const VulkanPipeline&) = delete;
 
-			virtual void Bind(VkCommandBuffer& commandBuffer) override;
-			static void SetDefaultVulkanPipelineConfigInfo(VulkanPipelineConfigInfo* pConfigInfo);
+		void Init() override;
+		virtual void Invalidate() override;
 
-			virtual VkPipeline& GetVulkanPipeline() override { return m_VulkanPipeline; };
-			virtual VkPipelineLayout& GetVulkanPipelineLayout() override { return m_ConfigInfo.pipelineLayout; };
-			PipelineSpecification& GetSpecification() override { return m_Specification;  };
-			const PipelineSpecification& GetSpecification() const override { return m_Specification; };
-			virtual const std::vector<VkDescriptorSetLayout>& GetSetLayouts() const override { return m_Specification.SetLayouts; }
+		virtual void Bind(VkCommandBuffer& commandBuffer) override;
+		static void SetDefaultVulkanPipelineConfigInfo(VulkanPipelineConfigInfo* pConfigInfo);
 
+		virtual VkPipeline& GetVulkanPipeline() override { return m_VulkanPipeline; };
+		virtual VkPipelineLayout& GetVulkanPipelineLayout() override { return m_PipelineLayout; };
+		PipelineSpecification& GetSpecification() override { return m_Specification; };
+		const PipelineSpecification& GetSpecification() const override { return m_Specification; };
+		virtual const std::vector<VkDescriptorSetLayout>& GetSetLayouts() const override { return m_Specification.SetLayouts; }
 
-		private:
-			void CreatePipelineLayout();
+	private:
+		void CreatePipelineLayout();
 
-			VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;
-			PipelineSpecification m_Specification;
-			VertexLayout m_Layout;
-			VulkanPipelineConfigInfo m_ConfigInfo;
-			VkPipeline m_VulkanPipeline;
-			
-		};
+		VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;
+		PipelineSpecification m_Specification;
+		VertexLayout m_Layout;
+		VulkanPipelineConfigInfo m_ConfigInfo;
+		VkPipeline m_VulkanPipeline;
+	};
 }
-
-
-
-
