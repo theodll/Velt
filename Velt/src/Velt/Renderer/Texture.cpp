@@ -22,4 +22,32 @@ namespace Velt
 		VT_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;
 	}
+
+	Ref<Texture2D> Texture2D::Create(i32 width, i32 height) 
+	{
+		VT_PROFILE_FUNCTION();
+		switch (Renderer::GetAPI())
+		{
+		case RenderAPI::API::None:   return nullptr;
+		case RenderAPI::API::Vulkan:  return CreateRef<RHI::VulkanTexture2D>(width, height);
+		case RenderAPI::API::D3D12:	VT_CORE_ASSERT(false, "D3D12 is currently unsupported");
+		case RenderAPI::API::METAL: VT_CORE_ASSERT(false, "Metal is currently unsupported");
+		}
+		VT_CORE_ASSERT(false, "Unknown RendererAPI");
+		return nullptr;
+	}
+
+	Ref<Texture2D> Texture2D::Create(TextureCreateInfo* pInfo) 
+	{
+		VT_PROFILE_FUNCTION();
+		switch (Renderer::GetAPI())
+		{
+		case RenderAPI::API::None:   return nullptr;
+		case RenderAPI::API::Vulkan:  return CreateRef<RHI::VulkanTexture2D>(pInfo);
+		case RenderAPI::API::D3D12:	VT_CORE_ASSERT(false, "D3D12 is currently unsupported");
+		case RenderAPI::API::METAL: VT_CORE_ASSERT(false, "Metal is currently unsupported");
+		}
+		VT_CORE_ASSERT(false, "Unknown RendererAPI");
+		return nullptr;
+	}
 }

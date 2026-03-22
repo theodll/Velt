@@ -11,8 +11,9 @@
 
 namespace Velt {
 
-	Scope<RenderAPI> Renderer::s_RenderAPI = nullptr;
-	Scope<SceneRenderer> Renderer::s_SceneRenderer = nullptr;
+	Scope<RenderAPI> Renderer::s_RenderAPI = VT_NULL_HANDLE;
+	Scope<SceneRenderer> Renderer::s_SceneRenderer = VT_NULL_HANDLE;
+	std::unordered_map<u32, Ref<Texture2D>> Renderer::s_RenderTargets;
 
 	Renderer::Renderer()
 	{
@@ -24,6 +25,50 @@ namespace Velt {
 		VT_PROFILE_FUNCTION();
 	}
 
+	void Renderer::RecreateRenderTargets(u32 width, u32 height)
+	{
+		TextureCreateInfo albedoAO;
+		albedoAO.AspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		albedoAO.Extent = {width, height, 1};
+		albedoAO.Format = VK_FORMAT_R8G8B8A8_SRGB;
+		albedoAO.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		albedoAO.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+		s_RenderTargets[VT_RENDER_TARGET_ALBEDO_AO] = Texture2D::Create(&albedoAO);
+
+		TextureCreateInfo normalRough;
+		normalRough.AspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		normalRough.Extent = {width, height, 1};
+		normalRough.Format = VK_FORMAT_R8G8B8A8_SRGB;
+		normalRough.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		normalRough.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+		s_RenderTargets[VT_RENDER_TARGET_NORMAL_ROUGH] = Texture2D::Create(&normalRough);
+
+		TextureCreateInfo metalEmit;
+		metalEmit.AspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		metalEmit.Extent = {width, height, 1};
+		metalEmit.Format = VK_FORMAT_R8G8B8A8_SRGB;
+		metalEmit.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		metalEmit.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+		s_RenderTargets[VT_RENDER_TARGET_METAL_EMIT] = Texture2D::Create(&metalEmit);
+
+		TextureCreateInfo depth;
+		depth.AspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+		depth.Extent = {width, height, 1};
+		depth.Format = VK_FORMAT_D32_SFLOAT;
+		depth.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		depth.Usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+		s_RenderTargets[VT_RENDER_TARGET_DEPTH] = Texture2D::Create(&depth);
+
+		TextureCreateInfo composite;
+		composite.AspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		composite.Extent = {width, height, 1};
+		composite.Format = VK_FORMAT_R8G8B8A8_SRGB;
+		composite.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		composite.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+		s_RenderTargets[VT_RENDER_TARGET_COMPOSITE] = Texture2D::Create(&composite);
+
+	}
+
 	void Renderer::Init()
 	{
 		VT_PROFILE_FUNCTION();
@@ -33,6 +78,16 @@ namespace Velt {
 
 		s_SceneRenderer = CreateScope<SceneRenderer>();
 		s_SceneRenderer->Init();
+
+		i32 w{ 1920 }, h{ 1080 };
+
+		if (ImGuiLayer::GetViewport()) 
+		{
+			auto viewport = ImGuiLayer::GetViewport();
+			w = viewport->GetWidth(), h = viewport->GetHeight();
+		}
+
+		RecreateRenderTargets(w, h);
 	}
 
 	void Renderer::Shutdown()

@@ -12,6 +12,14 @@
 namespace Velt
 {
 
+	enum RenderTarget 
+	{
+		VT_RENDER_TARGET_ALBEDO_AO = 0,
+		VT_RENDER_TARGET_NORMAL_ROUGH = 1, 
+		VT_RENDER_TARGET_METAL_EMIT = 2,
+		VT_RENDER_TARGET_DEPTH = 3,
+		VT_RENDER_TARGET_COMPOSITE = 4
+	};
 
 	class VELT_API Renderer
 	{
@@ -41,12 +49,17 @@ namespace Velt
 		static void DrawQuad(VkCommandBuffer& renderCommandBuffer, const Matrix& transform = glm::mat4(1.0f), const Material& material = Material());
 		static void DrawStaticModel(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<Model>& model, const Ref<Mesh>& meshSource, u32 submeshIndex, const Ref<MaterialTable>& materialTable);
 		
+		static void RecreateRenderTargets(u32 width, u32 height);
+
+		static std::unordered_map<u32, Ref<Texture2D>> GetRenderTargets() { return s_RenderTargets; }
+		static Ref<Texture2D> GetRenderTarget(u32 binding) { return s_RenderTargets[binding]; }
+
 		inline static RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); };
 
 	private:
 		static Scope<RenderAPI> s_RenderAPI; 
 		static Scope<SceneRenderer> s_SceneRenderer;
-		
+		static std::unordered_map<u32, Ref<Texture2D>> s_RenderTargets;
 
 	};
 }

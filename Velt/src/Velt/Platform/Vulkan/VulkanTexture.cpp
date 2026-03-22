@@ -75,6 +75,50 @@ namespace Velt::RHI
 		CreateImageSampler();
 	}
 
+	VulkanTexture2D::VulkanTexture2D(TextureCreateInfo* pInfo) 
+	{
+		m_Width = pInfo->Extent.width;
+		m_Height = pInfo->Extent.height;
+
+		VkImageCreateInfo imageInfo{};
+		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+		imageInfo.imageType = VK_IMAGE_TYPE_2D;
+		imageInfo.format = pInfo->Format;
+		imageInfo.extent = pInfo->Extent;
+		imageInfo.mipLevels = 1;
+		imageInfo.arrayLayers = 1;
+		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+		imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+		imageInfo.usage = pInfo->Usage;
+		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		imageInfo.initialLayout = pInfo->ImageLayout;
+
+		VulkanContext::GetDevice()->CreateImageWithInfo(imageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_Image, m_ImageMemory);
+
+		VkImageViewCreateInfo viewInfo{};
+		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		viewInfo.image = m_Image;
+		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		viewInfo.format = pInfo->Format;
+		viewInfo.subresourceRange.aspectMask = pInfo->AspectMask;
+		viewInfo.subresourceRange.baseMipLevel = 0;
+		viewInfo.subresourceRange.levelCount = 1;
+		viewInfo.subresourceRange.baseArrayLayer = 0;
+		viewInfo.subresourceRange.layerCount = 1;
+
+		VT_VK_CHECK(vkCreateImageView(VulkanContext::GetDevice()->device(), &viewInfo, VT_NULL_HANDLE, &m_ImageView), "Failed to create Image View");
+
+		CreateImageSampler();
+	}
+
+	VulkanTexture2D::VulkanTexture2D(i32 width, i32 height) : m_Width(width), m_Height(height)
+	{
+
+		CreateImageWithoutData();
+		CreateImageView();
+		CreateImageSampler();
+	}
+
 	VulkanTexture2D::~VulkanTexture2D() 
 	{
 		auto&& pDevice = VulkanContext::GetDevice();
@@ -134,6 +178,27 @@ namespace Velt::RHI
 
 		vkDestroyBuffer(pDevice->device(), stagingBuffer, VT_NULL_HANDLE);
 		vkFreeMemory(pDevice->device(), stagingBufferMemory, VT_NULL_HANDLE);
+	}
+
+	void VulkanTexture2D::CreateImageWithoutData() 
+	{
+		VkImageCreateInfo imageInfo{};
+		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+		imageInfo.imageType = VK_IMAGE_TYPE_2D;
+		imageInfo.format = VK_FORMAT_B8G8R8A8_SRGB;
+		imageInfo.extent.width = m_Width;
+		imageInfo.extent.height = m_Height;
+		imageInfo.extent.depth = 1;
+		imageInfo.mipLevels = 1;
+		imageInfo.arrayLayers = 1;
+		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+		imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+		imageInfo.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+		VulkanContext::GetDevice()->CreateImageWithInfo(imageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_Image, m_ImageMemory);
+
 	}
 
 	void VulkanTexture2D::CreateImageView() 
