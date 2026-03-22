@@ -166,6 +166,11 @@ namespace Velt {
 		s_RenderAPI->DrawStaticModel(renderCommandBuffer, pipeline, model, meshSource, submeshIndex, materialTable);
 	}
 
+	i32 Renderer::GetDrawCallCount()
+	{
+		return s_RenderAPI->GetDrawCallCount();
+	}
+
 	void Renderer::RequestShutdown()
 	{
 		VT_PROFILE_FUNCTION();

@@ -16,6 +16,8 @@ namespace Velt::RHI
 		Ref<VertexBuffer> TexuredQuadVertexBuffer;
 		Ref<IndexBuffer> TexturedQuadIndexBuffer;
 
+		i32 DrawCallCount{};
+
 		Ref<Material> FallBackMaterial;
 	};
 
@@ -296,6 +298,7 @@ namespace Velt::RHI
 
 		vkEndCommandBuffer(currentCommandBuffer);
 		swapchain->Present();
+		s_RenderData->DrawCallCount = 0;
 	}
 
 	void VulkanRenderer::DrawQuad(VkCommandBuffer renderCommandBuffer, const Matrix& transform, const Material& material)
@@ -319,6 +322,7 @@ namespace Velt::RHI
 
 		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(glm::mat4), &transform);
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
+		s_RenderData->DrawCallCount++;
 	}
 
 	void VulkanRenderer::DrawTexturedQuad(VkCommandBuffer renderCommandBuffer, const Ref<Texture2D>, const Matrix& transform)
@@ -341,6 +345,8 @@ namespace Velt::RHI
 		const auto& meshSubmeshes = meshSource->GetSubmeshes();
 		VT_CORE_ASSERT(submeshIndex < meshSubmeshes.size(), "Submesh index out of range");
 		const Submesh& submesh = meshSubmeshes[submeshIndex];
+
+		pipeline->Bind(commandBuffer);
 
 		VkBuffer vbBuffer = meshSource->GetVertexBuffer()->GetVulkanBuffer();
 		VkDeviceSize vbOffsets[1] = { 0 };
@@ -377,9 +383,16 @@ namespace Velt::RHI
 		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Matrix), &transform);
 
 		vkCmdDrawIndexed(commandBuffer, submesh.IndexCount, 1, submesh.BaseIndex, submesh.BaseVertex, 0);
+		s_RenderData->DrawCallCount++;
 	}
 
 	void VulkanRenderer::ClearScreen(VkCommandBuffer& renderCommandBuffer)
 	{
 	}
+
+	i32 VulkanRenderer::GetDrawCallCount()
+	{
+		return s_RenderData->DrawCallCount;
+	}
+
 }

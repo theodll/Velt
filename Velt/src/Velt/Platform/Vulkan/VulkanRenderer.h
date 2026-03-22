@@ -26,15 +26,7 @@ namespace Velt::RHI
 
 		virtual void ClearScreen(VkCommandBuffer& renderCommandBuffer) override;
 
-	private:
-		void RenderStaticMesh(
-			VkCommandBuffer commandBuffer,
-			const Ref<Pipeline>& pipeline,
-			const Ref<Model>& model,
-			const Ref<Mesh>& meshSource,
-			u32 submeshIndex,
-			const Ref<MaterialTable>& materialTable,
-			const Ref<Material>& fallbackMaterial
-		);
+		virtual i32 GetDrawCallCount() override;
+
 	};
 }

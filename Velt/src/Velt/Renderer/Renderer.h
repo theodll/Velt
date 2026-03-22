@@ -49,6 +49,8 @@ namespace Velt
 		static void DrawQuad(VkCommandBuffer& renderCommandBuffer, const Matrix& transform = glm::mat4(1.0f), const Material& material = Material());
 		static void DrawStaticModel(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<Model>& model, const Ref<Mesh>& meshSource, u32 submeshIndex, const Ref<MaterialTable>& materialTable);
 		
+		static i32 GetDrawCallCount();
+
 		static void RecreateRenderTargets(u32 width, u32 height);
 
 		static std::unordered_map<u32, Ref<Texture2D>> GetRenderTargets() { return s_RenderTargets; }

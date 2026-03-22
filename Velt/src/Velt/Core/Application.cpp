@@ -195,6 +195,7 @@ namespace Velt {
 	{
 		ImGui::Begin("Statistics");
 		ImGui::Text("Velt Engine v0.0");
+		ImGui::Separator();
 		float v = std::round(1 / ts.GetSeconds());
 		static float s = v; s += (v - s) * (1.0f - std::exp(-ts.GetSeconds() / 0.12f)); // Smothes the fps display
 		ImGui::Text("Frames per Second: %.0fFPS", s);
@@ -202,6 +203,8 @@ namespace Velt {
 		ImGui::Text("Deltatime (s): %fs", ts.GetSeconds());
 		ImGui::Text("Deltatime (ms): %.4gms", ts.GetMilliseconds());
 		ImGui::Dummy({ 500, 3 });
+		ImGui::Separator();
+		ImGui::Text("Draw Calls: %i", Renderer::GetDrawCallCount());
 //		ImGui::Text("Camera Position: X: %.2f Y: %.2f Z: %.2f", SceneRenderer::GetCamera()->GetPosition().x, SceneRenderer::GetCamera()->GetPosition().y, SceneRenderer::GetCamera()->GetPosition().z);
 		ImGui::End();
 

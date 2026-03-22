@@ -43,6 +43,8 @@ namespace Velt {
         virtual void BeginGuiPass() = 0;
         virtual void EndGuiPass() = 0;
 
+        virtual i32 GetDrawCallCount() = 0;
+
 		virtual void ClearScreen(VkCommandBuffer& renderCommandBuffer) = 0;
         
         inline static API GetAPI() { return s_API; }

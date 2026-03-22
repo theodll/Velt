@@ -155,8 +155,6 @@ namespace Velt {
 
 		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
 
-		s_Pipeline->Bind(cmd);
-
 		// Todo [25.02, Theo]: Make this platform independent
 		vkCmdBindDescriptorSets(
 			cmd,
