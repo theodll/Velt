@@ -4,6 +4,7 @@
 #include "Platform/Vulkan/DescriptorLayoutCache.h"
 #include "Texture.h"
 #include <map>
+#include <unordered_set>
 
 namespace Velt 
 {
@@ -17,8 +18,8 @@ namespace Velt
 		VT_MATERIAL_SLOTS_BINDING_UBO = 0,
 		VT_MATERIAL_SLOTS_BINDING_ALBEDO = 1,
 		VT_MATERIAL_SLOTS_BINDING_NORMAL = 2,
-		VT_MATERIAL_SLOTS_BINDING_ROUGHNESS = 3,
-		VT_MATERIAL_SLOTS_BINDING_METALLIC = 4,
+		VT_MATERIAL_SLOTS_BINDING_METALLIC = 3,
+		VT_MATERIAL_SLOTS_BINDING_ROUGHNESS = 4,
 		VT_MATERIAL_SLOTS_BINDING_AMBIENT_OCCLUSION = 10,
 		VT_MATERIAL_SLOTS_BINDING_SAMPLER = 5
 	};
@@ -35,10 +36,10 @@ namespace Velt
 		void SetAbientOcclusionFactor(float ao) { m_Data.AbientOcclusionFactor = ao; UpdateData(); };
 		void SetEmissiveColor(const Vector& emissiveColor) { m_Data.EmissiveColor = emissiveColor; };
 		
-		void SetAlbedoTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_ALBEDO, pTexture); VT_CORE_TRACE("Set Albedo Texture"); }
-		void SetNormalTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_NORMAL, pTexture); VT_CORE_TRACE("Set Normal Texture"); }
-		void SetRoughnessTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_ROUGHNESS, pTexture); VT_CORE_TRACE("Set Roughness Texture"); }
-		void SetMetalllicTexture(Ref<Texture2D> pTexture) { SetTexture(VT_MATERIAL_SLOTS_BINDING_METALLIC, pTexture); VT_CORE_TRACE("Set Roughness Texture");}
+		void SetAlbedoTexture(Ref<Texture2D> pTexture) { SetTexture(m_AlbedoBinding, pTexture); VT_CORE_TRACE("Set Albedo Texture"); }
+		void SetNormalTexture(Ref<Texture2D> pTexture) { SetTexture(m_NormalBinding, pTexture); VT_CORE_TRACE("Set Normal Texture"); }
+		void SetRoughnessTexture(Ref<Texture2D> pTexture) { SetTexture(m_RoughnessBinding, pTexture); VT_CORE_TRACE("Set Roughness Texture"); }
+		void SetMetalllicTexture(Ref<Texture2D> pTexture) { SetTexture(m_MetallicBinding, pTexture); VT_CORE_TRACE("Set Roughness Texture");}
 
 		void SetTexture(u32 binding, Ref<Texture2D> pTexture);
 		void SetName(const std::string& name) { m_Name = name; }
@@ -73,6 +74,13 @@ namespace Velt
 		Ref<UniformBuffer> m_UBOs[MAX_FRAMES_IN_FLIGHT];
 		VkDescriptorSet m_Sets[MAX_FRAMES_IN_FLIGHT];
 		MaterialUBO m_Data;
+		u32 m_MaterialUBOBinding{};
+		u32 m_AlbedoBinding{};
+		u32 m_NormalBinding{};
+		u32 m_MetallicBinding{};
+		u32 m_RoughnessBinding{};
+		u32 m_SamplerBinding{};
+		std::unordered_set<u32> m_ValidBindings;
 	};
 
 	class MaterialTable

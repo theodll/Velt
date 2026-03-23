@@ -31,6 +31,7 @@ namespace Velt {
 
 		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
 		std::vector<VkDescriptorSet> m_GlobalSets;
+		u32 m_ViewProjBinding{};
 
 		
 		i32 m_Rotation{};

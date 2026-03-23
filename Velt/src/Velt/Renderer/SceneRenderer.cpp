@@ -27,35 +27,32 @@ namespace Velt {
 
 		PipelineManager::Init();
 
-		// Todo [25.02, Theo]: Move this somewhere else 
-
-		std::vector<RHI::DescriptorBinding> globalBindings{};
-		RHI::DescriptorBinding viewProj{};
-		viewProj.type = RHI::DescriptorType::UNIFORM_BUFFER;
-		viewProj.binding = 0;
-		viewProj.count = 1;
-		viewProj.stage = RHI::ShaderStage::VERTEX;
-
-		globalBindings.emplace_back(viewProj);
-
-		auto materialBindings = Material::GetMaterialBindings();
-		
-		auto globalLayout = RHI::VulkanContext::GetLayoutCache()->CreateLayout(&globalBindings);
-		auto materialLayout = RHI::VulkanContext::GetLayoutCache()->CreateLayout(&materialBindings);
-
 		{
-			std::vector<DescriptorSetLayoutHandle> setLayouts;
-			setLayouts.emplace_back(globalLayout);
-			setLayouts.emplace_back(materialLayout);
-
 			PipelineSpecification specs{};
 		//	specs.VertexShader = ShaderLibrary::Get("Assets/Shader/basic_vertex_shader.hlsl.spv");
 		//	specs.FragmentShader = ShaderLibrary::Get("Assets/Shader/basic_fragment_shader.hlsl.spv");
-			specs.VertexShader = ShaderLibrary::Get("Assets/Shader/gbuffer_vertex.hlsl.spv");
-			specs.FragmentShader = ShaderLibrary::Get("Assets/Shader/gbuffer_pixel.hlsl.spv");
-			specs.SetLayouts = setLayouts;
+			auto vertexShader = ShaderLibrary::Get("Assets/Shader/gbuffer_vertex.hlsl.spv");
+			auto fragmentShader = ShaderLibrary::Get("Assets/Shader/gbuffer_pixel.hlsl.spv");
+			specs.VertexShader = vertexShader;
+			specs.FragmentShader = fragmentShader;
 			specs.Layout = layout;
 
+			m_ViewProjBinding = 0;
+			bool foundViewProj = false;
+			auto setIt = vertexShader->ReflectData.find(0);
+			if (setIt != vertexShader->ReflectData.end())
+			{
+				for (const auto& b : setIt->second.Bindings)
+				{
+					if (b.type == RHI::DescriptorType::UNIFORM_BUFFER)
+					{
+						m_ViewProjBinding = b.binding;
+						foundViewProj = true;
+						break;
+					}
+				}
+			}
+			VT_CORE_ASSERT(foundViewProj, "");
 
 			s_Pipeline = Pipeline::Create(&specs);
 			s_Pipeline->Init();
@@ -83,15 +80,17 @@ namespace Velt {
 		const u32 mfif = sc->GetMaxFrameInFlight();
 		m_CameraUBOs.resize(mfif);
 		m_GlobalSets.resize(mfif);
+		const auto& setLayouts = s_Pipeline->GetSetLayouts();
+		VT_CORE_ASSERT(!setLayouts.empty(), "");
 		for (u32 i = 0; i < mfif; i++)
 		{
 			m_CameraUBOs[i] = UniformBuffer::Create(sizeof(CameraUBO));
-			m_GlobalSets[i] = RHI::VulkanContext::GetSetManager()->Allocate(globalLayout);
+			m_GlobalSets[i] = RHI::VulkanContext::GetSetManager()->Allocate(setLayouts[0]);
 			
 
 			RHI::VulkanContext::GetSetManager()->WriteBuffer(
 				m_GlobalSets[i],
-				0,
+				m_ViewProjBinding,
 				m_CameraUBOs[i]->GetVulkanBuffer(),
 				sizeof(CameraUBO)
 			);

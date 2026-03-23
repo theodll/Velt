@@ -46,20 +46,14 @@ namespace Velt::RHI
 			return VK_DESCRIPTOR_TYPE_MAX_ENUM;
 		}
 	}
-	static VkShaderStageFlagBits ToVulkanShaderStage(ShaderStage stage)
+	static VkShaderStageFlags ToVulkanShaderStage(ShaderStage stage)
 	{
-		switch (stage)
-		{
-		case ShaderStage::FRAGMENT:
-			return VK_SHADER_STAGE_FRAGMENT_BIT;
-
-		case ShaderStage::VERTEX:
-			return VK_SHADER_STAGE_VERTEX_BIT;
-
-		default:
-			VT_CORE_ASSERT(false, "");
-			return VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
-		}
+		VkShaderStageFlags flags = 0;
+		const u32 s = (u32)stage;
+		if (s & (u32)ShaderStage::VERTEX) flags |= VK_SHADER_STAGE_VERTEX_BIT;
+		if (s & (u32)ShaderStage::FRAGMENT) flags |= VK_SHADER_STAGE_FRAGMENT_BIT;
+		VT_CORE_ASSERT(flags != 0, "");
+		return flags;
 	}
 
 	void DescriptorLayoutCache::Init()

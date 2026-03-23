@@ -1,7 +1,7 @@
 #include "ShaderLibrary.h"
 #include "Core/Core.h"
 #include "spirv_reflect.h"
-#include <fstream> // FIX: Hat gefehlt!
+#include <fstream> 
 
 namespace Velt
 {
@@ -132,6 +132,7 @@ namespace Velt
 				layout_binding.binding = refl_binding.binding;
 				layout_binding.type = FromSpvReflectDescriptorType(refl_binding.descriptor_type);
 				layout_binding.count = 1;
+				layout_binding.name = refl_binding.name ? refl_binding.name : "";
 
 				for (uint32_t i_dim = 0; i_dim < refl_binding.array.dims_count; ++i_dim) {
 					layout_binding.count *= refl_binding.array.dims[i_dim];

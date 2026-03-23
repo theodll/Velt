@@ -4,6 +4,7 @@
 #include "Renderer/PipelineManager.h"
 #include "VulkanContext.h"
 #include "Core/Application.h"
+#include <algorithm>
 
 namespace Velt::RHI {
 
@@ -48,6 +49,57 @@ namespace Velt::RHI {
 	void VulkanPipeline::CreatePipelineLayout()
 	{
 		VT_PROFILE_FUNCTION();
+		if (m_Specification.SetLayouts.empty())
+		{
+			std::unordered_map<u32, std::unordered_map<u32, DescriptorBinding>> merged;
+			auto mergeShader = [&merged](const Ref<Velt::Shader>& shader)
+			{
+				if (!shader) return;
+				for (const auto& [setNumber, setData] : shader->ReflectData)
+				{
+					auto& bindingsByNumber = merged[setNumber];
+					for (const auto& b : setData.Bindings)
+					{
+						auto it = bindingsByNumber.find(b.binding);
+						if (it == bindingsByNumber.end())
+						{
+							bindingsByNumber.emplace(b.binding, b);
+							continue;
+						}
+						VT_CORE_ASSERT(it->second.type == b.type, "");
+						VT_CORE_ASSERT(it->second.count == b.count, "");
+						it->second.stage |= b.stage;
+					}
+				}
+			};
+
+			mergeShader(m_Specification.VertexShader);
+			mergeShader(m_Specification.FragmentShader);
+
+			u32 maxSet = 0;
+			for (const auto& [setNumber, _] : merged)
+				maxSet = std::max(maxSet, setNumber);
+
+			m_Specification.SetLayouts.resize((size_t)maxSet + 1);
+			for (u32 setNumber = 0; setNumber <= maxSet; setNumber++)
+			{
+				std::vector<DescriptorBinding> bindings;
+				auto setIt = merged.find(setNumber);
+				if (setIt != merged.end())
+				{
+					bindings.reserve(setIt->second.size());
+					for (const auto& [_, binding] : setIt->second)
+						bindings.push_back(binding);
+					std::sort(bindings.begin(), bindings.end(), [](const DescriptorBinding& a, const DescriptorBinding& b)
+					{
+						return a.binding < b.binding;
+					});
+				}
+
+				m_Specification.SetLayouts[setNumber] = VulkanContext::GetLayoutCache()->CreateLayout(&bindings);
+			}
+		}
+
 		VkPushConstantRange range = {};
 		range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
 		range.offset = 0;
