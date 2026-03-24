@@ -6,3 +6,7 @@ While the primary focus is currently on Vulkan, Velt is designed with an abstrac
 
 ## Showcase
 ![Sponza Demo](Docs/pic.png)
+
+## Note:
+The Forward Pass in this Game Engine is called Scene-Pass (SceneRenderer). 
+The Deffered-Pass therefore is called DefferedPass (DefferedRenderer)
