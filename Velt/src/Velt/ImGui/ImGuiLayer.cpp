@@ -103,45 +103,12 @@ namespace Velt {
 		RenderSceneViewport();
 	}
 
-	static const char* RenderTargetToString(RenderTarget rt)
-	{
-		switch (rt)
-		{
-		case VT_RENDER_TARGET_ALBEDO_AO:   return "Albedo + Ambient Occlusion";
-		case VT_RENDER_TARGET_NORMAL_ROUGH:   return "Normal + Roughness";
-		case VT_RENDER_TARGET_METAL_EMIT:    return "Metal + Emit";
-		case VT_RENDER_TARGET_COMPOSITE: return "Composite";
-		default: return "Unknown";
-		}
-	}
-
 	void ImGuiLayer::OnImGuiRender2()
 	{
 		VT_PROFILE_FUNCTION();
 		
 
-		static RenderTarget currentRT = m_SceneViewport->GetRenderTarget();
-
-		if (ImGui::BeginCombo("Render Target", RenderTargetToString(currentRT)))
-		{
-			for (int i = 0; i < 5; i++)
-			{
-				RenderTarget rt = (RenderTarget)i;
-				bool selected = (currentRT == rt);
-
-				if (ImGui::Selectable(RenderTargetToString(rt), selected))
-				{
-					currentRT = rt;
-					m_PendingRenderTarget = rt;
-					m_RenderTargetChangePending = true;
-				}
-
-				if (selected)
-					ImGui::SetItemDefaultFocus();
-			}
-
-			ImGui::EndCombo();
-		}
+		
 	}
 
 	void ImGuiLayer::SetupDockspace()

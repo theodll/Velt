@@ -191,6 +191,18 @@ namespace Velt {
 	}
 
 
+	static const char* RenderTargetToString(RenderTarget rt)
+	{
+		switch (rt)
+		{
+		case VT_RENDER_TARGET_ALBEDO_AO:   return "Albedo + Ambient Occlusion";
+		case VT_RENDER_TARGET_NORMAL_ROUGH:   return "Normal + Roughness";
+		case VT_RENDER_TARGET_METAL_EMIT:    return "Metal + Emit";
+		case VT_RENDER_TARGET_COMPOSITE: return "Composite";
+		default: return "Unknown";
+		}
+	}
+
 	void Application::RenderStatisticsWidget(Timestep ts)
 	{
 		ImGui::Begin("Statistics");
@@ -205,6 +217,29 @@ namespace Velt {
 		ImGui::Dummy({ 500, 3 });
 		ImGui::Separator();
 		ImGui::Text("Draw Calls: %i", Renderer::GetDrawCallCount());
+		
+		static RenderTarget currentRT = ImGuiLayer::GetViewport()->GetRenderTarget();
+
+		if (ImGui::BeginCombo("Render Target", RenderTargetToString(currentRT)))
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				RenderTarget rt = (RenderTarget)i;
+				bool selected = (currentRT == rt);
+
+				if (ImGui::Selectable(RenderTargetToString(rt), selected))
+				{
+					currentRT = rt;
+					ImGuiLayer::m_PendingRenderTarget = rt;
+					ImGuiLayer::m_RenderTargetChangePending = true;
+				}
+
+				if (selected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
 //		ImGui::Text("Camera Position: X: %.2f Y: %.2f Z: %.2f", SceneRenderer::GetCamera()->GetPosition().x, SceneRenderer::GetCamera()->GetPosition().y, SceneRenderer::GetCamera()->GetPosition().z);
 		ImGui::End();
 
