@@ -395,4 +395,9 @@ namespace Velt::RHI
 		return s_RenderData->DrawCallCount;
 	}
 
+	void VulkanRenderer::SubmitFullscreenTriangle(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<DefferedShaderInput>& input)
+	{
+
+	}
+
 }

@@ -8,7 +8,7 @@
 
 namespace Velt {
 	
-	Ref<Pipeline> SceneRenderer::s_Pipeline = nullptr;
+	Ref<Pipeline> SceneRenderer::s_GeometryPipeline = nullptr;
 	Ref<EditorCamera> SceneRenderer::m_Camera = nullptr;
 
 	void SceneRenderer::Init()
@@ -16,31 +16,29 @@ namespace Velt {
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Init SceneRenderer");
 
-		BufferLayout layout
-		{
-				{ ShaderDataType::Float3, "a_Position" },
-				{ ShaderDataType::Float3, "a_Normal" },
-				{ ShaderDataType::Float3, "a_Tangent" },
-				{ ShaderDataType::Float3, "a_Binormal" },
-				{ ShaderDataType::Float2, "a_UV"}
-		};
-
 		PipelineManager::Init();
 
 		{
-			PipelineSpecification specs{};
-		//	specs.VertexShader = ShaderLibrary::Get("Assets/Shader/basic_vertex_shader.hlsl.spv");
-		//	specs.FragmentShader = ShaderLibrary::Get("Assets/Shader/basic_fragment_shader.hlsl.spv");
-			auto vertexShader = ShaderLibrary::Get("Assets/Shader/gbuffer_vertex.hlsl.spv");
-			auto fragmentShader = ShaderLibrary::Get("Assets/Shader/gbuffer_pixel.hlsl.spv");
-			specs.VertexShader = vertexShader;
-			specs.FragmentShader = fragmentShader;
-			specs.Layout = layout;
+			BufferLayout geometryLayout
+			{
+					{ ShaderDataType::Float3, "a_Position" },
+					{ ShaderDataType::Float3, "a_Normal" },
+					{ ShaderDataType::Float3, "a_Tangent" },
+					{ ShaderDataType::Float3, "a_Binormal" },
+					{ ShaderDataType::Float2, "a_UV"}
+			};
+			auto gVertexShader = ShaderLibrary::Get("Assets/Shader/gbuffer_vertex.hlsl.spv");
+			auto gPixelShader = ShaderLibrary::Get("Assets/Shader/gbuffer_pixel.hlsl.spv");
+
+			PipelineSpecification geometryPipelineSpecs{};
+			geometryPipelineSpecs.VertexShader = gVertexShader;
+			geometryPipelineSpecs.FragmentShader = gPixelShader;
+			geometryPipelineSpecs.Layout = geometryLayout;
 
 			m_ViewProjBinding = 0;
 			bool foundViewProj = false;
-			auto setIt = vertexShader->ReflectData.find(0);
-			if (setIt != vertexShader->ReflectData.end())
+			auto setIt = gVertexShader->ReflectData.find(0);
+			if (setIt != gVertexShader->ReflectData.end())
 			{
 				for (const auto& b : setIt->second.Bindings)
 				{
@@ -54,10 +52,11 @@ namespace Velt {
 			}
 			VT_CORE_ASSERT(foundViewProj, "");
 
-			s_Pipeline = Pipeline::Create(&specs);
-			s_Pipeline->Init();
+			s_GeometryPipeline = Pipeline::Create(&geometryPipelineSpecs);
+			s_GeometryPipeline->Init();
 		}
 		
+
 		float width, height{};
 
 		if (ImGuiLayer::GetViewport())
@@ -80,7 +79,7 @@ namespace Velt {
 		const u32 mfif = sc->GetMaxFrameInFlight();
 		m_CameraUBOs.resize(mfif);
 		m_GlobalSets.resize(mfif);
-		const auto& setLayouts = s_Pipeline->GetSetLayouts();
+		const auto& setLayouts = s_GeometryPipeline->GetSetLayouts();
 		VT_CORE_ASSERT(!setLayouts.empty(), "");
 		for (u32 i = 0; i < mfif; i++)
 		{
@@ -147,7 +146,7 @@ namespace Velt {
 		m_Rotation++;
 		auto cmd = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentDrawCommandBuffer();
 		auto frameIndex = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex();
-		auto pipelineLayout = s_Pipeline->GetVulkanPipelineLayout();
+		auto pipelineLayout = s_GeometryPipeline->GetVulkanPipelineLayout();
 
 		CameraUBO ubo{};
 		ubo.viewProj = m_Camera->GetViewProjection();

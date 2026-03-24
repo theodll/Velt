@@ -18,7 +18,7 @@ namespace Velt {
 		void BeginScene();
 		void EndScene();
 
-		static Ref<Pipeline> GetPipeline() { return s_Pipeline; };
+		static Ref<Pipeline> GetPipeline() { return s_GeometryPipeline; };
 		static Ref<EditorCamera> GetCamera() { return m_Camera; };
 
 	private:
@@ -37,7 +37,7 @@ namespace Velt {
 		i32 m_Rotation{};
 		Vector m_CameraPosition{};
 
-		static Ref<Pipeline> s_Pipeline;
+		static Ref<Pipeline> s_GeometryPipeline;
 		
 
 	};

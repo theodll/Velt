@@ -53,7 +53,7 @@ GBUFFER_OUT main(PS_INPUT input)
     float3 worldNormal = normalize(mul(tangentNormal, TBN));
 
     output.g_AlbedoAO = float4(albedo * u_Material.BaseColorFactor.rgb, 1.0);
-    output.g_NormalRough = float4(worldNormal * 0.5 + 0.5,/* roughness * u_Material.Roughness */ 1.0f);
+    output.g_NormalRough = float4(worldNormal * 0.5 + 0.5, roughness * u_Material.Roughness);
     output.g_MetalEmit = float4(metallic * u_Material.Metallicness, u_Material.EmissiveColor.r, u_Material.EmissiveColor.g, 1.0);
     
     return output;

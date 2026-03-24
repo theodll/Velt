@@ -6,6 +6,7 @@
 #include "Velt/Core/Core.h"
 #include "IndexBuffer.h"
 #include "Velt/Renderer/Model.h"
+#include "Velt/Renderer/DefferedRenderer.h"
 #include "Texture.h"
 #include <glm/glm.hpp>
 
@@ -30,6 +31,7 @@ namespace Velt {
         virtual void DrawTexturedQuad(VkCommandBuffer renderCommandBuffer, const Ref<Texture2D> texture, const Matrix& transform) = 0;
 		virtual void DrawStaticModel(VkCommandBuffer commandBuffer, const Ref<Pipeline>& pipeline, const Ref<Model>& model, const Ref<Mesh>& meshSource, u32 submeshIndex, const Ref<MaterialTable>& materialTable) = 0;
         
+        virtual void SubmitFullscreenTriangle(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<DefferedShaderInput>& input)  = 0;
 
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
@@ -38,7 +40,7 @@ namespace Velt {
 		// virtual void EndRendering(VkCommandBuffer& renderCommandBuffer) = 0;
 
         virtual void BeginScenePass() = 0;
-        virtual void EndScenePass() = 0;
+        virtual void EndScenePass() = 0; 
 
         virtual void BeginGuiPass() = 0;
         virtual void EndGuiPass() = 0;

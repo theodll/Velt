@@ -99,7 +99,7 @@ add_library(Velt SHARED
     "src/Velt/Renderer/Camera.h" "src/Velt/Renderer/Camera.cpp"
     "src/Velt/Editor/EditorCamera.h"
     "src/Velt/Editor/EditorCamera.cpp"
-    "src/Velt/Asset/AssimpMeshImporter.h" "src/Velt/Asset/AssimpMeshImporter.cpp")
+    "src/Velt/Asset/AssimpMeshImporter.h" "src/Velt/Asset/AssimpMeshImporter.cpp" "src/Velt/Renderer/DefferedRenderer.h" "src/Velt/Renderer/DefferedRenderer.cpp")
 
 # --- Dependencies (Subdirectories) ---
 add_subdirectory(vendor/spdlog)
@@ -146,6 +146,8 @@ set(HLSL_FILES
     "basic_fragment_shader.hlsl" "ps_6_0"
     "gbuffer_vertex.hlsl" "vs_6_0"
     "gbuffer_pixel.hlsl" "ps_6_0"
+    "deffered_pbr_vertex.hlsl" "vs_6_0"
+    "deffered_pbr_pixel.hlsl" "ps_6_0"
 )
 
 set(SPIRV_BINARY_FILES "")

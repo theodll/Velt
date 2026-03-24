@@ -166,6 +166,9 @@ namespace Velt {
 				layer->OnRender(m_Window->GetSwapchain()->GetCurrentDrawCommandBuffer());
 			
 			Renderer::EndScenePass();
+
+			Renderer::ExecuteDefferedPass();
+
 			Renderer::BeginGuiPass();
 			// Gui Pass
 

@@ -13,6 +13,7 @@ namespace Velt {
 
 	Scope<RenderAPI> Renderer::s_RenderAPI = VT_NULL_HANDLE;
 	Scope<SceneRenderer> Renderer::s_SceneRenderer = VT_NULL_HANDLE;
+	Scope<DefferedRenderer> Renderer::s_DefferedRenderer = VT_NULL_HANDLE;
 	std::unordered_map<u32, Ref<Texture2D>> Renderer::s_RenderTargets;
 
 	Renderer::Renderer()
@@ -79,6 +80,9 @@ namespace Velt {
 		s_SceneRenderer = CreateScope<SceneRenderer>();
 		s_SceneRenderer->Init();
 
+		s_DefferedRenderer = CreateScope<DefferedRenderer>();
+		s_DefferedRenderer->Init();
+
 		i32 w{ 1920 }, h{ 1080 };
 
 		if (ImGuiLayer::GetViewport()) 
@@ -137,6 +141,11 @@ namespace Velt {
 		s_RenderAPI->EndScenePass();
 	}
 
+	void Renderer::ExecuteDefferedPass()
+	{
+		s_DefferedRenderer->ExecuteDefferedPass();
+	}
+
 	void Renderer::BeginGuiPass()
 	{
 		s_RenderAPI->BeginGuiPass();
@@ -164,6 +173,11 @@ namespace Velt {
 	void Renderer::DrawStaticModel(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<Model>& model, const Ref<Mesh>& meshSource, u32 submeshIndex, const Ref<MaterialTable>& materialTable)
 	{
 		s_RenderAPI->DrawStaticModel(renderCommandBuffer, pipeline, model, meshSource, submeshIndex, materialTable);
+	}
+
+	void Renderer::SubmitFullscreenTriangle(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<DefferedShaderInput>& input)
+	{
+		s_RenderAPI->SubmitFullscreenTriangle(renderCommandBuffer, pipeline, input);
 	}
 
 	i32 Renderer::GetDrawCallCount()

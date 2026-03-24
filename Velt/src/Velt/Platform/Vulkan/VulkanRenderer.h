@@ -2,6 +2,7 @@
 #include "Renderer/RenderAPI.h"
 #include "Platform/Vulkan/VulkanPipeline.h"
 #include "Velt/Renderer/Renderer.h"
+#include "Renderer/DefferedRenderer.h"
 
 namespace Velt::RHI
 {
@@ -15,6 +16,8 @@ namespace Velt::RHI
 		virtual void DrawTexturedQuad(VkCommandBuffer renderCommandBuffer, const Ref<Texture2D> texture, const Matrix& transform) override;
 		virtual void DrawStaticModel(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<Model>& model, const Ref<Mesh>& meshSource, u32 submeshIndex, const Ref<MaterialTable>& materialTable) override;
 		
+		virtual void SubmitFullscreenTriangle(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<DefferedShaderInput>& input) override;
+
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
