@@ -57,7 +57,7 @@ namespace Velt {
 		depth.Extent = {width, height, 1};
 		depth.Format = VK_FORMAT_D32_SFLOAT;
 		depth.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		depth.Usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+		depth.Usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 		s_RenderTargets[VT_RENDER_TARGET_DEPTH] = Texture2D::Create(&depth);
 
 		TextureCreateInfo composite;

@@ -165,14 +165,23 @@ foreach(_i RANGE 0 ${_hlsl_max} 2)
 
     # We add a dummy output file that never exists to force CMake to always re-run the command
     set(FORCE_FILE "${OUT_PATH}.force")
-
-    add_custom_command(
-        OUTPUT ${OUT_PATH} ${FORCE_FILE}
-        COMMAND ${DXC_EXECUTABLE} -T ${HLSL_PROFILE} -E main -spirv -fspv-target-env=vulkan1.3 "${SRC_PATH}" -Fo "${OUT_PATH}"
-        DEPENDS "${SRC_PATH}"
-        COMMENT "Compiling HLSL: ${HLSL_FILE} (Forced Rebuild)"
-        VERBATIM
-    )
+    if(DEBUG)
+        add_custom_command(
+            OUTPUT ${OUT_PATH} ${FORCE_FILE}
+            COMMAND ${DXC_EXECUTABLE} -T ${HLSL_PROFILE} -E main -spirv -Od -Zi -Qembed_debug -fspv-target-env=vulkan1.3 "${SRC_PATH}" -Fo "${OUT_PATH}"
+            DEPENDS "${SRC_PATH}"
+            COMMENT "Compiling HLSL: ${HLSL_FILE} (Forced Rebuild)"
+            VERBATIM
+        )
+    else()
+        add_custom_command(
+            OUTPUT ${OUT_PATH} ${FORCE_FILE}
+            COMMAND ${DXC_EXECUTABLE} -T ${HLSL_PROFILE} -E main -spirv -fspv-target-env=vulkan1.3 "${SRC_PATH}" -Fo "${OUT_PATH}"
+            DEPENDS "${SRC_PATH}"
+            COMMENT "Compiling HLSL: ${HLSL_FILE} (Forced Rebuild)"
+            VERBATIM
+        )
+    endif()
 endforeach()
 
 add_custom_target(CompileShaders ALL DEPENDS ${SPIRV_BINARY_FILES})

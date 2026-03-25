@@ -17,6 +17,9 @@ namespace Velt
 			auto dPBRVertexShader = ShaderLibrary::Get("Assets/Shader/deffered_pbr_vertex.hlsl.spv");
 			auto dPBRPixelShader = ShaderLibrary::Get("Assets/Shader/deffered_pbr_pixel.hlsl.spv");
 
+//			auto dPBRVertexShader = ShaderLibrary::Get("Assets/Shader/basic_vertex_shader.hlsl.spv");
+//			auto dPBRPixelShader = ShaderLibrary::Get("Assets/Shader/basic_fragment_shader.hlsl.spv");
+
 			PipelineSpecification defferedPBRPipelineSpecification{};
 			defferedPBRPipelineSpecification.VertexShader = dPBRVertexShader;
 			defferedPBRPipelineSpecification.FragmentShader = dPBRPixelShader;
@@ -46,8 +49,12 @@ namespace Velt
 		VT_CORE_ASSERT(pipeline, "");
 		const auto& spec = pipeline->GetSpecification();
 		VT_CORE_ASSERT(spec.FragmentShader, "");
-		auto setIt = spec.FragmentShader->ReflectData.find(1);
-		VT_CORE_ASSERT(setIt != spec.FragmentShader->ReflectData.end(), "");
+		auto setIt = spec.FragmentShader->ReflectData.find(2);
+		if(setIt != spec.FragmentShader->ReflectData.end(), "")
+		{
+			return;
+		}
+
 		for (const auto& b : setIt->second.Bindings)
 			m_ValidBindings.emplace(b.binding);
 
@@ -98,7 +105,7 @@ namespace Velt
 			// Todo [27.02, Theo] Maybe change this that this isn't a magic number but still, I couldn't 
 			// care less
 
-			// Note [27.02, Theo] The one stands for the Material Set Layout (set 0 = global, set 1 = material)
+			// Note [27.02, Theo] The one stands for the Material Set Layout (set 0 = global, set 1 = material, set 2 = deffered)
 			m_Sets[i] = RHI::VulkanContext::GetSetManager()->Allocate(layouts[2]);
 
 		}
