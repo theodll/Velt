@@ -45,17 +45,26 @@ namespace Velt
 
 	DefferedShaderInput::DefferedShaderInput()
 	{
+		// Documentation [26.03.26, Theo]: I think this is really confusing so I'm going to explain it.
+		// At first we get the Deffered Pipeline (the Pipeline that includes the Deffered Pass Shaders like deffered_pbr_pixel.hlsl.spírv).
 		auto pipeline = DefferedRenderer::GetPipeline();
+		// Assert if the Pipeline is invalid.
 		VT_CORE_ASSERT(pipeline, "");
+		// Get the Pipeline  Specification.
 		const auto& spec = pipeline->GetSpecification();
+		// Assert if the Pipeline Specification is invalid.
 		VT_CORE_ASSERT(spec.FragmentShader, "");
+		// Now heres the confusing part. We get the Shader Reflection Data of the Pixel Shader, then we search if the Reflection Data includes any "References" 
+		// to Descriptor Set 2. Thats what the 2 in ReflectData.find() stands for.
 		auto setIt = spec.FragmentShader->ReflectData.find(2);
+		// Here we check if the Shader Included any "References" for Set 2. If not return because there's nothing we can upload.
 		if(setIt != spec.FragmentShader->ReflectData.end(), "")
 		{
 			return;
 		}
+		// From now on everybody should understand so I'm not going to explain from here.
 
-		for (const auto& b : setIt->second.Bindings)
+		for (const auto& b : setIt->second.Bindings) 
 			m_ValidBindings.emplace(b.binding);
 
 		std::unordered_map<u32, RHI::DescriptorBinding> bindingMap;

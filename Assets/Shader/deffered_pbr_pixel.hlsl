@@ -4,11 +4,10 @@ struct PS_INPUT
     float2 v_UV : TEXCOORD0;
 };
 
-[[vk::binding(1, 2)]] Texture2D t_RenderTargetAlbedoAO;
-[[vk::binding(2, 2)]] Texture2D t_RenderTargetNormalRough;
-[[vk::binding(3, 2)]] Texture2D t_RenderTargetMetallicEmit;
-// Todo [25.03.26, Theo]: add depth support
-//[[vk::binding(4, 2)]] Texture2D t_RenderTargetDepth;
+[[vk::binding(0, 2)]] Texture2D t_RenderTargetAlbedoAO;
+[[vk::binding(1, 2)]] Texture2D t_RenderTargetNormalRough;
+[[vk::binding(2, 2)]] Texture2D t_RenderTargetMetallicEmit;
+[[vk::binding(3, 2)]] Texture2D t_RenderTargetDepth;
 [[vk::binding(5, 2)]] SamplerState s_RenderTargetSampler;
 
 
