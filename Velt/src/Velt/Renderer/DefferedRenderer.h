@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/Core.h"
+#include "Core/Math.h"
 #include "Texture.h"
 #include "Pipeline.h"
 #include <vulkan/vulkan.h>
@@ -30,7 +31,16 @@ namespace Velt
 	private:
 		static Ref<Pipeline> s_DefferedPipeline;
 
-		u32 m_CameraUBOBinding;
+		struct alignas(16) CameraUBO
+		{
+			Matrix viewProj;
+			Matrix invViewProj;
+		};
+
+		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
+		std::vector<VkDescriptorSet> m_GlobalSets;
+		u32 m_CameraUBOBinding{};
+
 
 		Ref<DefferedShaderInput> m_ShaderInput;
 	};

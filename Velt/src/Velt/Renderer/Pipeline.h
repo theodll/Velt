@@ -16,6 +16,7 @@ namespace Velt
 		Ref<Shader> VertexShader;
 		Ref<Shader> FragmentShader;
 		std::vector<DescriptorSetLayoutHandle> SetLayouts;
+		std::vector<VkFormat> ColorAttachmentFormats;
 	};
 
 	// Todo [10.03.26, Theo]: move somewhere else

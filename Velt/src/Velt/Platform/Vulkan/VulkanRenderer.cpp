@@ -419,11 +419,11 @@ namespace Velt::RHI
 
 		VkPipelineLayout pipelineLayout = pipeline->GetVulkanPipelineLayout();
 		VkCommandBuffer commandBuffer = renderCommandBuffer;
-
+		pipeline->Bind(renderCommandBuffer);
 
 		vkCmdBindDescriptorSets(renderCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &input->GetSet(), 0, VT_NULL_HANDLE);
 
-		vkCmdDraw(commandBuffer, 4, 0, 0, 0);
+		vkCmdDraw(commandBuffer, 3, 1, 0, 0);
 		s_RenderData->DrawCallCount++;
 	}
 

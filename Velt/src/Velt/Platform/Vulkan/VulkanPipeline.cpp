@@ -204,11 +204,7 @@ namespace Velt::RHI {
 	{
 		VT_PROFILE_FUNCTION();
 
-		pConfigInfo->colorAttachmentFormats = {
-			VK_FORMAT_B8G8R8A8_SRGB, // VT_RENDER_TARGET_ALBEDO_AO
-			VK_FORMAT_B8G8R8A8_SRGB, // VT_RENDER_TARGET_NORMAL_ROUGH
-			VK_FORMAT_B8G8R8A8_SRGB  // VT_RENDER_TARGET_METAL_EMIT
-		};
+		pConfigInfo->colorAttachmentFormats = m_Specification.ColorAttachmentFormats;
 		pConfigInfo->depthAttachmentFormat = VK_FORMAT_D32_SFLOAT;
 		pConfigInfo->stencilAttachmentFormat = VK_FORMAT_UNDEFINED;
 

@@ -52,7 +52,7 @@ namespace Velt::RHI
 		void CreatePipelineLayout();
 
 		VkPipelineLayout m_PipelineLayout = VK_NULL_HANDLE;
-		PipelineSpecification m_Specification;
+		static PipelineSpecification m_Specification;
 		VertexLayout m_Layout;
 		VulkanPipelineConfigInfo m_ConfigInfo;
 		VkPipeline m_VulkanPipeline;

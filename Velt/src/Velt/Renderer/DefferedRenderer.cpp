@@ -46,6 +46,26 @@ namespace Velt
 
 			VT_CORE_ASSERT(foundCameraUBO, "Did not find Camera UBO Set in Shader Reflection Data");
 		}
+
+		m_CameraUBOs.resize(MAX_FRAMES_IN_FLIGHT);
+		m_GlobalSets.resize(MAX_FRAMES_IN_FLIGHT);
+
+		const std::vector<VkDescriptorSetLayout> setLayouts = s_DefferedPipeline->GetSetLayouts();
+		for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+		{
+			m_CameraUBOs[i] = UniformBuffer::Create(sizeof(CameraUBO));
+			m_GlobalSets[i] = RHI::VulkanContext::GetSetManager()->Allocate(setLayouts[0]);
+
+
+			RHI::VulkanContext::GetSetManager()->WriteBuffer(
+				m_GlobalSets[i],
+				m_CameraUBOBinding,
+				m_CameraUBOs[i]->GetVulkanBuffer(),
+				sizeof(CameraUBO)
+			);
+
+		}
+
 		m_ShaderInput = CreateRef<DefferedShaderInput>();
 
 
@@ -59,6 +79,26 @@ namespace Velt
 	void DefferedRenderer::ExecuteDefferedPass()
 	{
 		auto cmd = Application::Get()->GetWindow()->GetSwapchain()->GetCurrentDrawCommandBuffer();
+
+		CameraUBO ubo{};
+		ubo.viewProj = SceneRenderer::GetCamera()->GetViewProjection();
+		ubo.invViewProj = SceneRenderer::GetCamera()->GetInverseViewProjection();
+
+		auto frameIndex = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex();
+		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
+
+		// Todo [25.02, Theo]: Make this platform independent
+		vkCmdBindDescriptorSets(
+			cmd,
+			VK_PIPELINE_BIND_POINT_GRAPHICS,
+			s_DefferedPipeline->GetVulkanPipelineLayout(),
+			0,
+			1,
+			&m_GlobalSets[frameIndex],
+			0,
+			nullptr
+		);
+
 		m_ShaderInput->UpdateData();
 		Renderer::SubmitFullscreenTriangle(cmd, s_DefferedPipeline, m_ShaderInput);
 	}
@@ -78,8 +118,8 @@ namespace Velt
 		// to Descriptor Set 2. Thats what the 2 in ReflectData.find() stands for.
 		auto setIt = spec.FragmentShader->ReflectData.find(2);
 		// Here we check if the Shader Included any "References" for Set 2. If not return because there's nothing we can upload.
-		if(setIt != spec.FragmentShader->ReflectData.end(), "")
-		{
+		if(setIt == spec.FragmentShader->ReflectData.end())
+		{ 
 			return;
 		}
 		// From now on everybody should understand so I'm not going to explain from here.
@@ -113,10 +153,12 @@ namespace Velt
 		m_MetalEmitBinding = VT_RENDER_TARGET_METAL_EMIT;
 		m_DepthBinding = VT_RENDER_TARGET_DEPTH;
 		m_CompositeBinding = VT_RENDER_TARGET_COMPOSITE;
+		m_SamplerBinding = VT_RENDER_TARGET_SAMPLER;
 		
-		requireBinding(m_AlbedoAOBinding, RHI::DescriptorType::SAMPLED_IMAGE);
-		requireBinding(m_NormalRoughBinding, RHI::DescriptorType::SAMPLED_IMAGE);
-		requireBinding(m_MetalEmitBinding, RHI::DescriptorType::SAMPLED_IMAGE);
+		optionalBinding(m_AlbedoAOBinding, RHI::DescriptorType::SAMPLED_IMAGE);
+		optionalBinding(m_NormalRoughBinding, RHI::DescriptorType::SAMPLED_IMAGE);
+		optionalBinding(m_MetalEmitBinding, RHI::DescriptorType::SAMPLED_IMAGE);
+		requireBinding(m_DepthBinding, RHI::DescriptorType::SAMPLED_IMAGE);
 		requireBinding(m_SamplerBinding, RHI::DescriptorType::SAMPLER);
 
 		auto hasBinding = [&](u32 binding) -> bool
@@ -129,7 +171,7 @@ namespace Velt
 			m_GeometryBuffers[i] = CreateRef<GBuffer>();
 
 			const auto& layouts = pipeline->GetSetLayouts();
-			VT_CORE_ASSERT(layouts.size() > 1, "");
+			VT_CORE_ASSERT(layouts.size() > 2, "");
 
 			// Todo [27.02, Theo] Maybe change this that this isn't a magic number but still, I couldn't 
 			// care less
@@ -184,6 +226,7 @@ namespace Velt
 		updateImageBinding(m_AlbedoAOBinding, renderTargets[VT_RENDER_TARGET_ALBEDO_AO]);
 		updateImageBinding(m_NormalRoughBinding, renderTargets[VT_RENDER_TARGET_NORMAL_ROUGH]);
 		updateImageBinding(m_MetalEmitBinding, renderTargets[VT_RENDER_TARGET_METAL_EMIT]);
+		updateImageBinding(m_DepthBinding, renderTargets[VT_RENDER_TARGET_DEPTH]);
 	}
 
 	const VkDescriptorSet& DefferedShaderInput::GetSet() const 
