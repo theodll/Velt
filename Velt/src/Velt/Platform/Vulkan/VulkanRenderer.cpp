@@ -421,7 +421,8 @@ namespace Velt::RHI
 		VkCommandBuffer commandBuffer = renderCommandBuffer;
 		pipeline->Bind(renderCommandBuffer);
 
-		vkCmdBindDescriptorSets(renderCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &input->GetSet(), 0, VT_NULL_HANDLE);
+		VkDescriptorSet defferedSet = input->GetSet();
+		vkCmdBindDescriptorSets(renderCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 2, 1, &defferedSet, 0, VT_NULL_HANDLE);
 
 		vkCmdDraw(commandBuffer, 3, 1, 0, 0);
 		s_RenderData->DrawCallCount++;
@@ -445,7 +446,7 @@ namespace Velt::RHI
 		);
 
 		// Rendering Info Setup
-		VkClearValue clearColor = { {{0.0f, 1.0f, 0.992f, 1.0f}} };
+		VkClearValue clearColor = { {{1.0f, 0.0f, 1.0, 1.0f}} };
 
 		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
 		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;

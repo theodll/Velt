@@ -4,6 +4,7 @@
 #include "Core/Application.h"
 #include "Platform/Vulkan/VulkanContext.h"
 #include "Platform/Vulkan/DescriptorSetManager.h"
+#include "BindingLayouts.h"
 
 namespace Velt 
 {
@@ -24,27 +25,12 @@ namespace Velt
 			defferedPBRPipelineSpecification.VertexShader = dPBRVertexShader;
 			defferedPBRPipelineSpecification.FragmentShader = dPBRPixelShader;
 			defferedPBRPipelineSpecification.Layout = defferedLayout;
+			defferedPBRPipelineSpecification.ColorAttachmentFormats = { VK_FORMAT_B8G8R8A8_SRGB };
 
 			s_DefferedPipeline = Pipeline::Create(&defferedPBRPipelineSpecification);
 			s_DefferedPipeline->Init();
 
-			m_CameraUBOBinding = 0;
-			bool foundCameraUBO = false;
-			auto setIt = dPBRPixelShader->ReflectData.find(0);
-			if (setIt != dPBRPixelShader->ReflectData.end())
-			{
-				for (const auto& b : setIt->second.Bindings)
-				{
-					if (b.type == RHI::DescriptorType::UNIFORM_BUFFER)
-					{
-						m_CameraUBOBinding = b.binding;
-						foundCameraUBO = true;
-						break;
-					}
-				}
-			}
-
-			VT_CORE_ASSERT(foundCameraUBO, "Did not find Camera UBO Set in Shader Reflection Data");
+			m_CameraUBOBinding = VT_CAMERA_SET_UBO_BINDING;
 		}
 
 		m_CameraUBOs.resize(MAX_FRAMES_IN_FLIGHT);
@@ -105,66 +91,20 @@ namespace Velt
 
 	DefferedShaderInput::DefferedShaderInput()
 	{
-		// Documentation [26.03.26, Theo]: I think this is really confusing so I'm going to explain it.
-		// At first we get the Deffered Pipeline (the Pipeline that includes the Deffered Pass Shaders like deffered_pbr_pixel.hlsl.spírv).
 		auto pipeline = DefferedRenderer::GetPipeline();
-		// Assert if the Pipeline is invalid.
 		VT_CORE_ASSERT(pipeline, "");
-		// Get the Pipeline  Specification.
-		const auto& spec = pipeline->GetSpecification();
-		// Assert if the Pipeline Specification is invalid.
-		VT_CORE_ASSERT(spec.FragmentShader, "");
-		// Now heres the confusing part. We get the Shader Reflection Data of the Pixel Shader, then we search if the Reflection Data includes any "References" 
-		// to Descriptor Set 2. Thats what the 2 in ReflectData.find() stands for.
-		auto setIt = spec.FragmentShader->ReflectData.find(2);
-		// Here we check if the Shader Included any "References" for Set 2. If not return because there's nothing we can upload.
-		if(setIt == spec.FragmentShader->ReflectData.end())
-		{ 
-			return;
-		}
-		// From now on everybody should understand so I'm not going to explain from here.
-
-		for (const auto& b : setIt->second.Bindings) 
-			m_ValidBindings.emplace(b.binding);
-
-		std::unordered_map<u32, RHI::DescriptorBinding> bindingMap;
-		bindingMap.reserve(setIt->second.Bindings.size());
-		for (const auto& b : setIt->second.Bindings)
-			bindingMap[b.binding] = b;
-
-		auto requireBinding = [&](u32 binding, RHI::DescriptorType type)
-			{
-				auto it = bindingMap.find(binding);
-				VT_CORE_ASSERT(it != bindingMap.end(), "");
-				VT_CORE_ASSERT(it->second.type == type, "");
-			};
-
-		auto optionalBinding = [&](u32 binding, RHI::DescriptorType type) -> bool
-			{
-				auto it = bindingMap.find(binding);
-				if (it == bindingMap.end())
-					return false;
-				VT_CORE_ASSERT(it->second.type == type, "");
-				return true;
-			};
-
-		m_AlbedoAOBinding = VT_RENDER_TARGET_ALBEDO_AO;
-		m_NormalRoughBinding = VT_RENDER_TARGET_NORMAL_ROUGH;
-		m_MetalEmitBinding = VT_RENDER_TARGET_METAL_EMIT;
-		m_DepthBinding = VT_RENDER_TARGET_DEPTH;
-		m_CompositeBinding = VT_RENDER_TARGET_COMPOSITE;
-		m_SamplerBinding = VT_RENDER_TARGET_SAMPLER;
 		
-		optionalBinding(m_AlbedoAOBinding, RHI::DescriptorType::SAMPLED_IMAGE);
-		optionalBinding(m_NormalRoughBinding, RHI::DescriptorType::SAMPLED_IMAGE);
-		optionalBinding(m_MetalEmitBinding, RHI::DescriptorType::SAMPLED_IMAGE);
-		requireBinding(m_DepthBinding, RHI::DescriptorType::SAMPLED_IMAGE);
-		requireBinding(m_SamplerBinding, RHI::DescriptorType::SAMPLER);
-
-		auto hasBinding = [&](u32 binding) -> bool
-			{
-				return m_ValidBindings.find(binding) != m_ValidBindings.end();
-			};
+		m_AlbedoAOBinding = VT_DEFFERED_SET_BINDING_ALBEDO_AO;
+		m_NormalRoughBinding = VT_DEFFERED_SET_BINDING_NORMAL_ROUGH;
+		m_MetalEmitBinding = VT_DEFFERED_SET_BINDING_METAL_EMIT;
+		m_DepthBinding = VT_DEFFERED_SET_BINDING_DEPTH;
+		m_SamplerBinding = VT_DEFFERED_SET_BINDING_SAMPLER;
+		
+		m_ValidBindings.emplace(m_AlbedoAOBinding);
+		m_ValidBindings.emplace(m_NormalRoughBinding);
+		m_ValidBindings.emplace(m_MetalEmitBinding);
+		m_ValidBindings.emplace(m_DepthBinding);
+		m_ValidBindings.emplace(m_SamplerBinding);
 
 		for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
@@ -173,10 +113,7 @@ namespace Velt
 			const auto& layouts = pipeline->GetSetLayouts();
 			VT_CORE_ASSERT(layouts.size() > 2, "");
 
-			// Todo [27.02, Theo] Maybe change this that this isn't a magic number but still, I couldn't 
-			// care less
-
-			// Note [27.02, Theo] The one stands for the Material Set Layout (set 0 = global, set 1 = material, set 2 = deffered)
+			// Note [27.02, Theo] The two stands for the Deferred Set Layout (set 0 = global, set 1 = material, set 2 = deferred)
 			m_Sets[i] = RHI::VulkanContext::GetSetManager()->Allocate(layouts[2]);
 
 		}
@@ -184,14 +121,11 @@ namespace Velt
 		s_TextureSampler = Texture2D::Create(ERROR_TEXTURE_PATH);
 		for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
-			if (hasBinding(m_SamplerBinding))
-			{
-				RHI::VulkanContext::GetSetManager()->WriteSampler(
-					m_Sets[i],
-					m_SamplerBinding,
-					s_TextureSampler->GetSampler()
-				);
-			}
+			RHI::VulkanContext::GetSetManager()->WriteSampler(
+				m_Sets[i],
+				m_SamplerBinding,
+				s_TextureSampler->GetSampler()
+			);
 		}
 
 		UpdateData();

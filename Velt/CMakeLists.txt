@@ -99,7 +99,7 @@ add_library(Velt SHARED
     "src/Velt/Renderer/Camera.h" "src/Velt/Renderer/Camera.cpp"
     "src/Velt/Editor/EditorCamera.h"
     "src/Velt/Editor/EditorCamera.cpp"
-    "src/Velt/Asset/AssimpMeshImporter.h" "src/Velt/Asset/AssimpMeshImporter.cpp" "src/Velt/Renderer/DefferedRenderer.h" "src/Velt/Renderer/DefferedRenderer.cpp")
+    "src/Velt/Asset/AssimpMeshImporter.h" "src/Velt/Asset/AssimpMeshImporter.cpp" "src/Velt/Renderer/DefferedRenderer.h" "src/Velt/Renderer/DefferedRenderer.cpp" "src/Velt/Renderer/BindingLayouts.h")
 
 # --- Dependencies (Subdirectories) ---
 add_subdirectory(vendor/spdlog)

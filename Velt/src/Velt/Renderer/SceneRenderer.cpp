@@ -5,6 +5,7 @@
 #include "Core/Application.h"
 #include "Core/Input.h"
 #include "PipelineManager.h"
+#include "BindingLayouts.h"
 
 namespace Velt {
 	
@@ -31,27 +32,13 @@ namespace Velt {
 			auto gVertexShader = ShaderLibrary::Get("Assets/Shader/gbuffer_vertex.hlsl.spv");
 			auto gPixelShader = ShaderLibrary::Get("Assets/Shader/gbuffer_pixel.hlsl.spv");
 
-			PipelineSpecification geometryPipelineSpecs{};
+			static PipelineSpecification geometryPipelineSpecs{};
 			geometryPipelineSpecs.VertexShader = gVertexShader;
 			geometryPipelineSpecs.FragmentShader = gPixelShader;
 			geometryPipelineSpecs.Layout = geometryLayout;
+			geometryPipelineSpecs.ColorAttachmentFormats = { VK_FORMAT_B8G8R8A8_SRGB, VK_FORMAT_B8G8R8A8_SRGB, VK_FORMAT_B8G8R8A8_SRGB };
 
-			m_CameraUBOBinding = 0;
-			bool foundCameraUBO = false;
-			auto setIt = gVertexShader->ReflectData.find(0);
-			if (setIt != gVertexShader->ReflectData.end())
-			{
-				for (const auto& b : setIt->second.Bindings)
-				{
-					if (b.type == RHI::DescriptorType::UNIFORM_BUFFER)
-					{
-						m_CameraUBOBinding = b.binding;
-						foundCameraUBO = true;
-						break;
-					}
-				}
-			}
-			VT_CORE_ASSERT(foundCameraUBO, "");
+			m_CameraUBOBinding = VT_CAMERA_SET_UBO_BINDING;
 
 			s_GeometryPipeline = Pipeline::Create(&geometryPipelineSpecs);
 			s_GeometryPipeline->Init();
