@@ -345,7 +345,7 @@ namespace Velt::RHI
 
 	void VulkanRenderer::DrawTexturedQuad(VkCommandBuffer renderCommandBuffer, const Ref<Texture2D>, const Matrix& transform)
 	{
-		VT_CORE_ASSERT(false, "doesnt even work in theory");
+		VT_CORE_ASSERT(false, "doesnt even work in theory you dumbass !!!");
 	}
 
 	void VulkanRenderer::DrawStaticModel(
@@ -415,7 +415,92 @@ namespace Velt::RHI
 
 	void VulkanRenderer::SubmitFullscreenTriangle(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<DefferedShaderInput>& input)
 	{
+		VkPipelineLayout layout = pipeline->GetVulkanPipelineLayout();
 
+		VkPipelineLayout pipelineLayout = pipeline->GetVulkanPipelineLayout();
+		VkCommandBuffer commandBuffer = renderCommandBuffer;
+
+
+		vkCmdBindDescriptorSets(renderCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &input->GetSet(), 0, VT_NULL_HANDLE);
+
+		vkCmdDraw(commandBuffer, 4, 0, 0, 0);
+		s_RenderData->DrawCallCount++;
 	}
 
+	void VulkanRenderer::BeginDefferedPass()
+	{
+		const auto& app = Velt::Application::Get();
+		const auto& window = app->GetWindow();
+		const auto& sc = window->GetSwapchain();
+		const auto&& cmd = sc->GetCurrentDrawCommandBuffer();
+		const auto* viewport = ImGuiLayer::GetViewport();
+
+		sc->TransitionImageLayout(
+			cmd,
+			Renderer::GetRenderTarget(VT_RENDER_TARGET_COMPOSITE)->GetImage(),
+			VK_IMAGE_LAYOUT_UNDEFINED,
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+		);
+
+		// Rendering Info Setup
+		VkClearValue clearColor = { {{0.0f, 1.0f, 0.992f, 1.0f}} };
+
+		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
+		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+		colorAttachmentInfo.imageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_COMPOSITE)->GetImageView();
+		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		colorAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachmentInfo.clearValue = clearColor;
+
+
+		VkRenderingInfoKHR renderInfo{};
+		renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
+		renderInfo.renderArea.extent = { viewport->GetWidth(), viewport->GetHeight() };
+		renderInfo.renderArea.offset = { 0, 0 };
+		renderInfo.layerCount = 1;
+		renderInfo.colorAttachmentCount = 1;
+		renderInfo.pColorAttachments = &colorAttachmentInfo;
+
+
+		vkCmdBeginRendering(cmd, &renderInfo);
+
+		u32 width = viewport->GetWidth();
+		u32 height = viewport->GetHeight();
+
+		VkRect2D scissor{};
+		scissor.extent = { width, height };
+		scissor.offset = { 0, 0 };
+		vkCmdSetScissor(cmd, 0, 1, &scissor);
+
+		VkViewport VulkanViewport{};
+		VulkanViewport.height = (float)height;
+		VulkanViewport.width = (float)width;
+		VulkanViewport.x = 0;
+		VulkanViewport.y = 0;
+		VulkanViewport.maxDepth = 1.0f;
+		VulkanViewport.minDepth = 0.0f;
+		vkCmdSetViewport(cmd, 0, 1, &VulkanViewport);
+	}
+
+	void VulkanRenderer::EndDefferedPass()
+	{
+		const auto& app = Velt::Application::Get();
+		const auto& window = app->GetWindow();
+		const auto& sc = window->GetSwapchain();
+		const auto&& cmd = sc->GetCurrentDrawCommandBuffer();
+
+		vkCmdEndRendering(cmd);
+
+		sc->TransitionImageLayout(
+			cmd,
+			Renderer::GetRenderTarget(VT_RENDER_TARGET_COMPOSITE)->GetImage(),
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
+		);
+	}
 }

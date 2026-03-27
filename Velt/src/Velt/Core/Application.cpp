@@ -154,24 +154,18 @@ namespace Velt {
 
 			VT_PROFILE_SCOPE("Render Loop");
 			Renderer::BeginFrame();
-			// Frame 
-
+			
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate(ts);
 
 			Renderer::BeginScenePass();
-			// Scene Pass
-
 			for (Layer* layer : m_LayerStack)
 				layer->OnRender(m_Window->GetSwapchain()->GetCurrentDrawCommandBuffer());
-			
 			Renderer::EndScenePass();
-
+			
 			Renderer::ExecuteDefferedPass();
 
 			Renderer::BeginGuiPass();
-			// Gui Pass
-
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
 
@@ -179,8 +173,8 @@ namespace Velt {
 				layer->OnImGuiRender2();
 
 			RenderStatisticsWidget(ts);
-
 			Renderer::EndGuiPass();
+
 			Renderer::EndFrame();
 			
 

@@ -42,6 +42,9 @@ namespace Velt {
         virtual void BeginScenePass() = 0;
         virtual void EndScenePass() = 0; 
 
+        virtual void BeginDefferedPass() = 0;
+        virtual void EndDefferedPass() = 0;
+
         virtual void BeginGuiPass() = 0;
         virtual void EndGuiPass() = 0;
 

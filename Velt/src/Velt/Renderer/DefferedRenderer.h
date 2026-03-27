@@ -29,6 +29,9 @@ namespace Velt
 		static Ref<Pipeline> GetPipeline() { return s_DefferedPipeline; }
 	private:
 		static Ref<Pipeline> s_DefferedPipeline;
+
+		u32 m_CameraUBOBinding;
+
 		Ref<DefferedShaderInput> m_ShaderInput;
 	};
 

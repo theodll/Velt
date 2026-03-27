@@ -27,6 +27,7 @@ namespace Velt {
 					{ ShaderDataType::Float3, "a_Binormal" },
 					{ ShaderDataType::Float2, "a_UV"}
 			};
+
 			auto gVertexShader = ShaderLibrary::Get("Assets/Shader/gbuffer_vertex.hlsl.spv");
 			auto gPixelShader = ShaderLibrary::Get("Assets/Shader/gbuffer_pixel.hlsl.spv");
 
@@ -35,8 +36,8 @@ namespace Velt {
 			geometryPipelineSpecs.FragmentShader = gPixelShader;
 			geometryPipelineSpecs.Layout = geometryLayout;
 
-			m_ViewProjBinding = 0;
-			bool foundViewProj = false;
+			m_CameraUBOBinding = 0;
+			bool foundCameraUBO = false;
 			auto setIt = gVertexShader->ReflectData.find(0);
 			if (setIt != gVertexShader->ReflectData.end())
 			{
@@ -44,13 +45,13 @@ namespace Velt {
 				{
 					if (b.type == RHI::DescriptorType::UNIFORM_BUFFER)
 					{
-						m_ViewProjBinding = b.binding;
-						foundViewProj = true;
+						m_CameraUBOBinding = b.binding;
+						foundCameraUBO = true;
 						break;
 					}
 				}
 			}
-			VT_CORE_ASSERT(foundViewProj, "");
+			VT_CORE_ASSERT(foundCameraUBO, "");
 
 			s_GeometryPipeline = Pipeline::Create(&geometryPipelineSpecs);
 			s_GeometryPipeline->Init();
@@ -76,12 +77,11 @@ namespace Velt {
 		m_Camera = CreateRef<EditorCamera>(glm::radians(50.0f), aspect, 0.1f, 1000.0f);
 		const auto& sc = Velt::Application::Get()->GetWindow()->GetSwapchain();
 
-		const u32 mfif = sc->GetMaxFrameInFlight();
-		m_CameraUBOs.resize(mfif);
-		m_GlobalSets.resize(mfif);
+		m_CameraUBOs.resize(MAX_FRAMES_IN_FLIGHT);
+		m_GlobalSets.resize(MAX_FRAMES_IN_FLIGHT);
 		const auto& setLayouts = s_GeometryPipeline->GetSetLayouts();
 		VT_CORE_ASSERT(!setLayouts.empty(), "");
-		for (u32 i = 0; i < mfif; i++)
+		for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
 			m_CameraUBOs[i] = UniformBuffer::Create(sizeof(CameraUBO));
 			m_GlobalSets[i] = RHI::VulkanContext::GetSetManager()->Allocate(setLayouts[0]);
@@ -89,7 +89,7 @@ namespace Velt {
 
 			RHI::VulkanContext::GetSetManager()->WriteBuffer(
 				m_GlobalSets[i],
-				m_ViewProjBinding,
+				m_CameraUBOBinding,
 				m_CameraUBOs[i]->GetVulkanBuffer(),
 				sizeof(CameraUBO)
 			);
@@ -150,6 +150,7 @@ namespace Velt {
 
 		CameraUBO ubo{};
 		ubo.viewProj = m_Camera->GetViewProjection();
+		ubo.invViewProj = m_Camera->GetInverseViewProjection();
 
 		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
 

@@ -24,6 +24,9 @@ namespace Velt::RHI
 		virtual void BeginScenePass() override;
 		virtual void EndScenePass() override;
 
+		virtual void BeginDefferedPass() override;
+		virtual void EndDefferedPass() override;
+
 		virtual void BeginGuiPass() override;
 		virtual void EndGuiPass() override;
 

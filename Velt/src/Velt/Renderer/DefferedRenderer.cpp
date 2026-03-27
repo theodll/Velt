@@ -27,8 +27,28 @@ namespace Velt
 
 			s_DefferedPipeline = Pipeline::Create(&defferedPBRPipelineSpecification);
 			s_DefferedPipeline->Init();
+
+			m_CameraUBOBinding = 0;
+			bool foundCameraUBO = false;
+			auto setIt = dPBRPixelShader->ReflectData.find(0);
+			if (setIt != dPBRPixelShader->ReflectData.end())
+			{
+				for (const auto& b : setIt->second.Bindings)
+				{
+					if (b.type == RHI::DescriptorType::UNIFORM_BUFFER)
+					{
+						m_CameraUBOBinding = b.binding;
+						foundCameraUBO = true;
+						break;
+					}
+				}
+			}
+
+			VT_CORE_ASSERT(foundCameraUBO, "Did not find Camera UBO Set in Shader Reflection Data");
 		}
 		m_ShaderInput = CreateRef<DefferedShaderInput>();
+
+
 	}
 
 	void DefferedRenderer::Shutdown()

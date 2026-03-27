@@ -143,7 +143,9 @@ namespace Velt {
 
 	void Renderer::ExecuteDefferedPass()
 	{
+		s_RenderAPI->BeginDefferedPass();
 		s_DefferedRenderer->ExecuteDefferedPass();
+		s_RenderAPI->EndDefferedPass();
 	}
 
 	void Renderer::BeginGuiPass()

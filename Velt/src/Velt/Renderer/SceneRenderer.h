@@ -25,13 +25,14 @@ namespace Velt {
 		struct alignas(16) CameraUBO
 		{
 			Matrix viewProj;
+			Matrix invViewProj;
 		};
 
 		static Ref<EditorCamera> m_Camera;
 
 		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
 		std::vector<VkDescriptorSet> m_GlobalSets;
-		u32 m_ViewProjBinding{};
+		u32 m_CameraUBOBinding{};
 
 		
 		i32 m_Rotation{};

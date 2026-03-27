@@ -24,6 +24,7 @@ struct TRANSFORM_PC
 struct CAMERA_UBO
 {
     float4x4 viewProj;
+    float4x4 invViewProj; 
 };
 
 cbuffer u_ViewProjection : register(b0, space0)
