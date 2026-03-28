@@ -10,6 +10,13 @@ namespace Velt
 	class DescriptorLayoutCache;
 	typedef VkDescriptorSetLayout DescriptorSetLayoutHandle;
 
+	enum CullMode {
+		VT_CULL_MODE_NONE = 0,
+		VT_CULL_MODE_FRONT_BIT = 0x00000001,
+		VT_CULL_MODE_BACK_BIT = 0x00000002,
+		VT_CULL_MODE_FRONT_AND_BACK = 0x00000003
+	};
+
 	struct PipelineSpecification
 	{
 		VertexLayout Layout;	
@@ -17,6 +24,7 @@ namespace Velt
 		Ref<Shader> FragmentShader;
 		std::vector<DescriptorSetLayoutHandle> SetLayouts;
 		std::vector<VkFormat> ColorAttachmentFormats;
+		CullMode CullMode;
 	};
 
 	// Todo [10.03.26, Theo]: move somewhere else

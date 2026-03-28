@@ -26,6 +26,7 @@ namespace Velt
 			defferedPBRPipelineSpecification.FragmentShader = dPBRPixelShader;
 			defferedPBRPipelineSpecification.Layout = defferedLayout;
 			defferedPBRPipelineSpecification.ColorAttachmentFormats = { VK_FORMAT_B8G8R8A8_SRGB };
+			defferedPBRPipelineSpecification.CullMode = VT_CULL_MODE_NONE;
 
 			s_DefferedPipeline = Pipeline::Create(&defferedPBRPipelineSpecification);
 			s_DefferedPipeline->Init();

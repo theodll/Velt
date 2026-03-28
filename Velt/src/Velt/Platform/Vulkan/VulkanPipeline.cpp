@@ -199,7 +199,7 @@ namespace Velt::RHI {
 		pConfigInfo->rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 		pConfigInfo->rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
 		pConfigInfo->rasterizationInfo.lineWidth = 1.0f;
-		pConfigInfo->rasterizationInfo.cullMode = VK_CULL_MODE_BACK_BIT;
+		pConfigInfo->rasterizationInfo.cullMode = (VkCullModeFlagBits)m_Specification.CullMode;
 		pConfigInfo->rasterizationInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
 
 		pConfigInfo->multisampleInfo = {};
