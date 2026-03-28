@@ -22,8 +22,8 @@ namespace Editor
 
         auto camera = Velt::SceneRenderer::GetCamera(); 
 
-        Velt::AssimpMeshImporter importer("Assets/Models/Sponza/Sponza.gltf");
-        //Velt::AssimpMeshImporter importer("Assets/Models/Helmet/SciFiHelmet.gltf");
+        //Velt::AssimpMeshImporter importer("Assets/Models/Sponza/Sponza.gltf");
+        Velt::AssimpMeshImporter importer("Assets/Models/Helmet/SciFiHelmet.gltf");
         m_Mesh = importer.ImportToMesh();
 
         m_Model = CreateRef<Velt::Model>(m_Mesh);

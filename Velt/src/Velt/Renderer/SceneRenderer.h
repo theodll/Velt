@@ -26,6 +26,7 @@ namespace Velt {
 		{
 			Matrix viewProj;
 			Matrix invViewProj;
+			Vector cameraPos;
 		};
 
 		static Ref<EditorCamera> m_Camera;

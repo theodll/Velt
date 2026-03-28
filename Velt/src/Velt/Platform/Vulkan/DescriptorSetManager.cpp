@@ -66,7 +66,7 @@ namespace Velt::RHI
         write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         write.pBufferInfo = &bufferInfo;
 
-        vkUpdateDescriptorSets(m_Device.device(), 1, &write, 0, nullptr);
+        vkUpdateDescriptorSets(m_Device.device(), 1, &write, 0, nullptr);  
     }
 
 

@@ -15,7 +15,7 @@ namespace Editor {
 		void OnUpdate(Velt::Timestep ts) override;
 		void OnEvent(Velt::Event& event) override;
 		void OnRender(VkCommandBuffer commandBuffer) override;
-
+		void gooo();
 		void OnImGuiRender2() override;
 	private: 
 		glm::vec3 m_CameraPos{};

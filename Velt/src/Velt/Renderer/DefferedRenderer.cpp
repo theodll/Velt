@@ -30,32 +30,9 @@ namespace Velt
 
 			s_DefferedPipeline = Pipeline::Create(&defferedPBRPipelineSpecification);
 			s_DefferedPipeline->Init();
-
-			m_CameraUBOBinding = VT_CAMERA_SET_UBO_BINDING;
-		}
-
-		m_CameraUBOs.resize(MAX_FRAMES_IN_FLIGHT);
-		m_GlobalSets.resize(MAX_FRAMES_IN_FLIGHT);
-
-		const std::vector<VkDescriptorSetLayout> setLayouts = s_DefferedPipeline->GetSetLayouts();
-		for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-		{
-			m_CameraUBOs[i] = UniformBuffer::Create(sizeof(CameraUBO));
-			m_GlobalSets[i] = RHI::VulkanContext::GetSetManager()->Allocate(setLayouts[0]);
-
-
-			RHI::VulkanContext::GetSetManager()->WriteBuffer(
-				m_GlobalSets[i],
-				m_CameraUBOBinding,
-				m_CameraUBOs[i]->GetVulkanBuffer(),
-				sizeof(CameraUBO)
-			);
-
 		}
 
 		m_ShaderInput = CreateRef<DefferedShaderInput>();
-
-
 	}
 
 	void DefferedRenderer::Shutdown()
@@ -66,25 +43,7 @@ namespace Velt
 	void DefferedRenderer::ExecuteDefferedPass()
 	{
 		auto cmd = Application::Get()->GetWindow()->GetSwapchain()->GetCurrentDrawCommandBuffer();
-
-		CameraUBO ubo{};
-		ubo.viewProj = SceneRenderer::GetCamera()->GetViewProjection();
-		ubo.invViewProj = SceneRenderer::GetCamera()->GetInverseViewProjection();
-
-		auto frameIndex = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex();
-		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
-
-		// Todo [25.02, Theo]: Make this platform independent
-		vkCmdBindDescriptorSets(
-			cmd,
-			VK_PIPELINE_BIND_POINT_GRAPHICS,
-			s_DefferedPipeline->GetVulkanPipelineLayout(),
-			0,
-			1,
-			&m_GlobalSets[frameIndex],
-			0,
-			nullptr
-		);
+		
 
 		m_ShaderInput->UpdateData();
 		Renderer::SubmitFullscreenTriangle(cmd, s_DefferedPipeline, m_ShaderInput);
@@ -100,13 +59,16 @@ namespace Velt
 		m_MetalEmitBinding = VT_DEFFERED_SET_BINDING_METAL_EMIT;
 		m_DepthBinding = VT_DEFFERED_SET_BINDING_DEPTH;
 		m_SamplerBinding = VT_DEFFERED_SET_BINDING_SAMPLER;
+		m_UBOBinding = VT_DEFFERED_SET_BINDING_UBO;
 		
 		m_ValidBindings.emplace(m_AlbedoAOBinding);
 		m_ValidBindings.emplace(m_NormalRoughBinding);
 		m_ValidBindings.emplace(m_MetalEmitBinding);
 		m_ValidBindings.emplace(m_DepthBinding);
 		m_ValidBindings.emplace(m_SamplerBinding);
+		m_ValidBindings.emplace(m_UBOBinding);
 
+		m_CameraUBOs.resize(MAX_FRAMES_IN_FLIGHT);
 		for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
 			m_GeometryBuffers[i] = CreateRef<GBuffer>();
@@ -117,24 +79,46 @@ namespace Velt
 			// Note [27.02, Theo] The two stands for the Deferred Set Layout (set 0 = global, set 1 = material, set 2 = deferred)
 			m_Sets[i] = RHI::VulkanContext::GetSetManager()->Allocate(layouts[2]);
 
-		}
+			m_CameraUBOs[i] = UniformBuffer::Create(sizeof(CameraUBO));
 
-		s_TextureSampler = Texture2D::Create(ERROR_TEXTURE_PATH);
-		for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-		{
-			RHI::VulkanContext::GetSetManager()->WriteSampler(
+			RHI::VulkanContext::GetSetManager()->WriteBuffer(
 				m_Sets[i],
-				m_SamplerBinding,
-				s_TextureSampler->GetSampler()
+				m_UBOBinding,
+				m_CameraUBOs[i]->GetVulkanBuffer(),
+				sizeof(CameraUBO)
 			);
-		}
 
+			if (m_TextureSampler) 
+			{
+				RHI::VulkanContext::GetSetManager()->WriteSampler(
+					m_Sets[i],
+					m_SamplerBinding,
+					m_TextureSampler->GetSampler()
+				);
+			}
+		}
+	
 		UpdateData();
 	}
 
 	void DefferedShaderInput::UpdateData()
 	{
 		auto renderTargets = Renderer::GetRenderTargets();
+
+		if (!m_TextureSampler)
+		{
+			if (renderTargets[VT_RENDER_TARGET_SAMPLER]) {
+				m_TextureSampler = renderTargets[VT_RENDER_TARGET_SAMPLER];
+				for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+				{
+					RHI::VulkanContext::GetSetManager()->WriteSampler(
+						m_Sets[i],
+						m_SamplerBinding,
+						m_TextureSampler->GetSampler()
+					);
+				}
+			}
+		}
 
 		auto updateImageBinding = [&](u32 binding, Ref<Texture2D> pTexture)
 		{
@@ -162,6 +146,22 @@ namespace Velt
 		updateImageBinding(m_NormalRoughBinding, renderTargets[VT_RENDER_TARGET_NORMAL_ROUGH]);
 		updateImageBinding(m_MetalEmitBinding, renderTargets[VT_RENDER_TARGET_METAL_EMIT]);
 		updateImageBinding(m_DepthBinding, renderTargets[VT_RENDER_TARGET_DEPTH]);
+
+		CameraUBO ubo{};
+		ubo.viewProj = SceneRenderer::GetCamera()->GetViewProjection();
+		ubo.invViewProj = SceneRenderer::GetCamera()->GetInverseViewProjection();
+		ubo.cameraPos = SceneRenderer::GetCamera()->GetPosition();
+
+		auto frameIndex = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex();
+		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
+
+		RHI::VulkanContext::GetSetManager()->WriteBuffer(
+			m_Sets[frameIndex],
+			m_UBOBinding,
+			m_CameraUBOs[frameIndex]->GetVulkanBuffer(),
+			sizeof(CameraUBO)
+		);
+
 	}
 
 	const VkDescriptorSet& DefferedShaderInput::GetSet() const 

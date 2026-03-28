@@ -30,16 +30,7 @@ namespace Velt
 		static Ref<Pipeline> GetPipeline() { return s_DefferedPipeline; }
 	private:
 		static Ref<Pipeline> s_DefferedPipeline;
-
-		struct alignas(16) CameraUBO
-		{
-			Matrix viewProj;
-			Matrix invViewProj;
-		};
-
-		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
-		std::vector<VkDescriptorSet> m_GlobalSets;
-		u32 m_CameraUBOBinding{};
+		
 
 
 		Ref<DefferedShaderInput> m_ShaderInput;
@@ -59,7 +50,18 @@ namespace Velt
 		VkDescriptorSet m_Sets[MAX_FRAMES_IN_FLIGHT];
 		Ref<GBuffer> m_GeometryBuffers[MAX_FRAMES_IN_FLIGHT];
 
-		Ref<Texture2D> s_TextureSampler;
+		Ref<Texture2D> m_TextureSampler;
+
+
+		struct alignas(16) CameraUBO
+		{
+			Matrix viewProj;
+			Matrix invViewProj;
+			Vector cameraPos;
+		};
+
+		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
+		u32 m_UBOBinding{};
 
 		u32 m_AlbedoAOBinding{};
 		u32 m_NormalRoughBinding{};

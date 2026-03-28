@@ -95,7 +95,8 @@ namespace Velt
 		VT_DEFFERED_SET_BINDING_NORMAL_ROUGH = 1,
 		VT_DEFFERED_SET_BINDING_METAL_EMIT = 2,
 		VT_DEFFERED_SET_BINDING_DEPTH = 3,
-		VT_DEFFERED_SET_BINDING_SAMPLER = 5
+		VT_DEFFERED_SET_BINDING_SAMPLER = 5,
+		VT_DEFFERED_SET_BINDING_UBO = 6
 	};
 
 	static std::vector<RHI::DescriptorBinding> GetDefferedSetBindings()
@@ -136,6 +137,13 @@ namespace Velt
 		sampler.count = 1;
 		sampler.stage = RHI::ShaderStage::FRAGMENT;
 		bindings.push_back(sampler);
+
+		RHI::DescriptorBinding ubo{};
+		ubo.type = RHI::DescriptorType::UNIFORM_BUFFER;
+		ubo.binding = VT_DEFFERED_SET_BINDING_UBO;
+		ubo.count = 1;
+		ubo.stage = RHI::ShaderStage::FRAGMENT;
+		bindings.push_back(ubo);
 
 		return bindings;
 	}

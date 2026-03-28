@@ -139,6 +139,7 @@ namespace Velt {
 		CameraUBO ubo{};
 		ubo.viewProj = m_Camera->GetViewProjection();
 		ubo.invViewProj = m_Camera->GetInverseViewProjection();
+		ubo.cameraPos = m_Camera->GetPosition();
 
 		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
 

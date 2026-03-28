@@ -68,6 +68,16 @@ namespace Velt {
 		composite.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 		s_RenderTargets[VT_RENDER_TARGET_COMPOSITE] = Texture2D::Create(&composite);
 
+		TextureCreateInfo sampler;
+		sampler.AspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		sampler.Extent = { width, height, 1 };
+		sampler.Format = VK_FORMAT_B8G8R8A8_SRGB;
+		sampler.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		sampler.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+		s_RenderTargets[VT_RENDER_TARGET_SAMPLER] = Texture2D::Create(&sampler);
+
+
+
 	}
 
 	void Renderer::Init()
