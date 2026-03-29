@@ -99,7 +99,12 @@ add_library(Velt SHARED
     "src/Velt/Renderer/Camera.h" "src/Velt/Renderer/Camera.cpp"
     "src/Velt/Editor/EditorCamera.h"
     "src/Velt/Editor/EditorCamera.cpp"
-    "src/Velt/Asset/AssimpMeshImporter.h" "src/Velt/Asset/AssimpMeshImporter.cpp" "src/Velt/Renderer/DefferedRenderer.h" "src/Velt/Renderer/DefferedRenderer.cpp" "src/Velt/Renderer/BindingLayouts.h")
+    "src/Velt/Asset/AssimpMeshImporter.h" 
+    "src/Velt/Asset/AssimpMeshImporter.cpp" 
+    "src/Velt/Renderer/DefferedRenderer.h" 
+    "src/Velt/Renderer/DefferedRenderer.cpp" 
+    "src/Velt/Renderer/BindingLayouts.h"
+)
 
 # --- Dependencies (Subdirectories) ---
 add_subdirectory(vendor/spdlog)
@@ -150,6 +155,14 @@ set(HLSL_FILES
     "deffered_pbr_pixel.hlsl" "ps_6_0"
 )
 
+# Ninja Fix: Erzeuge eine Regel für eine Fake-Datei
+set(FORCE_REBUILD "${CMAKE_CURRENT_BINARY_DIR}/FORCE_REBUILD")
+add_custom_command(
+    OUTPUT ${FORCE_REBUILD}
+    COMMAND ${CMAKE_COMMAND} -E echo "Forcing Shader Rebuild"
+    VERBATIM
+)
+
 set(SPIRV_BINARY_FILES "")
 list(LENGTH HLSL_FILES _hlsl_count)
 math(EXPR _hlsl_max "${_hlsl_count} - 1")
@@ -163,37 +176,34 @@ foreach(_i RANGE 0 ${_hlsl_max} 2)
     set(OUT_PATH "${SHADER_BIN_DIR}/${HLSL_FILE}.spv")
     list(APPEND SPIRV_BINARY_FILES ${OUT_PATH})
 
-    # We add a dummy output file that never exists to force CMake to always re-run the command
-    set(FORCE_FILE "${OUT_PATH}.force")
-    if(DEBUG)
-        add_custom_command(
-            OUTPUT ${OUT_PATH} ${FORCE_FILE}
-            COMMAND ${DXC_EXECUTABLE} -T ${HLSL_PROFILE} -E main -spirv -Od -Zi -Qembed_debug -fspv-target-env=vulkan1.3 "${SRC_PATH}" -Fo "${OUT_PATH}"
-            DEPENDS "${SRC_PATH}"
-            COMMENT "Compiling HLSL: ${HLSL_FILE} (Forced Rebuild)"
-            VERBATIM
-        )
-    else()
-        add_custom_command(
-            OUTPUT ${OUT_PATH} ${FORCE_FILE}
-            COMMAND ${DXC_EXECUTABLE} -T ${HLSL_PROFILE} -E main -spirv -fspv-target-env=vulkan1.3 "${SRC_PATH}" -Fo "${OUT_PATH}"
-            DEPENDS "${SRC_PATH}"
-            COMMENT "Compiling HLSL: ${HLSL_FILE} (Forced Rebuild)"
-            VERBATIM
-        )
-    endif()
+    add_custom_command(
+        OUTPUT ${OUT_PATH}
+        COMMAND ${DXC_EXECUTABLE}
+            -T ${HLSL_PROFILE}
+            -E main
+            -spirv
+            -fspv-target-env=vulkan1.3
+            "${SRC_PATH}"
+            -Fo "${OUT_PATH}"
+        DEPENDS "${SRC_PATH}" ${FORCE_REBUILD}
+        COMMENT "Force recompiling HLSL: ${HLSL_FILE}"
+        VERBATIM
+    )
 endforeach()
 
+# Target für die Shader-Kompilierung erstellen
 add_custom_target(CompileShaders ALL DEPENDS ${SPIRV_BINARY_FILES})
+
+# Haupt-Target von den Shadern abhängig machen
 add_dependencies(Velt CompileShaders)
 
-# --- Post-Build (Assets & Shader) ---
+# --- Post-Build (Assets & Shader Deployment) ---
 add_custom_command(
     TARGET Velt POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:Velt>/Assets/Shader"
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Assets" "$<TARGET_FILE_DIR:Velt>/Assets"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${SPIRV_BINARY_FILES} "$<TARGET_FILE_DIR:Velt>/Assets/Shader/"
-    COMMENT "Deploying Assets and Compiled Shaders"
+    COMMENT "Deploying Assets and freshly compiled Shaders"
 )
 
 # --- ImGui Sources ---

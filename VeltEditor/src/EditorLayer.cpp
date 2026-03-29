@@ -22,12 +22,15 @@ namespace Editor
 
         auto camera = Velt::SceneRenderer::GetCamera(); 
 
-        //Velt::AssimpMeshImporter importer("Assets/Models/Sponza/Sponza.gltf");
-        Velt::AssimpMeshImporter importer("Assets/Models/Helmet/SciFiHelmet.gltf");
+        //Velt::AssimpMeshImporter importer("Assets/Models/Sphere/PlasticSphere.gltf");
+        Velt::AssimpMeshImporter importer("Assets/Models/Sponza/Sponza.gltf");
+        //Velt::AssimpMeshImporter importer("Assets/Models/Helmet/SciFiHelmet.gltf");
         m_Mesh = importer.ImportToMesh();
 
         m_Model = CreateRef<Velt::Model>(m_Mesh);
         m_Model->SetRotationEulerDegrees({ 180.0f, 180.0f, 0.0f });
+        m_Model->SetScale(Velt::Vector(1.0f));
+		m_Model->SetTranslation({ 0.0f, -1.0f, 0.0f });
 
      //   camera->SetViewDirection(Velt::Vector(0.0f), Velt::Vector(0.5f, 0.0f, 1.0f));
 	}

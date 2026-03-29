@@ -477,10 +477,10 @@ namespace Velt::RHI
 		vkCmdSetScissor(cmd, 0, 1, &scissor);
 
 		VkViewport VulkanViewport{};
-		VulkanViewport.height = (float)height;
+		VulkanViewport.height = -(float)height;
 		VulkanViewport.width = (float)width;
 		VulkanViewport.x = 0;
-		VulkanViewport.y = 0;
+		VulkanViewport.y = (float)height;
 		VulkanViewport.maxDepth = 1.0f;
 		VulkanViewport.minDepth = 0.0f;
 		vkCmdSetViewport(cmd, 0, 1, &VulkanViewport);
