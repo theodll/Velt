@@ -55,6 +55,7 @@ namespace Velt::RHI
         void SetPoolSize(const PoolSizes& sizes) { m_PoolSizes = std::move(sizes); }; 
         void WriteBuffer(VkDescriptorSet set, uint32_t binding, VkBuffer buffer, VkDeviceSize size);
         void WriteImage(VkDescriptorSet set, u32 binding, const VkDescriptorImageInfo& info);
+        void WriteSampler(VkDescriptorSet set, u32 binding, VkSampler sampler);
 
 
         VkDescriptorSet Allocate(VkDescriptorSetLayout layout, u32 maxSetsHint = 128);

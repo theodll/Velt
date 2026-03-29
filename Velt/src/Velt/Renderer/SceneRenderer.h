@@ -18,25 +18,28 @@ namespace Velt {
 		void BeginScene();
 		void EndScene();
 
-		static Ref<Pipeline> GetPipeline() { return s_Pipeline; };
+		static Ref<Pipeline> GetPipeline() { return s_GeometryPipeline; };
 		static Ref<EditorCamera> GetCamera() { return m_Camera; };
 
 	private:
 		struct alignas(16) CameraUBO
 		{
 			Matrix viewProj;
+			Matrix invViewProj;
+			Vector cameraPos;
 		};
 
 		static Ref<EditorCamera> m_Camera;
 
 		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
 		std::vector<VkDescriptorSet> m_GlobalSets;
+		u32 m_CameraUBOBinding{};
 
 		
 		i32 m_Rotation{};
 		Vector m_CameraPosition{};
 
-		static Ref<Pipeline> s_Pipeline;
+		static Ref<Pipeline> s_GeometryPipeline;
 		
 
 	};

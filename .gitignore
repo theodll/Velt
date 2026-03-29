@@ -30,6 +30,8 @@ VeltProfile-Runtime.json
 VeltProfile-Startup.json
 VeltProfile-Shutdown.json
 
+Scripts/CompiledShaders
+
 .cache/
 .zed/
 

@@ -16,12 +16,16 @@ namespace Velt
 		virtual ~Camera() = default;
 			
 		const Matrix& GetProjection() const { return m_Projection; }
+		const Matrix& GetViewProjection() const { return m_ViewProjection; }
+		const Matrix& GetInverseViewProjection() const { return glm::inverse(m_ViewProjection); }
 	protected:
-		Matrix m_Projection = glm::mat4(1.0f);
+		Matrix m_Projection = Matrix(1.0f);
+		Matrix m_ViewMatrix = Matrix(1.0f);
+		Matrix m_ViewProjection = Matrix(1.0f);
 	};
 
 	/*
-	class Camera 
+	class Camera O
 	{
 	public:
 		Camera() = default; 

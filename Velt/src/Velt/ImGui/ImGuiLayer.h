@@ -25,6 +25,7 @@ namespace Velt {
 		
 		virtual void OnRender(VkCommandBuffer commandBuffer) override;
 		virtual void OnImGuiRender() override;
+		virtual void OnImGuiRender2() override;
 
 		static void ProcessSDLEvent(const SDL_Event* pEvent);
 
@@ -39,6 +40,9 @@ namespace Velt {
 		static ImGuiRenderer* GetRenderer() { return m_Renderer.get(); } 
 		static SceneViewport* GetViewport() { return m_SceneViewport.get(); }
 
+		static bool m_RenderTargetChangePending;
+		static RenderTarget m_PendingRenderTarget;
+
 	private: 
 		inline void ApplyEditorTheme(ImGuiStyle& style);
 		static Ref<ImGuiRenderer> m_Renderer;
@@ -49,6 +53,6 @@ namespace Velt {
 		static u32 m_PendingViewportW;
 		static u32 m_PendingViewportH;
 		static bool m_ViewportResizePending;
-
+		
 	}; 
 }

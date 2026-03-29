@@ -17,6 +17,8 @@ namespace Velt {
 	u32 ImGuiLayer::m_PendingViewportH = 0;
 	u32 ImGuiLayer::m_PendingViewportW = 0;
 	bool ImGuiLayer::m_ViewportResizePending = false;
+	bool ImGuiLayer::m_RenderTargetChangePending = false;
+	RenderTarget ImGuiLayer::m_PendingRenderTarget = VT_RENDER_TARGET_ALBEDO_AO;
 
 	ImGuiLayer::ImGuiLayer()
 	{
@@ -101,6 +103,14 @@ namespace Velt {
 		RenderSceneViewport();
 	}
 
+	void ImGuiLayer::OnImGuiRender2()
+	{
+		VT_PROFILE_FUNCTION();
+		
+
+		
+	}
+
 	void ImGuiLayer::SetupDockspace()
 	{
 		VT_PROFILE_FUNCTION();
@@ -151,10 +161,13 @@ namespace Velt {
 
 	void ImGuiLayer::RenderSceneViewport()
 	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
+
 		ImGui::Begin("Scene Viewport", nullptr,
 			ImGuiWindowFlags_NoScrollbar |
 			ImGuiWindowFlags_NoScrollWithMouse);
 
+		
 		ImVec2 avail = ImGui::GetContentRegionAvail();
 
 		u32 newW = (u32)glm::max(1.0f, avail.x);
@@ -173,6 +186,8 @@ namespace Velt {
 			ImGui::Text("Scene viewport not initialized");
 
 		ImGui::End();
+
+		ImGui::PopStyleVar();
 	}
 	void ImGuiLayer::OnRender(VkCommandBuffer commandBuffer)
 	{
@@ -187,6 +202,12 @@ namespace Velt {
 		{
 			m_SceneViewport->Resize(m_PendingViewportW, m_PendingViewportH);
 			m_ViewportResizePending = false;
+		}
+
+		if (m_RenderTargetChangePending)
+		{
+			m_SceneViewport->SetRenderTarget(m_PendingRenderTarget);
+			m_RenderTargetChangePending = false;
 		}
 	}
 

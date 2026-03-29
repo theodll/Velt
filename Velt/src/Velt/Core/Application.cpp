@@ -154,21 +154,18 @@ namespace Velt {
 
 			VT_PROFILE_SCOPE("Render Loop");
 			Renderer::BeginFrame();
-			// Frame 
-
+			
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate(ts);
 
 			Renderer::BeginScenePass();
-			// Scene Pass
-
 			for (Layer* layer : m_LayerStack)
 				layer->OnRender(m_Window->GetSwapchain()->GetCurrentDrawCommandBuffer());
-			
 			Renderer::EndScenePass();
-			Renderer::BeginGuiPass();
-			// Gui Pass
+			
+			Renderer::ExecuteDefferedPass();
 
+			Renderer::BeginGuiPass();
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
 
@@ -176,8 +173,8 @@ namespace Velt {
 				layer->OnImGuiRender2();
 
 			RenderStatisticsWidget(ts);
-
 			Renderer::EndGuiPass();
+
 			Renderer::EndFrame();
 			
 
@@ -191,10 +188,23 @@ namespace Velt {
 	}
 
 
+	static const char* RenderTargetToString(RenderTarget rt)
+	{
+		switch (rt)
+		{
+		case VT_RENDER_TARGET_ALBEDO_AO:   return "Albedo + Ambient Occlusion";
+		case VT_RENDER_TARGET_NORMAL_ROUGH:   return "Normal + Roughness";
+		case VT_RENDER_TARGET_METAL_EMIT:    return "Metal + Emit";
+		case VT_RENDER_TARGET_COMPOSITE: return "Composite";
+		default: return "Unknown";
+		}
+	}
+
 	void Application::RenderStatisticsWidget(Timestep ts)
 	{
 		ImGui::Begin("Statistics");
 		ImGui::Text("Velt Engine v0.0");
+		ImGui::Separator();
 		float v = std::round(1 / ts.GetSeconds());
 		static float s = v; s += (v - s) * (1.0f - std::exp(-ts.GetSeconds() / 0.12f)); // Smothes the fps display
 		ImGui::Text("Frames per Second: %.0fFPS", s);
@@ -202,6 +212,31 @@ namespace Velt {
 		ImGui::Text("Deltatime (s): %fs", ts.GetSeconds());
 		ImGui::Text("Deltatime (ms): %.4gms", ts.GetMilliseconds());
 		ImGui::Dummy({ 500, 3 });
+		ImGui::Separator();
+		ImGui::Text("Draw Calls: %i", Renderer::GetDrawCallCount());
+		
+		static RenderTarget currentRT = ImGuiLayer::GetViewport()->GetRenderTarget();
+
+		if (ImGui::BeginCombo("Render Target", RenderTargetToString(currentRT)))
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				RenderTarget rt = (RenderTarget)i;
+				bool selected = (currentRT == rt);
+
+				if (ImGui::Selectable(RenderTargetToString(rt), selected))
+				{
+					currentRT = rt;
+					ImGuiLayer::m_PendingRenderTarget = rt;
+					ImGuiLayer::m_RenderTargetChangePending = true;
+				}
+
+				if (selected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
 //		ImGui::Text("Camera Position: X: %.2f Y: %.2f Z: %.2f", SceneRenderer::GetCamera()->GetPosition().x, SceneRenderer::GetCamera()->GetPosition().y, SceneRenderer::GetCamera()->GetPosition().z);
 		ImGui::End();
 

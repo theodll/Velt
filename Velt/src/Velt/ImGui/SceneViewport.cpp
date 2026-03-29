@@ -1,5 +1,6 @@
 #include "vtpch.h"
 #include "SceneViewport.h"
+#include "Renderer/Renderer.h"
 #include "Velt/Platform/Vulkan/VulkanContext.h"
 #include "Velt/Platform/Vulkan/VulkanDevice.h"
 #include "imgui_impl_vulkan.h"
@@ -43,89 +44,15 @@ namespace Velt {
 	{
 		VT_PROFILE_FUNCTION();
 
-		VkImageCreateInfo imageInfo{};
-		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-		imageInfo.imageType = VK_IMAGE_TYPE_2D;
-		imageInfo.format = VK_FORMAT_B8G8R8A8_SRGB;
-		imageInfo.extent.width = m_Width;
-		imageInfo.extent.height = m_Height;
-		imageInfo.extent.depth = 1;
-		imageInfo.mipLevels = 1;
-		imageInfo.arrayLayers = 1;
-		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-		imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-		imageInfo.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		Renderer::RecreateRenderTargets(m_Width, m_Height); 
 
-		m_Device.CreateImageWithInfo(imageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_Image, m_ImageMemory);
+		m_Image = Renderer::GetRenderTarget(m_RenderTarget)->GetImage();
+		m_ImageView = Renderer::GetRenderTarget(m_RenderTarget)->GetImageView();
+		m_Sampler = Renderer::GetRenderTarget(m_RenderTarget)->GetSampler();
 
-		VkImageViewCreateInfo viewInfo{};
-		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		viewInfo.image = m_Image;
-		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		viewInfo.format = VK_FORMAT_B8G8R8A8_SRGB;
-		viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-		viewInfo.subresourceRange.baseMipLevel = 0;
-		viewInfo.subresourceRange.levelCount = 1;
-		viewInfo.subresourceRange.baseArrayLayer = 0;
-		viewInfo.subresourceRange.layerCount = 1;
+		m_DepthImage = Renderer::GetRenderTarget(VT_RENDER_TARGET_DEPTH)->GetImage();
+		m_DepthImageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_DEPTH)->GetImageView();
 
-		if (vkCreateImageView(m_Device.device(), &viewInfo, nullptr, &m_ImageView) != VK_SUCCESS)
-		{
-			VT_CORE_ERROR("Failed to create image view for scene viewport!");
-		}
-
-		VkSamplerCreateInfo samplerInfo{};
-		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-		samplerInfo.magFilter = VK_FILTER_LINEAR;
-		samplerInfo.minFilter = VK_FILTER_LINEAR;
-		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-		samplerInfo.anisotropyEnable = VK_FALSE;
-		samplerInfo.maxAnisotropy = 1.0f;
-		samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-		samplerInfo.unnormalizedCoordinates = VK_FALSE;
-		samplerInfo.compareEnable = VK_FALSE;
-		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
-		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-
-		if (vkCreateSampler(m_Device.device(), &samplerInfo, nullptr, &m_Sampler) != VK_SUCCESS)
-		{
-			VT_CORE_ERROR("Failed to create sampler for scene viewport!");
-		}
-
-		VkImageCreateInfo depthImageInfo{};
-		depthImageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-		depthImageInfo.imageType = VK_IMAGE_TYPE_2D;
-		depthImageInfo.format = VK_FORMAT_D32_SFLOAT;
-		depthImageInfo.extent.width = m_Width;
-		depthImageInfo.extent.height = m_Height;
-		depthImageInfo.extent.depth = 1;
-		depthImageInfo.mipLevels = 1;
-		depthImageInfo.arrayLayers = 1;
-		depthImageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-		depthImageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-		depthImageInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-		depthImageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		depthImageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-
-		m_Device.CreateImageWithInfo(depthImageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_DepthImage, m_DepthImageMemory);
-
-		VkImageViewCreateInfo depthViewInfo{};
-		depthViewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		depthViewInfo.image = m_DepthImage;          
-		depthViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		depthViewInfo.format = VK_FORMAT_D32_SFLOAT;
-		depthViewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-		depthViewInfo.subresourceRange.baseMipLevel = 0;
-		depthViewInfo.subresourceRange.levelCount = 1;
-		depthViewInfo.subresourceRange.baseArrayLayer = 0;
-		depthViewInfo.subresourceRange.layerCount = 1;
-
-		VT_VK_CHECK(vkCreateImageView(m_Device.device(), &depthViewInfo, nullptr, &m_DepthImageView), "Failed to create depth image view for scene viewport!");
-	
 		const auto& resourceUploader = RHI::VulkanContext::GetResourceUploader();
 		resourceUploader->Begin();
 
@@ -184,38 +111,6 @@ namespace Velt {
 	void SceneViewport::CleanupResources()
 	{
 		VT_PROFILE_FUNCTION();
-
-		vkDeviceWaitIdle(m_Device.device());
-
-		if (m_DescriptorSet != VK_NULL_HANDLE)
-		{
-			ImGui_ImplVulkan_RemoveTexture(m_DescriptorSet);
-			m_DescriptorSet = VK_NULL_HANDLE;
-		}
-
-		if (m_Sampler != VK_NULL_HANDLE)
-		{
-			vkDestroySampler(m_Device.device(), m_Sampler, nullptr);
-			m_Sampler = VK_NULL_HANDLE;
-		}
-
-		if (m_ImageView != VK_NULL_HANDLE)
-		{
-			vkDestroyImageView(m_Device.device(), m_ImageView, nullptr);
-			m_ImageView = VK_NULL_HANDLE;
-		}
-
-		if (m_Image != VK_NULL_HANDLE)
-		{
-			vkDestroyImage(m_Device.device(), m_Image, nullptr);
-			m_Image = VK_NULL_HANDLE;
-		}
-
-		if (m_ImageMemory != VK_NULL_HANDLE)
-		{
-			vkFreeMemory(m_Device.device(), m_ImageMemory, nullptr);
-			m_ImageMemory = VK_NULL_HANDLE;
-		}
 	}
 
 	void SceneViewport::CreateDescriptorSet()
@@ -288,6 +183,17 @@ namespace Velt {
 			0, nullptr,
 			1, &barrier
 		);
+	}
+
+	void SceneViewport::SetRenderTarget(RenderTarget target)
+	{
+		if (target == m_RenderTarget)
+			return;
+
+		m_RenderTarget = target;
+
+		CleanupResources();
+		CreateResources();
 	}
 
 }

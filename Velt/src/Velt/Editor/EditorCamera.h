@@ -83,7 +83,6 @@ namespace Velt
         float RotationSpeed() const;
         float ZoomSpeed() const;
 
-        Matrix m_ViewMatrix{ 1.0f };
         Vector m_Position{ 0.0f, 0.0f, 5.0f };
         Vector m_Direction{};
         Vector m_FocalPoint{};

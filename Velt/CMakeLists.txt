@@ -96,10 +96,15 @@ add_library(Velt SHARED
     "vendor/spirv-reflect/spirv_reflect.cpp" 
     "src/Velt/Renderer/PipelineManager.h" 
     "src/Velt/Renderer/PipelineManager.cpp"
- "src/Velt/Renderer/Camera.h" "src/Velt/Renderer/Camera.cpp"
- "src/Velt/Editor/EditorCamera.h"
- "src/Velt/Editor/EditorCamera.cpp"
-  "src/Velt/Asset/AssimpMeshImporter.h" "src/Velt/Asset/AssimpMeshImporter.cpp")
+    "src/Velt/Renderer/Camera.h" "src/Velt/Renderer/Camera.cpp"
+    "src/Velt/Editor/EditorCamera.h"
+    "src/Velt/Editor/EditorCamera.cpp"
+    "src/Velt/Asset/AssimpMeshImporter.h" 
+    "src/Velt/Asset/AssimpMeshImporter.cpp" 
+    "src/Velt/Renderer/DefferedRenderer.h" 
+    "src/Velt/Renderer/DefferedRenderer.cpp" 
+    "src/Velt/Renderer/BindingLayouts.h"
+)
 
 # --- Dependencies (Subdirectories) ---
 add_subdirectory(vendor/spdlog)
@@ -107,17 +112,12 @@ add_subdirectory(vendor/glm)
 add_subdirectory(vendor/assimp)
 
 if(APPLE)
-
     find_package(SDL3 REQUIRED)
-
 else()
-
     set(SDL_TEST OFF CACHE BOOL "" FORCE)
     set(SDL_TEST_LIBRARY OFF CACHE BOOL "" FORCE)
     set(SDL_DISABLE_INSTALL ON CACHE BOOL "" FORCE)
-
     add_subdirectory(vendor/sdl3 EXCLUDE_FROM_ALL)
-
 endif()
 
 # --- Vulkan Find & Link ---
@@ -126,7 +126,6 @@ target_link_libraries(Velt PUBLIC Vulkan::Vulkan)
 target_link_libraries(Velt PRIVATE spdlog::spdlog SDL3::SDL3 assimp)
 
 # --- Unified Include Paths ---
-# Wir nutzen CMAKE_CURRENT_SOURCE_DIR, da wir uns in /Velt befinden
 target_include_directories(Velt PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Velt
@@ -137,7 +136,6 @@ target_include_directories(Velt PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/sdl3/include
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/backends
-    ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
@@ -151,6 +149,18 @@ file(MAKE_DIRECTORY ${SHADER_BIN_DIR})
 set(HLSL_FILES 
     "basic_vertex_shader.hlsl" "vs_6_0"
     "basic_fragment_shader.hlsl" "ps_6_0"
+    "gbuffer_vertex.hlsl" "vs_6_0"
+    "gbuffer_pixel.hlsl" "ps_6_0"
+    "deffered_pbr_vertex.hlsl" "vs_6_0"
+    "deffered_pbr_pixel.hlsl" "ps_6_0"
+)
+
+# Ninja Fix: Erzeuge eine Regel für eine Fake-Datei
+set(FORCE_REBUILD "${CMAKE_CURRENT_BINARY_DIR}/FORCE_REBUILD")
+add_custom_command(
+    OUTPUT ${FORCE_REBUILD}
+    COMMAND ${CMAKE_COMMAND} -E echo "Forcing Shader Rebuild"
+    VERBATIM
 )
 
 set(SPIRV_BINARY_FILES "")
@@ -168,23 +178,32 @@ foreach(_i RANGE 0 ${_hlsl_max} 2)
 
     add_custom_command(
         OUTPUT ${OUT_PATH}
-        COMMAND ${DXC_EXECUTABLE} -T ${HLSL_PROFILE} -E main -spirv -fspv-target-env=vulkan1.3 "${SRC_PATH}" -Fo "${OUT_PATH}"
-        DEPENDS "${SRC_PATH}"
-        COMMENT "Compiling HLSL: ${HLSL_FILE}"
+        COMMAND ${DXC_EXECUTABLE}
+            -T ${HLSL_PROFILE}
+            -E main
+            -spirv
+            -fspv-target-env=vulkan1.3
+            "${SRC_PATH}"
+            -Fo "${OUT_PATH}"
+        DEPENDS "${SRC_PATH}" ${FORCE_REBUILD}
+        COMMENT "Force recompiling HLSL: ${HLSL_FILE}"
         VERBATIM
     )
 endforeach()
 
+# Target für die Shader-Kompilierung erstellen
 add_custom_target(CompileShaders ALL DEPENDS ${SPIRV_BINARY_FILES})
+
+# Haupt-Target von den Shadern abhängig machen
 add_dependencies(Velt CompileShaders)
 
-# --- Post-Build (Assets & Shader) ---
+# --- Post-Build (Assets & Shader Deployment) ---
 add_custom_command(
     TARGET Velt POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:Velt>/Assets/Shader"
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Assets" "$<TARGET_FILE_DIR:Velt>/Assets"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${SPIRV_BINARY_FILES} "$<TARGET_FILE_DIR:Velt>/Assets/Shader/"
-    COMMENT "Deploying Assets and Compiled Shaders"
+    COMMENT "Deploying Assets and freshly compiled Shaders"
 )
 
 # --- ImGui Sources ---

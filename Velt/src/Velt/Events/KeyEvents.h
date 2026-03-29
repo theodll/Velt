@@ -13,7 +13,7 @@ namespace Velt {
 
         std::string ToString() const override {
             std::stringstream ss;
-            ss << GetName() << ": " << Key << " repeat=" << (Repeat ? "true" : "false");
+            // ss << GetName() << ": " << Key << " repeat=" << (Repeat ? "true" : "false");
             return ss.str();
         }
 
@@ -29,7 +29,7 @@ namespace Velt {
 
         std::string ToString() const override {
             std::stringstream ss;
-            ss << GetName() << ": " << Key;
+        //    ss << GetName() << ": " << Key;
             return ss.str();
         }
 

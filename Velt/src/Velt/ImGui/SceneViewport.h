@@ -1,5 +1,6 @@
 #pragma once
 #include "Platform/Vulkan/VulkanDevice.h"
+#include "Renderer/Renderer.h"
 
 namespace Velt
 {
@@ -28,10 +29,14 @@ namespace Velt
 		void TransitionForRendering(VkCommandBuffer commandBuffer);
 		void TransitionForSampling(VkCommandBuffer commandBuffer);
 
+		void SetRenderTarget(RenderTarget target);
+		RenderTarget GetRenderTarget() { return m_RenderTarget; }
 	private:
 		void CreateResources();
 		void CleanupResources();
 		void CreateDescriptorSet();
+
+		RenderTarget m_RenderTarget = VT_RENDER_TARGET_COMPOSITE;
 
 		u32 m_Width;
 		u32 m_Height;

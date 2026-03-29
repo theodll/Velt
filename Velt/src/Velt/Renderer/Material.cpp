@@ -1,9 +1,11 @@
+#include "Core/Core.h"
 #include "Material.h"
 #include "UniformBuffer.h"
 #include "SceneRenderer.h"
 #include "Platform/Vulkan/VulkanContext.h"
 #include "Platform/Vulkan/DescriptorSetManager.h"
 #include "Core/Application.h"
+#include "BindingLayouts.h"
 
 namespace Velt
 {
@@ -11,39 +13,60 @@ namespace Velt
 		{
 			Ref<Texture2D> GetDefaultMaterialTexture()
 			{
-				static Ref<Texture2D> s_DefaultTexture = Texture2D::Create("Assets/Textures/error.png");
+				static Ref<Texture2D> s_DefaultTexture = Texture2D::Create(ERROR_TEXTURE_PATH);
 				return s_DefaultTexture;
 			}
 		}
 
 		Material::Material()
 		{
+			m_ValidBindings.insert(VT_MATERIAL_SET_BINDING_UBO);
+			m_ValidBindings.insert(VT_MATERIAL_SET_BINDING_ALBEDO);
+			m_ValidBindings.insert(VT_MATERIAL_SET_BINDING_NORMAL);
+			m_ValidBindings.insert(VT_MATERIAL_SET_BINDING_METALLIC);
+			m_ValidBindings.insert(VT_MATERIAL_SET_BINDING_ROUGHNESS);
+			m_ValidBindings.insert(VT_MATERIAL_SET_BINDING_SAMPLER);
+
 			for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 			{
 				m_UBOs[i] = UniformBuffer::Create(sizeof(MaterialUBO));
 
 				auto& layouts = SceneRenderer::GetPipeline()->GetSetLayouts();
 
-				// Todo [27.02, Theo] Maybe change this that this isn't a magic number but still, I couldn't 
-				// care less
-
 				// Note [27.02, Theo] The one stands for the Material Set Layout (set 0 = global, set 1 = material)
 				m_Sets[i] = RHI::VulkanContext::GetSetManager()->Allocate(layouts[1]);
 
 				RHI::VulkanContext::GetSetManager()->WriteBuffer(
 					m_Sets[i],
-					0,
+					VT_MATERIAL_SET_BINDING_UBO, 
 					m_UBOs[i]->GetVulkanBuffer(),
 					sizeof(MaterialUBO)
 				);
 			}
 
-			SetAlbedoTexture(GetDefaultMaterialTexture());
+			m_Sampler = Texture2D::Create(ERROR_TEXTURE_PATH);
+			for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+			{
+				RHI::VulkanContext::GetSetManager()->WriteSampler(
+					m_Sets[i],
+					VT_MATERIAL_SET_BINDING_SAMPLER,
+					m_Sampler->GetSampler()
+				);
+			}
+
+			const auto defaultTexture = GetDefaultMaterialTexture();
+			SetAlbedoTexture(defaultTexture);
+			SetNormalTexture(defaultTexture);
+			SetMetalllicTexture(defaultTexture);
+			SetRoughnessTexture(defaultTexture);
+
 			UpdateData();
 		};
 
 		void Material::SetTexture(u32 binding, Ref<Texture2D> pTexture)
 		{
+			if (m_ValidBindings.find(binding) == m_ValidBindings.end())
+				return;
 			m_Textures[binding] = pTexture;
 
 			for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
@@ -51,7 +74,7 @@ namespace Velt
 				VkDescriptorImageInfo info{};
 				info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 				info.imageView = pTexture->GetImageView();
-				info.sampler = pTexture->GetSampler();
+				info.sampler = VT_NULL_HANDLE;
 
 				RHI::VulkanContext::GetSetManager()->WriteImage(
 					m_Sets[i],
@@ -63,44 +86,7 @@ namespace Velt
 
 		std::vector<Velt::RHI::DescriptorBinding> Material::GetMaterialBindings()
 		{
-			std::vector<Velt::RHI::DescriptorBinding> materialBindings{};
-
-			RHI::DescriptorBinding uninformData{};
-			uninformData.type = RHI::DescriptorType::UNIFORM_BUFFER;
-			uninformData.binding = VT_MATERIAL_SLOTS_BINDING_UBO;
-			uninformData.count = 1;
-			uninformData.stage = RHI::ShaderStage::FRAGMENT;
-			materialBindings.push_back(uninformData);
-
-			RHI::DescriptorBinding albedoTexture{};
-			albedoTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
-			albedoTexture.binding = VT_MATERIAL_SLOTS_BINDING_ALBEDO;
-			albedoTexture.count = 1;
-			albedoTexture.stage = RHI::ShaderStage::FRAGMENT;
-			materialBindings.push_back(albedoTexture);
-
-			RHI::DescriptorBinding normalTexture{};
-			normalTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
-			normalTexture.binding = VT_MATERIAL_SLOTS_BINDING_NORMAL;
-			normalTexture.count = 1;
-			normalTexture.stage = RHI::ShaderStage::FRAGMENT;
-			materialBindings.push_back(normalTexture);
-
-			RHI::DescriptorBinding roughnessTexture{};
-			roughnessTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
-			roughnessTexture.binding = VT_MATERIAL_SLOTS_BINDING_ROUGHNESS;
-			roughnessTexture.count = 1;
-			roughnessTexture.stage = RHI::ShaderStage::FRAGMENT;
-			materialBindings.push_back(roughnessTexture);
-
-			RHI::DescriptorBinding metallicTexture{};
-			metallicTexture.type = RHI::DescriptorType::COMBINED_IMAGE_SAMPLER;
-			metallicTexture.binding = VT_MATERIAL_SLOTS_BINDING_METALLIC;
-			metallicTexture.count = 1;
-			metallicTexture.stage = RHI::ShaderStage::FRAGMENT;
-			materialBindings.push_back(metallicTexture);
-
-			return materialBindings;
+			return GetMaterialSetBindings();
 		}
 
 		const VkDescriptorSet& Material::GetSet() const { return m_Sets[Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex()]; }

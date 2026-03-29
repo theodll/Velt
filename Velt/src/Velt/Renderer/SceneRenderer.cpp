@@ -5,10 +5,11 @@
 #include "Core/Application.h"
 #include "Core/Input.h"
 #include "PipelineManager.h"
+#include "BindingLayouts.h"
 
 namespace Velt {
 	
-	Ref<Pipeline> SceneRenderer::s_Pipeline = nullptr;
+	Ref<Pipeline> SceneRenderer::s_GeometryPipeline = nullptr;
 	Ref<EditorCamera> SceneRenderer::m_Camera = nullptr;
 
 	void SceneRenderer::Init()
@@ -16,49 +17,35 @@ namespace Velt {
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Init SceneRenderer");
 
-		BufferLayout layout
-		{
-				{ ShaderDataType::Float3, "a_Position" },
-				{ ShaderDataType::Float3, "a_Normal" },
-				{ ShaderDataType::Float3, "a_Tangent" },
-				{ ShaderDataType::Float3, "a_Binormal" },
-				{ ShaderDataType::Float2, "a_UV"}
-		};
-
 		PipelineManager::Init();
 
-		// Todo [25.02, Theo]: Move this somewhere else 
-
-		std::vector<RHI::DescriptorBinding> globalBindings{};
-		RHI::DescriptorBinding viewProj{};
-		viewProj.type = RHI::DescriptorType::UNIFORM_BUFFER;
-		viewProj.binding = 0;
-		viewProj.count = 1;
-		viewProj.stage = RHI::ShaderStage::VERTEX;
-
-		globalBindings.emplace_back(viewProj);
-
-		auto materialBindings = Material::GetMaterialBindings();
-		
-		auto globalLayout = RHI::VulkanContext::GetLayoutCache()->CreateLayout(&globalBindings);
-		auto materialLayout = RHI::VulkanContext::GetLayoutCache()->CreateLayout(&materialBindings);
-
 		{
-			std::vector<DescriptorSetLayoutHandle> setLayouts;
-			setLayouts.emplace_back(globalLayout);
-			setLayouts.emplace_back(materialLayout);
+			BufferLayout geometryLayout
+			{
+					{ ShaderDataType::Float3, "a_Position" },
+					{ ShaderDataType::Float3, "a_Normal" },
+					{ ShaderDataType::Float3, "a_Tangent" },
+					{ ShaderDataType::Float3, "a_Binormal" },
+					{ ShaderDataType::Float2, "a_UV"}
+			};
 
-			PipelineSpecification specs{};
-			specs.VertexShader = ShaderLibrary::Get("Assets/Shader/basic_vertex_shader.hlsl.spv");
-			specs.FragmentShader = ShaderLibrary::Get("Assets/Shader/basic_fragment_shader.hlsl.spv");
-			specs.SetLayouts = setLayouts;
-			specs.Layout = layout;
+			auto gVertexShader = ShaderLibrary::Get("Assets/Shader/gbuffer_vertex.hlsl.spv");
+			auto gPixelShader = ShaderLibrary::Get("Assets/Shader/gbuffer_pixel.hlsl.spv");
 
+			static PipelineSpecification geometryPipelineSpecs{};
+			geometryPipelineSpecs.VertexShader = gVertexShader;
+			geometryPipelineSpecs.FragmentShader = gPixelShader;
+			geometryPipelineSpecs.Layout = geometryLayout;
+			geometryPipelineSpecs.ColorAttachmentFormats = { VK_FORMAT_B8G8R8A8_SRGB, VK_FORMAT_B8G8R8A8_SRGB, VK_FORMAT_B8G8R8A8_SRGB };
+			geometryPipelineSpecs.CullMode = VT_CULL_MODE_BACK_BIT;
 
-			s_Pipeline = Pipeline::Create(&specs);
-			s_Pipeline->Init();
+			m_CameraUBOBinding = VT_CAMERA_SET_UBO_BINDING;
+
+			s_GeometryPipeline = Pipeline::Create(&geometryPipelineSpecs);
+			s_GeometryPipeline->Init();
 		}
 		
+
 		float width, height{};
 
 		if (ImGuiLayer::GetViewport())
@@ -78,18 +65,19 @@ namespace Velt {
 		m_Camera = CreateRef<EditorCamera>(glm::radians(50.0f), aspect, 0.1f, 1000.0f);
 		const auto& sc = Velt::Application::Get()->GetWindow()->GetSwapchain();
 
-		const u32 mfif = sc->GetMaxFrameInFlight();
-		m_CameraUBOs.resize(mfif);
-		m_GlobalSets.resize(mfif);
-		for (u32 i = 0; i < mfif; i++)
+		m_CameraUBOs.resize(MAX_FRAMES_IN_FLIGHT);
+		m_GlobalSets.resize(MAX_FRAMES_IN_FLIGHT);
+		const auto& setLayouts = s_GeometryPipeline->GetSetLayouts();
+		VT_CORE_ASSERT(!setLayouts.empty(), "");
+		for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
 			m_CameraUBOs[i] = UniformBuffer::Create(sizeof(CameraUBO));
-			m_GlobalSets[i] = RHI::VulkanContext::GetSetManager()->Allocate(globalLayout);
+			m_GlobalSets[i] = RHI::VulkanContext::GetSetManager()->Allocate(setLayouts[0]);
 			
 
 			RHI::VulkanContext::GetSetManager()->WriteBuffer(
 				m_GlobalSets[i],
-				0,
+				m_CameraUBOBinding,
 				m_CameraUBOs[i]->GetVulkanBuffer(),
 				sizeof(CameraUBO)
 			);
@@ -146,14 +134,14 @@ namespace Velt {
 		m_Rotation++;
 		auto cmd = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentDrawCommandBuffer();
 		auto frameIndex = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex();
-		auto pipelineLayout = s_Pipeline->GetVulkanPipelineLayout();
+		auto pipelineLayout = s_GeometryPipeline->GetVulkanPipelineLayout();
 
 		CameraUBO ubo{};
 		ubo.viewProj = m_Camera->GetViewProjection();
+		ubo.invViewProj = m_Camera->GetInverseViewProjection();
+		ubo.cameraPos = m_Camera->GetPosition();
 
 		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
-
-		s_Pipeline->Bind(cmd);
 
 		// Todo [25.02, Theo]: Make this platform independent
 		vkCmdBindDescriptorSets(

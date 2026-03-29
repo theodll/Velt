@@ -10,6 +10,8 @@ namespace Velt::RHI
 	{
 	public: 
 		VulkanTexture2D(const std::filesystem::path& path);
+		VulkanTexture2D(i32 width, i32 height);
+		VulkanTexture2D(TextureCreateInfo* pInfo);
 		virtual ~VulkanTexture2D();
 		
 		virtual u32 GetWidth() const override { return m_Width; }
@@ -21,6 +23,7 @@ namespace Velt::RHI
 
 	private: 
 		void CreateImage(stbi_uc* pPixelData);
+		void CreateImageWithoutData();
 		void CreateImageView();
 		void CreateImageSampler();
 
@@ -29,7 +32,7 @@ namespace Velt::RHI
 		// rather some kind of asset manager should.
 
 		// Todo [6.03.26, Theo]: Move to asset manager
-		const std::filesystem::path& m_Path;
+		std::filesystem::path m_Path = "";
 		u32 m_Width{}, m_Height{};
 
 		VkImage m_Image;

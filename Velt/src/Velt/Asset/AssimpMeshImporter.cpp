@@ -146,7 +146,6 @@ namespace Velt {
 					mesh->m_Vertices.push_back(vertex);
 				}
 
-				// Load indices
 				for (uint32_t i = 0; i < aiMesh->mNumFaces; i++)
 				{
 					const aiFace& face = aiMesh->mFaces[i];
@@ -157,12 +156,10 @@ namespace Velt {
 				}
 			}
 
-			// Traverse scene graph
 			MeshNode& rootNode = mesh->m_Nodes.emplace_back();
 			TraverseNodes(mesh, scene->mRootNode, 0, glm::mat4(1.0f));
 		}
 
-		// Load materials
 		if (scene->HasMaterials())
 		{
 			mesh->m_Materials.resize(scene->mNumMaterials);

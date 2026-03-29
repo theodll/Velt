@@ -1,9 +1,20 @@
 #pragma once
 #include "Core/Core.h"
+
+#include <vulkan/vulkan.h>
 #include <filesystem>
 
 namespace Velt 
 {
+	struct TextureCreateInfo 
+	{
+		VkFormat                 Format;
+		VkImageUsageFlags 	 	 Usage;
+		VkExtent3D               Extent;
+		VkImageLayout			 ImageLayout;
+		VkImageAspectFlags 		 AspectMask;
+	};
+	
 	class VELT_API Texture
 	{
 	public:
@@ -21,5 +32,7 @@ namespace Velt
 	public:
 		virtual ~Texture2D() = default;
 		static Ref<Texture2D> Create(const std::filesystem::path& path);
+		static Ref<Texture2D> Create(i32 width, i32 height);
+		static Ref<Texture2D> Create(TextureCreateInfo* pInfo);
 	};
 }

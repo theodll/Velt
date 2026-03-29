@@ -29,7 +29,23 @@ namespace Velt::RHI
         write.dstSet = set;
         write.dstBinding = binding;
         write.descriptorCount = 1;
-        write.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        write.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+        write.pImageInfo = &info;
+
+        vkUpdateDescriptorSets(m_Device.device(), 1, &write, 0, nullptr);
+    }
+
+    void DescriptorSetManager::WriteSampler(VkDescriptorSet set, u32 binding, VkSampler sampler)
+    {
+        VkDescriptorImageInfo info{};
+        info.sampler = sampler;
+
+        VkWriteDescriptorSet write{};
+        write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        write.dstSet = set;
+        write.dstBinding = binding;
+        write.descriptorCount = 1;
+        write.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
         write.pImageInfo = &info;
 
         vkUpdateDescriptorSets(m_Device.device(), 1, &write, 0, nullptr);
@@ -50,7 +66,7 @@ namespace Velt::RHI
         write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         write.pBufferInfo = &bufferInfo;
 
-        vkUpdateDescriptorSets(m_Device.device(), 1, &write, 0, nullptr);
+        vkUpdateDescriptorSets(m_Device.device(), 1, &write, 0, nullptr);  
     }
 
 

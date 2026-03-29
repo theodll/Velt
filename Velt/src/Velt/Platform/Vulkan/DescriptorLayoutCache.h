@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/Core.h"
 #include <unordered_map>
+#include <string>
 
 #include "DescriptorSetManager.h"
 
@@ -26,11 +27,23 @@ namespace Velt::RHI
         INPUT_ATTACHMENT            // VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT
     };
 
-    enum class ShaderStage
+    enum class ShaderStage : u32
     {
-	    VERTEX, 
-        FRAGMENT
+        NONE = 0,
+	    VERTEX = 1u << 0,
+        FRAGMENT = 1u << 1
     };
+
+    inline ShaderStage operator|(ShaderStage a, ShaderStage b)
+    {
+        return static_cast<ShaderStage>(static_cast<u32>(a) | static_cast<u32>(b));
+    }
+
+    inline ShaderStage& operator|=(ShaderStage& a, ShaderStage b)
+    {
+        a = a | b;
+        return a;
+    }
 
     struct DescriptorBinding
     {
@@ -38,6 +51,7 @@ namespace Velt::RHI
         u32 binding;
         u32 count{ 1 };
         ShaderStage stage;
+        std::string name;
     };
 
 	class DescriptorLayoutCache

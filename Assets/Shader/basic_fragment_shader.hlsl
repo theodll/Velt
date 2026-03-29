@@ -15,12 +15,15 @@ cbuffer u_Material : register(b0, space1) {
     MaterialUBO u_Material;
 };
 
-Texture2D u_AlbedoTexture : register(t1, space1);
 
-
-SamplerState u_AlbedoSampler : register(s1, space1);
+[[vk::binding(1, 1)]] Texture2D t_AlbedoMap;
+[[vk::binding(2, 1)]] Texture2D t_NormalMap;
+[[vk::binding(3, 1)]] Texture2D t_MetallicMap;
+[[vk::binding(4, 1)]] Texture2D t_RoughnessMap;
+// [[vk::binding(5, 1)]] Texture2D t_AmbientOcclusion;
+[[vk::binding(6, 1)]] SamplerState s_TextureSampler;
 
 float4 main(FragInput input) : SV_TARGET
 {
-    return u_AlbedoTexture.Sample(u_AlbedoSampler, input.v_UV) * u_Material.u_BaseColorFactor;
+    return t_AlbedoMap.Sample(s_TextureSampler, input.v_UV) * u_Material.u_BaseColorFactor;
 }

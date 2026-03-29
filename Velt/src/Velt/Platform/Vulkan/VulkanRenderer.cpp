@@ -16,6 +16,8 @@ namespace Velt::RHI
 		Ref<VertexBuffer> TexuredQuadVertexBuffer;
 		Ref<IndexBuffer> TexturedQuadIndexBuffer;
 
+		i32 DrawCallCount{};
+
 		Ref<Material> FallBackMaterial;
 	};
 
@@ -80,24 +82,65 @@ namespace Velt::RHI
 		const auto* viewport = ImGuiLayer::GetViewport();
 
 		sc->TransitionImageLayout(
-    	cmd,
-    	viewport->GetImage(),
-    	VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-    	VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-    	VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-    	VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+			cmd,
+			Renderer::GetRenderTarget(VT_RENDER_TARGET_ALBEDO_AO)->GetImage(),
+			VK_IMAGE_LAYOUT_UNDEFINED,
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+		);
+
+		sc->TransitionImageLayout(
+			cmd,
+			Renderer::GetRenderTarget(VT_RENDER_TARGET_NORMAL_ROUGH)->GetImage(),
+			VK_IMAGE_LAYOUT_UNDEFINED,
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+		);
+
+		sc->TransitionImageLayout(
+			cmd,
+			Renderer::GetRenderTarget(VT_RENDER_TARGET_METAL_EMIT)->GetImage(),
+			VK_IMAGE_LAYOUT_UNDEFINED,
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+		);
+
+        sc->TransitionImageLayout(
+			cmd,
+			Renderer::GetRenderTarget(VT_RENDER_TARGET_DEPTH)->GetImage(),
+			VK_IMAGE_LAYOUT_UNDEFINED,
+			VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL,
+			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+			VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT
 		);
 
 		// Rendering Info Setup
 		VkClearValue clearColor = { {{0.0f, 1.0f, 0.992f, 1.0f}} };
 
-		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
-		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
-		colorAttachmentInfo.imageView = viewport->GetImageView();
-		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-		colorAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		colorAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-		colorAttachmentInfo.clearValue = clearColor;
+		VkRenderingAttachmentInfoKHR colorAttachmentInfos[3]{};
+		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].imageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_ALBEDO_AO)->GetImageView();
+		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].clearValue = clearColor;
+
+		colorAttachmentInfos[VT_RENDER_TARGET_NORMAL_ROUGH].sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+		colorAttachmentInfos[VT_RENDER_TARGET_NORMAL_ROUGH].imageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_NORMAL_ROUGH)->GetImageView();
+		colorAttachmentInfos[VT_RENDER_TARGET_NORMAL_ROUGH].imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		colorAttachmentInfos[VT_RENDER_TARGET_NORMAL_ROUGH].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachmentInfos[VT_RENDER_TARGET_NORMAL_ROUGH].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachmentInfos[VT_RENDER_TARGET_NORMAL_ROUGH].clearValue = clearColor;
+
+		colorAttachmentInfos[VT_RENDER_TARGET_METAL_EMIT].sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+		colorAttachmentInfos[VT_RENDER_TARGET_METAL_EMIT].imageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_METAL_EMIT)->GetImageView();
+		colorAttachmentInfos[VT_RENDER_TARGET_METAL_EMIT].imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		colorAttachmentInfos[VT_RENDER_TARGET_METAL_EMIT].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachmentInfos[VT_RENDER_TARGET_METAL_EMIT].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachmentInfos[VT_RENDER_TARGET_METAL_EMIT].clearValue = clearColor;
 
 		VkRenderingAttachmentInfoKHR depthAttachmentInfo{};
 		depthAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO; 
@@ -112,8 +155,8 @@ namespace Velt::RHI
 		renderInfo.renderArea.extent = { viewport->GetWidth(), viewport->GetHeight() };
 		renderInfo.renderArea.offset = { 0, 0 };
 		renderInfo.layerCount = 1;
-		renderInfo.colorAttachmentCount = 1;
-		renderInfo.pColorAttachments = &colorAttachmentInfo;
+		renderInfo.colorAttachmentCount = 3;
+		renderInfo.pColorAttachments = colorAttachmentInfos;
 		renderInfo.pDepthAttachment = &depthAttachmentInfo;
 
 		vkCmdBeginRendering(cmd, &renderInfo);
@@ -145,16 +188,39 @@ namespace Velt::RHI
 
 		vkCmdEndRendering(cmd);
 
-
-		auto* viewport = ImGuiLayer::GetViewport();
-		VkImage sceneImg = viewport->GetImage();
-
 		sc->TransitionImageLayout(
 			cmd,
-			sceneImg,
+			Renderer::GetRenderTarget(VT_RENDER_TARGET_ALBEDO_AO)->GetImage(),
 			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
 			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
+		);
+
+		sc->TransitionImageLayout(
+			cmd,
+			Renderer::GetRenderTarget(VT_RENDER_TARGET_NORMAL_ROUGH)->GetImage(),
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
+		);
+
+		sc->TransitionImageLayout(
+			cmd,
+			Renderer::GetRenderTarget(VT_RENDER_TARGET_METAL_EMIT)->GetImage(),
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
+		);
+
+		sc->TransitionImageLayout(
+			cmd,
+			Renderer::GetRenderTarget(VT_RENDER_TARGET_DEPTH)->GetImage(),
+			VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL,
+			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+			VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
 			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
 		);
 	}
@@ -167,7 +233,6 @@ namespace Velt::RHI
 		const auto&& cmd = sc->GetCurrentDrawCommandBuffer();
 		const auto&& img = sc->GetCurrentSwapchainImage(); 
 
-		// On first frame for this image, it's in UNDEFINED layout, not PRESENT_SRC_KHR
 		VkImageLayout oldLayout = sc->IsFirstFrameForImage(sc->GetCurrentImageIndex()) 
 			? VK_IMAGE_LAYOUT_UNDEFINED 
 			: VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
@@ -251,6 +316,7 @@ namespace Velt::RHI
 
 		vkEndCommandBuffer(currentCommandBuffer);
 		swapchain->Present();
+		s_RenderData->DrawCallCount = 0;
 	}
 
 	void VulkanRenderer::DrawQuad(VkCommandBuffer renderCommandBuffer, const Matrix& transform, const Material& material)
@@ -274,28 +340,12 @@ namespace Velt::RHI
 
 		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(glm::mat4), &transform);
 		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
+		s_RenderData->DrawCallCount++;
 	}
 
 	void VulkanRenderer::DrawTexturedQuad(VkCommandBuffer renderCommandBuffer, const Ref<Texture2D>, const Matrix& transform)
 	{
-		auto pp = SceneRenderer::GetPipeline();
-		VkPipelineLayout layout = pp->GetVulkanPipelineLayout();
-
-		VkPipelineLayout pipelineLayout = pp->GetVulkanPipelineLayout();
-		VkBuffer vertexBuffer = s_RenderData->QuadVertexBuffer->GetVulkanBuffer();
-		VkCommandBuffer commandBuffer = renderCommandBuffer;
-
-		VkDeviceSize offsets[1] = { 0 };
-		vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffer, offsets);
-
-		VkBuffer indexBuffer = s_RenderData->QuadIndexBuffer->GetVulkanBuffer();
-		vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-
-		uint32_t indexCount = s_RenderData->QuadIndexBuffer->GetCount();
-		// VT_CORE_ERROR("{}", indexCount);
-
-		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(glm::mat4), &transform);
-		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
+		VT_CORE_ASSERT(false, "doesnt even work in theory you dumbass !!!");
 	}
 
 	void VulkanRenderer::DrawStaticModel(
@@ -313,6 +363,8 @@ namespace Velt::RHI
 		const auto& meshSubmeshes = meshSource->GetSubmeshes();
 		VT_CORE_ASSERT(submeshIndex < meshSubmeshes.size(), "Submesh index out of range");
 		const Submesh& submesh = meshSubmeshes[submeshIndex];
+
+		pipeline->Bind(commandBuffer);
 
 		VkBuffer vbBuffer = meshSource->GetVertexBuffer()->GetVulkanBuffer();
 		VkDeviceSize vbOffsets[1] = { 0 };
@@ -349,9 +401,107 @@ namespace Velt::RHI
 		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Matrix), &transform);
 
 		vkCmdDrawIndexed(commandBuffer, submesh.IndexCount, 1, submesh.BaseIndex, submesh.BaseVertex, 0);
+		s_RenderData->DrawCallCount++;
 	}
 
 	void VulkanRenderer::ClearScreen(VkCommandBuffer& renderCommandBuffer)
 	{
+	}
+
+	i32 VulkanRenderer::GetDrawCallCount()
+	{
+		return s_RenderData->DrawCallCount;
+	}
+
+	void VulkanRenderer::SubmitFullscreenTriangle(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<DefferedShaderInput>& input)
+	{
+		VkPipelineLayout layout = pipeline->GetVulkanPipelineLayout();
+
+		VkPipelineLayout pipelineLayout = pipeline->GetVulkanPipelineLayout();
+		VkCommandBuffer commandBuffer = renderCommandBuffer;
+		pipeline->Bind(renderCommandBuffer);
+
+		VkDescriptorSet defferedSet = input->GetSet();
+		vkCmdBindDescriptorSets(renderCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 2, 1, &defferedSet, 0, VT_NULL_HANDLE);
+
+		vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+		s_RenderData->DrawCallCount++;
+	}
+
+	void VulkanRenderer::BeginDefferedPass()
+	{
+		const auto& app = Velt::Application::Get();
+		const auto& window = app->GetWindow();
+		const auto& sc = window->GetSwapchain();
+		const auto&& cmd = sc->GetCurrentDrawCommandBuffer();
+		const auto* viewport = ImGuiLayer::GetViewport();
+
+		sc->TransitionImageLayout(
+			cmd,
+			Renderer::GetRenderTarget(VT_RENDER_TARGET_COMPOSITE)->GetImage(),
+			VK_IMAGE_LAYOUT_UNDEFINED,
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+		);
+
+		// Rendering Info Setup
+		VkClearValue clearColor = { {{1.0f, 0.0f, 1.0, 1.0f}} };
+
+		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
+		colorAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+		colorAttachmentInfo.imageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_COMPOSITE)->GetImageView();
+		colorAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		colorAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachmentInfo.clearValue = clearColor;
+
+
+		VkRenderingInfoKHR renderInfo{};
+		renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
+		renderInfo.renderArea.extent = { viewport->GetWidth(), viewport->GetHeight() };
+		renderInfo.renderArea.offset = { 0, 0 };
+		renderInfo.layerCount = 1;
+		renderInfo.colorAttachmentCount = 1;
+		renderInfo.pColorAttachments = &colorAttachmentInfo;
+
+
+		vkCmdBeginRendering(cmd, &renderInfo);
+
+		u32 width = viewport->GetWidth();
+		u32 height = viewport->GetHeight();
+
+		VkRect2D scissor{};
+		scissor.extent = { width, height };
+		scissor.offset = { 0, 0 };
+		vkCmdSetScissor(cmd, 0, 1, &scissor);
+
+		VkViewport VulkanViewport{};
+		VulkanViewport.height = -(float)height;
+		VulkanViewport.width = (float)width;
+		VulkanViewport.x = 0;
+		VulkanViewport.y = (float)height;
+		VulkanViewport.maxDepth = 1.0f;
+		VulkanViewport.minDepth = 0.0f;
+		vkCmdSetViewport(cmd, 0, 1, &VulkanViewport);
+	}
+
+	void VulkanRenderer::EndDefferedPass()
+	{
+		const auto& app = Velt::Application::Get();
+		const auto& window = app->GetWindow();
+		const auto& sc = window->GetSwapchain();
+		const auto&& cmd = sc->GetCurrentDrawCommandBuffer();
+
+		vkCmdEndRendering(cmd);
+
+		sc->TransitionImageLayout(
+			cmd,
+			Renderer::GetRenderTarget(VT_RENDER_TARGET_COMPOSITE)->GetImage(),
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
+		);
 	}
 }

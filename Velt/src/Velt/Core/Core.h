@@ -1,4 +1,5 @@
 #pragma once
+#include <filesystem>
 
 #include "Assert.h"
 #include "Log.h"
@@ -14,6 +15,7 @@ typedef int32_t i32;
 typedef int64_t i64;
 
 constexpr u32 MAX_FRAMES_IN_FLIGHT{ 3 };
+constexpr std::string_view ERROR_TEXTURE_PATH = "Assets/Textures/error.png";
 
 #if VT_PLATFORM_WINDOWS
 	#ifdef VT_BUILD_DLL
