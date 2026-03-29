@@ -24,7 +24,7 @@ struct TRANSFORM_PC
 struct CAMERA_UBO
 {
     float4x4 viewProj;
-    float4x4 invViewProj; 
+    float4x4 invViewProj;
 };
 
 cbuffer u_ViewProjection : register(b0, space0)
@@ -38,14 +38,19 @@ VS_OUTPUT main(VS_INPUT input)
 {
     VS_OUTPUT output;
     
+
     float4 worldPos = mul(pc_ModelTransform.transform, float4(input.a_Position, 1.0));
     output.v_Position = mul(u_ViewProjection.viewProj, worldPos);
      
-    float3x3 normalMatrix = (float3x3) pc_ModelTransform.transform;
-    output.v_Normal = mul(normalMatrix, input.a_Normal);
-    output.v_Tangent = mul(normalMatrix, input.a_Tangent);
-    output.v_Binormal = mul(normalMatrix, input.a_Binormal);
-    
+
+    float3x3 normalMat = (float3x3) pc_ModelTransform.transform;
+
+    output.v_Normal = normalize(mul(normalMat, input.a_Normal));
+    // output.v_Tangent = mul(normalMat, input.a_Tangent);
+    // output.v_Binormal = mul(normalMat, input.a_Binormal);
+    output.v_Tangent = float3(0,0,0);
+    output.v_Binormal = float3(0,0,0);
+
     output.v_UV = input.a_UV;
     
     return output;

@@ -28,7 +28,7 @@ namespace Editor
         m_Mesh = importer.ImportToMesh();
 
         m_Model = CreateRef<Velt::Model>(m_Mesh);
-        m_Model->SetRotationEulerDegrees({ 180.0f, 180.0f, 0.0f });
+        //m_Model->SetRotationEulerDegrees({ 180.0f, 180.0f, 0.0f });
         m_Model->SetScale(Velt::Vector(1.0f));
 		m_Model->SetTranslation({ 0.0f, -1.0f, 0.0f });
 

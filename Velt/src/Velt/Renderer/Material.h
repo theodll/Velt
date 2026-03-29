@@ -47,13 +47,13 @@ namespace Velt
 
 		struct alignas(16) MaterialUBO
 		{
-			HVector BaseColorFactor{glm::vec4(1.0f)};
-			float Metallic{};
-			float Roughness{};
-			float AbientOcclusionFactor{};
-			float _padding0;
-
-			alignas(16) Vector EmissiveColor; 
+			HVector BaseColorFactor{ 1.0f }; 
+			float Metallic{ 0.0f };           
+			float Roughness{ 0.0f };          
+			float AbientOcclusionFactor{ 1.0f };
+			float _padding0{ 0.0f };           
+			Vector EmissiveColor{ 0.0f };
+			float _padding1{ 0.0f };           
 		};
 
 		Ref<UniformBuffer> m_UBOs[MAX_FRAMES_IN_FLIGHT];

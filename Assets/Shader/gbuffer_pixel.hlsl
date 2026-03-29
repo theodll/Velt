@@ -20,7 +20,9 @@ struct MATERIAL_UBO
     float Metallicness;
     float Roughness;
     float AbientOcclusion;
+    float _pad0; 
     float3 EmissiveColor;
+    float _pad1; 
 };
 
 cbuffer u_Material : register(b0, space1)
@@ -44,17 +46,38 @@ GBUFFER_OUT main(PS_INPUT input)
     float roughness = t_RoughnessMap.Sample(s_TextureSampler, input.v_UV).r;
     
     float3 tangentNormal = normSample * 2.0 - 1.0;
-    
-    float3 N = normalize(input.v_Normal);
-    float3 T = normalize(input.v_Tangent);
-    float3 B = normalize(input.v_Binormal);
-    
-    float3x3 TBN = float3x3(T, B, N);
-    float3 worldNormal = normalize(mul(tangentNormal, TBN));
 
-    output.g_AlbedoAO = float4(albedo * u_Material.BaseColorFactor.rgb, 1.0);
+        float3 N = normalize(input.v_Normal);
+
+        // float3 T = input.v_Tangent;
+        // float3 B = input.v_Binormal;
+
+        // if (length(T) < 0.0001)
+        // {
+        //     T = cross(N, float3(0.0, 1.0, 0.0));
+        //     if (length(T) < 0.0001)
+        //         T = cross(N, float3(1.0, 0.0, 0.0));
+        // }
+
+        // T = normalize(T - dot(T, N) * N);
+
+        // if (length(B) < 0.0001)
+        // {
+        //     B = cross(N, T);
+        // }
+        // else
+        // {
+        //     B = normalize(B - dot(B, N) * N);
+        // }
+
+        // float3x3 TBN = float3x3(T, B, N);
+
+    // float3 worldNormal = normalize(mul(tangentNormal, TBN));
+    float3 worldNormal = N;
+
+    output.g_AlbedoAO = float4(albedo * u_Material.BaseColorFactor.rgb, u_Material.AbientOcclusion);
     output.g_NormalRough = float4(worldNormal * 0.5 + 0.5, roughness * u_Material.Roughness);
-    output.g_MetalEmit = float4(metallic * u_Material.Metallicness, u_Material.EmissiveColor.r, u_Material.EmissiveColor.g, u_Material.EmissiveColor.b);
+    output.g_MetalEmit = float4(metallic * u_Material.Metallicness, u_Material.EmissiveColor);
     
     return output;
 }

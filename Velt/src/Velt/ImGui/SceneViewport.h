@@ -36,7 +36,7 @@ namespace Velt
 		void CleanupResources();
 		void CreateDescriptorSet();
 
-		RenderTarget m_RenderTarget = VT_RENDER_TARGET_ALBEDO_AO;
+		RenderTarget m_RenderTarget = VT_RENDER_TARGET_COMPOSITE;
 
 		u32 m_Width;
 		u32 m_Height;
