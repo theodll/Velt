@@ -12,7 +12,8 @@ namespace Velt {
         VT_PROFILE_FUNCTION();
 
         auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-        consoleSink->set_pattern("%^[%T] %n: %v%$");
+        //consoleSink->set_pattern("[%T] %n: %^[%l] %v%$");
+        consoleSink->set_pattern("[%T] %n: %^[%l]%$ %v");
 
         s_FileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("Velt.log", true);
         s_FileSink->set_pattern("[%T] [%l] %n: %v");
@@ -34,7 +35,6 @@ namespace Velt {
     void Log::Flush()
     {
         VT_PROFILE_FUNCTION();
-        //mhm sehr interessant 
         if (s_CoreLogger)
             s_CoreLogger->flush();
         if (s_ClientLogger)
@@ -44,7 +44,6 @@ namespace Velt {
     void Log::SetLogFile(const std::string& filepath)
     {
         VT_PROFILE_FUNCTION();
-        // ich hab mich eingeschissen (:
         s_FileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(filepath, true);
         s_FileSink->set_pattern("[%T] [%l] %n: %v");
     }

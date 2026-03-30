@@ -180,6 +180,9 @@ namespace Velt {
 			m_ViewportResizePending = true;
 		}
 
+		VT_CORE_WARN("Focused: {0}", ImGui::IsWindowFocused());
+		VT_CORE_WARN("Hovered: {0}", ImGui::IsWindowHovered());
+
 		if (m_SceneViewport && m_SceneViewport->GetDescriptorSet() != VK_NULL_HANDLE)
 			ImGui::Image((ImTextureID)m_SceneViewport->GetDescriptorSet(), avail);
 		else

@@ -31,6 +31,7 @@ target_include_directories(Velt PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/sdl3/include
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ImGui/backends
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/tracy/public/
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
