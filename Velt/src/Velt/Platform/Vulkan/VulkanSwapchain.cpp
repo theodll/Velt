@@ -194,7 +194,6 @@ namespace Velt::RHI
     void VulkanSwapchain::Create(SwapchainCreateInfo* pCreateInfo)
     {
         VT_PROFILE_FUNCTION();
-        VT_PROFILE_FUNCTION();
         SwapChainSupportDetails swapChainSupport = m_Device.GetSwapChainSupport();
 
         VT_CORE_ERROR("Swapchain Creation Info Extend: {0}, {1}", pCreateInfo->Width, pCreateInfo->Height);

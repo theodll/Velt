@@ -23,3 +23,6 @@
 [submodule "Velt/vendor/assimp"]
 	path = Velt/vendor/assimp
 	url = https://github.com/assimp/assimp
+[submodule "Velt/vendor/tracy"]
+	path = Velt/vendor/tracy
+	url = https://github.com/wolfpld/tracy

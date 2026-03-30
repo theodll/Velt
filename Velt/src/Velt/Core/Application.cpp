@@ -49,6 +49,8 @@ namespace Velt {
 		m_Context = std::make_unique<RHI::VulkanContext>();
 		m_Window = std::unique_ptr<Window>(Window::Create(m_WindowProps));
 		m_Context->Init();
+
+		VT_CORE_TRACE("Tracy Version: v0.13.1");
 	}
 
 	Application::~Application()
