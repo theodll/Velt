@@ -37,13 +37,6 @@ namespace Velt::Windows
 		Init();
 	}
 
-	WindowsWindow::~WindowsWindow()
-	{	
-		VT_PROFILE_FUNCTION();
-
-		Shutdown();
-	}
-
 	void WindowsWindow::OnUpdate()
 	{
 		VT_PROFILE_FUNCTION();
@@ -101,6 +94,10 @@ namespace Velt::Windows
 	void WindowsWindow::Shutdown()
 	{
 		VT_PROFILE_FUNCTION();
+		if (m_Swapchain)
+		{
+			m_Swapchain->Shutdown();
+		}
 		if (m_Window)
 		{
 			SDL_DestroyWindow(m_Window);

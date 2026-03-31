@@ -9,26 +9,14 @@
 
 namespace Velt::RHI
 {
-	struct RenderData
-	{
-		Ref<VertexBuffer> QuadVertexBuffer;
-		Ref<IndexBuffer> QuadIndexBuffer;
-		Ref<VertexBuffer> TexuredQuadVertexBuffer;
-		Ref<IndexBuffer> TexturedQuadIndexBuffer;
 
-		i32 DrawCallCount{};
-
-		Ref<Material> FallBackMaterial;
-	};
-
-	static Scope<RenderData> s_RenderData = nullptr;
+	Scope<RenderData> VulkanRenderer::s_RenderData = nullptr;
 
 	void VulkanRenderer::Init()
 	{
 		VT_PROFILE_FUNCTION();
 
 		s_RenderData = CreateScope<RenderData>();
-
 
 		std::vector<Vertex> quadVertices = {
 			{ Vector(-0.5f, -0.5f, 0.5f), Vector(0.0f, 0.0f, 1.0f), Vector(1.0f, 0.0f, 0.0f), Vector(0.0f, 1.0f, 0.0f), Point(0.0f, 0.0f) },
@@ -51,6 +39,15 @@ namespace Velt::RHI
 
 	void VulkanRenderer::Shutdown()
 	{
+		VT_PROFILE_FUNCTION();
+		VT_CORE_INFO("Shutdown Vulkan Renderer");
+		s_RenderData.reset();
+	}
+
+	void VulkanRenderer::WaitIdle() 
+	{
+		VT_PROFILE_FUNCTION();
+		vkDeviceWaitIdle(VulkanContext::GetDevice()->device());
 	}
 
 	void VulkanRenderer::BeginFrame()

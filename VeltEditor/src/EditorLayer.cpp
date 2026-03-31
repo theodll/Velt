@@ -21,9 +21,26 @@ namespace Velt::Editor
 		model.AddComponent<ModelComponent>("Assets/Models/error.glb");
    	}
 
+	void EditorLayer::Shutdown()
+	{
+		VT_PROFILE_FUNCTION();
+		VT_CORE_INFO("Shutdown EditorLayer");
+
+		m_ActiveScene->Shutdown();
+		m_ActiveScene.reset();
+		m_Model.reset();
+		m_Mesh.reset();
+
+	}
+
 	void EditorLayer::OnAttach() 
 	{
 		VT_PROFILE_FUNCTION();
+	}
+
+	void EditorLayer::OnDetach()
+	{
+		Shutdown();
 	}
 
 	void EditorLayer::OnUpdate(Timestep ts)

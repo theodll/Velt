@@ -9,10 +9,15 @@ namespace Velt
         LayerStack();
         ~LayerStack();
 
+        void Init() {};
+        void Shutdown() {};
+
         void PushLayer(Layer* pLayer);
         void PushOverlay(Layer* pOverlay);
         void PopLayer(Layer* pLayer);
         void PopOverlay(Layer* pOverlay);
+
+        void PopAllLayers();
 
         std::vector<Layer*>::iterator begin() { return m_Layers.begin(); }
         std::vector<Layer*>::iterator end() { return m_Layers.end(); }

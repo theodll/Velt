@@ -27,9 +27,10 @@ namespace Velt::RHI
         VT_CORE_ERROR("Swapchain Extend: {0}, {1}", m_WindowExtent.width, m_WindowExtent.height);
     }
 
-    void VulkanSwapchain::Destroy()
+    void VulkanSwapchain::Shutdown()
     {
         VT_PROFILE_FUNCTION();
+        VT_CORE_INFO("Shutdown VulkanSwapchain");
 
         if (m_Device.device() == nullptr)
         {
@@ -594,7 +595,7 @@ namespace Velt::RHI
 
         vkDeviceWaitIdle(m_Device.device());
 
-        Destroy();
+        Shutdown();
 
         SwapchainCreateInfo createInfo{};
         createInfo.Width = pExtend->Width;

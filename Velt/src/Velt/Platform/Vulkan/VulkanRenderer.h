@@ -6,11 +6,25 @@
 
 namespace Velt::RHI
 {
+
+	struct RenderData
+	{
+		Ref<VertexBuffer> QuadVertexBuffer;
+		Ref<IndexBuffer> QuadIndexBuffer;
+		Ref<VertexBuffer> TexuredQuadVertexBuffer;
+		Ref<IndexBuffer> TexturedQuadIndexBuffer;
+
+		i32 DrawCallCount{};
+
+		Ref<Material> FallBackMaterial;
+	};
+
 	class VELT_API VulkanRenderer : public RenderAPI
 	{
 	public:
 		virtual void Init() override;
 		virtual void Shutdown() override;
+		virtual void WaitIdle() override;
 
 		virtual void DrawQuad(VkCommandBuffer renderCommandBuffer, const Matrix& transform, const Material& material) override;
 		virtual void DrawTexturedQuad(VkCommandBuffer renderCommandBuffer, const Ref<Texture2D> texture, const Matrix& transform) override;
@@ -34,6 +48,7 @@ namespace Velt::RHI
 		virtual void ClearScreen(VkCommandBuffer& renderCommandBuffer) override;
 
 		virtual i32 GetDrawCallCount() override;
-
+	private:
+		static Scope<RenderData> s_RenderData;
 	};
 }

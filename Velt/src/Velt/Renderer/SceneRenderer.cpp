@@ -87,8 +87,12 @@ namespace Velt {
 
 	void SceneRenderer::Shutdown()
 	{
-		VT_CORE_TRACE("Shutdown Scene Renderer");
+		VT_CORE_INFO("Shutdown Scene Renderer");
 		PipelineManager::Shutdown();
+		s_GeometryPipeline->Shutdown();
+
+		for (auto ubo : m_CameraUBOs)
+			ubo.reset();
 	}
 
 	glm::vec2 GetAspectPair(u32 width, u32 height, float targetY = 0.9f)

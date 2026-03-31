@@ -53,6 +53,17 @@ namespace Velt {
 		VT_CORE_TRACE("Tracy Version: v0.13.1");
 	}
 
+
+	void Application::Shutdown()
+	{
+		VT_PROFILE_FUNCTION();
+		m_LayerStack.PopAllLayers();
+
+		Renderer::QueueShutdown();
+		m_Window->Shutdown();
+		m_Context->Shutdown();
+	}
+
 	Application::~Application()
 	{
 		VT_PROFILE_FUNCTION();
@@ -243,13 +254,5 @@ namespace Velt {
 		ImGui::End();
 
 		Velt::Application::UpdateTitle(Velt::Application::Get()->TITLE + " - " + std::to_string((int)s), false);
-	}
-
-
-	void Application::Shutdown()
-	{
-		VT_PROFILE_FUNCTION();
-		Renderer::Shutdown(); 
-		s_ShutdownRequested = true; 
 	}
 }

@@ -62,6 +62,7 @@ namespace Velt::RHI
 		}
 
 		m_Device = CreateScope<VulkanDevice>();
+		m_Device->Init();
 
 		m_ResourceUploader = std::make_unique<VulkanResourceUploader>();
 		m_ResourceUploader->Init();
@@ -77,22 +78,28 @@ namespace Velt::RHI
 	void VulkanContext::Shutdown()
 	{
 		VT_PROFILE_FUNCTION();
-		VT_CORE_TRACE("Shutting down Vulkan Context");
-		
+		VT_CORE_INFO("Shutdown Vulkan Context");
+
+
+		vkDestroySurfaceKHR(m_Instance, m_Surface, VT_NULL_HANDLE);
+		m_DescriptorSetManager->Shutdown();
+		m_ResourceUploader->Shutdown();
+		m_Device->Shutdown();
+
 		if (m_EnableValidationLayers)
 		{
-			DestroyDebugUtilsMessengerEXT(m_Instance, m_DebugMessenger, nullptr);
+			DestroyDebugUtilsMessengerEXT(m_Instance, m_DebugMessenger, VT_NULL_HANDLE);
 		}
+		
+		vkDestroyInstance(m_Instance, VT_NULL_HANDLE);
 
-		vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
-		vkDestroyInstance(m_Instance, nullptr);
 	}
 
 	bool VulkanContext::CheckValidationLayerSupport()
 	{
 		VT_PROFILE_FUNCTION();
 		u32 layerCount;
-		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+		vkEnumerateInstanceLayerProperties(&layerCount, VT_NULL_HANDLE);
 
 		std::vector<VkLayerProperties> availableLayers(layerCount);
 		vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());

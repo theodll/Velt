@@ -37,6 +37,7 @@ namespace Velt::RHI
 		void operator=(const VulkanPipeline&) = delete;
 
 		void Init() override;
+		void Shutdown() override;
 		virtual void Invalidate() override;
 
 		virtual void Bind(VkCommandBuffer& commandBuffer) override;

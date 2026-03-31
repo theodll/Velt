@@ -51,7 +51,7 @@ namespace Velt
 		Scope<RHI::VulkanContext> m_Context;
 		Scope<Window> m_Window;
 		
-		LayerStack m_LayerStack;
+		LayerStack m_LayerStack; 
 		ImGuiLayer* m_ImGuiLayer = nullptr;
 
 		double m_LastFrameTime;

@@ -9,7 +9,10 @@ namespace Velt::Editor {
 		EditorLayer();
 
 		void Init() override;
+		void Shutdown() override;
+
 		void OnAttach() override;
+		void OnDetach() override; 
 		void OnUpdate(Velt::Timestep ts) override;
 		void OnEvent(Velt::Event& event) override;
 		void OnRender(VkCommandBuffer commandBuffer) override;

@@ -21,7 +21,7 @@ namespace Velt::RHI {
         void Init(SwapchainCreateInfo* pCreateInfo) override;
         void InitSurface(SDL_Window* pWindowHandle);
         void Create(SwapchainCreateInfo* pCreateInfo) override;
-        void Destroy() override;
+        void Shutdown() override;
 
         void OnResize(SwapchainExtent* pExtend) override;
 

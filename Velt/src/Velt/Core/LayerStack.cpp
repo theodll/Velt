@@ -50,6 +50,17 @@ namespace Velt
         }
     }
 
+	void LayerStack::PopAllLayers()
+	{
+		for (auto* layer : m_Layers)
+		{
+			layer->OnDetach();
+		}
+
+		m_Layers.clear();
+		m_LayerInsertIndex = 0;
+	}
+
     void LayerStack::PopOverlay(Layer* pOverlay)
     {
         VT_PROFILE_FUNCTION();

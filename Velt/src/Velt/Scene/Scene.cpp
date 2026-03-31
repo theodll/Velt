@@ -17,6 +17,12 @@ namespace Velt
 		VT_PROFILE_FUNCTION();
 	}
 
+	void Scene::Shutdown() 
+	{
+		VT_PROFILE_FUNCTION();
+		VT_CORE_INFO("Shutdown Scene");
+	}
+
 	Entity Scene::CreateEntity(const std::string& name)
 	{
 		VT_PROFILE_FUNCTION();

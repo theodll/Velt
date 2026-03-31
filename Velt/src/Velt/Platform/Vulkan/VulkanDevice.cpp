@@ -14,22 +14,35 @@ namespace Velt::RHI
 
     VulkanDevice::VulkanDevice() : m_Instance(*VulkanContext::GetInstance()), m_Surface(*VulkanContext::GetSurface())
     {
-        VT_PROFILE_FUNCTION();
-        VT_CORE_TRACE("Creating VulkanDevice...");
 
-        PickPhysicalDevice();
-        CreateLogicalDevice();
-        CreateCommandPool();
     }
+
 
     VulkanDevice::~VulkanDevice()
     {
         VT_PROFILE_FUNCTION();
-
-        vkDeviceWaitIdle(m_Device);
-        vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
-        vkDestroyDevice(m_Device, nullptr);
     }
+
+	void VulkanDevice::Init()
+    {
+		VT_PROFILE_FUNCTION();
+		VT_CORE_INFO("Initializing Vulkan Device");
+
+		PickPhysicalDevice();
+		CreateLogicalDevice();
+		CreateCommandPool();
+    }
+	
+    void VulkanDevice::Shutdown()
+    {
+        VT_PROFILE_FUNCTION();
+        VT_CORE_INFO("Shutdown Vulkan Device");
+
+		vkDeviceWaitIdle(m_Device);
+		vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
+		vkDestroyDevice(m_Device, nullptr);
+    }
+
 
     void VulkanDevice::PickPhysicalDevice()
     {

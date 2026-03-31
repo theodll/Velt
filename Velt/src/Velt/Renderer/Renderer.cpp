@@ -105,8 +105,9 @@ namespace Velt {
 	void Renderer::Shutdown()
 	{
 		VT_PROFILE_FUNCTION();
-		VT_CORE_TRACE("Shutdown Static Renderer");
+		VT_CORE_INFO("Shutdown Static Renderer");
 		s_SceneRenderer->Shutdown();
+		s_DefferedRenderer->Shutdown();
 		s_RenderAPI->Shutdown();
 	}
 
@@ -207,9 +208,11 @@ namespace Velt {
 		return s_RenderAPI->GetDrawCallCount();
 	}
 
-	void Renderer::RequestShutdown()
+	void Renderer::QueueShutdown()
 	{
 		VT_PROFILE_FUNCTION();
+		s_RenderAPI->WaitIdle();
+		Shutdown();
 	}
 
 

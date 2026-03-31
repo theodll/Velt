@@ -30,8 +30,7 @@ namespace Velt
 		static Ref<Pipeline> GetPipeline() { return s_DefferedPipeline; }
 	private:
 		static Ref<Pipeline> s_DefferedPipeline;
-		
-
+	
 
 		Ref<DefferedShaderInput> m_ShaderInput;
 	};

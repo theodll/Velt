@@ -31,7 +31,7 @@ namespace Velt
 
 		static void Init();
 		static void Shutdown();
-		static void RequestShutdown();
+		static void QueueShutdown();
 
 		static void BeginScene();
 		static void EndScene();

@@ -39,6 +39,8 @@ namespace Velt
 	void DefferedRenderer::Shutdown()
 	{
 		VT_PROFILE_FUNCTION();
+		VT_CORE_INFO("Shutdown Deffered Renderer");
+		s_DefferedPipeline->Shutdown();
 	}
 
 	void DefferedRenderer::ExecuteDefferedPass()

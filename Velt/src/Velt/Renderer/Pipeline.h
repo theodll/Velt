@@ -60,6 +60,7 @@ namespace Velt
 		virtual const PipelineSpecification& GetSpecification() const = 0;
 
 		virtual void Init() = 0;
+		virtual void Shutdown() = 0;
 		virtual void Invalidate() = 0;
 
 		virtual void Bind(VkCommandBuffer& commandBuffer) = 0;

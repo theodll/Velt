@@ -35,6 +35,8 @@ namespace Velt::RHI {
 		VulkanDevice();
 		~VulkanDevice();
 
+		void Init();
+		void Shutdown();
 
 		VkCommandPool GetCommandPool() { return m_CommandPool; }
 		VkDevice& device() { return m_Device; }

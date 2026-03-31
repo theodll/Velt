@@ -12,7 +12,11 @@ namespace Velt::Windows
 	{
 	public:
 		WindowsWindow(const WindowProps& props);
-		virtual ~WindowsWindow();
+		virtual ~WindowsWindow() {};
+
+
+		virtual void Init() override;
+		virtual void Shutdown() override;
 
 		void OnUpdate() override;
 
@@ -34,9 +38,6 @@ namespace Velt::Windows
 	private:
 		SDL_Window* m_Window = nullptr;
 		std::unique_ptr<RHI::VulkanSwapchain> m_Swapchain;
-
-		virtual void Init();
-		virtual void Shutdown();
 
 		struct WindowData
 		{

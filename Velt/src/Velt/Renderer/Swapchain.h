@@ -43,7 +43,7 @@ namespace Velt
         virtual void Init(SwapchainCreateInfo* pCreateInfo) = 0;
         virtual void InitSurface(SDL_Window* pWindowHandle) = 0;
         virtual void Create(SwapchainCreateInfo* pCreateInfo) = 0;
-        virtual void Destroy() = 0;
+        virtual void Shutdown() = 0;
 
         virtual void OnResize(SwapchainExtent* pExtend) = 0;
 

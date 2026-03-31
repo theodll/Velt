@@ -26,6 +26,7 @@ namespace Velt {
 
 		virtual void Init() = 0;
 		virtual void Shutdown() = 0;
+        virtual void WaitIdle() = 0;
 
 		virtual void DrawQuad(VkCommandBuffer renderCommandBuffer, const Matrix& transform, const Material& material) = 0;
         virtual void DrawTexturedQuad(VkCommandBuffer renderCommandBuffer, const Ref<Texture2D> texture, const Matrix& transform) = 0;

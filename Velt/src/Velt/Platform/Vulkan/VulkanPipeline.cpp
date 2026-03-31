@@ -13,9 +13,7 @@ namespace Velt::RHI {
 
 	VulkanPipeline::~VulkanPipeline()
 	{
-		auto& device = VulkanContext::GetDevice()->device();
-		vkDestroyPipeline(device, m_VulkanPipeline, nullptr);
-		vkDestroyPipelineLayout(device, m_PipelineLayout, nullptr);
+
 	}
 
 	VulkanPipeline::VulkanPipeline(const PipelineSpecification* pSpecs)
@@ -31,6 +29,20 @@ namespace Velt::RHI {
 		SetDefaultVulkanPipelineConfigInfo(&m_ConfigInfo);
 		CreatePipelineLayout();
 		Invalidate();
+	}
+
+	void VulkanPipeline::Shutdown()
+	{
+		VT_PROFILE_FUNCTION();
+		VT_CORE_INFO("Shutdown Vulkan Pipeline");
+		auto& device = VulkanContext::GetDevice()->device();
+
+		for (auto& setLayout : m_Specification.SetLayouts)
+			if (setLayout != VT_NULL_HANDLE)
+				vkDestroyDescriptorSetLayout(device, setLayout, VT_NULL_HANDLE);
+
+		vkDestroyPipeline(device, m_VulkanPipeline, nullptr);
+		vkDestroyPipelineLayout(device, m_PipelineLayout, nullptr);
 	}
 
 	static VkFormat ShaderDataTypeToVulkanFormat(ShaderDataType type)

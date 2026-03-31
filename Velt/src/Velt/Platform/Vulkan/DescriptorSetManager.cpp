@@ -9,7 +9,26 @@ namespace Velt::RHI
 {
     void DescriptorSetManager::Init() {} 
 
-    void DescriptorSetManager::Shutdown() {}
+    void DescriptorSetManager::Shutdown() 
+    {
+        VT_PROFILE_FUNCTION();
+        VT_CORE_INFO("Shutdown DescriptorSetManager");
+        auto&& device = VulkanContext::GetDevice()->device();
+        if (m_CurrentPool)
+            vkDestroyDescriptorPool(device, m_CurrentPool, VT_NULL_HANDLE);
+            m_CurrentPool = VT_NULL_HANDLE;
+
+        for (auto descriptorPool : m_UsedPools)
+            if (descriptorPool)
+                vkDestroyDescriptorPool(device, descriptorPool, VT_NULL_HANDLE);
+
+		for (auto descriptorPool : m_FreePools)
+			if (descriptorPool)
+				vkDestroyDescriptorPool(device, descriptorPool, VT_NULL_HANDLE);
+
+        m_FreePools.clear();
+        m_UsedPools.clear();
+    }
 
     void DescriptorSetManager::ResetPools() 
     {

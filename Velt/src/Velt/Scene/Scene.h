@@ -13,6 +13,8 @@ namespace Velt
 		Scene();
 		~Scene();
 
+		void Shutdown();
+
 		Entity CreateEntity(const std::string& name = std::string());
 
 		void OnUpdate(Timestep ts);

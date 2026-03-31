@@ -12,6 +12,8 @@ namespace Velt
         virtual ~Layer();
 
         virtual void Init() {};
+        virtual void Shutdown() {};
+
         virtual void OnAttach() {};
         virtual void OnDetach() {};
         virtual void OnUpdate(Timestep ts) {};

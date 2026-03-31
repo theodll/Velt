@@ -27,6 +27,9 @@ namespace Velt
 		using EventCallbackFn = std::function<void(Event&)>;
 
 		virtual ~Window() {};
+
+		virtual void Init() = 0;
+		virtual void Shutdown() = 0;
 		
 		virtual void OnUpdate() = 0; 
 
