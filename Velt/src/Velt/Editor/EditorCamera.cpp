@@ -63,6 +63,7 @@ namespace Velt
 
         m_AspectRatio = m_ViewportWidth / m_ViewportHeight;
         m_Projection = glm::perspective(m_VerticalFOV, m_AspectRatio, m_NearClip, m_FarClip);
+        m_ViewProjection = m_Projection * m_ViewMatrix;
     }
 
     void EditorCamera::OnUpdate(Timestep ts)
@@ -180,6 +181,7 @@ namespace Velt
         m_Direction = glm::normalize(lookAt - m_Position);
         m_Distance = glm::distance(m_Position, m_FocalPoint);
         m_ViewMatrix = glm::lookAt(m_Position, lookAt, glm::vec3{ 0.0f, yawSign, 0.0f });
+        m_ViewProjection = m_Projection * m_ViewMatrix;
 
         m_YawDelta *= 0.6f;
         m_PitchDelta *= 0.6f;

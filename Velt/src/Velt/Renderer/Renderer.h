@@ -45,7 +45,8 @@ namespace Velt
 		static void BeginScenePass();
 		static void EndScenePass();
 
-		static void ExecuteDefferedPass();
+		static void BeginDefferedPass();
+		static void EndDefferedPass();
 		
 		static void BeginGuiPass();
 		static void EndGuiPass();
@@ -65,8 +66,6 @@ namespace Velt
 
 	private:
 		static Scope<RenderAPI> s_RenderAPI; 
-		static Scope<SceneRenderer> s_SceneRenderer;
-		static Scope<DefferedRenderer> s_DefferedRenderer;
 		static std::unordered_map<u32, Ref<Texture2D>> s_RenderTargets;
 
 	};

@@ -6,6 +6,8 @@
 #include "Renderer/UniformBuffer.h"
 #include "Editor/EditorCamera.h"
 
+#include <vulkan/vulkan.h>
+
 namespace Velt {
 
 
@@ -15,11 +17,10 @@ namespace Velt {
 		void Init();
 		void Shutdown();
 
-		void BeginScene();
+		void BeginScene(const Ref<Camera>& pCamera);
 		void EndScene();
 
 		static Ref<Pipeline> GetPipeline() { return s_GeometryPipeline; };
-		static Ref<EditorCamera> GetCamera() { return m_Camera; };
 
 	private:
 		struct alignas(16) CameraUBO
@@ -29,18 +30,14 @@ namespace Velt {
 			Vector cameraPos;
 		};
 
-		static Ref<EditorCamera> m_Camera;
-
 		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
 		std::vector<VkDescriptorSet> m_GlobalSets;
 		u32 m_CameraUBOBinding{};
 
-		
+
 		i32 m_Rotation{};
 		Vector m_CameraPosition{};
 
 		static Ref<Pipeline> s_GeometryPipeline;
-		
-
 	};
 }

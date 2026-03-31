@@ -13,8 +13,6 @@
 namespace Velt {
 
 	Scope<RenderAPI> Renderer::s_RenderAPI = VT_NULL_HANDLE;
-	Scope<SceneRenderer> Renderer::s_SceneRenderer = VT_NULL_HANDLE;
-	Scope<DefferedRenderer> Renderer::s_DefferedRenderer = VT_NULL_HANDLE;
 	std::unordered_map<u32, Ref<Texture2D>> Renderer::s_RenderTargets;
 
 	Renderer::Renderer()
@@ -86,12 +84,6 @@ namespace Velt {
 		s_RenderAPI = CreateScope<RHI::VulkanRenderer>();
 		s_RenderAPI->Init();
 
-		s_SceneRenderer = CreateScope<SceneRenderer>();
-		s_SceneRenderer->Init();
-
-		s_DefferedRenderer = CreateScope<DefferedRenderer>();
-		s_DefferedRenderer->Init();
-
 		i32 w{ 1920 }, h{ 1080 };
 
 		if (ImGuiLayer::GetViewport()) 
@@ -109,10 +101,8 @@ namespace Velt {
 		VT_CORE_INFO("Shutdown Static Renderer");
 		s_RenderTargets.clear();
 		Material::Shutdown();
-		s_SceneRenderer->Shutdown();
-		s_SceneRenderer.reset();
-		s_DefferedRenderer->Shutdown();
-		s_DefferedRenderer.reset();
+
+
 		s_RenderAPI->Shutdown();
 		s_RenderAPI.reset();
 	}
@@ -151,21 +141,24 @@ namespace Velt {
 	{
 		VT_PROFILE_FUNCTION();
 		s_RenderAPI->BeginScenePass();
-		s_SceneRenderer->BeginScene();
 	}
 
 	void Renderer::EndScenePass()
 	{
 		VT_PROFILE_FUNCTION();
-		s_SceneRenderer->EndScene();
 		s_RenderAPI->EndScenePass();
 	}
 
-	void Renderer::ExecuteDefferedPass()
+	void Renderer::BeginDefferedPass()
 	{
 		VT_PROFILE_FUNCTION();
 		s_RenderAPI->BeginDefferedPass();
-		s_DefferedRenderer->ExecuteDefferedPass();
+	}
+	
+	
+	void Renderer::EndDefferedPass() 
+	{
+		VT_PROFILE_FUNCTION();
 		s_RenderAPI->EndDefferedPass();
 	}
 

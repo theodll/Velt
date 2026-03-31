@@ -1,5 +1,5 @@
 #pragma once
-#include <Velt/Velt.h>
+#include <Velt.h>
 
 namespace Velt::Editor {
 
@@ -15,13 +15,19 @@ namespace Velt::Editor {
 		void OnDetach() override; 
 		void OnUpdate(Velt::Timestep ts) override;
 		void OnEvent(Velt::Event& event) override;
+
 		void OnRender(VkCommandBuffer commandBuffer) override;
+		void OnDefferedRender(VkCommandBuffer commandBuffer) override;
+
 		void OnImGuiRender2() override;
+
 	private: 
 
 		Ref<Scene> m_ActiveScene;
 
-		Ref<Velt::Model> m_Model;
-		Ref<Velt::Mesh> m_Mesh;
+		Ref<SceneRenderer> m_SceneRenderer;
+		Ref<DefferedRenderer> m_DefferedRenderer;
+
+		Ref<EditorCamera> m_EditorCamera;
 	};
 }

@@ -55,7 +55,6 @@ namespace Velt
         Vector GetUpDirection() const; 
         Vector GetRightDirection() const; 
         Vector GetForwardDirection() const; 
-        const Vector& GetPosition() const { return m_Position; }
         Quaternion GetOrientation() const;
 
         float GetVerticalFOV() const { return m_VerticalFOV; }
@@ -83,7 +82,6 @@ namespace Velt
         float RotationSpeed() const;
         float ZoomSpeed() const;
 
-        Vector m_Position{ 0.0f, 0.0f, 5.0f };
         Vector m_Direction{};
         Vector m_FocalPoint{};
 

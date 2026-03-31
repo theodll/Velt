@@ -43,10 +43,10 @@ namespace Velt
 		VT_PROFILE_FUNCTION();
 
 		auto group = m_Registry.group<TransformComponent>(entt::get<ModelComponent>);
-		for (auto entity : group) 
+		for (auto entity : group)
 		{
 			auto&& [transform, model] = group.get<TransformComponent, ModelComponent>(entity);
-			
+
 			const auto& submeshes = model.model->GetSubmeshes();
 			auto materialTable = model.model->GetMaterials();
 			for (u32 submeshIndex : submeshes)
@@ -61,7 +61,7 @@ namespace Velt
 					transform
 				);
 			}
-		
+
 		}
 	}
 }

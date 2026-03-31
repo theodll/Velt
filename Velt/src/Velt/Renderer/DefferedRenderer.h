@@ -3,6 +3,7 @@
 #include "Core/Math.h"
 #include "Texture.h"
 #include "Pipeline.h"
+#include "Camera.h"
 #include <vulkan/vulkan.h>
 
 namespace Velt
@@ -22,10 +23,10 @@ namespace Velt
 	class VELT_API DefferedRenderer 
 	{
 	public:
-		void Init();
+		void Init(Ref<Camera> pCamera);
 		void Shutdown();
 
-		void ExecuteDefferedPass();
+		void ExecuteDefferedPass(VkCommandBuffer cmd);
 
 		static Ref<Pipeline> GetPipeline() { return s_DefferedPipeline; }
 	private:
@@ -38,7 +39,7 @@ namespace Velt
 	class DefferedShaderInput
 	{
 	public:
-		DefferedShaderInput();
+		DefferedShaderInput(Ref<Camera> pCamera);
 		virtual ~DefferedShaderInput() 
 		{
 			m_TextureSampler.reset();
@@ -54,6 +55,8 @@ namespace Velt
 
 	private:
 		
+		Ref<Camera> m_Camera;
+
 		VkDescriptorSet m_Sets[MAX_FRAMES_IN_FLIGHT];
 		Ref<GBuffer> m_GeometryBuffers[MAX_FRAMES_IN_FLIGHT];
 

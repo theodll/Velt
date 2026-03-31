@@ -1,16 +1,19 @@
-#include "SceneRenderer.h"
-#include "Buffer.h"
+
+#include "vtpch.h"
 #include "Core/Core.h"
-#include "Platform/Vulkan/DescriptorLayoutCache.h"
 #include "Core/Application.h"
 #include "Core/Input.h"
+
+#include "SceneRenderer.h"
+#include "Buffer.h"
+#include "Platform/Vulkan/DescriptorLayoutCache.h"
 #include "PipelineManager.h"
 #include "BindingLayouts.h"
+#include "Scene/Scene.h"
 
 namespace Velt {
 	
 	Ref<Pipeline> SceneRenderer::s_GeometryPipeline = nullptr;
-	Ref<EditorCamera> SceneRenderer::m_Camera = nullptr;
 
 	void SceneRenderer::Init()
 	{
@@ -45,24 +48,6 @@ namespace Velt {
 			s_GeometryPipeline->Init();
 		}
 		
-
-		float width, height{};
-
-		if (ImGuiLayer::GetViewport())
-		{
-			width = ImGuiLayer::GetViewport()->GetWidth();
-			height = ImGuiLayer::GetViewport()->GetHeight();
-		} 
-		else
-		{
-			width = 1920;
-			height = 1080;
-		}
-
-		float aspect = width / height;
-
-
-		m_Camera = CreateRef<EditorCamera>(glm::radians(50.0f), aspect, 0.1f, 1000.0f);
 		const auto& sc = Velt::Application::Get()->GetWindow()->GetSwapchain();
 
 		m_CameraUBOs.resize(MAX_FRAMES_IN_FLIGHT);
@@ -92,8 +77,6 @@ namespace Velt {
 		s_GeometryPipeline->Shutdown();
 
 		s_GeometryPipeline.reset();
-		m_Camera.reset();
-
 		m_CameraUBOs.clear();
 	}
 
@@ -111,7 +94,7 @@ namespace Velt {
 		return { w * scale, h * scale };
 	}
 
-	void SceneRenderer::BeginScene()
+	void SceneRenderer::BeginScene(const Ref<Camera>& pCamera)
 	{
 		VT_PROFILE_FUNCTION();
 		
@@ -121,31 +104,15 @@ namespace Velt {
 		glm::vec2 aspect = GetAspectPair(w, h);
 
 		float aspectF = w / h;
-		// VT_CORE_ERROR("ax: {0} ay:, {1}", aspect.x, aspect.y);
 		
-		/*
-		m_Camera->SetOrthographicProjection(
-			-aspect.x,
-			aspect.x,
-			-aspect.y,
-			aspect.y,
-			-1,
-			1
-		);
-		*/
-
-//		m_Camera->SetPerspectiveProjection(glm::radians(50.0f), aspectF, 0.1f, 1000.0f);
-
-		// m_Camera->SetRotation(m_Rotation);
-		m_Rotation++;
 		auto cmd = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentDrawCommandBuffer();
 		auto frameIndex = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex();
 		auto pipelineLayout = s_GeometryPipeline->GetVulkanPipelineLayout();
 
 		CameraUBO ubo{};
-		ubo.viewProj = m_Camera->GetViewProjection();
-		ubo.invViewProj = m_Camera->GetInverseViewProjection();
-		ubo.cameraPos = m_Camera->GetPosition();
+		ubo.viewProj = pCamera->GetViewProjection();
+		ubo.invViewProj = pCamera->GetInverseViewProjection();
+		ubo.cameraPos = pCamera->GetPosition();
 
 		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
 

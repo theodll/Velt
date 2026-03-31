@@ -168,6 +168,9 @@ namespace Velt {
 			}
 
 			VT_PROFILE_SCOPE("Render Loop");
+			
+			auto cmd = m_Window->GetSwapchain()->GetCurrentDrawCommandBuffer();
+
 			Renderer::BeginFrame();
 			
 			for (Layer* layer : m_LayerStack)
@@ -175,10 +178,13 @@ namespace Velt {
 
 			Renderer::BeginScenePass();
 			for (Layer* layer : m_LayerStack)
-				layer->OnRender(m_Window->GetSwapchain()->GetCurrentDrawCommandBuffer());
+				layer->OnRender(cmd);
 			Renderer::EndScenePass();
-			
-			Renderer::ExecuteDefferedPass();
+
+			Renderer::BeginDefferedPass();
+			for (Layer* layer : m_LayerStack)
+				layer->OnDefferedRender(cmd);
+			Renderer::EndDefferedPass();
 
 			Renderer::BeginGuiPass();
 			for (Layer* layer : m_LayerStack)

@@ -18,10 +18,13 @@ namespace Velt
 		const Matrix& GetProjection() const { return m_Projection; }
 		const Matrix& GetViewProjection() const { return m_ViewProjection; }
 		const Matrix& GetInverseViewProjection() const { return glm::inverse(m_ViewProjection); }
+		const Vector& GetPosition() const { return m_Position; }
 	protected:
 		Matrix m_Projection = Matrix(1.0f);
 		Matrix m_ViewMatrix = Matrix(1.0f);
 		Matrix m_ViewProjection = Matrix(1.0f);
+		Vector m_Position{ 0.0f, 0.0f, 5.0f };
+
 	};
 
 	/*

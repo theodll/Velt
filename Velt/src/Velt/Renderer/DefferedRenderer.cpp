@@ -6,11 +6,13 @@
 #include "Platform/Vulkan/DescriptorSetManager.h"
 #include "BindingLayouts.h"
 
+#include "../../../VeltEditor/src/EditorLayer.h"
+
 namespace Velt 
 {
 	Ref<Pipeline> DefferedRenderer::s_DefferedPipeline = nullptr;
 
-	void DefferedRenderer::Init()
+	void DefferedRenderer::Init(Ref<Camera> pCamera)
 	{
 		VT_PROFILE_FUNCTION();
 		{
@@ -33,7 +35,7 @@ namespace Velt
 			s_DefferedPipeline->Init();
 		}
 
-		m_ShaderInput = CreateRef<DefferedShaderInput>();
+		m_ShaderInput = CreateRef<DefferedShaderInput>(pCamera);
 	}
 
 	void DefferedRenderer::Shutdown()
@@ -44,22 +46,22 @@ namespace Velt
 		s_DefferedPipeline.reset();
 	}
 
-	void DefferedRenderer::ExecuteDefferedPass()
+	void DefferedRenderer::ExecuteDefferedPass(VkCommandBuffer cmd)
 	{
 		VT_PROFILE_FUNCTION();
-		auto cmd = Application::Get()->GetWindow()->GetSwapchain()->GetCurrentDrawCommandBuffer();
-		
 
 		m_ShaderInput->UpdateData();
 		Renderer::SubmitFullscreenTriangle(cmd, s_DefferedPipeline, m_ShaderInput);
 	}
 
-	DefferedShaderInput::DefferedShaderInput()
+	DefferedShaderInput::DefferedShaderInput(Ref<Camera> pCamera)
 	{
 		VT_PROFILE_FUNCTION();
 		auto pipeline = DefferedRenderer::GetPipeline();
 		VT_CORE_ASSERT(pipeline, "");
 		
+		m_Camera = pCamera;
+
 		m_AlbedoAOBinding = VT_DEFFERED_SET_BINDING_ALBEDO_AO;
 		m_NormalRoughBinding = VT_DEFFERED_SET_BINDING_NORMAL_ROUGH;
 		m_MetalEmitBinding = VT_DEFFERED_SET_BINDING_METAL_EMIT;
@@ -155,9 +157,10 @@ namespace Velt
 		updateImageBinding(m_DepthBinding, renderTargets[VT_RENDER_TARGET_DEPTH]);
 
 		CameraUBO ubo{};
-		ubo.viewProj = SceneRenderer::GetCamera()->GetViewProjection();
-		ubo.invViewProj = SceneRenderer::GetCamera()->GetInverseViewProjection();
-		ubo.cameraPos = SceneRenderer::GetCamera()->GetPosition();
+		// TODO [01.04.26]: Change this
+		ubo.viewProj = m_Camera->GetViewProjection();
+		ubo.invViewProj = m_Camera->GetInverseViewProjection();
+		ubo.cameraPos = m_Camera->GetPosition();
 
 		auto frameIndex = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex();
 		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);

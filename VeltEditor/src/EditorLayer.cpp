@@ -5,7 +5,6 @@
 
 namespace Velt::Editor
 {
-
 	EditorLayer::EditorLayer() : Layer("Editor")
 	{
 		
@@ -16,8 +15,31 @@ namespace Velt::Editor
 		VT_PROFILE_FUNCTION();
 		m_ActiveScene = CreateRef<Scene>();
 
-		auto model = m_ActiveScene->CreateEntity("Model");
+		m_SceneRenderer = CreateRef<SceneRenderer>();
+		m_SceneRenderer->Init();
 
+
+		float width, height{};
+
+		if (ImGuiLayer::GetViewport())
+		{
+			width = ImGuiLayer::GetViewport()->GetWidth();
+			height = ImGuiLayer::GetViewport()->GetHeight();
+		}
+		else
+		{
+			width = 1920;
+			height = 1080;
+		}
+
+		float aspect = width / height;
+
+		m_EditorCamera = CreateRef<EditorCamera>(glm::radians(50.0f), aspect, 0.1f, 1000.0f); 
+
+		m_DefferedRenderer = CreateRef<DefferedRenderer>();
+		m_DefferedRenderer->Init(m_EditorCamera);
+
+		auto model = m_ActiveScene->CreateEntity("Model");
 		model.AddComponent<ModelComponent>("Assets/Models/error.glb");
    	}
 
@@ -26,11 +48,14 @@ namespace Velt::Editor
 		VT_PROFILE_FUNCTION();
 		VT_CORE_INFO("Shutdown EditorLayer");
 
+		m_SceneRenderer->Shutdown();
+		m_SceneRenderer.reset();
+
+		m_DefferedRenderer->Shutdown();
+		m_DefferedRenderer.reset();
+
 		m_ActiveScene->Shutdown();
 		m_ActiveScene.reset();
-		m_Model.reset();
-		m_Mesh.reset();
-
 	}
 
 	void EditorLayer::OnAttach() 
@@ -47,9 +72,8 @@ namespace Velt::Editor
 	{
 		VT_PROFILE_FUNCTION();
 
-		auto&& camera = SceneRenderer::GetCamera();
-        camera->OnUpdate(ts);
-        camera->SetViewportSize(ImGuiLayer::GetViewport()->GetWidth(), ImGuiLayer::GetViewport()->GetHeight());
+        m_EditorCamera->OnUpdate(ts);
+		m_EditorCamera->SetViewportSize(ImGuiLayer::GetViewport()->GetWidth(), ImGuiLayer::GetViewport()->GetHeight());
 
 		m_ActiveScene->OnUpdate(ts);
 	}
@@ -62,12 +86,23 @@ namespace Velt::Editor
 	void EditorLayer::OnRender(VkCommandBuffer commandBuffer)
     {
 		VT_PROFILE_FUNCTION();
+		
+		m_SceneRenderer->BeginScene(m_EditorCamera);
 
 		m_ActiveScene->OnRender(commandBuffer);
+
+		m_SceneRenderer->EndScene();
 	}
 
 	void EditorLayer::OnImGuiRender2()
 	{
 		VT_PROFILE_FUNCTION();
 	}
+
+	void EditorLayer::OnDefferedRender(VkCommandBuffer commandBuffer)
+	{
+		VT_PROFILE_FUNCTION();
+		m_DefferedRenderer->ExecuteDefferedPass(commandBuffer);
+	}
+
 }
