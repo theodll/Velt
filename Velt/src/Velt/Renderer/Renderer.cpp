@@ -7,6 +7,7 @@
 #include "Velt/Core/Application.h"
 #include "Platform/Vulkan/VulkanRenderer.h"
 #include "SceneRenderer.h"
+#include "Material.h"
 
 
 namespace Velt {
@@ -106,9 +107,14 @@ namespace Velt {
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_INFO("Shutdown Static Renderer");
+		s_RenderTargets.clear();
+		Material::Shutdown();
 		s_SceneRenderer->Shutdown();
+		s_SceneRenderer.reset();
 		s_DefferedRenderer->Shutdown();
+		s_DefferedRenderer.reset();
 		s_RenderAPI->Shutdown();
+		s_RenderAPI.reset();
 	}
 
 	void Renderer::BeginScene()

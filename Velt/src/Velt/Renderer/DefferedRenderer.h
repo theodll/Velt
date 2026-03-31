@@ -39,7 +39,15 @@ namespace Velt
 	{
 	public:
 		DefferedShaderInput();
-		virtual ~DefferedShaderInput() = default;
+		virtual ~DefferedShaderInput() 
+		{
+			m_TextureSampler.reset();
+			
+			for (auto& gbuffer : m_GeometryBuffers)
+			{
+				gbuffer.reset();
+			}
+		};
 
 		const VkDescriptorSet& GetSet() const; 
 		void UpdateData();

@@ -11,11 +11,19 @@ namespace Velt
 {
 		namespace
 		{
+			static Ref<Texture2D> s_DefaultTexture = nullptr;
+
 			Ref<Texture2D> GetDefaultMaterialTexture()
 			{
-				static Ref<Texture2D> s_DefaultTexture = Texture2D::Create(ERROR_TEXTURE_PATH);
+				if (!s_DefaultTexture)
+					s_DefaultTexture = Texture2D::Create(ERROR_TEXTURE_PATH);
 				return s_DefaultTexture;
 			}
+		}
+
+		void Material::Shutdown()
+		{
+			s_DefaultTexture.reset();
 		}
 
 		Material::Material()
@@ -63,6 +71,14 @@ namespace Velt
 
 			UpdateData();
 		};
+
+		Material::~Material() 
+		{
+			VT_PROFILE_FUNCTION();
+			VT_CORE_INFO("Destroy Material Buffer");
+			m_Textures.clear();
+			m_Sampler.reset();
+		}
 
 		void Material::SetTexture(u32 binding, Ref<Texture2D> pTexture)
 		{

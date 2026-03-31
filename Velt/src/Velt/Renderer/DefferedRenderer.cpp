@@ -41,6 +41,7 @@ namespace Velt
 		VT_PROFILE_FUNCTION();
 		VT_CORE_INFO("Shutdown Deffered Renderer");
 		s_DefferedPipeline->Shutdown();
+		s_DefferedPipeline.reset();
 	}
 
 	void DefferedRenderer::ExecuteDefferedPass()

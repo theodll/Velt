@@ -43,7 +43,7 @@ namespace Velt
 		Mesh() = default;
 		Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const Matrix& transform);
 		Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const std::vector<Submesh>& submeshes);
-		virtual ~Mesh() = default;
+		virtual ~Mesh() { VT_PROFILE_FUNCTION(); VT_CORE_INFO("Destroy Mesh Buffer"); };
 
 		std::vector<Submesh>& GetSubmeshes() { return m_Submeshes; }
 		const std::vector<Submesh>& GetSubmeshes() const { return m_Submeshes; }
@@ -82,7 +82,7 @@ namespace Velt
 	public:
 		explicit Model(Ref<Mesh> meshSource);
 		Model(Ref<Mesh> meshSource, const std::vector<u32>& submeshes);
-		virtual ~Model() = default;
+		virtual ~Model() { VT_PROFILE_FUNCTION(); VT_CORE_INFO("Destroy Model Buffer"); };
 
 		void SetSubmeshes(const std::vector<u32>& submeshes, Ref<Mesh> meshSourceAsset);
 

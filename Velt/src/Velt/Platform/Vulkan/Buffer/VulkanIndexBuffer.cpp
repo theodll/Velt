@@ -44,6 +44,7 @@ namespace Velt::RHI
 	VulkanIndexBuffer::~VulkanIndexBuffer()
 	{
 		VT_PROFILE_FUNCTION();
+		VT_CORE_INFO("Destroy Index Buffer");
 
 		auto&& device = VulkanContext::GetDevice();
 

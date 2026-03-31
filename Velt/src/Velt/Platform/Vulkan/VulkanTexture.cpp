@@ -122,11 +122,10 @@ namespace Velt::RHI
 	VulkanTexture2D::~VulkanTexture2D() 
 	{
 		auto&& pDevice = VulkanContext::GetDevice();
-		vkDeviceWaitIdle(pDevice->device());
-		vkDestroyImage(pDevice->device(), m_Image, VT_NULL_HANDLE);
-		vkFreeMemory(pDevice->device(), m_ImageMemory, VT_NULL_HANDLE);
-		vkDestroyImageView(pDevice->device(), m_ImageView, VT_NULL_HANDLE);
-		vkDestroySampler(pDevice->device(), m_Sampler, VT_NULL_HANDLE);
+		//vkDestroyImage(pDevice->device(), m_Image, VT_NULL_HANDLE);
+		//vkFreeMemory(pDevice->device(), m_ImageMemory, VT_NULL_HANDLE);
+		//vkDestroyImageView(pDevice->device(), m_ImageView, VT_NULL_HANDLE);
+		//vkDestroySampler(pDevice->device(), m_Sampler, VT_NULL_HANDLE);
 	}
 
 	void VulkanTexture2D::CreateImage(stbi_uc* pPixelData) 

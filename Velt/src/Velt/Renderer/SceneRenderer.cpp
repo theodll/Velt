@@ -91,8 +91,10 @@ namespace Velt {
 		PipelineManager::Shutdown();
 		s_GeometryPipeline->Shutdown();
 
-		for (auto ubo : m_CameraUBOs)
-			ubo.reset();
+		s_GeometryPipeline.reset();
+		m_Camera.reset();
+
+		m_CameraUBOs.clear();
 	}
 
 	glm::vec2 GetAspectPair(u32 width, u32 height, float targetY = 0.9f)

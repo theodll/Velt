@@ -39,6 +39,7 @@ namespace Velt::RHI
 	VulkanVertexBuffer::~VulkanVertexBuffer()
 	{
 		VT_PROFILE_FUNCTION();
+		VT_CORE_INFO("Destroy Vertex Buffer");
 
 		auto device = VulkanContext::GetDevice();
 

@@ -58,6 +58,8 @@ namespace Velt {
 	{
 		VT_PROFILE_FUNCTION();
 		m_LayerStack.PopAllLayers();
+		for (auto* layer : m_LayerStack)
+			delete layer;
 
 		Renderer::QueueShutdown();
 		m_Window->Shutdown();

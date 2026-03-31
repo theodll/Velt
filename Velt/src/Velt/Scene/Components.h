@@ -62,6 +62,14 @@ namespace Velt
 			mesh = pModel->GetMeshSource();
 		}
 
+		~ModelComponent() 
+		{
+			VT_CORE_INFO("Destroy Model Component");
+			model.reset();
+			mesh.reset();
+
+		}
+
 		ModelComponent() = default;
 		ModelComponent(const ModelComponent&) = default;
 	};

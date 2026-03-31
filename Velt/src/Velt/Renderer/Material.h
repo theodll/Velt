@@ -15,7 +15,10 @@ namespace Velt
 	class VELT_API Material
 	{
 	public:
+		static void Shutdown();
+
 		Material();
+		~Material();
 
 		void SetBaseColorFactor(const HVector& factor) { m_Data.BaseColorFactor = factor; UpdateData(); };
 		void SetMetallic(float metallic) { m_Data.Metallic = metallic; UpdateData(); };
