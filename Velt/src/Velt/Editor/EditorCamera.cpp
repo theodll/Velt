@@ -31,11 +31,13 @@ namespace Velt
           m_FarClip(far),
           Camera(glm::perspective(m_VerticalFOV, aspect, near, far))
     {
+        VT_PROFILE_FUNCTION();
         Init();
     }
 
     void EditorCamera::Init()
     {
+        VT_PROFILE_FUNCTION();
         constexpr glm::vec3 position = { -5.0f, 5.0f, 5.0f };
         m_Position = position;
         m_FocalPoint = { 0.0f, 0.0f, 0.0f };
@@ -55,6 +57,7 @@ namespace Velt
 
     void EditorCamera::UpdateProjection()
     {
+        VT_PROFILE_FUNCTION();
         if (m_ViewportHeight <= 0.0f)
             return;
 
@@ -64,6 +67,7 @@ namespace Velt
 
     void EditorCamera::OnUpdate(Timestep ts)
     {
+        VT_PROFILE_FUNCTION();
         const glm::vec2 mouse{ Input::GetMouseX(), Input::GetMouseY() };
         const glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.002f;
 
@@ -165,6 +169,7 @@ namespace Velt
 
     void EditorCamera::UpdateView()
     {
+        VT_PROFILE_FUNCTION();
         const float yawSign = GetUpDirection().y < 0.0f ? -1.0f : 1.0f;
 
         const float cosAngle = glm::dot(GetForwardDirection(), GetUpDirection());
@@ -242,6 +247,7 @@ namespace Velt
 
     void EditorCamera::OnEvent(Event& e)
     {
+        VT_PROFILE_FUNCTION();
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent& event) { return OnMouseScroll(event); });
     }

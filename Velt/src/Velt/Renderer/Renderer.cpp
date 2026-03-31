@@ -28,6 +28,7 @@ namespace Velt {
 
 	void Renderer::RecreateRenderTargets(u32 width, u32 height)
 	{
+		VT_PROFILE_FUNCTION();
 		TextureCreateInfo albedoAO;
 		albedoAO.AspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		albedoAO.Extent = {width, height, 1};
@@ -75,9 +76,6 @@ namespace Velt {
 		sampler.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		sampler.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 		s_RenderTargets[VT_RENDER_TARGET_SAMPLER] = Texture2D::Create(&sampler);
-
-
-
 	}
 
 	void Renderer::Init()
@@ -114,11 +112,13 @@ namespace Velt {
 
 	void Renderer::BeginScene()
 	{
+		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Begin Scene");
 	}
 
 	void Renderer::EndScene()
 	{
+		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("End Scene");
 	}
 
@@ -136,23 +136,27 @@ namespace Velt {
 
 	void Renderer::BeginFrame()
 	{
+		VT_PROFILE_FUNCTION();
 		s_RenderAPI->BeginFrame();
 	}
 
 	void Renderer::BeginScenePass()
 	{
+		VT_PROFILE_FUNCTION();
 		s_RenderAPI->BeginScenePass();
 		s_SceneRenderer->BeginScene();
 	}
 
 	void Renderer::EndScenePass()
 	{
+		VT_PROFILE_FUNCTION();
 		s_SceneRenderer->EndScene();
 		s_RenderAPI->EndScenePass();
 	}
 
 	void Renderer::ExecuteDefferedPass()
 	{
+		VT_PROFILE_FUNCTION();
 		s_RenderAPI->BeginDefferedPass();
 		s_DefferedRenderer->ExecuteDefferedPass();
 		s_RenderAPI->EndDefferedPass();
@@ -160,12 +164,14 @@ namespace Velt {
 
 	void Renderer::BeginGuiPass()
 	{
+		VT_PROFILE_FUNCTION();
 		s_RenderAPI->BeginGuiPass();
 		ImGuiLayer::Begin();
 	}
 
 	void Renderer::EndGuiPass()
 	{
+		VT_PROFILE_FUNCTION();
 		ImGuiLayer::End();
 		ImGuiLayer::Render();
 
@@ -174,21 +180,25 @@ namespace Velt {
 
 	void Renderer::EndFrame()
 	{
+		VT_PROFILE_FUNCTION();
 		s_RenderAPI->EndFrame();
 	}
 
 	void Renderer::DrawQuad(VkCommandBuffer& renderCommandBuffer, const Matrix& transform, const Material& material)
 	{
+		VT_PROFILE_FUNCTION();
 		s_RenderAPI->DrawQuad(renderCommandBuffer, transform, material);
 	}
 
-	void Renderer::DrawStaticModel(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<Model>& model, const Ref<Mesh>& meshSource, u32 submeshIndex, const Ref<MaterialTable>& materialTable)
+	void Renderer::DrawStaticModel(VkCommandBuffer commandBuffer, const Ref<Pipeline>& pipeline, const Ref<Model>& model, const Ref<Mesh>& meshSource, u32 submeshIndex, const Ref<MaterialTable>& materialTable, const Matrix& transformModel)
 	{
-		s_RenderAPI->DrawStaticModel(renderCommandBuffer, pipeline, model, meshSource, submeshIndex, materialTable);
+		VT_PROFILE_FUNCTION();
+		s_RenderAPI->DrawStaticModel(commandBuffer, pipeline, model, meshSource, submeshIndex, materialTable, transformModel);
 	}
 
 	void Renderer::SubmitFullscreenTriangle(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<DefferedShaderInput>& input)
 	{
+		VT_PROFILE_FUNCTION();
 		s_RenderAPI->SubmitFullscreenTriangle(renderCommandBuffer, pipeline, input);
 	}
 

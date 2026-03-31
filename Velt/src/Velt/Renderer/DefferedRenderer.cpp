@@ -12,6 +12,7 @@ namespace Velt
 
 	void DefferedRenderer::Init()
 	{
+		VT_PROFILE_FUNCTION();
 		{
 			BufferLayout defferedLayout{};
 
@@ -37,11 +38,12 @@ namespace Velt
 
 	void DefferedRenderer::Shutdown()
 	{
-
+		VT_PROFILE_FUNCTION();
 	}
 
 	void DefferedRenderer::ExecuteDefferedPass()
 	{
+		VT_PROFILE_FUNCTION();
 		auto cmd = Application::Get()->GetWindow()->GetSwapchain()->GetCurrentDrawCommandBuffer();
 		
 
@@ -51,6 +53,7 @@ namespace Velt
 
 	DefferedShaderInput::DefferedShaderInput()
 	{
+		VT_PROFILE_FUNCTION();
 		auto pipeline = DefferedRenderer::GetPipeline();
 		VT_CORE_ASSERT(pipeline, "");
 		
@@ -103,6 +106,7 @@ namespace Velt
 
 	void DefferedShaderInput::UpdateData()
 	{
+		VT_PROFILE_FUNCTION();
 		auto renderTargets = Renderer::GetRenderTargets();
 
 		if (!m_TextureSampler)

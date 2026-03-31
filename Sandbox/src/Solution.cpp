@@ -1,4 +1,5 @@
 #include <Velt.h>
+#include <Velt/Core/Entrypoint.h>
 #include <ImGui/ImGuiLayer.h>
 
 class ExampleLayer : public Velt::Layer

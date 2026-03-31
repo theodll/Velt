@@ -50,6 +50,7 @@ namespace Velt {
 			const std::initializer_list<aiTextureType>& types,
 			std::unordered_map<std::string, Ref<Texture2D>>& textureCache)
 		{
+			VT_PROFILE_FUNCTION();
 			for (auto type : types)
 			{
 				if (aiMat->GetTextureCount(type) == 0)
@@ -91,6 +92,7 @@ namespace Velt {
 
 	Ref<Mesh> AssimpMeshImporter::ImportToMesh()
 	{
+		VT_PROFILE_FUNCTION();
 		Ref<Mesh> mesh = CreateRef<Mesh>();
 
 		Assimp::Importer importer;
@@ -230,6 +232,7 @@ namespace Velt {
 
 	void AssimpMeshImporter::TraverseNodes(Ref<Mesh> mesh, aiNode* aNode, uint32_t nodeIndex, const Matrix& parentTransform)
 	{
+		VT_PROFILE_FUNCTION();
 		MeshNode& node = mesh->m_Nodes[nodeIndex];
 		node.Name = aNode->mName.C_Str();
 		node.LocalTransform = Utils::Mat4FromAIMatrix4x4(aNode->mTransformation);

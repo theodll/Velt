@@ -30,6 +30,7 @@ namespace Velt {
 
 	void SceneViewport::Resize(u32 width, u32 height)
 	{
+		VT_PROFILE_FUNCTION();
 		if (width == m_Width && height == m_Height)
 			return;
 

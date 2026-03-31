@@ -9,6 +9,7 @@ namespace Velt
 
 	void PipelineManager::Init()
 	{
+		VT_PROFILE_FUNCTION();
 		std::vector<std::byte> cacheData;
 		if(std::filesystem::exists(m_CacheFilePath))
 		{
@@ -32,6 +33,7 @@ namespace Velt
 
 	void PipelineManager::Shutdown()
 	{
+		VT_PROFILE_FUNCTION();
 		SaveCache();
 		vkDestroyPipelineCache(RHI::VulkanContext::GetDevice()->device(), m_PipelineCache, VT_NULL_HANDLE);
 		m_PipelineCache = VT_NULL_HANDLE;
@@ -39,6 +41,7 @@ namespace Velt
 
 	void PipelineManager::SaveCache()
 	{
+		VT_PROFILE_FUNCTION();
 		if (!m_PipelineCache) return;
 
 		size_t cacheSize = 0;

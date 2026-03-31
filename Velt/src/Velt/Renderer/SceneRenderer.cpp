@@ -159,6 +159,7 @@ namespace Velt {
 
 	void SceneRenderer::EndScene()
 	{
+		VT_PROFILE_FUNCTION();
 	}
 
 }

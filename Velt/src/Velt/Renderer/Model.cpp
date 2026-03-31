@@ -6,6 +6,7 @@ namespace Velt {
 
 	Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const glm::mat4& transform) : m_Vertices(vertices), m_Indices(indices)
 	{
+		VT_PROFILE_FUNCTION();
 		Submesh submesh;
 		submesh.BaseVertex = 0;
 		submesh.BaseIndex = 0;
@@ -20,12 +21,14 @@ namespace Velt {
 	Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const std::vector<Submesh>& submeshes)
 		: m_Vertices(vertices), m_Indices(indices), m_Submeshes(submeshes)
 	{
+		VT_PROFILE_FUNCTION();
 		m_VertexBuffer = VertexBuffer::Create(m_Vertices.data(), (uint32_t)(m_Vertices.size()), sizeof(Vertex));
 		m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), (uint32_t)m_Indices.size());
 	}
 
 	Model::Model(Ref<Mesh> meshSource) : m_MeshSource(meshSource)
 	{
+		VT_PROFILE_FUNCTION();
 		m_Materials = CreateRef<MaterialTable>(0);
 
 		if (meshSource)
@@ -40,6 +43,7 @@ namespace Velt {
 
 	Model::Model(Ref<Mesh> meshSource, const std::vector<uint32_t>& submeshes) : m_MeshSource(meshSource)
 	{
+		VT_PROFILE_FUNCTION();
 		m_Materials = CreateRef<MaterialTable>(0);
 
 		if (meshSource)
@@ -54,6 +58,7 @@ namespace Velt {
 
 	void Model::SetSubmeshes(const std::vector<u32>& submeshes, Ref<Mesh> meshSource)
 	{
+		VT_PROFILE_FUNCTION();
 		if (!submeshes.empty())
 		{
 			m_Submeshes = submeshes;

@@ -354,7 +354,7 @@ namespace Velt::RHI
 		const Ref<Model>& model,
 		const Ref<Mesh>& meshSource,
 		u32 submeshIndex,
-		const Ref<MaterialTable>& materialTable)
+		const Ref<MaterialTable>& materialTable, const Matrix& transformModel)
 	{
 		VT_CORE_ASSERT(pipeline, "Pipeline is null");
 		VT_CORE_ASSERT(model, "Model is null");
@@ -397,7 +397,7 @@ namespace Velt::RHI
 		VkDescriptorSet descriptorSet = selectedMaterial->GetSet();
 		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &descriptorSet, 0, nullptr);
 
-		const Matrix transform = model->GetTransformMatrix() * submesh.Transform;
+		const Matrix transform = transformModel * submesh.Transform;
 		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Matrix), &transform);
 
 		vkCmdDrawIndexed(commandBuffer, submesh.IndexCount, 1, submesh.BaseIndex, submesh.BaseVertex, 0);

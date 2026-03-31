@@ -26,3 +26,6 @@
 [submodule "Velt/vendor/tracy"]
 	path = Velt/vendor/tracy
 	url = https://github.com/wolfpld/tracy
+[submodule "Velt/vendor/entt"]
+	path = Velt/vendor/entt
+	url = https://github.com/skypjack/entt

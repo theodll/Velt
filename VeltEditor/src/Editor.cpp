@@ -1,4 +1,5 @@
 #include <Velt/Velt.h>
+#include <Velt/Core/Entrypoint.h>
 #include <ImGui/ImGuiLayer.h>
 #include "EditorLayer.h"
 
@@ -10,7 +11,7 @@ public:
 	{
 		VT_PROFILE_FUNCTION();
 		
-		PushLayer(new Editor::EditorLayer());
+		PushLayer(new Velt::Editor::EditorLayer());
 	
 #if NDEBUG
 		Application::UpdateTitle("Velt Editor - Release");

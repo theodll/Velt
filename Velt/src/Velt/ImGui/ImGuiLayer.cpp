@@ -161,6 +161,7 @@ namespace Velt {
 
 	void ImGuiLayer::RenderSceneViewport()
 	{
+		VT_PROFILE_FUNCTION();
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
 
 		ImGui::Begin("Scene Viewport", nullptr,
@@ -179,9 +180,6 @@ namespace Velt {
 			m_PendingViewportH = newH;
 			m_ViewportResizePending = true;
 		}
-
-		VT_CORE_WARN("Focused: {0}", ImGui::IsWindowFocused());
-		VT_CORE_WARN("Hovered: {0}", ImGui::IsWindowHovered());
 
 		if (m_SceneViewport && m_SceneViewport->GetDescriptorSet() != VK_NULL_HANDLE)
 			ImGui::Image((ImTextureID)m_SceneViewport->GetDescriptorSet(), avail);

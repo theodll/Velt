@@ -8,6 +8,7 @@ namespace Velt
 
 	Ref<Shader> ShaderLibrary::Get(const std::filesystem::path& path)
 	{
+		VT_PROFILE_FUNCTION();
 		std::string pathStr = path.string();
 
 		auto it = m_Shaders.find(pathStr);
@@ -31,6 +32,7 @@ namespace Velt
 
 	std::vector<u32> ShaderLibrary::ReadSpirvFile(const std::filesystem::path& path)
 	{
+		VT_PROFILE_FUNCTION();
 		std::ifstream file(path, std::ios::binary | std::ios::ate);
 		VT_CORE_ASSERT(file.is_open(), "Failed to open file: {}", path.string());
 
@@ -47,6 +49,7 @@ namespace Velt
 
 	VkShaderModule ShaderLibrary::CreateVulkanModule(const std::vector<u32>& bytes)
 	{
+		VT_PROFILE_FUNCTION();
 		VkShaderModule module;
 
 		VkShaderModuleCreateInfo createInfo{};
