@@ -3,6 +3,7 @@
 #include "Renderer/Renderer.h"
 #include "Log.h"
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_events.h>
 #include "ImGui/ImGuiLayer.h"
 #include "Renderer/Buffer.h"
 #include "Events/ApplicationEvents.h" 
@@ -146,6 +147,10 @@ namespace Velt {
 			{
 				if (auto evt = SDL::TranslateSDLEvent(&sdl)) {
 					OnEvent(*evt);
+				}
+				if(sdl.type == SDL_EVENT_QUIT)
+				{
+					s_ShutdownRequested = true;
 				}
 			}
 

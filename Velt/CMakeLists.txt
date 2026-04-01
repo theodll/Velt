@@ -98,7 +98,7 @@ add_custom_command(
     COMMENT "Deploying Assets and freshly compiled Shaders"
 )
 
-target_sources(Velt PRIVATE
+target_sources(Velt PUBLIC
     vendor/ImGui/imgui.cpp
     vendor/ImGui/imgui_draw.cpp
     vendor/ImGui/imgui_widgets.cpp

@@ -50,5 +50,7 @@ namespace Velt::Editor
 		VkSampler m_Sampler = VT_NULL_HANDLE;
 
 		VkDescriptorSet m_DescriptorSet = VT_NULL_HANDLE;
+
+	friend class EditorLayer;
 	};
 }

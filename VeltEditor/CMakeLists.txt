@@ -41,4 +41,3 @@ add_custom_command(TARGET VeltEditor POST_BUILD
     $<TARGET_FILE_DIR:VeltEditor>/Assets
     COMMENT "Copying Assets to output directory"
 )
-

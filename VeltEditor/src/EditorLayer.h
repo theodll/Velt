@@ -21,6 +21,7 @@ namespace Velt::Editor {
 		void OnRender(VkCommandBuffer commandBuffer) override;
 		void OnDefferedRender(VkCommandBuffer commandBuffer) override;
 
+		void OnImGuiRender() override;
 		void OnImGuiRender2() override;
 
 	private: 
@@ -28,6 +29,8 @@ namespace Velt::Editor {
 
 		Ref<SceneRenderer> m_SceneRenderer;
 		Ref<DefferedRenderer> m_DefferedRenderer;
+
+		Timestep m_Timestep;
 
 		Ref<EditorCamera> m_EditorCamera;
 

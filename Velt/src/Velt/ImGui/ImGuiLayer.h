@@ -8,6 +8,9 @@
 #include "Velt/Renderer/Renderer.h"
 
 namespace Velt {
+
+	VELT_API ImGuiContext* GetCurrentImGuiContext();
+
 	class VELT_API ImGuiLayer : public Layer
 	{
 	public:

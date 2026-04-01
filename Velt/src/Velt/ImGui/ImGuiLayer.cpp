@@ -14,6 +14,10 @@ namespace Velt {
 
 	Ref<ImGuiRenderer> ImGuiLayer::m_Renderer = nullptr;
 
+	VELT_API ImGuiContext* GetCurrentImGuiContext() 
+	{
+		return ImGui::GetCurrentContext();
+	}
 
 	ImGuiLayer::ImGuiLayer()
 	{
@@ -32,13 +36,11 @@ namespace Velt {
 		VT_PROFILE_FUNCTION();
 		VT_CORE_TRACE("Attach ImGuiLayer");
 
-
 		const auto& device = RHI::VulkanContext::GetDevice();
 		SDL_Window* window = nullptr;
 	
 		window = reinterpret_cast<SDL_Window*>(Application::Get()->GetWindow()->GetNativeHandle());
 		
-
 		m_Renderer = CreateRef<ImGuiRenderer>();
 		
 		IMGUI_CHECKVERSION();
@@ -46,13 +48,12 @@ namespace Velt {
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		io.FontDefault = io.Fonts->AddFontFromFileTTF("Assets/Fonts/segoe-ui/segoeuithis.ttf", 16.0f);
 
 		ImGuiStyle& style = ImGui::GetStyle();
 		// ApplyEditorTheme(style);
-	
 
 		m_Renderer->Init();
-		
 
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
@@ -93,7 +94,6 @@ namespace Velt {
 		VT_PROFILE_FUNCTION();
 
 		SetupDockspace();
-		RenderSceneViewport();
 	}
 
 	void ImGuiLayer::OnImGuiRender2()
