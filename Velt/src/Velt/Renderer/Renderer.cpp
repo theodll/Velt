@@ -86,11 +86,8 @@ namespace Velt {
 
 		i32 w{ 1920 }, h{ 1080 };
 
-		if (ImGuiLayer::GetViewport()) 
-		{
-			auto viewport = ImGuiLayer::GetViewport();
-			w = viewport->GetWidth(), h = viewport->GetHeight();
-		}
+		auto&& app = Application::Get();
+		w = app->GetRenderableWidth(), h = app->GetRenderableHeight();
 
 		RecreateRenderTargets(w, h);
 	}

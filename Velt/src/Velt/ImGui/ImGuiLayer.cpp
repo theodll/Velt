@@ -12,13 +12,8 @@
 
 namespace Velt {
 
-	Scope<SceneViewport> ImGuiLayer::m_SceneViewport = nullptr;
 	Ref<ImGuiRenderer> ImGuiLayer::m_Renderer = nullptr;
-	u32 ImGuiLayer::m_PendingViewportH = 0;
-	u32 ImGuiLayer::m_PendingViewportW = 0;
-	bool ImGuiLayer::m_ViewportResizePending = false;
-	bool ImGuiLayer::m_RenderTargetChangePending = false;
-	RenderTarget ImGuiLayer::m_PendingRenderTarget = VT_RENDER_TARGET_ALBEDO_AO;
+
 
 	ImGuiLayer::ImGuiLayer()
 	{
@@ -45,7 +40,6 @@ namespace Velt {
 		
 
 		m_Renderer = CreateRef<ImGuiRenderer>();
-		m_SceneViewport = CreateScope<SceneViewport>();
 		
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -58,8 +52,7 @@ namespace Velt {
 	
 
 		m_Renderer->Init();
-		m_SceneViewport->Init(480, 480);
-
+		
 
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
@@ -161,55 +154,11 @@ namespace Velt {
 
 	void ImGuiLayer::RenderSceneViewport()
 	{
-		VT_PROFILE_FUNCTION();
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
-
-		ImGui::Begin("Scene Viewport", nullptr,
-			ImGuiWindowFlags_NoScrollbar |
-			ImGuiWindowFlags_NoScrollWithMouse);
-
 		
-		ImVec2 avail = ImGui::GetContentRegionAvail();
-
-		u32 newW = (u32)glm::max(1.0f, avail.x);
-		u32 newH = (u32)glm::max(1.0f, avail.y);
-
-		if (newW != m_SceneViewport->GetWidth() || newH != m_SceneViewport->GetHeight())
-		{
-			m_PendingViewportW = newW;
-			m_PendingViewportH = newH;
-			m_ViewportResizePending = true;
-		}
-
-		if (m_SceneViewport && m_SceneViewport->GetDescriptorSet() != VK_NULL_HANDLE)
-			ImGui::Image((ImTextureID)m_SceneViewport->GetDescriptorSet(), avail);
-		else
-			ImGui::Text("Scene viewport not initialized");
-
-		ImGui::End();
-
-		ImGui::PopStyleVar();
 	}
 	void ImGuiLayer::OnRender(VkCommandBuffer commandBuffer)
 	{
 		VT_PROFILE_FUNCTION();
-	}
-
-	void ImGuiLayer::ProcessPendingResize()
-	{
-		VT_PROFILE_FUNCTION();
-
-		if (m_ViewportResizePending)
-		{
-			m_SceneViewport->Resize(m_PendingViewportW, m_PendingViewportH);
-			m_ViewportResizePending = false;
-		}
-
-		if (m_RenderTargetChangePending)
-		{
-			m_SceneViewport->SetRenderTarget(m_PendingRenderTarget);
-			m_RenderTargetChangePending = false;
-		}
 	}
 
 	void ImGuiLayer::Begin()

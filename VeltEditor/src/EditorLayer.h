@@ -1,5 +1,6 @@
 #pragma once
 #include <Velt.h>
+#include <Velt/Editor/Panels/EditorViewportPanel.h>
 
 namespace Velt::Editor {
 
@@ -15,6 +16,7 @@ namespace Velt::Editor {
 		void OnDetach() override; 
 		void OnUpdate(Velt::Timestep ts) override;
 		void OnEvent(Velt::Event& event) override;
+		void OnBeforeFrameBegin() override;
 
 		void OnRender(VkCommandBuffer commandBuffer) override;
 		void OnDefferedRender(VkCommandBuffer commandBuffer) override;
@@ -22,12 +24,13 @@ namespace Velt::Editor {
 		void OnImGuiRender2() override;
 
 	private: 
-
 		Ref<Scene> m_ActiveScene;
 
 		Ref<SceneRenderer> m_SceneRenderer;
 		Ref<DefferedRenderer> m_DefferedRenderer;
 
 		Ref<EditorCamera> m_EditorCamera;
+
+		Ref<EditorViewportPanel> m_ViewportPanel;
 	};
 }

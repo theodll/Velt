@@ -23,6 +23,9 @@ namespace Velt
         virtual void OnRender(VkCommandBuffer commandBuffer) {};
         virtual void OnDefferedRender(VkCommandBuffer commandBuffer) {};
 
+        // TEMP
+        virtual void OnBeforeFrameBegin() {};
+
         inline const std::string& GetName() const {  return m_DebugName; }
 
     protected:

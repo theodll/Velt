@@ -3,7 +3,6 @@
 #include "vtpch.h"
 #include "Velt/Core/Layer.h"
 #include "ImGuiRenderer.h"
-#include "SceneViewport.h"
 
 #include "Velt/Platform/Vulkan/VulkanDevice.h"	
 #include "Velt/Renderer/Renderer.h"
@@ -32,27 +31,17 @@ namespace Velt {
 		static void Begin();
 		static void End();
 		static void Render();
-		static void ProcessPendingResize();
 
 		void SetupDockspace();
 		void RenderSceneViewport();
 		
 		static ImGuiRenderer* GetRenderer() { return m_Renderer.get(); } 
-		static SceneViewport* GetViewport() { return m_SceneViewport.get(); }
-
-		static bool m_RenderTargetChangePending;
-		static RenderTarget m_PendingRenderTarget;
-
+		
 	private: 
 		inline void ApplyEditorTheme(ImGuiStyle& style);
 		static Ref<ImGuiRenderer> m_Renderer;
 
 		Scope<RHI::VulkanDevice> m_Device;
-		static Scope<SceneViewport> m_SceneViewport;
-
-		static u32 m_PendingViewportW;
-		static u32 m_PendingViewportH;
-		static bool m_ViewportResizePending;
 		
 	}; 
 }

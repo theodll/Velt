@@ -115,13 +115,14 @@ namespace Velt {
 		PushOverlay(new Velt::ImGuiLayer);
 
 		Input::Init();
+
+		for (Layer* layer : m_LayerStack)
+			layer->Init();
 	}
 
 	void Application::Run()
 	{
 		bool running = true;
-		for (Layer* layer : m_LayerStack)
-						layer->Init();
 
 		while (running)
 		{
@@ -168,11 +169,13 @@ namespace Velt {
 			}
 
 			VT_PROFILE_SCOPE("Render Loop");
-			
+
 			auto cmd = m_Window->GetSwapchain()->GetCurrentDrawCommandBuffer();
 
+			for (Layer* layer : m_LayerStack)
+				layer->OnBeforeFrameBegin();
+
 			Renderer::BeginFrame();
-			
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate(ts);
 
@@ -223,6 +226,7 @@ namespace Velt {
 
 	void Application::RenderStatisticsWidget(Timestep ts)
 	{
+		/*
 		ImGui::Begin("Statistics");
 		ImGui::Text("Velt Engine v0.0");
 		ImGui::Separator();
@@ -236,7 +240,7 @@ namespace Velt {
 		ImGui::Separator();
 		ImGui::Text("Draw Calls: %i", Renderer::GetDrawCallCount());
 		
-		static RenderTarget currentRT = ImGuiLayer::GetViewport()->GetRenderTarget();
+		static RenderTarget currentRT = (RenderTarget)Application::Get()->SelectedRenderTarget;
 
 		if (ImGui::BeginCombo("Render Target", RenderTargetToString(currentRT)))
 		{
@@ -262,5 +266,6 @@ namespace Velt {
 		ImGui::End();
 
 		Velt::Application::UpdateTitle(Velt::Application::Get()->TITLE + " - " + std::to_string((int)s), false);
+		*/
 	}
 }

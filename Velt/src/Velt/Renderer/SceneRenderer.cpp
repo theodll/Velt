@@ -98,8 +98,8 @@ namespace Velt {
 	{
 		VT_PROFILE_FUNCTION();
 		
-		u32 w = ImGuiLayer::GetViewport()->GetWidth();
-		u32 h = ImGuiLayer::GetViewport()->GetHeight();
+		u32 w = Application::Get()->GetRenderableWidth();
+		u32 h = Application::Get()->GetRenderableHeight();
 
 		glm::vec2 aspect = GetAspectPair(w, h);
 

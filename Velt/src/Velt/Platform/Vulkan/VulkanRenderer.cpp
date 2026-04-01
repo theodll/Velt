@@ -52,9 +52,7 @@ namespace Velt::RHI
 
 	void VulkanRenderer::BeginFrame()
 	{
-		// Handle any pending viewport resize before starting command recording
-		ImGuiLayer::ProcessPendingResize();
-		
+		VT_PROFILE_FUNCTION();
 		const auto& app = Velt::Application::Get();
 		const auto& window = app->GetWindow();
 		const auto& swapchain = window->GetSwapchain();
@@ -72,11 +70,11 @@ namespace Velt::RHI
 
 	void VulkanRenderer::BeginScenePass() 
 	{
+		VT_PROFILE_FUNCTION();
 		const auto& app = Velt::Application::Get();
 		const auto& window = app->GetWindow();
 		const auto& sc = window->GetSwapchain();
 		const auto&& cmd = sc->GetCurrentDrawCommandBuffer();
-		const auto* viewport = ImGuiLayer::GetViewport();
 
 		sc->TransitionImageLayout(
 			cmd,
@@ -116,6 +114,8 @@ namespace Velt::RHI
 
 		// Rendering Info Setup
 		VkClearValue clearColor = { {{0.0f, 1.0f, 0.992f, 1.0f}} };
+		u32 width = Velt::Application::Get()->GetRenderableWidth();
+		u32 height = Velt::Application::Get()->GetRenderableHeight();
 
 		VkRenderingAttachmentInfoKHR colorAttachmentInfos[3]{};
 		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
@@ -141,7 +141,7 @@ namespace Velt::RHI
 
 		VkRenderingAttachmentInfoKHR depthAttachmentInfo{};
 		depthAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO; 
-		depthAttachmentInfo.imageView = viewport->GetDepthImageView();
+		depthAttachmentInfo.imageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_DEPTH)->GetImageView();
 		depthAttachmentInfo.imageLayout = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL;
 		depthAttachmentInfo.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		depthAttachmentInfo.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -149,7 +149,7 @@ namespace Velt::RHI
 
 		VkRenderingInfoKHR renderInfo{};
 		renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
-		renderInfo.renderArea.extent = { viewport->GetWidth(), viewport->GetHeight() };
+		renderInfo.renderArea.extent = { width, height };
 		renderInfo.renderArea.offset = { 0, 0 };
 		renderInfo.layerCount = 1;
 		renderInfo.colorAttachmentCount = 3;
@@ -157,9 +157,6 @@ namespace Velt::RHI
 		renderInfo.pDepthAttachment = &depthAttachmentInfo;
 
 		vkCmdBeginRendering(cmd, &renderInfo);
-
-		u32 width = viewport->GetWidth();
-		u32 height = viewport->GetHeight();
 
 		VkRect2D scissor{};
 		scissor.extent = { width, height };
@@ -353,6 +350,7 @@ namespace Velt::RHI
 		u32 submeshIndex,
 		const Ref<MaterialTable>& materialTable, const Matrix& transformModel)
 	{
+		VT_PROFILE_FUNCTION();
 		VT_CORE_ASSERT(pipeline, "Pipeline is null");
 		VT_CORE_ASSERT(model, "Model is null");
 		VT_CORE_ASSERT(meshSource, "MeshSource is null");
@@ -412,6 +410,7 @@ namespace Velt::RHI
 
 	void VulkanRenderer::SubmitFullscreenTriangle(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<DefferedShaderInput>& input)
 	{
+		VT_PROFILE_FUNCTION();
 		VkPipelineLayout layout = pipeline->GetVulkanPipelineLayout();
 
 		VkPipelineLayout pipelineLayout = pipeline->GetVulkanPipelineLayout();
@@ -427,11 +426,11 @@ namespace Velt::RHI
 
 	void VulkanRenderer::BeginDefferedPass()
 	{
+		VT_PROFILE_FUNCTION();
 		const auto& app = Velt::Application::Get();
 		const auto& window = app->GetWindow();
 		const auto& sc = window->GetSwapchain();
 		const auto&& cmd = sc->GetCurrentDrawCommandBuffer();
-		const auto* viewport = ImGuiLayer::GetViewport();
 
 		sc->TransitionImageLayout(
 			cmd,
@@ -443,6 +442,10 @@ namespace Velt::RHI
 		);
 
 		// Rendering Info Setup
+		
+		u32 width = Velt::Application::Get()->GetRenderableWidth();
+		u32 height = Velt::Application::Get()->GetRenderableHeight();
+
 		VkClearValue clearColor = { {{1.0f, 0.0f, 1.0, 1.0f}} };
 
 		VkRenderingAttachmentInfoKHR colorAttachmentInfo{};
@@ -456,7 +459,7 @@ namespace Velt::RHI
 
 		VkRenderingInfoKHR renderInfo{};
 		renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
-		renderInfo.renderArea.extent = { viewport->GetWidth(), viewport->GetHeight() };
+		renderInfo.renderArea.extent = { width, height };
 		renderInfo.renderArea.offset = { 0, 0 };
 		renderInfo.layerCount = 1;
 		renderInfo.colorAttachmentCount = 1;
@@ -464,9 +467,6 @@ namespace Velt::RHI
 
 
 		vkCmdBeginRendering(cmd, &renderInfo);
-
-		u32 width = viewport->GetWidth();
-		u32 height = viewport->GetHeight();
 
 		VkRect2D scissor{};
 		scissor.extent = { width, height };
@@ -485,6 +485,7 @@ namespace Velt::RHI
 
 	void VulkanRenderer::EndDefferedPass()
 	{
+		VT_PROFILE_FUNCTION();
 		const auto& app = Velt::Application::Get();
 		const auto& window = app->GetWindow();
 		const auto& sc = window->GetSwapchain();

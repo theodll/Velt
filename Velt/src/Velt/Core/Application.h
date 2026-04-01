@@ -39,8 +39,14 @@ namespace Velt
 			Window* GetWindow() { return m_Window.get(); }
 			
 			void RenderStatisticsWidget(Timestep ts);
-		
-			// VARS
+			// this hella placebo 
+			u32 GetRenderableWidth() { return RenderableWidth; }
+			u32 GetRenderableHeight() { return RenderableHeight; }
+
+			bool UsingEditorViewport;
+			u32 RenderableWidth = 1920;
+			u32 RenderableHeight = 1080;
+			u32 SelectedRenderTarget = VT_RENDER_TARGET_COMPOSITE;
 			static bool s_ShutdownRequested;
 			static constexpr int WIDTH{ 1920  };
 			static constexpr int HEIGHT { 1080 };
