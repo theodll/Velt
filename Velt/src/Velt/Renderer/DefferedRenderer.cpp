@@ -112,8 +112,21 @@ namespace Velt
 	void DefferedShaderInput::UpdateData()
 	{
 		VT_PROFILE_FUNCTION();
-		auto renderTargets = Renderer::GetRenderTargets();
-
+		auto&& renderTargets = Renderer::GetRenderTargets();
+		auto frameIndex = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex();
+		/*
+		if (!m_TextureSampler)
+		{
+			if (renderTargets[VT_RENDER_TARGET_SAMPLER]) {
+				m_TextureSampler = renderTargets[VT_RENDER_TARGET_SAMPLER];
+				RHI::VulkanContext::GetSetManager()->WriteSampler(
+					m_Sets[frameIndex],
+					m_SamplerBinding,
+					m_TextureSampler->GetSampler()
+				);
+			}
+		}
+		*/
 		if (!m_TextureSampler)
 		{
 			if (renderTargets[VT_RENDER_TARGET_SAMPLER]) {
@@ -134,21 +147,18 @@ namespace Velt
 			if (m_ValidBindings.find(binding) == m_ValidBindings.end() || !pTexture)
 				return;
 
-			for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-			{
-				m_GeometryBuffers[i]->Targets[binding] = pTexture;
-				
-				VkDescriptorImageInfo info{};
-				info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-				info.imageView = pTexture->GetImageView();
-				info.sampler = VT_NULL_HANDLE;
+			m_GeometryBuffers[frameIndex]->Targets[binding] = pTexture;
 
-				RHI::VulkanContext::GetSetManager()->WriteImage(
-					m_Sets[i],
-					binding,
-					info
-				);
-			}
+			VkDescriptorImageInfo info{};
+			info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			info.imageView = pTexture->GetImageView();
+			info.sampler = VT_NULL_HANDLE;
+
+			RHI::VulkanContext::GetSetManager()->WriteImage(
+				m_Sets[frameIndex],
+				binding,
+				info
+			);
 		};
 
 		updateImageBinding(m_AlbedoAOBinding, renderTargets[VT_RENDER_TARGET_ALBEDO_AO]);
@@ -162,7 +172,6 @@ namespace Velt
 		ubo.invViewProj = m_Camera->GetInverseViewProjection();
 		ubo.cameraPos = m_Camera->GetPosition();
 
-		auto frameIndex = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex();
 		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
 
 		RHI::VulkanContext::GetSetManager()->WriteBuffer(

@@ -4,6 +4,7 @@
 #include <vector>
 
 namespace Velt
+	// Hi to anyone looking or reviewing this. I know this is not the best thing to do and should probably be replaced with reflection, but I tried it and it didnt work and only did problems so i just did this. forgive me
 {
 	// Global Set (Set 0) Bindings
 

@@ -39,7 +39,7 @@ namespace Velt {
 			geometryPipelineSpecs.VertexShader = gVertexShader;
 			geometryPipelineSpecs.FragmentShader = gPixelShader;
 			geometryPipelineSpecs.Layout = geometryLayout;
-			geometryPipelineSpecs.ColorAttachmentFormats = { VK_FORMAT_B8G8R8A8_SRGB, VK_FORMAT_B8G8R8A8_SRGB, VK_FORMAT_B8G8R8A8_SRGB };
+			geometryPipelineSpecs.ColorAttachmentFormats = { VK_FORMAT_B8G8R8A8_SRGB, VK_FORMAT_B8G8R8A8_SRGB, VK_FORMAT_B8G8R8A8_SRGB, VK_FORMAT_R32_UINT };
 			geometryPipelineSpecs.CullMode = VT_CULL_MODE_BACK_BIT;
 
 			m_CameraUBOBinding = VT_CAMERA_SET_UBO_BINDING;

@@ -112,12 +112,22 @@ namespace Velt::RHI
 			VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT
 		);
 
+		sc->TransitionImageLayout(
+			cmd,
+			Renderer::GetRenderTarget(VT_RENDER_TARGET_MOUSE_PICKING)->GetImage(),
+			VK_IMAGE_LAYOUT_UNDEFINED,
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+		);
+
+
 		// Rendering Info Setup
-		VkClearValue clearColor = { {{0.0f, 1.0f, 0.992f, 1.0f}} };
+		VkClearValue clearColor = { {{1.0f, 1.0f, 1.0f, 1.0f}} };
 		u32 width = Velt::Application::Get()->GetRenderableWidth();
 		u32 height = Velt::Application::Get()->GetRenderableHeight();
 
-		VkRenderingAttachmentInfoKHR colorAttachmentInfos[3]{};
+		VkRenderingAttachmentInfoKHR colorAttachmentInfos[4]{};
 		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
 		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].imageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_ALBEDO_AO)->GetImageView();
 		colorAttachmentInfos[VT_RENDER_TARGET_ALBEDO_AO].imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
@@ -139,6 +149,13 @@ namespace Velt::RHI
 		colorAttachmentInfos[VT_RENDER_TARGET_METAL_EMIT].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 		colorAttachmentInfos[VT_RENDER_TARGET_METAL_EMIT].clearValue = clearColor;
 
+		colorAttachmentInfos[VT_RENDER_TARGET_MOUSE_PICKING].sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+		colorAttachmentInfos[VT_RENDER_TARGET_MOUSE_PICKING].imageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_MOUSE_PICKING)->GetImageView();
+		colorAttachmentInfos[VT_RENDER_TARGET_MOUSE_PICKING].imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		colorAttachmentInfos[VT_RENDER_TARGET_MOUSE_PICKING].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		colorAttachmentInfos[VT_RENDER_TARGET_MOUSE_PICKING].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+		colorAttachmentInfos[VT_RENDER_TARGET_MOUSE_PICKING].clearValue = clearColor;
+
 		VkRenderingAttachmentInfoKHR depthAttachmentInfo{};
 		depthAttachmentInfo.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO; 
 		depthAttachmentInfo.imageView = Renderer::GetRenderTarget(VT_RENDER_TARGET_DEPTH)->GetImageView();
@@ -152,7 +169,7 @@ namespace Velt::RHI
 		renderInfo.renderArea.extent = { width, height };
 		renderInfo.renderArea.offset = { 0, 0 };
 		renderInfo.layerCount = 1;
-		renderInfo.colorAttachmentCount = 3;
+		renderInfo.colorAttachmentCount = 4;
 		renderInfo.pColorAttachments = colorAttachmentInfos;
 		renderInfo.pDepthAttachment = &depthAttachmentInfo;
 

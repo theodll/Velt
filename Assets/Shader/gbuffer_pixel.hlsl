@@ -12,6 +12,7 @@ struct GBUFFER_OUT
     [[vk::location(0)]] float4 g_AlbedoAO : SV_Target0;
     [[vk::location(1)]] float4 g_NormalRough : SV_Target1;
     [[vk::location(2)]] float4 g_MetalEmit : SV_Target2;
+    [[vk::location(3)]] uint g_EntityID : SV_Target3;
 };
 
 struct MATERIAL_UBO

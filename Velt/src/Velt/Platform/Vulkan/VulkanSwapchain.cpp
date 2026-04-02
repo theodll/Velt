@@ -165,9 +165,11 @@ namespace Velt::RHI
         submitInfo.pSignalSemaphores = signalSemaphores;
 
         vkResetFences(m_Device.device(), 1, &m_InFlightFences[m_CurrentFrameIndex]);
-        if (vkQueueSubmit(m_Device.graphicsQueue(), 1, &submitInfo, m_InFlightFences[m_CurrentFrameIndex]) != VK_SUCCESS)
+        VkResult result1 = vkQueueSubmit(m_Device.graphicsQueue(), 1, &submitInfo, m_InFlightFences[m_CurrentFrameIndex]); 
+        if (result1 != VK_SUCCESS)
         {
-            VT_CORE_ASSERT(false, "Failed to Submit Draw Commandbuffers")
+            VT_CORE_ASSERT(false, "Failed to Submit Draw Commandbuffers {0}", (i32)result1)
+    //        VT_CORE_ERROR("Failed to Submit Draw Commandbuffers, {0}", (i32)result1);
         }
 
         VkPresentInfoKHR presentInfo = {};

@@ -112,11 +112,8 @@ namespace Velt
 		void Material::UpdateData()
 		{
 			VT_PROFILE_FUNCTION();
-			for (int i{ 0 }; i < MAX_FRAMES_IN_FLIGHT; i++)
-			{
-				m_UBOs[i]->SetData(&m_Data, sizeof(MaterialUBO), 0);
-			}
-
+			auto frameIndex = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex();
+			m_UBOs[frameIndex]->SetData(&m_Data, sizeof(MaterialUBO), 0);
 		}
 
 		MaterialTable::MaterialTable(uint32_t materialCount)
