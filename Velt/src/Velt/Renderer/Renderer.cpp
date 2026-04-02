@@ -75,6 +75,14 @@ namespace Velt {
 		sampler.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		sampler.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 		s_RenderTargets[VT_RENDER_TARGET_SAMPLER] = Texture2D::Create(&sampler);
+
+		TextureCreateInfo mousePicking;
+		mousePicking.AspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		mousePicking.Extent = { width, height, 1 };
+		mousePicking.Format = VK_FORMAT_R32_UINT;
+		mousePicking.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		mousePicking.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+		s_RenderTargets[VT_RENDER_TARGET_MOUSE_PICKING] = Texture2D::Create(&mousePicking);
 	}
 
 	void Renderer::Init()
