@@ -76,50 +76,65 @@ namespace Velt::RHI
 		const auto& sc = window->GetSwapchain();
 		const auto&& cmd = sc->GetCurrentDrawCommandBuffer();
 
+		auto&& albedoAO = Renderer::GetRenderTarget(VT_RENDER_TARGET_ALBEDO_AO);
 		sc->TransitionImageLayout(
 			cmd,
-			Renderer::GetRenderTarget(VT_RENDER_TARGET_ALBEDO_AO)->GetImage(),
-			VK_IMAGE_LAYOUT_UNDEFINED,
+			albedoAO->GetImage(),
+			albedoAO->Layout,
 			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+			albedoAO->PipelineFlags == 0 ? VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT : albedoAO->PipelineFlags,
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
 		);
+		albedoAO->Layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		albedoAO->PipelineFlags = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 
+		auto&& normalRough = Renderer::GetRenderTarget(VT_RENDER_TARGET_NORMAL_ROUGH); 
 		sc->TransitionImageLayout(
 			cmd,
-			Renderer::GetRenderTarget(VT_RENDER_TARGET_NORMAL_ROUGH)->GetImage(),
-			VK_IMAGE_LAYOUT_UNDEFINED,
+			normalRough->GetImage(),
+			normalRough->Layout,
 			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+			normalRough->PipelineFlags == 0 ? VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT : normalRough->PipelineFlags,
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
 		);
+		normalRough->Layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		normalRough->PipelineFlags = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 
+		auto&& metalEmit = Renderer::GetRenderTarget(VT_RENDER_TARGET_METAL_EMIT);
 		sc->TransitionImageLayout(
 			cmd,
-			Renderer::GetRenderTarget(VT_RENDER_TARGET_METAL_EMIT)->GetImage(),
-			VK_IMAGE_LAYOUT_UNDEFINED,
+			metalEmit->GetImage(),
+			metalEmit->Layout,
 			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+			metalEmit->PipelineFlags == 0 ? VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT : metalEmit->PipelineFlags,
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
 		);
+		metalEmit->Layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		metalEmit->PipelineFlags = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 
-        sc->TransitionImageLayout(
+		auto&& depth = Renderer::GetRenderTarget(VT_RENDER_TARGET_DEPTH);
+		sc->TransitionImageLayout(
 			cmd,
-			Renderer::GetRenderTarget(VT_RENDER_TARGET_DEPTH)->GetImage(),
-			VK_IMAGE_LAYOUT_UNDEFINED,
+			depth->GetImage(),
+			depth->Layout,
 			VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL,
-			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+			depth->PipelineFlags == 0 ? VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT : depth->PipelineFlags,
 			VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT
 		);
+		depth->Layout = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL;
+		depth->PipelineFlags = (VkPipelineStageFlagBits)(VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT); 
 
+		auto&& mousePicking = Renderer::GetRenderTarget(VT_RENDER_TARGET_MOUSE_PICKING);
 		sc->TransitionImageLayout(
 			cmd,
-			Renderer::GetRenderTarget(VT_RENDER_TARGET_MOUSE_PICKING)->GetImage(),
-			VK_IMAGE_LAYOUT_UNDEFINED,
+			mousePicking->GetImage(),
+			mousePicking->Layout,
 			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+			mousePicking->PipelineFlags == 0 ? VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT : mousePicking->PipelineFlags,
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
 		);
+		mousePicking->Layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		mousePicking->PipelineFlags = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 
 
 		// Rendering Info Setup
@@ -199,50 +214,65 @@ namespace Velt::RHI
 
 		vkCmdEndRendering(cmd);
 
+		auto&& albedoAO = Renderer::GetRenderTarget(VT_RENDER_TARGET_ALBEDO_AO);
 		sc->TransitionImageLayout(
 			cmd,
-			Renderer::GetRenderTarget(VT_RENDER_TARGET_ALBEDO_AO)->GetImage(),
+			albedoAO->GetImage(),
 			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
 			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
 			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
 		);
+		albedoAO->Layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		albedoAO->PipelineFlags = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
 
+		auto&& normalRough = Renderer::GetRenderTarget(VT_RENDER_TARGET_NORMAL_ROUGH);
 		sc->TransitionImageLayout(
 			cmd,
-			Renderer::GetRenderTarget(VT_RENDER_TARGET_NORMAL_ROUGH)->GetImage(),
+			normalRough->GetImage(),
 			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
 			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
 			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
 		);
+		normalRough->Layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		normalRough->PipelineFlags = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
 
+		auto&& metalEmit = Renderer::GetRenderTarget(VT_RENDER_TARGET_METAL_EMIT);
 		sc->TransitionImageLayout(
 			cmd,
-			Renderer::GetRenderTarget(VT_RENDER_TARGET_METAL_EMIT)->GetImage(),
+			metalEmit->GetImage(),
 			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
 			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
 			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
 		);
+		metalEmit->Layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		metalEmit->PipelineFlags = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
 
+		auto&& depth = Renderer::GetRenderTarget(VT_RENDER_TARGET_DEPTH);
 		sc->TransitionImageLayout(
 			cmd,
-			Renderer::GetRenderTarget(VT_RENDER_TARGET_MOUSE_PICKING)->GetImage(),
-			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
-		);
-
-		sc->TransitionImageLayout(
-			cmd,
-			Renderer::GetRenderTarget(VT_RENDER_TARGET_DEPTH)->GetImage(),
+			depth->GetImage(),
 			VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL,
 			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 			VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
 			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
 		);
+		depth->Layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		depth->PipelineFlags = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+
+		auto&& mousePicking = Renderer::GetRenderTarget(VT_RENDER_TARGET_MOUSE_PICKING);
+		sc->TransitionImageLayout(
+			cmd,
+			mousePicking->GetImage(),
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
+		);
+		mousePicking->Layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		mousePicking->PipelineFlags = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
 	}
 
 	void VulkanRenderer::BeginGuiPass()

@@ -36,6 +36,7 @@ namespace Velt {
 		albedoAO.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 		s_RenderTargets[VT_RENDER_TARGET_ALBEDO_AO] = Texture2D::Create(&albedoAO);
 
+
 		TextureCreateInfo normalRough;
 		normalRough.AspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		normalRough.Extent = {width, height, 1};
@@ -43,6 +44,7 @@ namespace Velt {
 		normalRough.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		normalRough.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 		s_RenderTargets[VT_RENDER_TARGET_NORMAL_ROUGH] = Texture2D::Create(&normalRough);
+
 
 		TextureCreateInfo metalEmit;
 		metalEmit.AspectMask = VK_IMAGE_ASPECT_COLOR_BIT;

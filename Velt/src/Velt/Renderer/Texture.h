@@ -27,6 +27,9 @@ namespace Velt
 		virtual VkSampler GetSampler() const = 0;
 		virtual VkImage GetImage() const = 0;
 		virtual VkImageView GetImageView() const = 0;
+
+		VkImageLayout Layout = VK_IMAGE_LAYOUT_UNDEFINED;
+		VkPipelineStageFlagBits PipelineFlags = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 	};
 
 	class VELT_API Texture2D : public Texture 

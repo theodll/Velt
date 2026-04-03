@@ -14,7 +14,8 @@ namespace Velt::RHI
 		VkImage image,
 		VkFormat format,
 		VkImageLayout oldLayout,
-		VkImageLayout newLayout
+		VkImageLayout newLayout,
+		VkImageAspectFlags aspectMask = VK_IMAGE_ASPECT_COLOR_BIT
 	)
 	{
 		VkImageMemoryBarrier barrier{};
@@ -24,7 +25,7 @@ namespace Velt::RHI
 		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barrier.image = image;
-		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		barrier.subresourceRange.aspectMask = aspectMask;
 		barrier.subresourceRange.baseMipLevel = 0;
 		barrier.subresourceRange.levelCount = 1;
 		barrier.subresourceRange.baseArrayLayer = 0;
@@ -47,9 +48,18 @@ namespace Velt::RHI
 			sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
 			destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
 		}
+		else if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
+			barrier.srcAccessMask = 0;
+			barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+			sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+			destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		}
 		else {
 			VT_CORE_ASSERT(false, "Unsupported layout transition");
 		}
+
+		
 		
 		vkCmdPipelineBarrier(
 			commandBuffer,
@@ -109,6 +119,13 @@ namespace Velt::RHI
 
 		VT_VK_CHECK(vkCreateImageView(VulkanContext::GetDevice()->device(), &viewInfo, VT_NULL_HANDLE, &m_ImageView), "Failed to create Image View");
 
+		auto&& uploader = VulkanContext::GetResourceUploader();
+		uploader->Begin();
+		TransitionImageLayout(uploader->GetCommandBuffer(), m_Image, pInfo->Format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, pInfo->AspectMask);
+		Layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		PipelineFlags = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		uploader->End();
+
 		CreateImageSampler();
 	}
 
@@ -117,6 +134,14 @@ namespace Velt::RHI
 
 		CreateImageWithoutData();
 		CreateImageView();
+
+		auto&& uploader = VulkanContext::GetResourceUploader();
+		uploader->Begin();
+		TransitionImageLayout(uploader->GetCommandBuffer(), m_Image, VK_FORMAT_B8G8R8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		Layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		PipelineFlags = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		uploader->End();
+
 		CreateImageSampler();
 	}
 
@@ -163,6 +188,8 @@ namespace Velt::RHI
 		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 		imageInfo.flags = 0;
+		Layout = VK_IMAGE_LAYOUT_UNDEFINED;
+		PipelineFlags = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 
 		auto&& uploader = VulkanContext::GetResourceUploader();
 		uploader->Begin();
@@ -170,11 +197,11 @@ namespace Velt::RHI
 		pDevice->CreateImageWithInfo(imageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_Image, m_ImageMemory);
 
 		TransitionImageLayout(uploader->GetCommandBuffer(), m_Image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-
+		Layout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 		pDevice->CopyBufferToImage(uploader->GetCommandBuffer(), stagingBuffer, m_Image, m_Width, m_Height, 1);
 
 		TransitionImageLayout(uploader->GetCommandBuffer(), m_Image, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-
+		Layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		uploader->End();
 
 		vkDestroyBuffer(pDevice->device(), stagingBuffer, VT_NULL_HANDLE);
@@ -197,6 +224,8 @@ namespace Velt::RHI
 		imageInfo.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		Layout = VK_IMAGE_LAYOUT_UNDEFINED;
+		PipelineFlags = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 
 		VulkanContext::GetDevice()->CreateImageWithInfo(imageInfo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_Image, m_ImageMemory);
 
@@ -307,9 +336,9 @@ namespace Velt::RHI
 		sc->TransitionImageLayout(
 			uploader->GetCommandBuffer(),
 			m_Image,
-			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			Layout,
 			VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 
+			PipelineFlags,
 			VK_PIPELINE_STAGE_TRANSFER_BIT                 
 		);
 
@@ -330,9 +359,9 @@ namespace Velt::RHI
 			uploader->GetCommandBuffer(),
 			m_Image,
 			VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			Layout,
 			VK_PIPELINE_STAGE_TRANSFER_BIT,
-			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+			PipelineFlags
 		);
 
 		uploader->End();
