@@ -1,6 +1,7 @@
 #include "vtpch.h"
 #include "VulkanContext.h"
 #include "Core/Core.h"
+#include "Core/Application.h"
 #include "VulkanTexture.h"
 
 #include "stb_image.h"
@@ -247,5 +248,106 @@ namespace Velt::RHI
 		samplerInfo.maxLod = 0.0f;
 
 		VT_VK_CHECK(vkCreateSampler(pDevice->device(), &samplerInfo, VT_NULL_HANDLE, &m_Sampler), "Failed to create Texture Sampler")
+	}
+
+
+	void VulkanTexture2D::CreateStagingData()
+	{
+		VT_PROFILE_FUNCTION();
+
+		const auto& device = VulkanContext::GetDevice();
+		u64 size = sizeof(u32) * m_Width * m_Height;
+
+		if (m_StagingBuffer == VK_NULL_HANDLE || m_StagingBufferSize < size) {
+			if (m_StagingBuffer != VK_NULL_HANDLE) {
+
+				vkDestroyBuffer(device->device(), m_StagingBuffer, nullptr);
+				vkFreeMemory(device->device(), m_StagingBufferMemory, nullptr);
+
+			}
+
+			device->CreateBuffer(
+				device->device(),
+				size,
+				VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+				m_StagingBuffer,
+				m_StagingBufferMemory
+			);
+			m_StagingBufferSize = size;
+		}
+
+		if (m_Fence == VK_NULL_HANDLE)
+		{
+			VkFenceCreateInfo fenceInfo{};
+			fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+			fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+			vkCreateFence(device->device(), &fenceInfo, VT_NULL_HANDLE, &m_Fence);
+		}
+
+	}
+
+	u32 VulkanTexture2D::ReadPixel(int x, int y)
+	{
+		VT_PROFILE_FUNCTION();
+		auto&& device = VulkanContext::GetDevice();
+		auto&& sc = Velt::Application::Get()->GetWindow()->GetSwapchain();
+		auto&& uploader = VulkanContext::GetResourceUploader();
+
+		u64 size = sizeof(u32) * m_Width * m_Height;
+
+		if (m_Fence == VK_NULL_HANDLE || m_StagingBuffer == VK_NULL_HANDLE) 
+		{
+			CreateStagingData();
+		}
+		
+		uploader->Begin();
+		
+		sc->TransitionImageLayout(
+			uploader->GetCommandBuffer(),
+			m_Image,
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 
+			VK_PIPELINE_STAGE_TRANSFER_BIT                 
+		);
+
+		VkBufferImageCopy bufferRegion{};
+		bufferRegion.bufferOffset = 0;
+		bufferRegion.bufferRowLength = 0;
+		bufferRegion.bufferImageHeight = 0; 
+		bufferRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		bufferRegion.imageSubresource.mipLevel = 0;
+		bufferRegion.imageSubresource.baseArrayLayer = 0; 
+		bufferRegion.imageSubresource.layerCount = 1;
+		bufferRegion.imageOffset = { 0, 0, 0 };
+		bufferRegion.imageExtent = { m_Width, m_Height, 1 };
+
+		vkCmdCopyImageToBuffer(uploader->GetCommandBuffer(), m_Image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, m_StagingBuffer, 1, &bufferRegion);
+
+		sc->TransitionImageLayout(
+			uploader->GetCommandBuffer(),
+			m_Image,
+			VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_PIPELINE_STAGE_TRANSFER_BIT,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+		);
+
+		uploader->End();
+
+		vkWaitForFences(device->device(), 1, &m_Fence, VK_TRUE, UINT64_MAX);
+		vkResetFences(device->device(), 1, &m_Fence);
+
+		void* data;
+		vkMapMemory(device->device(), m_StagingBufferMemory, 0, size, 0, &data);
+
+		u32* pIDs = reinterpret_cast<uint32_t*>(data);
+		u32 objectID = pIDs[y * m_Width + x];
+
+		vkUnmapMemory(device->device(), m_StagingBufferMemory);
+
+		return objectID;
 	}
 }

@@ -90,6 +90,7 @@ namespace Velt::Editor
 	void EditorLayer::OnEvent(Event& event)
 	{
 		VT_PROFILE_FUNCTION();
+
 	}
 
 	void EditorLayer::OnRender(VkCommandBuffer commandBuffer)

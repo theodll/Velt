@@ -17,6 +17,8 @@ namespace Velt::RHI
 		virtual u32 GetWidth() const override { return m_Width; }
 		virtual u32 GetHeight() const override { return m_Height; }
 
+		u32 ReadPixel(int x, int y) override;
+
 		virtual VkSampler GetSampler() const override { return m_Sampler; }
 		virtual VkImage GetImage() const override { return m_Image; }
 		virtual VkImageView GetImageView() const override { return m_ImageView; }
@@ -26,6 +28,7 @@ namespace Velt::RHI
 		void CreateImageWithoutData();
 		void CreateImageView();
 		void CreateImageSampler();
+		void CreateStagingData(); 
 
 	private:
 		// Note [6.03.26, Theo]: The Texture in theory must not store the path, but 
@@ -39,5 +42,12 @@ namespace Velt::RHI
 		VkDeviceMemory m_ImageMemory;
 		VkImageView m_ImageView;
 		VkSampler m_Sampler;
+
+		VkBuffer       m_StagingBuffer = VK_NULL_HANDLE;
+		VkDeviceMemory m_StagingBufferMemory = VK_NULL_HANDLE;
+		VkFence m_Fence = VK_NULL_HANDLE;
+
+		u64 m_StagingBufferSize{};
+
 	};
 }

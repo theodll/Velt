@@ -19,6 +19,12 @@ namespace Velt::RHI
 		Ref<Material> FallBackMaterial;
 	};
 
+	struct alignas(16) PushConstantData
+	{
+		glm::mat4 Transform;
+		u32 EntityID;
+	};
+
 	class VELT_API VulkanRenderer : public RenderAPI
 	{
 	public:
@@ -28,7 +34,7 @@ namespace Velt::RHI
 
 		virtual void DrawQuad(VkCommandBuffer renderCommandBuffer, const Matrix& transform, const Material& material) override;
 		virtual void DrawTexturedQuad(VkCommandBuffer renderCommandBuffer, const Ref<Texture2D> texture, const Matrix& transform) override;
-		virtual void DrawStaticModel(VkCommandBuffer commandBuffer, const Ref<Pipeline>& pipeline, const Ref<Model>& model, const Ref<Mesh>& meshSource, u32 submeshIndex, const Ref<MaterialTable>& materialTable, const Matrix& transformModel) override;
+		virtual void DrawStaticModel(VkCommandBuffer commandBuffer, const Ref<Pipeline>& pipeline, const Ref<Model>& model, const Ref<Mesh>& meshSource, u32 submeshIndex, const Ref<MaterialTable>& materialTable, const Matrix& transformModel, u32 entityID) override;
 		
 
 		virtual void SubmitFullscreenTriangle(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<DefferedShaderInput>& input) override;

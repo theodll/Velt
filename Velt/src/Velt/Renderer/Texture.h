@@ -22,6 +22,8 @@ namespace Velt
 		virtual u32 GetWidth() const = 0;
 		virtual u32 GetHeight() const = 0;
 
+		virtual u32 ReadPixel(int x, int y) = 0; // currently only for mouse picking / VK_FORMAT_R32_UINT
+
 		virtual VkSampler GetSampler() const = 0;
 		virtual VkImage GetImage() const = 0;
 		virtual VkImageView GetImageView() const = 0;

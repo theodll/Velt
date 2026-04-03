@@ -54,7 +54,7 @@ namespace Velt
 		static void EndGuiPass();
 
 		static void DrawQuad(VkCommandBuffer& renderCommandBuffer, const Matrix& transform = glm::mat4(1.0f), const Material& material = Material());
-		static void DrawStaticModel(VkCommandBuffer commandBuffer, const Ref<Pipeline>& pipeline, const Ref<Model>& model, const Ref<Mesh>& meshSource, u32 submeshIndex, const Ref<MaterialTable>& materialTable, const Matrix& transformModel);
+		static void DrawStaticModel(VkCommandBuffer commandBuffer, const Ref<Pipeline>& pipeline, const Ref<Model>& model, const Ref<Mesh>& meshSource, u32 submeshIndex, const Ref<MaterialTable>& materialTable, const Matrix& transformModel, u32 entityID = 0xFFFFFFFF);
 		static void SubmitFullscreenTriangle(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<DefferedShaderInput>& input);
 
 		static i32 GetDrawCallCount();

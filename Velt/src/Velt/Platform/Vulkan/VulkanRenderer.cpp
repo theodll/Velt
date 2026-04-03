@@ -228,6 +228,15 @@ namespace Velt::RHI
 
 		sc->TransitionImageLayout(
 			cmd,
+			Renderer::GetRenderTarget(VT_RENDER_TARGET_MOUSE_PICKING)->GetImage(),
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT
+		);
+
+		sc->TransitionImageLayout(
+			cmd,
 			Renderer::GetRenderTarget(VT_RENDER_TARGET_DEPTH)->GetImage(),
 			VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL,
 			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
@@ -365,7 +374,7 @@ namespace Velt::RHI
 		const Ref<Model>& model,
 		const Ref<Mesh>& meshSource,
 		u32 submeshIndex,
-		const Ref<MaterialTable>& materialTable, const Matrix& transformModel)
+		const Ref<MaterialTable>& materialTable, const Matrix& transformModel, u32 entityID)
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_ASSERT(pipeline, "Pipeline is null");
@@ -410,6 +419,9 @@ namespace Velt::RHI
 		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &descriptorSet, 0, nullptr);
 
 		const Matrix transform = transformModel * submesh.Transform;
+		PushConstantData data;
+		data.Transform = transform;
+		data.EntityID = entityID; // if not set: 0xFFFFFFFF 
 		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Matrix), &transform);
 
 		vkCmdDrawIndexed(commandBuffer, submesh.IndexCount, 1, submesh.BaseIndex, submesh.BaseVertex, 0);

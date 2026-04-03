@@ -5,6 +5,7 @@ struct PS_INPUT
     float3 v_Tangent : TANGENT;
     float3 v_Binormal : BINORMAL;
     float2 v_UV : TEXCOORD0;
+    uint v_EntityID : ENTITY_ID;
 };
 
 struct GBUFFER_OUT
@@ -79,6 +80,8 @@ GBUFFER_OUT main(PS_INPUT input)
     output.g_AlbedoAO = float4(albedo * u_Material.BaseColorFactor.rgb, u_Material.AbientOcclusion);
     output.g_NormalRough = float4(worldNormal * 0.5 + 0.5, roughness * u_Material.Roughness);
     output.g_MetalEmit = float4(metallic * u_Material.Metallicness, u_Material.EmissiveColor);
+    
+    output.g_EntityID = input.v_EntityID;
     
     return output;
 }

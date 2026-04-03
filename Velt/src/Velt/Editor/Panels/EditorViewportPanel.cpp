@@ -1,5 +1,6 @@
 #include "vtpch.h"
 #include "Core/Core.h"
+#include "Core/Input.h"
 #include "imgui_impl_vulkan.h"
 #include "EditorViewportPanel.h"
 #include "Core/Application.h"
@@ -152,6 +153,10 @@ namespace Velt::Editor
 
 		u32 newW = (u32)glm::max(1.0f, avail.x);
 		u32 newH = (u32)glm::max(1.0f, avail.y);
+
+		auto&& image = Renderer::GetRenderTarget(VT_RENDER_TARGET_MOUSE_PICKING);
+		u32 id = image->ReadPixel((u32)Input::GetMouseX(), (u32)Input::GetMouseY());
+		VT_CORE_WARN("{0}", id);
 
 		if (newW != m_Width || newH != m_Height)
 		{

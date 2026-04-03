@@ -14,11 +14,13 @@ struct VS_OUTPUT
     float3 v_Tangent : TANGENT;
     float3 v_Binormal : BINORMAL;
     float2 v_UV : TEXCOORD0;
+    uint v_EntityID : ENTITY_ID;
 };
 
 struct TRANSFORM_PC
 {
     float4x4 transform;
+    uint entityID; 
 };
 
 struct CAMERA_UBO
@@ -52,6 +54,7 @@ VS_OUTPUT main(VS_INPUT input)
     output.v_Binormal = float3(0,0,0);
 
     output.v_UV = input.a_UV;
+    output.v_EntityID = pc_ModelTransform.entityID;
     
     return output;
 }

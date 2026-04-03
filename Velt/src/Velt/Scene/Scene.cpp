@@ -36,6 +36,8 @@ namespace Velt
 	void Scene::OnUpdate(Timestep ts)
 	{
 		VT_PROFILE_FUNCTION();
+
+		
 	}
 
 	void Scene::OnRender(VkCommandBuffer commandBuffer)
@@ -58,9 +60,12 @@ namespace Velt
 					model.mesh,
 					submeshIndex,
 					materialTable,
-					transform
+					transform,
+					(u32)entity
 				);
 			}
+
+			VT_CORE_INFO("{0}", (u32)entity);
 
 		}
 	}

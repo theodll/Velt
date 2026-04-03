@@ -81,7 +81,7 @@ namespace Velt {
 		mousePicking.Extent = { width, height, 1 };
 		mousePicking.Format = VK_FORMAT_R32_UINT;
 		mousePicking.ImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		mousePicking.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+		mousePicking.Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT; 
 		s_RenderTargets[VT_RENDER_TARGET_MOUSE_PICKING] = Texture2D::Create(&mousePicking);
 	}
 
@@ -195,10 +195,10 @@ namespace Velt {
 		s_RenderAPI->DrawQuad(renderCommandBuffer, transform, material);
 	}
 
-	void Renderer::DrawStaticModel(VkCommandBuffer commandBuffer, const Ref<Pipeline>& pipeline, const Ref<Model>& model, const Ref<Mesh>& meshSource, u32 submeshIndex, const Ref<MaterialTable>& materialTable, const Matrix& transformModel)
+	void Renderer::DrawStaticModel(VkCommandBuffer commandBuffer, const Ref<Pipeline>& pipeline, const Ref<Model>& model, const Ref<Mesh>& meshSource, u32 submeshIndex, const Ref<MaterialTable>& materialTable, const Matrix& transformModel, u32 entityID)
 	{
 		VT_PROFILE_FUNCTION();
-		s_RenderAPI->DrawStaticModel(commandBuffer, pipeline, model, meshSource, submeshIndex, materialTable, transformModel);
+		s_RenderAPI->DrawStaticModel(commandBuffer, pipeline, model, meshSource, submeshIndex, materialTable, transformModel, entityID);
 	}
 
 	void Renderer::SubmitFullscreenTriangle(VkCommandBuffer renderCommandBuffer, const Ref<Pipeline>& pipeline, const Ref<DefferedShaderInput>& input)
