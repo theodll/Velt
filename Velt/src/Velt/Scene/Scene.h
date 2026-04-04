@@ -7,6 +7,10 @@
 namespace Velt 
 {
 	class Entity; 
+	namespace Editor {
+		class SceneHierarchyPanel;
+	}
+
 	class VELT_API Scene 
 	{
 	public:
@@ -20,10 +24,10 @@ namespace Velt
 		void OnUpdate(Timestep ts);
 		void OnRender(VkCommandBuffer commandBuffer);
 
-		entt::registry& Reg() { return m_Registry; };
 	private:
 		entt::registry m_Registry;
 
 	friend class Entity;
+	friend class Velt::Editor::SceneHierarchyPanel;
 	};
 }

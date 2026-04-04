@@ -9,10 +9,12 @@ namespace Velt
 	{
 	public: 
 		Entity(const Entity&) = default;
+		Entity() = default;
 
 		Entity(entt::entity handle, Scene* pScene) : m_EntityHandle(handle), m_pContext(pScene)
 		{
 			VT_PROFILE_FUNCTION();
+
 		}
 
 		template<typename T>
@@ -47,8 +49,10 @@ namespace Velt
 			VT_CORE_ASSERT(HasComponent<T>(), "Entity does not have this component");
 			m_pContext->m_Registry.remove<T>(m_EntityHandle);
 		}
-
+		operator u32() const { return (u32)m_EntityHandle;  }
 		operator bool() const { return m_EntityHandle != entt::null; }
+		bool operator==(const Entity& other) const { return m_EntityHandle == other.m_EntityHandle && m_pContext == other.m_pContext; }
+		bool operator!=(const Entity& other) const { return !operator==(other); }
 	private:
 		entt::entity m_EntityHandle = entt::null;
 		Scene* m_pContext = nullptr;

@@ -2,22 +2,22 @@
 #include "Core/Core.h"
 #include "Editor/EditorPanel.h"
 #include "Renderer/Renderer.h"
+#include <entt/entt.hpp>
 #include <imgui.h>
 
 namespace Velt::Editor 
 {
-	class VELT_API EditorViewportPanel : public EditorPanel
+	class VELT_API ViewportPanel : public EditorPanel
 	{
 	public:
-		EditorViewportPanel() = default;
-		virtual ~EditorViewportPanel() = default;
+		ViewportPanel() = default;
+		virtual ~ViewportPanel() = default;
 
 		void Init(u32 width, u32 height);
 		void Shutdown() override;
 
 		void OnUpdate(Timestep ts) override;
 
-		void OnImGuiRender() override;
 		void OnImGuiRender2() override;
 
 		void Resize(u32 width, u32 height);
@@ -46,6 +46,7 @@ namespace Velt::Editor
 		bool m_ResizePending = false;
 
 		ImVec2 m_LocalMousePos; 
+		bool m_IsHovered; 
 
 		VkImage m_Image = VT_NULL_HANDLE;
 		VkDeviceMemory m_ImageMemory = VT_NULL_HANDLE;

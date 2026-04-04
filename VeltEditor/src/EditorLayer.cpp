@@ -15,21 +15,19 @@ namespace Velt::Editor
 		VT_PROFILE_FUNCTION();
 		m_ActiveScene = CreateRef<Scene>();
 
-		m_SceneRenderer = CreateRef<SceneRenderer>();
-		m_SceneRenderer->Init();
-
-		m_ViewportPanel = CreateRef<EditorViewportPanel>();
+		m_ViewportPanel = CreateRef<Editor::ViewportPanel>();
 		m_ViewportPanel->Init(480, 480); 
 
+		m_SceneHierarchyPanel = CreateRef<Editor::SceneHierarchyPanel>();
+		m_SceneHierarchyPanel->Init(m_ActiveScene);
+
 		m_EditorGuizmos = CreateRef<EditorGuizmos>();
-		float width, height{};
+		m_EditorGuizmos->Init(m_ActiveScene);
 
-		width = m_ViewportPanel->GetWidth();
-		height = m_ViewportPanel->GetHeight();
+		m_EditorCamera = CreateRef<EditorCamera>(glm::radians(50.0f), m_ViewportPanel->GetWidth() / m_ViewportPanel->GetHeight(), 0.1f, 1000.0f);
 
-		float aspect = width / height;
-
-		m_EditorCamera = CreateRef<EditorCamera>(glm::radians(50.0f), aspect, 0.1f, 1000.0f); 
+		m_SceneRenderer = CreateRef<SceneRenderer>();
+		m_SceneRenderer->Init();
 
 		m_DefferedRenderer = CreateRef<DefferedRenderer>();
 		m_DefferedRenderer->Init(m_EditorCamera);
@@ -38,6 +36,9 @@ namespace Velt::Editor
 
 		auto model = m_ActiveScene->CreateEntity("Model");
 		model.AddComponent<ModelComponent>("Assets/Models/error.glb");
+
+		auto model2 = m_ActiveScene->CreateEntity("Model");
+		model2.AddComponent<ModelComponent>("Assets/Models/error.glb");
    	}
 
 	void EditorLayer::Shutdown()
@@ -76,7 +77,7 @@ namespace Velt::Editor
 
         m_EditorCamera->OnUpdate(ts);
 		m_EditorCamera->SetViewportSize(m_ViewportPanel->GetWidth(), m_ViewportPanel->GetHeight());
-		m_EditorGuizmos->OnUpdate(ts, m_ViewportPanel);
+		m_EditorGuizmos->OnUpdate(ts, m_ViewportPanel, m_SceneHierarchyPanel);
 		m_ActiveScene->OnUpdate(ts);
 	}
 
@@ -120,8 +121,9 @@ namespace Velt::Editor
 	void EditorLayer::OnImGuiRender2()
 	{
 		VT_PROFILE_FUNCTION();
-		m_ViewportPanel->OnImGuiRender();
+		m_ViewportPanel->OnImGuiRender2();
 		m_EditorGuizmos->OnImGuiRender2();
+		m_SceneHierarchyPanel->OnImGuiRender2();
 
 		ImGui::Begin("Statistics");
 		ImGui::Text("Velt Engine v0.0");

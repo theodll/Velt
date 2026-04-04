@@ -9,7 +9,7 @@
 namespace Velt::Editor 
 {
 
-	void EditorViewportPanel::Init(u32 width, u32 height)
+	void ViewportPanel::Init(u32 width, u32 height)
 	{
 		VT_PROFILE_FUNCTION();
 		Application::Get()->UsingEditorViewport = true;
@@ -22,12 +22,12 @@ namespace Velt::Editor
 		CreateResources();
 	}
 
-	void EditorViewportPanel::Shutdown()
+	void ViewportPanel::Shutdown()
 	{
 		VT_PROFILE_FUNCTION();
 	}
 
-	void EditorViewportPanel::Resize(u32 width, u32 height)
+	void ViewportPanel::Resize(u32 width, u32 height)
 	{
 		VT_PROFILE_FUNCTION();
 		if (width == m_Width && height == m_Height)
@@ -42,7 +42,7 @@ namespace Velt::Editor
 		CreateResources();
 	}
 
-	void EditorViewportPanel::SetRenderTarget(RenderTarget target)
+	void ViewportPanel::SetRenderTarget(RenderTarget target)
 	{
 		VT_PROFILE_FUNCTION();
 		if (target == m_RenderTarget)
@@ -54,7 +54,7 @@ namespace Velt::Editor
 		CreateResources();
 	}
 
-	void EditorViewportPanel::CreateResources()
+	void ViewportPanel::CreateResources()
 	{
 		VT_PROFILE_FUNCTION();
 		Renderer::RecreateRenderTargets(m_Width, m_Height);
@@ -95,7 +95,7 @@ namespace Velt::Editor
 		CreateDescriptorSet();
 	}
 
-	void EditorViewportPanel::CreateDescriptorSet()
+	void ViewportPanel::CreateDescriptorSet()
 	{
 		VT_PROFILE_FUNCTION();
 
@@ -109,12 +109,12 @@ namespace Velt::Editor
 
 
 
-	void EditorViewportPanel::OnUpdate(Timestep ts)
+	void ViewportPanel::OnUpdate(Timestep ts)
 	{
 		VT_PROFILE_FUNCTION();
 	}
 
-	void EditorViewportPanel::OnImGuiRender()
+	void ViewportPanel::OnImGuiRender2()
 	{
 		VT_PROFILE_FUNCTION();
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
@@ -122,6 +122,8 @@ namespace Velt::Editor
 		ImGui::Begin("Scene Viewport", nullptr,
 			ImGuiWindowFlags_NoScrollbar |
 			ImGuiWindowFlags_NoScrollWithMouse);
+
+		m_IsHovered = ImGui::IsWindowHovered();
 
 		if (ImGui::IsWindowHovered())
 		{
@@ -156,12 +158,7 @@ namespace Velt::Editor
 		ImGui::PopStyleVar();
 	}
 
-	void EditorViewportPanel::OnImGuiRender2()
-	{
-		VT_PROFILE_FUNCTION();
-	}
-
-	void EditorViewportPanel::ProcessPendingChanges()
+	void ViewportPanel::ProcessPendingChanges()
 	{
 		VT_PROFILE_FUNCTION();
 		if (m_ResizePending)

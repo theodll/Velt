@@ -15,7 +15,6 @@ namespace Velt::Editor
 
 		virtual void OnUpdate(Timestep ts) {};
 
-		virtual void OnImGuiRender() {};
 		virtual void OnImGuiRender2() {};
 	};
 }

@@ -30,7 +30,7 @@ namespace Velt
 		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Entity" : name; 
-		return  entity;
+		return entity;
 	}
 
 	void Scene::OnUpdate(Timestep ts)

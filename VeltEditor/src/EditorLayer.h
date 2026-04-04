@@ -1,6 +1,7 @@
 #pragma once
 #include <Velt.h>
 #include <Velt/Editor/Panels/EditorViewportPanel.h>
+#include <Velt/Editor/Panels/EditorSceneHierarchyPanel.h>
 #include <Velt/Editor/EditorGuizmos.h>
 
 namespace Velt::Editor {
@@ -35,6 +36,7 @@ namespace Velt::Editor {
 
 		Ref<EditorCamera> m_EditorCamera;
 		Ref<EditorGuizmos> m_EditorGuizmos;
-		Ref<EditorViewportPanel> m_ViewportPanel;
+		Ref<Editor::ViewportPanel> m_ViewportPanel;
+		Ref<Editor::SceneHierarchyPanel> m_SceneHierarchyPanel;
 	};
 }
