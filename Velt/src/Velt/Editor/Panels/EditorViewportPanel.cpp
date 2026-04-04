@@ -123,15 +123,21 @@ namespace Velt::Editor
 			ImGuiWindowFlags_NoScrollbar |
 			ImGuiWindowFlags_NoScrollWithMouse);
 
+		if (ImGui::IsWindowHovered())
+		{
+			ImVec2 mousePos = ImGui::GetMousePos();
+			ImVec2 windowPos = ImGui::GetWindowPos();
 
+			m_LocalMousePos = ImVec2(
+				mousePos.x - windowPos.x,
+				mousePos.y - windowPos.y
+			);
+		}
+		
 		ImVec2 avail = ImGui::GetContentRegionAvail();
 
 		u32 newW = (u32)glm::max(1.0f, avail.x);
 		u32 newH = (u32)glm::max(1.0f, avail.y);
-
-		auto&& image = Renderer::GetRenderTarget(VT_RENDER_TARGET_MOUSE_PICKING);
-		u32 id = image->ReadPixel((u32)Input::GetMouseX(), (u32)Input::GetMouseY());
-		VT_CORE_WARN("{0}", id);
 
 		if (newW != m_Width || newH != m_Height)
 		{

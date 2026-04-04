@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include "Editor/EditorPanel.h"
 #include "Renderer/Renderer.h"
+#include <imgui.h>
 
 namespace Velt::Editor 
 {
@@ -44,6 +45,8 @@ namespace Velt::Editor
 		u32 m_PendingHeight{};
 		bool m_ResizePending = false;
 
+		ImVec2 m_LocalMousePos; 
+
 		VkImage m_Image = VT_NULL_HANDLE;
 		VkDeviceMemory m_ImageMemory = VT_NULL_HANDLE;
 		VkImageView m_ImageView = VT_NULL_HANDLE;
@@ -52,5 +55,6 @@ namespace Velt::Editor
 		VkDescriptorSet m_DescriptorSet = VT_NULL_HANDLE;
 
 	friend class EditorLayer;
+	friend class EditorGuizmos;
 	};
 }

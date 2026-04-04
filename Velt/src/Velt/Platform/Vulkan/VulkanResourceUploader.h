@@ -15,6 +15,7 @@ namespace Velt::RHI
 
         void Begin(); 
         void End();
+        void End(VkFence fence);
 
         VkCommandBuffer GetCommandBuffer() const { return m_Commandbuffer; };
         

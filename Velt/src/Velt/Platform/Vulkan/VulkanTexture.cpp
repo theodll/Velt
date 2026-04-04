@@ -286,6 +286,7 @@ namespace Velt::RHI
 
 		const auto& device = VulkanContext::GetDevice();
 		u64 size = sizeof(u32) * m_Width * m_Height;
+		VT_CORE_TRACE("Width: {0}, Height: {1}", m_Width, m_Height);
 
 		if (m_StagingBuffer == VK_NULL_HANDLE || m_StagingBufferSize < size) {
 			if (m_StagingBuffer != VK_NULL_HANDLE) {
@@ -366,8 +367,8 @@ namespace Velt::RHI
 
 		uploader->End();
 
-		vkWaitForFences(device->device(), 1, &m_Fence, VK_TRUE, UINT64_MAX);
-		vkResetFences(device->device(), 1, &m_Fence);
+		// vkWaitForFences(device->device(), 1, &m_Fence, VK_TRUE, UINT64_MAX);
+		// vkResetFences(device->device(), 1, &m_Fence);
 
 		void* data;
 		vkMapMemory(device->device(), m_StagingBufferMemory, 0, size, 0, &data);

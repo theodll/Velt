@@ -65,7 +65,7 @@ namespace Velt
 				);
 			}
 
-			VT_CORE_INFO("{0}", (u32)entity);
+			//VT_CORE_INFO("{0}", (u32)entity);
 
 		}
 	}

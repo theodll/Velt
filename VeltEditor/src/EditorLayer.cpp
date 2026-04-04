@@ -21,18 +21,11 @@ namespace Velt::Editor
 		m_ViewportPanel = CreateRef<EditorViewportPanel>();
 		m_ViewportPanel->Init(480, 480); 
 
+		m_EditorGuizmos = CreateRef<EditorGuizmos>();
 		float width, height{};
 
-		if (m_ViewportPanel)
-		{
-			width = m_ViewportPanel->GetWidth();
-			height = m_ViewportPanel->GetHeight();
-		}
-		else
-		{
-			width = 1920;
-			height = 1080;
-		}
+		width = m_ViewportPanel->GetWidth();
+		height = m_ViewportPanel->GetHeight();
 
 		float aspect = width / height;
 
@@ -83,7 +76,7 @@ namespace Velt::Editor
 
         m_EditorCamera->OnUpdate(ts);
 		m_EditorCamera->SetViewportSize(m_ViewportPanel->GetWidth(), m_ViewportPanel->GetHeight());
-
+		m_EditorGuizmos->OnUpdate(ts, m_ViewportPanel);
 		m_ActiveScene->OnUpdate(ts);
 	}
 
@@ -113,6 +106,7 @@ namespace Velt::Editor
 		case VT_RENDER_TARGET_METAL_EMIT:    return "Metal + Emit";
 		case VT_RENDER_TARGET_DEPTH:		return "Depth";
 		case VT_RENDER_TARGET_COMPOSITE: return "Composite";
+		case VT_RENDER_TARGET_MOUSE_PICKING: return "Mouse Picking";
 		default: return "Unknown";
 		}
 	}
@@ -120,12 +114,15 @@ namespace Velt::Editor
 	void EditorLayer::OnImGuiRender()
 	{
 		VT_PROFILE_FUNCTION();
+		// Note [04.04.2026, Theo]: dont put anything here because the dockspace might not be set up when calling imgui from here.
 	}
 
 	void EditorLayer::OnImGuiRender2()
 	{
 		VT_PROFILE_FUNCTION();
 		m_ViewportPanel->OnImGuiRender();
+		m_EditorGuizmos->OnImGuiRender2();
+
 		ImGui::Begin("Statistics");
 		ImGui::Text("Velt Engine v0.0");
 		ImGui::Separator();
@@ -143,7 +140,7 @@ namespace Velt::Editor
 
 		if (ImGui::BeginCombo("Render Target", RenderTargetToString(currentRT)))
 		{
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < 6; i++)
 			{
 				RenderTarget rt = (RenderTarget)i;
 				bool selected = (currentRT == rt);

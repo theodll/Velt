@@ -1,6 +1,7 @@
 #pragma once
 #include <Velt.h>
 #include <Velt/Editor/Panels/EditorViewportPanel.h>
+#include <Velt/Editor/EditorGuizmos.h>
 
 namespace Velt::Editor {
 
@@ -33,7 +34,7 @@ namespace Velt::Editor {
 		Timestep m_Timestep;
 
 		Ref<EditorCamera> m_EditorCamera;
-
+		Ref<EditorGuizmos> m_EditorGuizmos;
 		Ref<EditorViewportPanel> m_ViewportPanel;
 	};
 }
