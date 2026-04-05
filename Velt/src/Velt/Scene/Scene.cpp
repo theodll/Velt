@@ -49,15 +49,15 @@ namespace Velt
 		{
 			auto&& [transform, model] = group.get<TransformComponent, ModelComponent>(entity);
 
-			const auto& submeshes = model.model->GetSubmeshes();
-			auto materialTable = model.model->GetMaterials();
+			const auto& submeshes = model.Model->GetSubmeshes();
+			auto materialTable = model.Model->GetMaterials();
 			for (u32 submeshIndex : submeshes)
 			{
 				Renderer::DrawStaticModel(
 					commandBuffer,
 					SceneRenderer::GetPipeline(),
-					model.model,
-					model.mesh,
+					model.Model,
+					model.Mesh,
 					submeshIndex,
 					materialTable,
 					transform,

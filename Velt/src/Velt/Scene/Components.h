@@ -46,27 +46,30 @@ namespace Velt
 
 	struct ModelComponent 
 	{
-		Ref<Model> model;
-		Ref<Mesh> mesh;
+		Ref<Velt::Model> Model;
+		Ref<Velt::Mesh> Mesh;
+
+		std::filesystem::path Path;
 
 		ModelComponent(const std::filesystem::path& path) 
 		{
+			Path = path;
 			AssimpMeshImporter importer(path);
-			mesh = importer.ImportToMesh();
-			model = CreateRef<Velt::Model>(mesh);
+			Mesh = importer.ImportToMesh();
+			Model = CreateRef<Velt::Model>(Mesh);
 		}
 		
-		ModelComponent(const Ref<Model> pModel)
+		ModelComponent(const Ref<Velt::Model> pModel)
 		{
-			model = pModel;
-			mesh = pModel->GetMeshSource();
+			Model = pModel;
+			Mesh = pModel->GetMeshSource();
 		}
 
 		~ModelComponent() 
 		{
 			VT_CORE_INFO("Destroy Model Component");
-			model.reset();
-			mesh.reset();
+			Model.reset();
+			Mesh.reset();
 
 		}
 

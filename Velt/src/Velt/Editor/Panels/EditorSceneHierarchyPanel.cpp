@@ -75,33 +75,83 @@ namespace Velt::Editor
 		if (!m_SelectionContext)
 			return;
 		
-		ImGui::Text("Entity ID: %i", (u32)m_SelectionContext);
 
 		if (m_SelectionContext.HasComponent<TagComponent>())
 		{
 			auto& tag = m_SelectionContext.GetComponent<TagComponent>().Tag;
-
 			char buffer[512];
 			memset(buffer, 0, sizeof(buffer));
 			strcpy(buffer, tag.c_str());
 
-			if (ImGui::InputText("Tag", buffer, sizeof(buffer))) 
+			if (ImGui::BeginTable("TagTable", 2))
 			{
-				tag = std::string(buffer);
+				ImGui::TableNextRow();
+				ImGui::TableNextColumn();
+				ImGui::Text("ID: %i", (u32)m_SelectionContext);
+
+				ImGui::TableNextColumn();
+				ImGui::PushItemWidth(-1);
+				//ImGui::PushStyleVar(ImGuiStyleVar_)
+				if (ImGui::InputText("", buffer, sizeof(buffer)))
+				{
+					tag = std::string(buffer);
+				}
+				ImGui::PopItemWidth();
+
+				ImGui::EndTable();
 			}
 		}
 
 		if (m_SelectionContext.HasComponent<TransformComponent>())
 		{
-			auto& transform = m_SelectionContext.GetComponent<TransformComponent>();
-			if (ImGui::DragFloat3("Position", glm::value_ptr(transform.Translation), 0.5f)) 
-			{
+			bool open = ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed);
 
+			if (open)
+			{
+				auto& tc = m_SelectionContext.GetComponent<TransformComponent>();
+
+				if (ImGui::BeginTable("TransformTable", 2))
+				{
+					ImGui::TableNextRow();
+					ImGui::TableNextColumn();
+					ImGui::Text("Position");
+
+					ImGui::TableNextColumn();
+					ImGui::PushItemWidth(-1); 
+					ImGui::DragFloat3("##Position", glm::value_ptr(tc.Translation), 0.1f);
+					ImGui::PopItemWidth();
+
+					ImGui::EndTable();
+				}
+
+				ImGui::TreePop(); 
 			}
 		}
 
 		if (m_SelectionContext.HasComponent<ModelComponent>())
 		{
+			bool open = ImGui::TreeNodeEx("Model", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed);
+
+			if (open)
+			{
+				auto& model = m_SelectionContext.GetComponent<ModelComponent>();
+
+				if (ImGui::BeginTable("TransformTable", 2))
+				{
+					ImGui::TableNextRow();
+					ImGui::TableNextColumn();
+					ImGui::Text("Position");
+
+					ImGui::TableNextColumn();
+					ImGui::PushItemWidth(-1);
+					
+					ImGui::PopItemWidth();
+
+					ImGui::EndTable();
+				}
+
+				ImGui::TreePop();
+			}
 		}
 
 	}

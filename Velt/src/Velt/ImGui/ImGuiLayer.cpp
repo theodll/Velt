@@ -8,9 +8,13 @@
 #include "Velt/Renderer/Renderer.h"
 #include "Velt/Platform/Vulkan/VulkanContext.h"
 #include "Velt/Core/Application.h"
-
+#include "Core/Math.h"
 
 namespace Velt {
+
+	float ToLinear(float srgb) {
+		return std::pow(srgb, 2.2f);
+	}
 
 	Ref<ImGuiRenderer> ImGuiLayer::m_Renderer = nullptr;
 
@@ -51,7 +55,32 @@ namespace Velt {
 		io.FontDefault = io.Fonts->AddFontFromFileTTF("Assets/Fonts/segoe-ui/segoeuithis.ttf", 16.0f);
 
 		ImGuiStyle& style = ImGui::GetStyle();
+
+		ImVec4 panelBg =	 { ToLinear(38.0f / 255.0f), ToLinear(38.0f / 255.0f), ToLinear(38.0f / 255.0f), 1.0f };
+		ImVec4 tabBar =		 { ToLinear(21.0f / 255.0f), ToLinear(21.0f / 255.0f), ToLinear(21.0f / 255.0f), 1.0f };
+		ImVec4 hoveredTab = { ToLinear(49.0f / 255.0f), ToLinear(45.0f / 255.0f), ToLinear(34.0f / 255.0f), 1.0f };
+		ImVec4 tab =		 { ToLinear(56.0f / 255.0f), ToLinear(52.0f / 255.0f), ToLinear(41.0f / 255.0f), 1.0f };
+
+		ImVec4  accentColor = { ToLinear(212.0f / 255.0f), ToLinear(184.0f / 255.0f), ToLinear(138.0f / 255.0f), 1.0f };
+		ImVec4	hoveredAccentColor = { ToLinear(47.0f / 255.0f), ToLinear(47.0f / 255.0f), ToLinear(47.0f / 255.0f), 1.0f };
+
 		// ApplyEditorTheme(style);
+		style.Colors[ImGuiCol_WindowBg] =				panelBg;
+		style.Colors[ImGuiCol_TitleBg] =				tabBar;
+		style.Colors[ImGuiCol_TitleBgActive] =			tabBar;
+		style.Colors[ImGuiCol_MenuBarBg] =				tabBar;
+
+		style.Colors[ImGuiCol_TabHovered] =				hoveredTab;
+		style.Colors[ImGuiCol_Tab] =					tab;
+		style.Colors[ImGuiCol_TabSelected] =			tab;
+		style.Colors[ImGuiCol_TabSelectedOverline] =	tab;
+		style.Colors[ImGuiCol_TabDimmed] =				tabBar;
+		style.Colors[ImGuiCol_TabDimmedSelected] =		tabBar;
+
+		//style.Colors[ImGuiCol_HeaderActive] =			accentColor;
+		//style.Colors[ImGuiCol_Header] =					accentColor;
+		style.Colors[ImGuiCol_HeaderHovered] =			hoveredAccentColor;
+
 
 		m_Renderer->Init();
 
