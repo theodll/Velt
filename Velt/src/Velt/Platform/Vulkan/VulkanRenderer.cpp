@@ -423,7 +423,7 @@ namespace Velt::RHI
 
 		VkBuffer ibBuffer = meshSource->GetIndexBuffer()->GetVulkanBuffer();
 		vkCmdBindIndexBuffer(commandBuffer, ibBuffer, 0, VK_INDEX_TYPE_UINT32);
-
+		
 
 		if (!s_RenderData->FallBackMaterial)
 		{
@@ -452,7 +452,7 @@ namespace Velt::RHI
 		PushConstantData data;
 		data.Transform = transform;
 		data.EntityID = entityID; // if not set: 0xFFFFFFFF 
-		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Matrix), &transform);
+		vkCmdPushConstants(commandBuffer, layout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstantData), &data);
 
 		vkCmdDrawIndexed(commandBuffer, submesh.IndexCount, 1, submesh.BaseIndex, submesh.BaseVertex, 0);
 		s_RenderData->DrawCallCount++;

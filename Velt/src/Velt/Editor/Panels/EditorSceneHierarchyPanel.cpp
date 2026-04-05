@@ -75,6 +75,8 @@ namespace Velt::Editor
 		if (!m_SelectionContext)
 			return;
 		
+		ImGui::Text("Entity ID: %i", (u32)m_SelectionContext);
+
 		if (m_SelectionContext.HasComponent<TagComponent>())
 		{
 			auto& tag = m_SelectionContext.GetComponent<TagComponent>().Tag;
