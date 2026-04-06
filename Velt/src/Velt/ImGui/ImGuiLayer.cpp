@@ -8,6 +8,7 @@
 #include "Velt/Renderer/Renderer.h"
 #include "Velt/Platform/Vulkan/VulkanContext.h"
 #include "Velt/Core/Application.h"
+#include "Editor/FontLibrary/FontLibrary.h"
 #include "Core/Math.h"
 
 namespace Velt {
@@ -49,10 +50,13 @@ namespace Velt {
 		
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
+	
+		Editor::FontLibrary::Get().Init();
+		
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		io.FontDefault = io.Fonts->AddFontFromFileTTF("Assets/Fonts/segoe-ui/segoeuithis.ttf", 16.0f);
+		// io.FontDefault = io.Fonts->AddFontFromFileTTF("Assets/Fonts/segoe-ui/segoeuithis.ttf", 16.0f);
 
 		ImGuiStyle& style = ImGui::GetStyle();
 

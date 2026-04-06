@@ -2,6 +2,7 @@
 #include "EditorSceneHierarchyPanel.h"
 #include "Scene/Components.h"
 #include "Scene/Entity.h"
+#include "Editor/FontLibrary/FontLibrary.h"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
@@ -104,7 +105,9 @@ namespace Velt::Editor
 
 		if (m_SelectionContext.HasComponent<TransformComponent>())
 		{
+			FontLibrary::Get().Push(VT_FONT_TYPE_SPECIAL_BOLD);
 			bool open = ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed);
+			FontLibrary::Get().Pop();
 
 			if (open)
 			{
@@ -130,7 +133,14 @@ namespace Velt::Editor
 
 		if (m_SelectionContext.HasComponent<ModelComponent>())
 		{
+			FontLibrary::Get().Push(VT_FONT_TYPE_ICON);
+			//ImGui::Text(VT_ICON_FA_);
+			FontLibrary::Get().Pop(); 
+
+
+			FontLibrary::Get().Push(VT_FONT_TYPE_SPECIAL_BOLD);
 			bool open = ImGui::TreeNodeEx("Model", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed);
+			FontLibrary::Get().Pop();
 
 			if (open)
 			{

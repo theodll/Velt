@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/Core.h"
+#include "FontAwesomeIcons.h"
 #include <imgui.h>
-
 #include <map>
 
 namespace Velt::Editor 
@@ -17,7 +17,11 @@ namespace Velt::Editor
 		VT_FONT_TYPE_SPECIAL_BOLD,
 		VT_FONT_TYPE_SPECIAL_LIGHT,
 		VT_FONT_TYPE_SPECIAL_MEDIUM,
-		VT_FONT_TYPE_SPECIAL_SEMI_BOLD
+		VT_FONT_TYPE_SPECIAL_SEMI_BOLD, 
+
+		VT_FONT_TYPE_ICON,
+
+		VT_FONT_TYPE_SIZE
 	};
 
 	class FontLibrary {
@@ -30,22 +34,8 @@ namespace Velt::Editor
 		FontLibrary(const FontLibrary&) = delete;
 		FontLibrary& operator=(const FontLibrary&) = delete;
 
-		void Initialize() {
-			ImGuiIO& io = ImGui::GetIO();
-
-			Fonts[VT_FONT_TYPE_REGULAR] = io.Fonts->AddFontFromFileTTF("Assets/Fonts/segoe-ui/segoe-ui-regular.ttf", 16.0f);
-			Fonts[VT_FONT_TYPE_BOLD] = io.Fonts->AddFontFromFileTTF("Assets/Fonts/segoe-ui/segoe-ui-bold.ttf", 16.0f);
-			Fonts[VT_FONT_TYPE_ITALIC] = io.Fonts->AddFontFromFileTTF("Assets/Fonts/segoe-ui/segoe-ui-italic.ttf", 16.0f);
-			Fonts[VT_FONT_TYPE_BOLD_ITALIC] = io.Fonts->AddFontFromFileTTF("Assets/Fonts/segoe-ui/segoe-ui-bold-italic.ttf", 16.0f);
-
-			Fonts[VT_FONT_TYPE_SPECIAL_REGULAR] = io.Fonts->AddFontFromFileTTF("Assets/Fonts/space-grotesk/SpaceGrotesk-Regular.ttf", 16.0f);
-			Fonts[VT_FONT_TYPE_SPECIAL_BOLD] = io.Fonts->AddFontFromFileTTF("Assets/Fonts/space-grotesk/SpaceGrotesk-Bold.ttf", 16.0f);
-
-
-			for (auto const& [key, val] : Fonts) {
-				if (!val) Fonts[key] = io.Fonts->AddFontDefault();
-			}
-		}
+		void Init();
+		void Shutdown();
 
 		void Push(FontType type) { ImGui::PushFont(Fonts[type]); }
 		void Pop() { ImGui::PopFont(); }
