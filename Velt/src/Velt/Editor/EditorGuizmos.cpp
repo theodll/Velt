@@ -70,9 +70,7 @@ namespace Velt::Editor
 		VT_PROFILE_FUNCTION(); 
 		if (m_SelectedEntity) 
 		{
-			VT_CORE_TRACE("ImGuizmos being rendered");
-			VT_CORE_TRACE("{}", m_SelectedEntity.id());
-            ImGuizmo::BeginFrame();
+			ImGuizmo::BeginFrame();
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
 

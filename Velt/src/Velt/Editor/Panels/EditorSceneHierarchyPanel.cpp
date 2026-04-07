@@ -112,20 +112,14 @@ namespace Velt::Editor
 			if (open)
 			{
 				auto& tc = m_SelectionContext.GetComponent<TransformComponent>();
+				
+				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 1.0f, 1.0f });
 
-				if (ImGui::BeginTable("TransformTable", 2))
-				{
-					ImGui::TableNextRow();
-					ImGui::TableNextColumn();
-					ImGui::Text("Position");
+				Shared::DrawVec3Control("Translation", tc.Translation);
+				Shared::DrawVec3Control("Rotation", tc.EulerDegrees);
+				Shared::DrawVec3Control("Scale", tc.Scale);
 
-					ImGui::TableNextColumn();
-					ImGui::PushItemWidth(-1); 
-					ImGui::DragFloat3("##Position", glm::value_ptr(tc.Translation), 0.1f);
-					ImGui::PopItemWidth();
-
-					ImGui::EndTable();
-				}
+				ImGui::PopStyleVar();
 
 				ImGui::TreePop(); 
 			}
