@@ -61,13 +61,13 @@ namespace Velt {
 
 		ImGuiStyle& style = ImGui::GetStyle();
 
-		ImVec4 panelBg =	 { ToLinear(38.0f / 255.0f), ToLinear(38.0f / 255.0f), ToLinear(38.0f / 255.0f), 1.0f };
+		ImVec4 panelBg =	 { ToLinear(47.0f / 255.0f), ToLinear(47.0f / 255.0f), ToLinear(47.0f / 255.0f), 1.0f };
 		ImVec4 tabBar =		 { ToLinear(21.0f / 255.0f), ToLinear(21.0f / 255.0f), ToLinear(21.0f / 255.0f), 1.0f };
-		ImVec4 hoveredTab = { ToLinear(49.0f / 255.0f), ToLinear(45.0f / 255.0f), ToLinear(34.0f / 255.0f), 1.0f };
+		ImVec4 hoveredTab =  { ToLinear(49.0f / 255.0f), ToLinear(45.0f / 255.0f), ToLinear(34.0f / 255.0f), 1.0f };
 		ImVec4 tab =		 { ToLinear(56.0f / 255.0f), ToLinear(52.0f / 255.0f), ToLinear(41.0f / 255.0f), 1.0f };
 
 		ImVec4  accentColor = { ToLinear(212.0f / 255.0f), ToLinear(184.0f / 255.0f), ToLinear(138.0f / 255.0f), 1.0f };
-		ImVec4	hoveredAccentColor = { ToLinear(47.0f / 255.0f), ToLinear(47.0f / 255.0f), ToLinear(47.0f / 255.0f), 1.0f };
+		ImVec4	hoveredAccentColor = { ToLinear(57.0f / 255.0f), ToLinear(57.0f / 255.0f), ToLinear(57.0f / 255.0f), 1.0f };
 
 		// ApplyEditorTheme(style);
 		style.Colors[ImGuiCol_WindowBg] =				panelBg;
@@ -82,8 +82,8 @@ namespace Velt {
 		style.Colors[ImGuiCol_TabDimmed] =				tabBar;
 		style.Colors[ImGuiCol_TabDimmedSelected] =		tabBar;
 
-		//style.Colors[ImGuiCol_HeaderActive] =			accentColor;
-		//style.Colors[ImGuiCol_Header] =					accentColor;
+		style.Colors[ImGuiCol_HeaderActive] =			hoveredAccentColor;
+		style.Colors[ImGuiCol_Header] =					hoveredAccentColor;
 		style.Colors[ImGuiCol_HeaderHovered] =			hoveredAccentColor;
 
 

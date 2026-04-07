@@ -63,6 +63,7 @@ namespace Velt
 		{
 			Model = pModel;
 			Mesh = pModel->GetMeshSource();
+			Path = Mesh->GetFilePath();
 		}
 
 		~ModelComponent() 

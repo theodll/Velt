@@ -144,7 +144,7 @@ namespace Velt::Editor
 				{
 					ImGui::TableNextRow();
 					ImGui::TableNextColumn();
-					ImGui::Text("Position");
+					ImGui::Text("Path: %s", model.Mesh->GetFilePath().c_str());
 
 					ImGui::TableNextColumn();
 					ImGui::PushItemWidth(-1);

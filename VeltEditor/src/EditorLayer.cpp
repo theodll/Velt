@@ -37,8 +37,8 @@ namespace Velt::Editor
 
 		ImGui::SetCurrentContext(GetCurrentImGuiContext());
 
-		auto model = m_ActiveScene->CreateEntity("Model");
-		model.AddComponent<ModelComponent>("Assets/Models/error.glb");
+		auto model = m_ActiveScene->CreateEntity("Sponza");
+		model.AddComponent<ModelComponent>("Assets/Models/Sponza/Sponza.gltf");
 
 		auto model2 = m_ActiveScene->CreateEntity("Model");
 		model2.AddComponent<ModelComponent>("Assets/Models/error.glb");
