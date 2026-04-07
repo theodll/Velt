@@ -4,6 +4,7 @@
 #include "Renderer/Renderer.h"
 #include "Core/Input.h"
 
+#include <glm/gtc/type_ptr.hpp>
 
 
 namespace Velt::Editor 
@@ -33,8 +34,12 @@ namespace Velt::Editor
 	void EditorGuizmos::OnUpdate(Timestep ts, const Ref<ViewportPanel>& editorPanel, const Ref<SceneHierarchyPanel>& shPanel)
 	{
 		VT_PROFILE_FUNCTION();
+		if (m_SelectedEntity != shPanel->GetSelected())
+			m_SelectedEntity = shPanel->GetSelected();
+
 		if (Input::IsMouseKeyPressed(VELT_MOUSE1))
 		{
+			m_SceneHierarchyPanel = shPanel;
 			auto&& image = Renderer::GetRenderTarget(VT_RENDER_TARGET_MOUSE_PICKING);
 			if (editorPanel->m_IsHovered)
 			{
@@ -58,6 +63,45 @@ namespace Velt::Editor
 		VT_PROFILE_FUNCTION();
 		
 
+	}
+
+	void EditorGuizmos::RenderGizmos(const Ref<EditorCamera>& camera)
+	{
+		VT_PROFILE_FUNCTION(); 
+		if (m_SelectedEntity) 
+		{
+			VT_CORE_TRACE("ImGuizmos being rendered");
+			VT_CORE_TRACE("{}", m_SelectedEntity.id());
+            ImGuizmo::BeginFrame();
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+
+			ImVec2 windowPos = ImGui::GetWindowPos();
+			ImVec2 minRegion = ImGui::GetWindowContentRegionMin();
+			ImVec2 maxRegion = ImGui::GetWindowContentRegionMax();
+			float windowWidth = maxRegion.x - minRegion.x;
+			float windowHeight = maxRegion.y - minRegion.y;
+            ImGuizmo::SetRect(windowPos.x + minRegion.x, windowPos.y + minRegion.y, windowWidth, windowHeight);
+
+			glm::mat4 cameraView = camera->GetViewMatrix();
+			glm::mat4 cameraProjection = camera->GetProjection();
+			cameraProjection[1][1] *= -1.0f;
+
+			auto& tc = m_SelectedEntity.GetComponent<TransformComponent>();
+			glm::mat4 transform = tc.ToMatrix();
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(transform));
+
+			if (ImGuizmo::IsUsing())
+			{
+				glm::vec3 translation, rotation, scale;
+				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(translation), glm::value_ptr(rotation), glm::value_ptr(scale));
+
+				tc.Translation = translation;
+				tc.SetEulerDegrees(rotation);
+				tc.Scale = scale;
+			}
+		}
 	}
 
 }

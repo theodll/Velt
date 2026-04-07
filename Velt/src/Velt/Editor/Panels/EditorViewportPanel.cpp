@@ -3,8 +3,10 @@
 #include "Core/Input.h"
 #include "imgui_impl_vulkan.h"
 #include "EditorViewportPanel.h"
+#include "Editor/EditorGuizmos.h"
 #include "Core/Application.h"
 #include "Velt/Platform/Vulkan/VulkanContext.h"
+
 
 namespace Velt::Editor 
 {
@@ -152,6 +154,11 @@ namespace Velt::Editor
 			ImGui::Image((ImTextureID)m_DescriptorSet, avail);
 		else
 			ImGui::Text("Scene Viewport not initialized");
+
+		if (m_EditorCamera && m_EditorGuizmos)
+		{
+			m_EditorGuizmos->RenderGizmos(m_EditorCamera);
+		}
 
 		ImGui::End();
 

@@ -9,6 +9,7 @@
 #include "Velt/Platform/Vulkan/VulkanContext.h"
 #include "Velt/Core/Application.h"
 #include "Editor/FontLibrary/FontLibrary.h"
+#include "Editor/EditorGuizmos.h"
 #include "Core/Math.h"
 
 namespace Velt {
@@ -126,6 +127,7 @@ namespace Velt {
 	{
 		VT_PROFILE_FUNCTION();
 
+		Editor::EditorGuizmos::BeginFrame();
 		SetupDockspace();
 	}
 

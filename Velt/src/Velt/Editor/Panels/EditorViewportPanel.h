@@ -7,6 +7,7 @@
 
 namespace Velt::Editor 
 {
+	class VELT_API EditorGuizmos;
 	class VELT_API ViewportPanel : public EditorPanel
 	{
 	public:
@@ -15,6 +16,9 @@ namespace Velt::Editor
 
 		void Init(u32 width, u32 height);
 		void Shutdown() override;
+
+		void SetEditorCamera(const Ref<EditorCamera>& camera) { m_EditorCamera = camera; };
+		void SetEditorGuizmos(const Ref<EditorGuizmos>& guizmos) { m_EditorGuizmos = guizmos; }
 
 		void OnUpdate(Timestep ts) override;
 
@@ -37,6 +41,9 @@ namespace Velt::Editor
 		void CreateDescriptorSet();
 
 		RenderTarget m_RenderTarget = VT_RENDER_TARGET_COMPOSITE;
+
+		Ref<EditorCamera> m_EditorCamera; 
+		Ref<EditorGuizmos> m_EditorGuizmos;
 
 		u32 m_Width{};
 		u32 m_Height{};

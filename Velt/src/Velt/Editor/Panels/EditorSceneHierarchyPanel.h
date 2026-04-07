@@ -19,6 +19,8 @@ namespace Velt::Editor
 		void SetContext(const Ref<Scene>& sceneContext);
 		void SetSelected(Entity selected);
 
+		Entity GetSelected() const { return m_SelectionContext; }
+
 		void OnUpdate(Timestep ts) override;
 		void OnImGuiRender2() override;
 	private:

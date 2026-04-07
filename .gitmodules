@@ -29,3 +29,6 @@
 [submodule "Velt/vendor/entt"]
 	path = Velt/vendor/entt
 	url = https://github.com/skypjack/entt
+[submodule "Velt/vendor/ImGuizmo"]
+	path = Velt/vendor/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo

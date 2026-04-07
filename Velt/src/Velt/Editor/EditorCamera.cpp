@@ -39,14 +39,16 @@ namespace Velt
     {
         VT_PROFILE_FUNCTION();
         constexpr glm::vec3 position = { -5.0f, 5.0f, 5.0f };
+        m_Transform.Translation = position;
         m_Position = position;
         m_FocalPoint = { 0.0f, 0.0f, 0.0f };
         m_Distance = glm::distance(position, m_FocalPoint);
 
-        m_Yaw = 3.0f * glm::pi<float>() / 4.0f;
-        m_Pitch = glm::pi<float>() / 4.0f;
+        m_Transform.EulerDegrees.y = 3.0f * glm::pi<float>() / 4.0f;
+        m_Transform.EulerDegrees.x = glm::pi<float>() / 4.0f;
 
-        m_Position = CalculatePosition();
+        m_Transform.Translation = CalculatePosition();
+        m_Position = m_Transform.Translation;
         m_Direction = GetForwardDirection();
         m_RightDirection = GetRightDirection();
         m_InitialMousePosition = { Input::GetMouseX(), Input::GetMouseY() };
@@ -113,8 +115,8 @@ namespace Velt
                 m_Direction
             );
 
-            const float distance = glm::distance(m_FocalPoint, m_Position);
-            m_FocalPoint = m_Position + GetForwardDirection() * distance;
+            const float distance = glm::distance(m_FocalPoint, m_Transform.Translation);
+            m_FocalPoint = m_Transform.Translation + GetForwardDirection() * distance;
             m_Distance = distance;
         }
         else if (Input::IsKeyDown(Scancode::VELT_SCANCODE_LALT))
@@ -147,12 +149,16 @@ namespace Velt
         }
 
         m_InitialMousePosition = mouse;
-        m_Position += m_PositionDelta;
-        m_Yaw += m_YawDelta;
-        m_Pitch += m_PitchDelta;
+        m_Transform.Translation += m_PositionDelta;
+        m_Position = m_Transform.Translation;
+        m_Transform.EulerDegrees.y += m_YawDelta;
+        m_Transform.EulerDegrees.x += m_PitchDelta;
 
         if (m_CameraMode == CameraMode::Arcball)
-            m_Position = CalculatePosition();
+        {
+            m_Transform.Translation = CalculatePosition();
+            m_Position = m_Transform.Translation;
+        }
 
         UpdateView();
     }
@@ -177,10 +183,10 @@ namespace Velt
         if (cosAngle * yawSign > 0.99f)
             m_PitchDelta = 0.0f;
 
-        const glm::vec3 lookAt = m_Position + GetForwardDirection();
-        m_Direction = glm::normalize(lookAt - m_Position);
-        m_Distance = glm::distance(m_Position, m_FocalPoint);
-        m_ViewMatrix = glm::lookAt(m_Position, lookAt, glm::vec3{ 0.0f, yawSign, 0.0f });
+        const glm::vec3 lookAt = m_Transform.Translation + GetForwardDirection();
+        m_Direction = glm::normalize(lookAt - m_Transform.Translation);
+        m_Distance = glm::distance(m_Transform.Translation, m_FocalPoint);
+        m_ViewMatrix = glm::lookAt(m_Transform.Translation, lookAt, glm::vec3{ 0.0f, yawSign, 0.0f });
         m_ViewProjection = m_Projection * m_ViewMatrix;
 
         m_YawDelta *= 0.6f;
@@ -195,10 +201,11 @@ namespace Velt
         if (m_Distance > m_MinFocusDistance)
         {
             m_Distance -= m_Distance - m_MinFocusDistance;
-            m_Position = m_FocalPoint - GetForwardDirection() * m_Distance;
+            m_Transform.Translation = m_FocalPoint - GetForwardDirection() * m_Distance;
         }
 
-        m_Position = m_FocalPoint - GetForwardDirection() * m_Distance;
+        m_Transform.Translation = m_FocalPoint - GetForwardDirection() * m_Distance;
+        m_Position = m_Transform.Translation;
         UpdateView();
     }
 
@@ -244,7 +251,7 @@ namespace Velt
 
     Quaternion EditorCamera::GetOrientation() const
     {
-        return glm::quat(glm::vec3(-m_Pitch - m_PitchDelta, -m_Yaw - m_YawDelta, 0.0f));
+        return glm::quat(glm::vec3(-m_Transform.EulerDegrees.x - m_PitchDelta, -m_Transform.EulerDegrees.y - m_YawDelta, 0.0f));
     }
 
     void EditorCamera::OnEvent(Event& e)
@@ -288,7 +295,7 @@ namespace Velt
     {
         m_Distance -= delta * ZoomSpeed();
         const glm::vec3 forwardDir = GetForwardDirection();
-        m_Position = m_FocalPoint - forwardDir * m_Distance;
+        m_Transform.Translation = m_FocalPoint - forwardDir * m_Distance;
 
         if (m_Distance < 1.0f)
         {
@@ -297,6 +304,7 @@ namespace Velt
         }
 
         m_PositionDelta += delta * ZoomSpeed() * forwardDir;
+        m_Position = m_Transform.Translation;
     }
 
     Vector EditorCamera::CalculatePosition() const

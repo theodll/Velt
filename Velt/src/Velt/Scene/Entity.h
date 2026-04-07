@@ -11,6 +11,8 @@ namespace Velt
 		Entity(const Entity&) = default;
 		Entity() = default;
 
+		u32 id() { return (u32)m_EntityHandle; }
+
 		Entity(entt::entity handle, Scene* pScene) : m_EntityHandle(handle), m_pContext(pScene)
 		{
 			VT_PROFILE_FUNCTION();

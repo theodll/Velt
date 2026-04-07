@@ -374,9 +374,19 @@ namespace Velt::RHI
 		vkMapMemory(device->device(), m_StagingBufferMemory, 0, size, 0, &data);
 
 		u32* pIDs = reinterpret_cast<uint32_t*>(data);
-		u32 objectID = pIDs[y * m_Width + x];
+		u32 objectID = 0xFFFFFFFF; 
+
+		if (x >= 0 && x < (int)m_Width && y >= 0 && y < (int)m_Height)
+		{
+			objectID = pIDs[y * m_Width + x];
+		}
+		else
+		{
+			VT_CORE_WARN("ReadPixel: Coordinates out of bounds! ({0}, {1})", x, y);
+		}
 
 		vkUnmapMemory(device->device(), m_StagingBufferMemory);
+		return objectID;
 
 		return objectID;
 	}

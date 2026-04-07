@@ -8,11 +8,11 @@
 #define VT_FONT_ICON_FILE_NAME_FAR "fa-regular-400.ttf"
 #define VT_FONT_ICON_FILE_NAME_FAS "fa-solid-900.ttf"
 
-VT_#define VT_ICON_MIN_FA 0xe005
+#define VT_ICON_MIN_FA 0xe005
 #define VT_ICON_MAX_16_FA 0xf8ff
 #define VT_ICON_MAX_FA 0xf8ff
 
-VT_#define VT_ICON_FA_AD "\xef\x99\x81"	// U+f641
+#define VT_ICON_FA_AD "\xef\x99\x81"	// U+f641
 #define VT_ICON_FA_ADDRESS_BOOK "\xef\x8a\xb9"	// U+f2b9
 #define VT_ICON_FA_ADDRESS_CARD "\xef\x8a\xbb"	// U+f2bb
 #define VT_ICON_FA_ADJUST "\xef\x81\x82"	// U+f042

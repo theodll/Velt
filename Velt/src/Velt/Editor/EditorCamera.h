@@ -6,6 +6,7 @@
 #include "Core/Timestep.h"
 #include "Events/Event.h"
 #include "Events/MouseEvents.h"
+#include "Scene/Components.h"
 
 namespace Velt 
 {
@@ -33,6 +34,9 @@ namespace Velt
         void SetActive(bool active) { m_IsActive = active; }
 
         CameraMode GetCurrentMode() const { return m_CameraMode; }
+
+        const TransformComponent& GetTransform() const { return m_Transform; }
+        TransformComponent& GetTransform() { return m_Transform; }
 
         float GetDistance() const { return m_Distance; }
         void SetDistance(float distance) { m_Distance = distance; }
@@ -62,8 +66,8 @@ namespace Velt
         float GetNearClip() const { return m_NearClip; }
         float GetFarClip() const { return m_FarClip; }
 
-        float GetPitch() const { return m_Pitch; }
-        float GetYaw() const { return m_Yaw; }
+        float GetPitch() const { return m_Transform.EulerDegrees.x; }
+        float GetYaw() const { return m_Transform.EulerDegrees.y; }
 
         float GetCameraSpeed() const;
 
@@ -102,8 +106,8 @@ namespace Velt
         float m_ViewportWidth = 1280.0f;
         float m_ViewportHeight = 720.0f;
         
-        float m_Pitch{};
-        float m_Yaw{}; 
+        TransformComponent m_Transform;
+
         float m_PitchDelta{};
         float m_YawDelta{};
         Vector m_PositionDelta{};

@@ -26,6 +26,9 @@ namespace Velt::Editor
 
 		m_EditorCamera = CreateRef<EditorCamera>(glm::radians(50.0f), m_ViewportPanel->GetWidth() / m_ViewportPanel->GetHeight(), 0.1f, 1000.0f);
 
+		m_ViewportPanel->SetEditorCamera(m_EditorCamera);
+		m_ViewportPanel->SetEditorGuizmos(m_EditorGuizmos);
+
 		m_SceneRenderer = CreateRef<SceneRenderer>();
 		m_SceneRenderer->Init();
 
