@@ -1,2 +1,49 @@
-# This file is intentionally left blank.
-# The main build logic is in setup.yml
+name: Velt Engine CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: ${{ matrix.os }} - ${{ matrix.config }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        config: [Debug, Release]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Linux Dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwayland-dev libxkbcommon-dev xorg-dev libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev
+
+      - name: Setup Vulkan SDK 1.4
+        uses: lukka/get-vulkan-sdk@v1
+        with:
+          vulkan-query-version: 1.4.304.1
+          vulkan-components: Vulkan-Headers, Vulkan-Loader, MoltenVK, DXC
+          vulkan-use-cache: true
+
+      - name: Install macOS SDL3
+        if: runner.os == 'macOS'
+        run: brew install sdl3
+
+      - name: Configure CMake
+        run: >
+          cmake -B build
+          -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+          ${{ runner.os == 'macOS' && '-DAPPLE_VULKAN_SUPPORT=ON' || '' }}
+
+      - name: Build Velt
+        run: cmake --build build --config ${{ matrix.config }}
