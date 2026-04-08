@@ -20,6 +20,7 @@ namespace Velt
 		void Shutdown();
 
 		Entity CreateEntity(const std::string& name = std::string());
+		void DestroyEntity(Entity entity);
 
 		void OnUpdate(Timestep ts);
 		void OnRender(VkCommandBuffer commandBuffer);

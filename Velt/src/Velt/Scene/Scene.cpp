@@ -33,6 +33,12 @@ namespace Velt
 		return entity;
 	}
 
+	void Scene::DestroyEntity(Entity entity)
+	{
+		VT_PROFILE_FUNCTION();
+		m_Registry.destroy(entity);
+	}
+
 	void Scene::OnUpdate(Timestep ts)
 	{
 		VT_PROFILE_FUNCTION();

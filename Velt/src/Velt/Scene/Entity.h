@@ -52,6 +52,7 @@ namespace Velt
 			m_pContext->m_Registry.remove<T>(m_EntityHandle);
 		}
 		operator u32() const { return (u32)m_EntityHandle;  }
+		operator entt::entity() const { return m_EntityHandle; }
 		operator bool() const { return m_EntityHandle != entt::null; }
 		bool operator==(const Entity& other) const { return m_EntityHandle == other.m_EntityHandle && m_pContext == other.m_pContext; }
 		bool operator!=(const Entity& other) const { return !operator==(other); }

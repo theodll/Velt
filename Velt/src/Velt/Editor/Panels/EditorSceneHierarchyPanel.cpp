@@ -45,6 +45,17 @@ namespace Velt::Editor
 			DrawEntityNode(entity);
 		}
 			
+		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+			m_SelectionContext = {};
+
+		if (ImGui::BeginPopupContextWindow(0, 1))
+		{
+			if (ImGui::MenuItem("Create Empty Entity"))
+				m_ContextScene->CreateEntity("Empty Entity");
+
+			ImGui::EndPopup();
+		}
+
 		ImGui::End();
 
 		ImGui::Begin("Auditor");
@@ -65,9 +76,27 @@ namespace Velt::Editor
 			m_SelectionContext = entity;
 		}
 
+		bool entityDeleted = false;
+
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete Entity"))
+				entityDeleted = true;
+
+			ImGui::EndPopup();
+		}
+
 		if (open)
 		{
+
 			ImGui::TreePop();
+		}
+
+		if (entityDeleted)
+		{
+			m_ContextScene->DestroyEntity(entity);
+			if (m_SelectionContext == entity)
+				m_SelectionContext = {};
 		}
 	}
 
