@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        config: [Debug, Release]
+        config: [Release]
 
     steps:
       - name: Checkout Code
@@ -26,24 +26,52 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwayland-dev libxkbcommon-dev xorg-dev libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev
+          sudo apt-get install -y \
+            libwayland-dev libxkbcommon-dev xorg-dev libx11-dev \
+            libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev \
+            libasound2-dev libpulse-dev libdbus-1-dev
 
-      - name: Prepare Vulkan SDK
+      - name: Setup Vulkan SDK
         uses: humbletim/setup-vulkan-sdk@v1.2.1
         with:
           vulkan-query-version: 1.4.304.1
-          vulkan-components: Vulkan-Headers, Vulkan-Loader, dxc
+          vulkan-components: Vulkan-Headers, Vulkan-Loader
           vulkan-use-cache: true
 
-      - name: Install macOS SDL3
+      - name: Install DXC (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          curl -L -o dxc.zip https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.8.2407/dxc_2024_07_31.zip
+          7z x dxc.zip -o${{ github.workspace }}/dxc
+          echo "${{ github.workspace }}/dxc/bin/x64" >> $GITHUB_PATH
+
+      - name: Install DXC (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          wget https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.8.2407/dxc_2024_07_31.linux.tar.gz
+          tar -xzf dxc_2024_07_31.linux.tar.gz
+          echo "${{ github.workspace }}/bin/x64" >> $GITHUB_PATH
+
+      - name: Install macOS Dependencies
         if: runner.os == 'macOS'
-        run: brew install sdl3
+        run: |
+          brew install sdl3 vulkan-tools
 
       - name: Configure CMake
-        run: >
-          cmake -B build
-          -DCMAKE_BUILD_TYPE=${{ matrix.config }}
-          ${{ runner.os == 'macOS' && '-DAPPLE_VULKAN_SUPPORT=ON' || '' }}
+        shell: bash
+        run: |
+          DXC_PATH=""
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            DXC_PATH="-DDXC_EXECUTABLE=${{ github.workspace }}/dxc/bin/x64/dxc.exe"
+          elif [[ "${{ runner.os }}" == "Linux" ]]; then
+            DXC_PATH="-DDXC_EXECUTABLE=${{ github.workspace }}/bin/x64/dxc"
+          fi
+          
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=${{ matrix.config }} \
+            $DXC_PATH \
+            ${{ runner.os == 'macOS' && '-DAPPLE_VULKAN_SUPPORT=ON' || '' }}
 
       - name: Build Velt
         run: cmake --build build --config ${{ matrix.config }}
