@@ -31,13 +31,27 @@ namespace Velt::Editor
 
 	void SceneHierarchyPanel::OnUpdate(Timestep ts)
 	{
-		
+		VT_PROFILE_FUNCTION();
+		while (!m_QueueDeleteEntities.empty())
+		{
+			VT_CORE_INFO("Delete Queued Entity with ID: {0}", m_QueueDeleteEntities.front().id());
+			m_ContextScene->DestroyEntity(m_QueueDeleteEntities.front());
+			m_QueueDeleteEntities.pop();
+		}
 	}
 
 	void SceneHierarchyPanel::OnImGuiRender2()
 	{
 		ImGui::Begin("Scene Hierarchy Panel");
 
+
+		if (ImGui::BeginPopupContextWindow(0, 1))
+		{
+			if (ImGui::MenuItem("Create Empty Entity"))
+				m_ContextScene->CreateEntity("Empty Entity");
+
+			ImGui::EndPopup();
+		}
 
 		for (auto entityID : m_ContextScene->m_Registry.view<entt::entity>())
 		{
@@ -47,14 +61,6 @@ namespace Velt::Editor
 			
 		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 			m_SelectionContext = {};
-
-		if (ImGui::BeginPopupContextWindow(0, 1))
-		{
-			if (ImGui::MenuItem("Create Empty Entity"))
-				m_ContextScene->CreateEntity("Empty Entity");
-
-			ImGui::EndPopup();
-		}
 
 		ImGui::End();
 
@@ -68,16 +74,17 @@ namespace Velt::Editor
 	{
 		auto& tag = entity.GetComponent<TagComponent>().Tag;
 
-		ImGuiTreeNodeFlags flags = (m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0| ImGuiTreeNodeFlags_OpenOnArrow;
+		ImGuiTreeNodeFlags flags = (m_SelectionContext == entity ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+		flags |= ImGuiTreeNodeFlags_SpanAvailWidth; 
 
-		bool open = ImGui::TreeNodeEx((void*)(u64)(u32)entity, flags, tag.c_str());
+		bool open = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
+
 		if (ImGui::IsItemClicked())
 		{
 			m_SelectionContext = entity;
 		}
 
 		bool entityDeleted = false;
-
 		if (ImGui::BeginPopupContextItem())
 		{
 			if (ImGui::MenuItem("Delete Entity"))
@@ -88,13 +95,12 @@ namespace Velt::Editor
 
 		if (open)
 		{
-
 			ImGui::TreePop();
 		}
 
 		if (entityDeleted)
 		{
-			m_ContextScene->DestroyEntity(entity);
+			m_QueueDeleteEntities.push(std::move(entity));
 			if (m_SelectionContext == entity)
 				m_SelectionContext = {};
 		}

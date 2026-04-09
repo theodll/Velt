@@ -37,8 +37,8 @@ namespace Velt::Editor
 
 		ImGui::SetCurrentContext(GetCurrentImGuiContext());
 
-		auto model = m_ActiveScene->CreateEntity("Sponza");
-		model.AddComponent<ModelComponent>("Assets/Models/Sponza/Sponza.gltf");
+		auto model = m_ActiveScene->CreateEntity("Error");
+		model.AddComponent<ModelComponent>("Assets/Models/error.glb");
 
 		auto model2 = m_ActiveScene->CreateEntity("Model");
 		model2.AddComponent<ModelComponent>("Assets/Models/error.glb");
@@ -81,6 +81,7 @@ namespace Velt::Editor
         m_EditorCamera->OnUpdate(ts);
 		m_EditorCamera->SetViewportSize(m_ViewportPanel->GetWidth(), m_ViewportPanel->GetHeight());
 		m_EditorGuizmos->OnUpdate(ts, m_ViewportPanel, m_SceneHierarchyPanel);
+		m_SceneHierarchyPanel->OnUpdate(ts);
 		m_ActiveScene->OnUpdate(ts);
 	}
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <queue>
 #include "Core/Core.h"
 #include "Scene/Scene.h"
 #include "Scene/Entity.h"
@@ -28,6 +29,7 @@ namespace Velt::Editor
 		void DrawComponents();
 
 		Ref<Scene> m_ContextScene;
+		std::queue<Entity> m_QueueDeleteEntities;
 		Entity m_SelectionContext;
 	};
 }
