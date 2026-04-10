@@ -37,7 +37,7 @@ namespace Velt::Editor
 		if (m_SelectedEntity != shPanel->GetSelected())
 			m_SelectedEntity = shPanel->GetSelected();
 
-		if (Input::IsMouseKeyPressed(VELT_MOUSE1))
+		if (Input::IsMouseKeyPressed(VELT_MOUSE1) && !(ImGuizmo::IsUsingAny() || ImGuizmo::IsUsing() || ImGuizmo::IsOver()))
 		{
 			m_SceneHierarchyPanel = shPanel;
 			auto&& image = Renderer::GetRenderTarget(VT_RENDER_TARGET_MOUSE_PICKING);
@@ -45,6 +45,7 @@ namespace Velt::Editor
 			{
 				u32 id = image->ReadPixel((u32)editorPanel->m_LocalMousePos.x, (u32)editorPanel->m_LocalMousePos.y);
 
+				// Note [Someday in 2026, Theo]
 				// 0xFFFFFFFF is the standard draw call value.
 				// 0x3F800000 is the clear color represented by float 1.0f
 				if (id == 0xFFFFFFFF || id == 0x3F800000 && !m_SelectedEntity)
