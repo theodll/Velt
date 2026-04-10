@@ -38,6 +38,17 @@ namespace Velt::Editor
 			m_ContextScene->DestroyEntity(m_QueueDeleteEntities.front());
 			m_QueueDeleteEntities.pop();
 		}
+		
+		while (!m_QueueRecreateModelComponents.empty())
+		{
+			VT_CORE_INFO("Recreate Queued ModelComponent from Entity with ID: {0}", (u32)m_SelectionContext);
+
+			m_SelectionContext.RemoveComponent<ModelComponent>();
+			m_SelectionContext.AddComponent<ModelComponent>(m_QueueRecreateModelComponents.front());
+			m_SelectionContext.GetComponent<ModelComponent>().Path = m_QueueRecreateModelComponents.front();
+
+			m_QueueRecreateModelComponents.pop();
+		}
 	}
 
 	void SceneHierarchyPanel::OnImGuiRender2()
@@ -100,6 +111,7 @@ namespace Velt::Editor
 
 		if (entityDeleted)
 		{
+			VT_CORE_INFO("Admitted Entity with ID {0} to Delete-Queue", entity.id());
 			m_QueueDeleteEntities.push(std::move(entity));
 			if (m_SelectionContext == entity)
 				m_SelectionContext = {};
@@ -171,15 +183,29 @@ namespace Velt::Editor
 			bool open = ImGui::TreeNodeEx("Model", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed);
 			FontLibrary::Get().Pop();
 
+
+
 			if (open)
 			{
 				auto& model = m_SelectionContext.GetComponent<ModelComponent>();
+
+				char buffer[512]; // Note [10.04.26, Theo]: Technically not needed to be this big because Windows Paths have a standard Path Length of 260 Characters but better safe than sorry
+				memset(buffer, 0, sizeof(buffer));
+				strcpy(buffer, model.Path.string().c_str());
 
 				if (ImGui::BeginTable("TransformTable", 2))
 				{
 					ImGui::TableNextRow();
 					ImGui::TableNextColumn();
-					ImGui::Text("Path: %s", model.Mesh->GetFilePath().c_str());
+					ImGui::Text("Path: ");
+
+					ImGui::PushItemWidth(-1);
+					//ImGui::PushStyleVar(ImGuiStyleVar_)
+					if (ImGui::InputText("", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
+					{
+						m_QueueRecreateModelComponents.push(std::string(buffer));
+					}
+					ImGui::PopItemWidth();
 
 					ImGui::TableNextColumn();
 					ImGui::PushItemWidth(-1);

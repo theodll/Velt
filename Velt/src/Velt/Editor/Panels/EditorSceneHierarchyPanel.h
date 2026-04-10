@@ -30,6 +30,7 @@ namespace Velt::Editor
 
 		Ref<Scene> m_ContextScene;
 		std::queue<Entity> m_QueueDeleteEntities;
+		std::queue<std::filesystem::path> m_QueueRecreateModelComponents; 
 		Entity m_SelectionContext;
 	};
 }
