@@ -76,7 +76,31 @@ namespace Velt::Editor
 		ImGui::End();
 
 		ImGui::Begin("Auditor");
-		DrawComponents();
+		
+		if (m_SelectionContext)
+		{
+			DrawComponents();
+			
+			if (ImGui::Button("Add Component"))
+				ImGui::OpenPopup("AddComponent");
+
+			if (ImGui::BeginPopup("AddComponent"))
+			{
+
+				if (ImGui::MenuItem("Model"))
+				{
+					if (!m_SelectionContext.HasComponent<ModelComponent>())
+						m_SelectionContext.AddComponent<ModelComponent>("Assets/Models/error.glb");
+					else
+						VT_CORE_WARN("Failed to add Component to Entity with ID {0}: An Entity cannot have a Model Component Twice", (u32)m_SelectionContext);
+
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::EndPopup();
+			}
+		}
+		
 		ImGui::End();
 
 	}
