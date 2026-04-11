@@ -123,7 +123,7 @@ namespace Velt::Editor
 		auto& tag = entity.GetComponent<TagComponent>().Tag;
 
 		ImGuiTreeNodeFlags flags = (m_SelectionContext == entity ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-		flags |= ImGuiTreeNodeFlags_SpanAvailWidth; 
+		flags |= ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
 
 		bool open = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
 
@@ -218,8 +218,12 @@ namespace Velt::Editor
 
 			FontLibrary::Get().Push(VT_FONT_TYPE_SPECIAL_BOLD);
 			bool open = ImGui::TreeNodeEx("Model", treeFlags);
-			ImGui::SameLine();
-			bool openButton = ImGui::Button("+");
+			FontLibrary::Get().Pop();
+
+			
+			FontLibrary::Get().Push(VT_FONT_TYPE_ICON);
+			ImGui::SameLine(ImGui::GetWindowWidth() - 30);
+			bool openButton = ImGui::Button("\xef\x83\x89");
 			FontLibrary::Get().Pop();
 
 			if (openButton)

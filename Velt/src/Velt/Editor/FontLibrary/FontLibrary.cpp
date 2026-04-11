@@ -20,7 +20,21 @@ namespace Velt::Editor
 		Fonts[VT_FONT_TYPE_SPECIAL_MEDIUM] = io.Fonts->AddFontFromFileTTF("Assets/Fonts/space-grotesk/SpaceGrotesk-Medium.ttf", 16.0f);
 		Fonts[VT_FONT_TYPE_SPECIAL_SEMI_BOLD] = io.Fonts->AddFontFromFileTTF("Assets/Fonts/space-grotesk/SpaceGrotesk-SemiBold.ttf", 16.0f);
 
-		Fonts[VT_FONT_TYPE_ICON] = io.Fonts->AddFontFromFileTTF("Assets/Fonts/font-awesome/font-awesome-regular.ttf", 16.0f);
+		Fonts[VT_FONT_TYPE_ICON] = io.Fonts->AddFontFromFileTTF("Assets/Fonts/font-awesome/font-awesome-solid-900.ttf", 16.0f);
+
+
+		/*
+		static const ImWchar icons_ranges[] = { 0xf000, 0xf3ff, 0 };
+
+		ImFontConfig config;
+		config.MergeMode = false;
+
+		Fonts[VT_FONT_TYPE_ICON] = io.Fonts->AddFontFromFileTTF(
+			"Assets/Fonts/font-awesome/font-awesome-regular.ttf",
+			16.0f,
+			&config,
+			icons_ranges
+		); */
 
 		for (auto const& [key, val] : Fonts) {
 			if (!val) Fonts[key] = io.Fonts->AddFontDefault();
