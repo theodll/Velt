@@ -8,9 +8,18 @@
 
 namespace Velt
 {
+	enum ComponentType 
+	{
+		VT_COMPONENT_TYPE_TAG, 
+		VT_COMPONENT_TYPE_TRANSFORM,
+		VT_COMPONENT_TYPE_MODEL,
+		VT_COMPONENT_TYPE_COUNT
+	};
+
 	struct TagComponent
 	{
 		std::string Tag;
+		ComponentType Type = VT_COMPONENT_TYPE_TAG;
 
 		TagComponent() = default; 
 		TagComponent(const TagComponent&) = default;
@@ -21,6 +30,8 @@ namespace Velt
 	{
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
+
+		ComponentType Type = VT_COMPONENT_TYPE_TRANSFORM;
 
 		Vector Translation{ 0.0f };
 		Quaternion Rotation{ 1.0f, 0.0f, 0.0f, 0.0f };
@@ -50,6 +61,8 @@ namespace Velt
 		Ref<Velt::Mesh> Mesh;
 
 		std::filesystem::path Path;
+
+		ComponentType Type = VT_COMPONENT_TYPE_MODEL;
 
 		ModelComponent(const std::filesystem::path& path) 
 		{

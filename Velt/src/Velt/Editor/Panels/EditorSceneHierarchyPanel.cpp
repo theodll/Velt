@@ -49,6 +49,20 @@ namespace Velt::Editor
 
 			m_QueueRecreateModelComponents.pop();
 		}
+
+		while (!m_QueueDeleteComponents.empty())
+		{
+			VT_CORE_INFO("Delete Component on Entity with ID: {0}", (u32)m_SelectionContext);
+			switch (m_QueueDeleteComponents.front())
+			{
+			case VT_COMPONENT_TYPE_TAG: VT_CORE_ASSERT(false, "How did we get here?");
+			case VT_COMPONENT_TYPE_TRANSFORM: VT_CORE_ASSERT(false, "How did we get here?");
+			case VT_COMPONENT_TYPE_MODEL: m_SelectionContext.RemoveComponent<ModelComponent>();
+			}
+
+			m_QueueDeleteComponents.pop();
+
+		}
 	}
 
 	void SceneHierarchyPanel::OnImGuiRender2()
@@ -86,7 +100,6 @@ namespace Velt::Editor
 
 			if (ImGui::BeginPopup("AddComponent"))
 			{
-
 				if (ImGui::MenuItem("Model"))
 				{
 					if (!m_SelectionContext.HasComponent<ModelComponent>())
@@ -146,7 +159,7 @@ namespace Velt::Editor
 	{
 		if (!m_SelectionContext)
 			return;
-		
+		const ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowOverlap;
 
 		if (m_SelectionContext.HasComponent<TagComponent>())
 		{
@@ -177,7 +190,7 @@ namespace Velt::Editor
 		if (m_SelectionContext.HasComponent<TransformComponent>())
 		{
 			FontLibrary::Get().Push(VT_FONT_TYPE_SPECIAL_BOLD);
-			bool open = ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed);
+			bool open = ImGui::TreeNodeEx("Transform", treeFlags);
 			FontLibrary::Get().Pop();
 
 			if (open)
@@ -204,11 +217,24 @@ namespace Velt::Editor
 
 
 			FontLibrary::Get().Push(VT_FONT_TYPE_SPECIAL_BOLD);
-			bool open = ImGui::TreeNodeEx("Model", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed);
+			bool open = ImGui::TreeNodeEx("Model", treeFlags);
+			ImGui::SameLine();
+			bool openButton = ImGui::Button("+");
 			FontLibrary::Get().Pop();
 
+			if (openButton)
+			{
+				ImGui::OpenPopup("ComponentSettings");
+			}
 
+			if (ImGui::BeginPopup("ComponentSettings"))
+			{
+				if (ImGui::MenuItem("Remove Component"))
+					m_QueueDeleteComponents.push(VT_COMPONENT_TYPE_MODEL);
 
+					ImGui::EndPopup();
+			}
+		
 			if (open)
 			{
 				auto& model = m_SelectionContext.GetComponent<ModelComponent>();

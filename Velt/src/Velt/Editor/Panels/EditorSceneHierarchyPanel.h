@@ -3,6 +3,7 @@
 #include "Core/Core.h"
 #include "Scene/Scene.h"
 #include "Scene/Entity.h"
+#include "Scene/Components.h"
 #include "../EditorPanel.h"
 
 namespace Velt::Editor 
@@ -31,6 +32,7 @@ namespace Velt::Editor
 		
 		Ref<Scene> m_ContextScene;
 		std::queue<Entity> m_QueueDeleteEntities;
+		std::queue<ComponentType> m_QueueDeleteComponents;
 		std::queue<std::filesystem::path> m_QueueRecreateModelComponents; 
 		
 		Entity m_SelectionContext;
