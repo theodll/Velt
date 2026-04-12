@@ -29,7 +29,7 @@ if(APPLE)
 
 endif()
 
-target_link_libraries(VeltEditor PRIVATE Velt SDL3::SDL3)
+target_link_libraries(Sandbox PRIVATE Velt SDL3::SDL3)
 
 target_link_libraries(Sandbox PRIVATE Velt)
 
