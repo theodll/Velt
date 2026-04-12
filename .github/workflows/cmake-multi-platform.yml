@@ -70,7 +70,7 @@ jobs:
             # Convert to Windows style but with forward slashes for CMake
             DXC_PATH=$(echo "$DXC_PATH" | sed 's/\\/\//g')
           else
-            DXC_PATH="${{ github.workspace }}/dxc_pkg/bin/x64/dxc"
+            DXC_PATH="${{ github.workspace }}/dxc_pkg/bin/dxc"
           fi
           
           cmake -B build \
