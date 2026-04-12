@@ -43,34 +43,42 @@ jobs:
         shell: bash
         run: |
           curl -L -o dxc.zip https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.8.2407/dxc_2024_07_31.zip
-          7z x dxc.zip -o${{ github.workspace }}/dxc
-          echo "${{ github.workspace }}/dxc/bin/x64" >> $GITHUB_PATH
+          7z x dxc.zip -o${{ github.workspace }}/dxc_pkg
+          echo "${{ github.workspace }}/dxc_pkg/bin/x64" >> $GITHUB_PATH
 
       - name: Install DXC (Linux)
         if: runner.os == 'Linux'
         run: |
-          wget https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.8.2407/dxc_2024_07_31.linux.tar.gz
-          tar -xzf dxc_2024_07_31.linux.tar.gz
-          echo "${{ github.workspace }}/bin/x64" >> $GITHUB_PATH
+          # Fixed URL for Linux
+          wget https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.8.2407/linux_dxc_2024_07_31.tar.gz
+          mkdir -p ${{ github.workspace }}/dxc_pkg
+          tar -xzf linux_dxc_2024_07_31.tar.gz -C ${{ github.workspace }}/dxc_pkg
+          echo "${{ github.workspace }}/dxc_pkg/bin/x64" >> $GITHUB_PATH
 
-      - name: Install macOS Dependencies
+      - name: Install macOS Dependencies & DXC
         if: runner.os == 'macOS'
         run: |
           brew install sdl3 vulkan-tools
+          # Download DXC for macOS (using the Linux/Universal-ish build or a known mirror)
+          # Alternatively, Vulkan SDK often includes glslang; if you MUST have DXC:
+          wget https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.8.2407/linux_dxc_2024_07_31.tar.gz
+          mkdir -p ${{ github.workspace }}/dxc_pkg
+          tar -xzf linux_dxc_2024_07_31.tar.gz -C ${{ github.workspace }}/dxc_pkg
+          echo "${{ github.workspace }}/dxc_pkg/bin/x64" >> $GITHUB_PATH
 
       - name: Configure CMake
         shell: bash
         run: |
-          DXC_PATH=""
+          DXC_BIN=""
           if [[ "${{ runner.os }}" == "Windows" ]]; then
-            DXC_PATH="-DDXC_EXECUTABLE=${{ github.workspace }}/dxc/bin/x64/dxc.exe"
-          elif [[ "${{ runner.os }}" == "Linux" ]]; then
-            DXC_PATH="-DDXC_EXECUTABLE=${{ github.workspace }}/bin/x64/dxc"
+            DXC_BIN="${{ github.workspace }}/dxc_pkg/bin/x64/dxc.exe"
+          else
+            DXC_BIN="${{ github.workspace }}/dxc_pkg/bin/x64/dxc"
           fi
           
           cmake -B build \
             -DCMAKE_BUILD_TYPE=${{ matrix.config }} \
-            $DXC_PATH \
+            -DDXC_EXECUTABLE="$DXC_BIN" \
             ${{ runner.os == 'macOS' && '-DAPPLE_VULKAN_SUPPORT=ON' || '' }}
 
       - name: Build Velt
