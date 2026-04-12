@@ -52,10 +52,10 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           # Corrected URL for the v1.8.2407 release
-          wget https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.8.2407/dxc_2024_07_31.linux.tar.gz
+          wget https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.9.2602/linux_dxc_2026_02_20.x86_64.tar.gz
           mkdir -p dxc_pkg
-          tar -xzf dxc_2024_07_31.linux.tar.gz -C dxc_pkg
-          echo "$(pwd)/dxc_pkg/bin/x64" >> $GITHUB_PATH
+          tar -xzf linux_dxc_2026_02_20.x86_64.tar.gz -C dxc_pkg
+          echo "$(pwd)/dxc_pkg/bin/" >> $GITHUB_PATH
 
       - name: Install macOS Extra Deps
         if: runner.os == 'macOS'
