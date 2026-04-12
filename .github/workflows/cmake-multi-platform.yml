@@ -43,42 +43,39 @@ jobs:
         shell: bash
         run: |
           curl -L -o dxc.zip https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.8.2407/dxc_2024_07_31.zip
-          7z x dxc.zip -o${{ github.workspace }}/dxc_pkg
-          echo "${{ github.workspace }}/dxc_pkg/bin/x64" >> $GITHUB_PATH
+          mkdir -p dxc_pkg
+          7z x dxc.zip -odxc_pkg
+          # Use cygpath to ensure we have a clean path for the environment
+          echo "$(pwd)/dxc_pkg/bin/x64" >> $GITHUB_PATH
 
-      - name: Install DXC (Linux)
-        if: runner.os == 'Linux'
+      - name: Install DXC (Linux/macOS)
+        if: runner.os != 'Windows'
         run: |
-          # Fixed URL for Linux
-          wget https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.8.2407/linux_dxc_2024_07_31.tar.gz
-          mkdir -p ${{ github.workspace }}/dxc_pkg
-          tar -xzf linux_dxc_2024_07_31.tar.gz -C ${{ github.workspace }}/dxc_pkg
-          echo "${{ github.workspace }}/dxc_pkg/bin/x64" >> $GITHUB_PATH
+          # Corrected URL for the v1.8.2407 release
+          wget https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.8.2407/dxc_2024_07_31.linux.tar.gz
+          mkdir -p dxc_pkg
+          tar -xzf dxc_2024_07_31.linux.tar.gz -C dxc_pkg
+          echo "$(pwd)/dxc_pkg/bin/x64" >> $GITHUB_PATH
 
-      - name: Install macOS Dependencies & DXC
+      - name: Install macOS Extra Deps
         if: runner.os == 'macOS'
-        run: |
-          brew install sdl3 vulkan-tools
-          # Download DXC for macOS (using the Linux/Universal-ish build or a known mirror)
-          # Alternatively, Vulkan SDK often includes glslang; if you MUST have DXC:
-          wget https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.8.2407/linux_dxc_2024_07_31.tar.gz
-          mkdir -p ${{ github.workspace }}/dxc_pkg
-          tar -xzf linux_dxc_2024_07_31.tar.gz -C ${{ github.workspace }}/dxc_pkg
-          echo "${{ github.workspace }}/dxc_pkg/bin/x64" >> $GITHUB_PATH
+        run: brew install sdl3 vulkan-tools
 
       - name: Configure CMake
         shell: bash
         run: |
-          DXC_BIN=""
+          # Use absolute paths with forward slashes for CMake/MSBuild compatibility
           if [[ "${{ runner.os }}" == "Windows" ]]; then
-            DXC_BIN="${{ github.workspace }}/dxc_pkg/bin/x64/dxc.exe"
+            DXC_PATH="${{ github.workspace }}/dxc_pkg/bin/x64/dxc.exe"
+            # Convert to Windows style but with forward slashes for CMake
+            DXC_PATH=$(echo "$DXC_PATH" | sed 's/\\/\//g')
           else
-            DXC_BIN="${{ github.workspace }}/dxc_pkg/bin/x64/dxc"
+            DXC_PATH="${{ github.workspace }}/dxc_pkg/bin/x64/dxc"
           fi
           
           cmake -B build \
             -DCMAKE_BUILD_TYPE=${{ matrix.config }} \
-            -DDXC_EXECUTABLE="$DXC_BIN" \
+            -DDXC_EXECUTABLE="$DXC_PATH" \
             ${{ runner.os == 'macOS' && '-DAPPLE_VULKAN_SUPPORT=ON' || '' }}
 
       - name: Build Velt
