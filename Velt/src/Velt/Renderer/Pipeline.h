@@ -24,7 +24,7 @@ namespace Velt
 		Ref<Shader> FragmentShader;
 		std::vector<DescriptorSetLayoutHandle> SetLayouts;
 		std::vector<VkFormat> ColorAttachmentFormats;
-		CullMode CullMode;
+		Velt::CullMode CullMode;
 	};
 
 	// Todo [10.03.26, Theo]: move somewhere else

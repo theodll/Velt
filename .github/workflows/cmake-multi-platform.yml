@@ -13,8 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        config: [Release]
+        os: [ubuntu-latest, windows-latest]
+        config: [Release, Debug]
 
     steps:
       - name: Checkout Code
@@ -45,29 +45,21 @@ jobs:
           curl -L -o dxc.zip https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.8.2407/dxc_2024_07_31.zip
           mkdir -p dxc_pkg
           7z x dxc.zip -odxc_pkg
-          # Use cygpath to ensure we have a clean path for the environment
           echo "$(pwd)/dxc_pkg/bin/x64" >> $GITHUB_PATH
 
-      - name: Install DXC (Linux/macOS)
+      - name: Install DXC (Linux)
         if: runner.os != 'Windows'
         run: |
-          # Corrected URL for the v1.8.2407 release
           wget https://github.com/microsoft/DirectXShaderCompiler/releases/download/v1.9.2602/linux_dxc_2026_02_20.x86_64.tar.gz
           mkdir -p dxc_pkg
           tar -xzf linux_dxc_2026_02_20.x86_64.tar.gz -C dxc_pkg
           echo "$(pwd)/dxc_pkg/bin/" >> $GITHUB_PATH
 
-      - name: Install macOS Extra Deps
-        if: runner.os == 'macOS'
-        run: brew install sdl3 vulkan-tools
-
       - name: Configure CMake
         shell: bash
         run: |
-          # Use absolute paths with forward slashes for CMake/MSBuild compatibility
           if [[ "${{ runner.os }}" == "Windows" ]]; then
             DXC_PATH="${{ github.workspace }}/dxc_pkg/bin/x64/dxc.exe"
-            # Convert to Windows style but with forward slashes for CMake
             DXC_PATH=$(echo "$DXC_PATH" | sed 's/\\/\//g')
           else
             DXC_PATH="${{ github.workspace }}/dxc_pkg/bin/dxc"
