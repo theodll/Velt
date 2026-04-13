@@ -31,28 +31,27 @@ namespace Velt
 	{
 		std::string Name;
 		std::string String;
+		float Value;
 		bool Serialize;
 		bool Server; // notifies player when 
 		struct CVar_t* Next;
 	};
 
-	class VELT_API CVar 
+	class VELT_API CVar
 	{
 	public:
 		static void RegisterVariable(CVar_t* pVariable);
-		static void Set(const std::string& variableName, const std::string& value); 
-		static void SetValue(const std::string& variableName, const float value); 
+		static void Set(const std::string& variableName, const std::string& value);
+		static void SetValue(const std::string& variableName, const float value);
 		static float VariableValue(const std::string& variableName);
 		static std::string& VariableString(const std::string& variableName);
-		static std::string& CompleteVariable(const std::string& partial);
+		static const std::string& CompleteVariable(const std::string& partial);
 		static CVar_t* FindVar(const std::string& variableName);
-	
+
 		static void SerializeVariables();
 	private:
 		static CVar_t* m_pCVarVars;
-	}
-
-	
+	}; 
 
 
 }
