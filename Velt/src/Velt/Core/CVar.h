@@ -44,7 +44,7 @@ namespace Velt
 		static void Set(const std::string& variableName, const std::string& value);
 		static void SetValue(const std::string& variableName, const float value);
 		static float VariableValue(const std::string& variableName);
-		static std::string& VariableString(const std::string& variableName);
+		static const std::string& VariableString(const std::string& variableName);
 		static const std::string& CompleteVariable(const std::string& partial);
 		static CVar_t* FindVar(const std::string& variableName);
 

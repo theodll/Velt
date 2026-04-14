@@ -1,16 +1,22 @@
 #include "vtpch.h"
 #include "Application.h"
+
+#include "ImGui/ImGuiLayer.h"
+
+#include "Renderer/Buffer.h"
 #include "Renderer/Renderer.h"
-#include "Log.h"
+
+#include "Input.h"
+#include "CVar.h"
+
+#include "Events/EventHandler.h"
+#include "Events/ApplicationEvents.h" 
+#include "Platform/SDL/SDLEventTranslator.h"
+
+#include <cassert>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_events.h>
-#include "ImGui/ImGuiLayer.h"
-#include "Renderer/Buffer.h"
-#include "Events/ApplicationEvents.h" 
-#include <cassert>
-#include "Input.h"
-#include "Events/EventHandler.h"
-#include "Platform/SDL/SDLEventTranslator.h"
+
 
 bool Velt::Application::s_ShutdownRequested = false;
 
@@ -65,6 +71,7 @@ namespace Velt {
 		Renderer::QueueShutdown();
 		m_Window->Shutdown();
 		m_Context->Shutdown();
+		CVar::SerializeVariables();
 	}
 
 	Application::~Application()

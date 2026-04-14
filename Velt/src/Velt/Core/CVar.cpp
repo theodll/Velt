@@ -93,10 +93,15 @@ namespace Velt
 		return value;
 	}
 
-	std::string& CVar::VariableString(const std::string& variableName)
+	const std::string& CVar::VariableString(const std::string& variableName)
 	{
 		VT_PROFILE_FUNCTION();
+		CVar_t* var;
 
+		var = CVar::FindVar(variableName);
+		if (!var)
+			return "";
+		return var->String;
 	}
 
 	const std::string& CVar::CompleteVariable(const std::string& partial) 
@@ -124,7 +129,13 @@ namespace Velt
 	void CVar::SerializeVariables()
 	{
 		VT_PROFILE_FUNCTION();
+		CVar_t* var;
 
+		for (var = m_pCVarVars; var; var = var->Next)
+			if (var->Serialize)
+				// fprintf(f, "%s \"%s\"\n", var->name, var->string);
+				VT_CORE_WARN("CVar Serialization not implemented yet");
+				// Todo 
 	}
 
 

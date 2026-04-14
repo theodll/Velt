@@ -2,12 +2,14 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 
 #include "vtpch.h"
-#include "Velt/Core/Core.h"
 #include "Renderer.h"
+
 #include "Velt/Core/Application.h"
-#include "Platform/Vulkan/VulkanRenderer.h"
+#include "Core/CVar.h"
+
 #include "SceneRenderer.h"
 #include "Material.h"
+#include "Platform/Vulkan/VulkanRenderer.h"
 
 
 namespace Velt {
@@ -100,6 +102,13 @@ namespace Velt {
 		w = app->GetRenderableWidth(), h = app->GetRenderableHeight();
 
 		RecreateRenderTargets(w, h);
+
+		CVar_t r_SelectedRenderTarget;
+		r_SelectedRenderTarget.Name = "r_SelectedRenderTarget";
+		r_SelectedRenderTarget.Value = s_RenderTargets.size();
+
+		CVar::RegisterVariable(&r_SelectedRenderTarget);
+		CVar::SetValue("r_SelectedRenderTarget", VT_RENDER_TARGET_COMPOSITE);
 	}
 
 	void Renderer::Shutdown()
