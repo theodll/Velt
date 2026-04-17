@@ -28,6 +28,9 @@ namespace Velt::Editor
 	private:
 		void DrawEntityNode(Entity entity);
 		void DrawComponents();
+		
+		template<typename T, typename UIFunc>
+		void DrawSingleComponent(const std::string& name, Entity entity, UIFunc uiFunc, ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth);
 
 		
 		Ref<Scene> m_ContextScene;

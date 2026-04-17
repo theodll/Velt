@@ -38,7 +38,7 @@ namespace Velt::Editor
 			m_ContextScene->DestroyEntity(m_QueueDeleteEntities.front());
 			m_QueueDeleteEntities.pop();
 		}
-		
+
 		while (!m_QueueRecreateModelComponents.empty())
 		{
 			VT_CORE_INFO("Recreate Queued ModelComponent from Entity with ID: {0}", (u32)m_SelectionContext);
@@ -83,18 +83,18 @@ namespace Velt::Editor
 			Entity entity{ entityID, m_ContextScene.get() };
 			DrawEntityNode(entity);
 		}
-			
+
 		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 			m_SelectionContext = {};
 
 		ImGui::End();
 
 		ImGui::Begin("Auditor");
-		
+
 		if (m_SelectionContext)
 		{
 			DrawComponents();
-			
+
 			if (ImGui::Button("Add Component"))
 				ImGui::OpenPopup("AddComponent");
 
@@ -113,7 +113,7 @@ namespace Velt::Editor
 				ImGui::EndPopup();
 			}
 		}
-		
+
 		ImGui::End();
 
 	}
@@ -196,7 +196,7 @@ namespace Velt::Editor
 			if (open)
 			{
 				auto& tc = m_SelectionContext.GetComponent<TransformComponent>();
-				
+
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 1.0f, 1.0f });
 
 				Shared::DrawVec3Control("Translation", tc.Translation);
@@ -205,22 +205,91 @@ namespace Velt::Editor
 
 				ImGui::PopStyleVar();
 
-				ImGui::TreePop(); 
+				ImGui::TreePop();
 			}
 		}
 
-		if (m_SelectionContext.HasComponent<ModelComponent>())
+		DrawSingleComponent<ModelComponent>("Model", m_SelectionContext, [&](const auto& model)
+			{
+				FontLibrary::Get().Push(VT_FONT_TYPE_ICON);
+				//ImGui::Text(VT_ICON_FA_);
+				FontLibrary::Get().Pop();
+
+
+				FontLibrary::Get().Push(VT_FONT_TYPE_SPECIAL_BOLD);
+				bool open = ImGui::TreeNodeEx("Model", treeFlags);
+				FontLibrary::Get().Pop();
+
+
+				FontLibrary::Get().Push(VT_FONT_TYPE_ICON);
+				ImGui::SameLine(ImGui::GetWindowWidth() - 30);
+				bool openButton = ImGui::Button("\xef\x83\x89");
+				FontLibrary::Get().Pop();
+
+				if (openButton)
+				{
+					ImGui::OpenPopup("ComponentSettings");
+				}
+
+				if (ImGui::BeginPopup("ComponentSettings"))
+				{
+					if (ImGui::MenuItem("Remove Component"))
+						m_QueueDeleteComponents.push(VT_COMPONENT_TYPE_MODEL);
+
+					ImGui::EndPopup();
+				}
+
+				if (open)
+				{
+
+					char buffer[512]; // Note [10.04.26, Theo]: Technically not needed to be this big because Windows Paths have a standard Path Length of 260 Characters but better safe than sorry
+					memset(buffer, 0, sizeof(buffer));
+					strcpy(buffer, model.Path.string().c_str());
+
+					if (ImGui::BeginTable("TransformTable", 2))
+					{
+						ImGui::TableNextRow();
+						ImGui::TableNextColumn();
+						ImGui::Text("Path: ");
+
+						ImGui::PushItemWidth(-1);
+						//ImGui::PushStyleVar(ImGuiStyleVar_)
+						if (ImGui::InputText("", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
+						{
+							m_QueueRecreateModelComponents.push(std::string(buffer));
+						}
+						ImGui::PopItemWidth();
+
+						ImGui::TableNextColumn();
+						ImGui::PushItemWidth(-1);
+
+						ImGui::PopItemWidth();
+
+						ImGui::EndTable();
+					}
+
+				}
+			}, treeFlags);
+
+	}
+
+	template<typename T, typename UIFunc>
+	void SceneHierarchyPanel::DrawSingleComponent(const std::string& name, Entity entity, UIFunc uiFunc, ImGuiTreeNodeFlags flags)
+	{
+		if (entity.HasComponent<T>())
 		{
+			auto& component = entity.GetComponent<T>();
+
 			FontLibrary::Get().Push(VT_FONT_TYPE_ICON);
 			//ImGui::Text(VT_ICON_FA_);
-			FontLibrary::Get().Pop(); 
+			FontLibrary::Get().Pop();
 
 
 			FontLibrary::Get().Push(VT_FONT_TYPE_SPECIAL_BOLD);
-			bool open = ImGui::TreeNodeEx("Model", treeFlags);
+			bool open = ImGui::TreeNodeEx(name.c_str(), flags);
 			FontLibrary::Get().Pop();
 
-			
+
 			FontLibrary::Get().Push(VT_FONT_TYPE_ICON);
 			ImGui::SameLine(ImGui::GetWindowWidth() - 30);
 			bool openButton = ImGui::Button("\xef\x83\x89");
@@ -234,45 +303,19 @@ namespace Velt::Editor
 			if (ImGui::BeginPopup("ComponentSettings"))
 			{
 				if (ImGui::MenuItem("Remove Component"))
-					m_QueueDeleteComponents.push(VT_COMPONENT_TYPE_MODEL);
+					m_QueueDeleteComponents.push(component.Type);
 
-					ImGui::EndPopup();
+				ImGui::EndPopup();
 			}
-		
+			ImGui::TreePop();
+
 			if (open)
 			{
-				auto& model = m_SelectionContext.GetComponent<ModelComponent>();
-
-				char buffer[512]; // Note [10.04.26, Theo]: Technically not needed to be this big because Windows Paths have a standard Path Length of 260 Characters but better safe than sorry
-				memset(buffer, 0, sizeof(buffer));
-				strcpy(buffer, model.Path.string().c_str());
-
-				if (ImGui::BeginTable("TransformTable", 2))
-				{
-					ImGui::TableNextRow();
-					ImGui::TableNextColumn();
-					ImGui::Text("Path: ");
-
-					ImGui::PushItemWidth(-1);
-					//ImGui::PushStyleVar(ImGuiStyleVar_)
-					if (ImGui::InputText("", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
-					{
-						m_QueueRecreateModelComponents.push(std::string(buffer));
-					}
-					ImGui::PopItemWidth();
-
-					ImGui::TableNextColumn();
-					ImGui::PushItemWidth(-1);
-					
-					ImGui::PopItemWidth();
-
-					ImGui::EndTable();
-				}
-
+				uiFunc(component);
 				ImGui::TreePop();
 			}
 		}
-
 	}
-
 }
+
+
