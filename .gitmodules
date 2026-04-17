@@ -32,3 +32,6 @@
 [submodule "Velt/vendor/ImGuizmo"]
 	path = Velt/vendor/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo
+[submodule "Velt/vendor/yaml-cpp"]
+	path = Velt/vendor/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp
