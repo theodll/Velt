@@ -86,19 +86,22 @@ namespace Velt::Editor
 			glm::mat4 cameraProjection = camera->GetProjection();
 			cameraProjection[1][1] *= -1.0f;
 
-			auto& tc = m_SelectedEntity.GetComponent<TransformComponent>();
-			glm::mat4 transform = tc.ToMatrix();
-
-			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(transform));
-
-			if (ImGuizmo::IsUsing())
+			if (m_SelectedEntity.HasComponent<TransformComponent>())
 			{
-				glm::vec3 translation, rotation, scale;
-				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(translation), glm::value_ptr(rotation), glm::value_ptr(scale));
+				auto& tc = m_SelectedEntity.GetComponent<TransformComponent>();
+				glm::mat4 transform = tc.ToMatrix();
 
-				tc.Translation = translation;
-				tc.SetEulerDegrees(rotation);
-				tc.Scale = scale;
+				ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(transform));
+
+				if (ImGuizmo::IsUsing())
+				{
+					glm::vec3 translation, rotation, scale;
+					ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(translation), glm::value_ptr(rotation), glm::value_ptr(scale));
+
+					tc.Translation = translation;
+					tc.SetEulerDegrees(rotation);
+					tc.Scale = scale;
+				}
 			}
 		}
 	}

@@ -42,6 +42,9 @@ namespace Velt::Editor
 
 		auto model2 = m_ActiveScene->CreateEntity("Model");
 		model2.AddComponent<ModelComponent>("Assets/Models/error.glb");
+
+		SceneSerializer serializer(m_ActiveScene);
+		serializer.SerializeText("Assets/Scenes/ExampleScene.vts");
    	}
 
 	void EditorLayer::Shutdown()

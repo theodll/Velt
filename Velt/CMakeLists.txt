@@ -10,6 +10,8 @@ add_subdirectory(vendor/spdlog)
 add_subdirectory(vendor/glm)
 add_subdirectory(vendor/assimp)
 add_subdirectory(vendor/tracy)
+
+set(YAML_BUILD_SHARED_LIBS OFF)
 add_subdirectory(vendor/yaml-cpp)
 
 
@@ -21,7 +23,7 @@ endif()
 
 find_package(Vulkan REQUIRED)
 target_link_libraries(Velt PUBLIC Vulkan::Vulkan)
-target_link_libraries(Velt PRIVATE spdlog::spdlog SDL3::SDL3 assimp Tracy::TracyClient)
+target_link_libraries(Velt PRIVATE spdlog::spdlog SDL3::SDL3 assimp Tracy::TracyClient yaml-cpp)
 
 target_include_directories(Velt PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src

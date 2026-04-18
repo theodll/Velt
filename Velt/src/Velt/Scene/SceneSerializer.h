@@ -4,7 +4,7 @@
 
 namespace Velt 
 {
-	class SceneSerializer 
+	class VELT_API SceneSerializer 
 	{
 	public:
 		SceneSerializer(const Ref<Scene>& scene);

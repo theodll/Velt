@@ -24,3 +24,4 @@
 #include <Velt/Scene/Components.h>
 #include <Velt/Scene/Scene.h>
 #include <Velt/Scene/Entity.h>
+#include <Velt/Scene/SceneSerializer.h>
