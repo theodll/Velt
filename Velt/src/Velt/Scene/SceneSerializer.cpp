@@ -40,14 +40,55 @@ namespace Velt
 			out << YAML::BeginMap;
 
 			const auto& transform = ent.GetComponent<TransformComponent>();
-			out << YAML::Key << "Translation X" << YAML::Value << transform.Translation.x;
-			out << YAML::Key << "Translation Y" << YAML::Value << transform.Translation.y;
-			out << YAML::Key << "Translation Z" << YAML::Value << transform.Translation.z;
 
-			out << YAML::Key << "Scale" << YAML::Value << transform.Scale.x << YAML::Value << transform.Scale.y << YAML::Value << transform.Scale.z;
+			out << YAML::Key << "Translation";
+			out << YAML::BeginMap;
+			out << YAML::Key << "X" << YAML::Value << transform.Translation.x;
+			out << YAML::Key << "Y" << YAML::Value << transform.Translation.y;
+			out << YAML::Key << "Z" << YAML::Value << transform.Translation.z;
+			out << YAML::EndMap;
+			
+			out << YAML::Key << "Scale";
+			out << YAML::BeginMap;
+			out << YAML::Key << "X" << YAML::Value << transform.Scale.x;
+			out << YAML::Key << "Y" << YAML::Value << transform.Scale.y;
+			out << YAML::Key << "Z" << YAML::Value << transform.Scale.z;
+			out << YAML::EndMap;
+
+			out << YAML::Key << "Rotation (Euler)";
+			out << YAML::BeginMap;
+			out << YAML::Key << "X" << YAML::Value << transform.EulerDegrees.x;
+			out << YAML::Key << "Y" << YAML::Value << transform.EulerDegrees.y;
+			out << YAML::Key << "Z" << YAML::Value << transform.EulerDegrees.z;
+			out << YAML::EndMap;
+
+			out << YAML::Key << "Rotation (Quaternion)";
+			out << YAML::BeginMap;
+			out << YAML::Key << "X" << YAML::Value << transform.Rotation.x;
+			out << YAML::Key << "Y" << YAML::Value << transform.Rotation.y;
+			out << YAML::Key << "Z" << YAML::Value << transform.Rotation.z;
+			out << YAML::Key << "W" << YAML::Value << transform.Rotation.w;
+			out << YAML::EndMap;
 
 			out << YAML::EndMap;
 		}
+
+		if (ent.HasComponent<ModelComponent>())
+		{
+			out << YAML::Key << "ModelComponent";
+			out << YAML::BeginMap;
+
+			const auto& model = ent.GetComponent<ModelComponent>();
+
+			out << YAML::Key << "Model";
+			out << YAML::BeginMap;
+			out << YAML::Key << "Mesh Path" << YAML::Value << model.Path.string();;
+			out << YAML::EndMap;
+
+
+			out << YAML::EndMap;
+		}
+
 	}
 
 	void SceneSerializer::SerializeText(const std::filesystem::path& path)
@@ -70,7 +111,12 @@ namespace Velt
 		out << YAML::EndSeq;
 		out << YAML::EndMap; 
 
+
+		std::filesystem::create_directories(path.parent_path());
+
 		std::ofstream fout(path);
+		if (!fout)
+			VT_CORE_ERROR("Failed to open or write to {0} when serializing scene", path.string());
 		fout << out.c_str();
 	}
 
