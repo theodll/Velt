@@ -171,18 +171,6 @@ namespace Velt {
 		}
 
 		// Menu bar
-		if (ImGui::BeginMenuBar())
-		{
-			if (ImGui::BeginMenu("File"))
-			{
-				if (ImGui::MenuItem("Exit"))
-				{
-					Application::s_ShutdownRequested = true;
-				}
-				ImGui::EndMenu();
-			}
-			ImGui::EndMenuBar();
-		}
 
 		ImGui::End();
 	}

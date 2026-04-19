@@ -37,20 +37,24 @@ namespace Velt::Editor
 
 		ImGui::SetCurrentContext(GetCurrentImGuiContext());
 
+		/*
 		auto model = m_ActiveScene->CreateEntity("Error");
 		model.AddComponent<ModelComponent>("Assets/Models/error.glb");
 
 		auto model2 = m_ActiveScene->CreateEntity("Model");
 		model2.AddComponent<ModelComponent>("Assets/Models/error.glb");
-
+		*/
 		SceneSerializer serializer(m_ActiveScene);
-		serializer.SerializeText("Assets/Scenes/ExampleScene.vts");
+		serializer.DeserializeText("Assets/Scenes/ExampleScene.vts");
    	}
 
 	void EditorLayer::Shutdown()
 	{
 		VT_PROFILE_FUNCTION();
 		VT_CORE_INFO("Shutdown EditorLayer");
+
+		SceneSerializer serializer(m_ActiveScene);
+		serializer.SerializeText("Assets/Scenes/ExampleScene.vts");
 
 		m_SceneRenderer->Shutdown();
 		m_SceneRenderer.reset();
@@ -128,9 +132,36 @@ namespace Velt::Editor
 	void EditorLayer::OnImGuiRender2()
 	{
 		VT_PROFILE_FUNCTION();
+
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Save"))
+				{
+					SceneSerializer ser(m_ActiveScene);
+					ser.SerializeText("Assets/Scenes/ExampleScene.vts");
+				}
+
+				if (ImGui::MenuItem("Load"))
+				{
+					SceneSerializer ser(m_ActiveScene);
+					ser.DeserializeText("Assets/Scenes/ExampleScene.vts");
+				}
+
+				if (ImGui::MenuItem("Exit"))
+				{
+					Application::s_ShutdownRequested = true;
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+
 		m_ViewportPanel->OnImGuiRender2();
 		m_EditorGuizmos->OnImGuiRender2();
 		m_SceneHierarchyPanel->OnImGuiRender2();
+
 
 		ImGui::Begin("Statistics");
 		ImGui::Text("Velt Engine v0.0");
