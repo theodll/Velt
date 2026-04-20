@@ -118,6 +118,14 @@ namespace Velt
 	{
 		VT_PROFILE_FUNCTION();
 
+		for (auto entityID : m_Scene->m_Registry.view<entt::entity>())
+		{
+			Entity entity = { entityID, m_Scene.get() };
+			if (!entity)
+				return;
+			m_Scene->DestroyEntity(entity);
+		}
+
 		std::ifstream fin(path);
 		std::stringstream strStream;
 		strStream << fin.rdbuf();
