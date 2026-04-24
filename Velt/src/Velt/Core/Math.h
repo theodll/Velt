@@ -11,7 +11,9 @@
 
 namespace Velt 
 {
-	using HVector = glm::vec4; 
+	using Vector4 = glm::vec4;
+	using HVector = Vector4;
+	
 	using Vector = glm::vec3;
 	using Point = glm::vec2;
 	using Number = glm::vec1;
@@ -19,5 +21,5 @@ namespace Velt
 	using Matrix = glm::mat4;
 
 	using Quaternion = glm::quat;
-	using EAngle = glm::vec3;
+	using EulerAngle = glm::vec3;
 }

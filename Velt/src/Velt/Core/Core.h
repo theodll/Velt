@@ -15,6 +15,7 @@ typedef int32_t i32;
 typedef int64_t i64;
 
 constexpr u32 MAX_FRAMES_IN_FLIGHT{ 3 };
+constexpr u32 MAX_LIGHTS{ 512 };
 constexpr std::string_view ERROR_TEXTURE_PATH = "Assets/Textures/error.png";
 
 #if VT_PLATFORM_WINDOWS
