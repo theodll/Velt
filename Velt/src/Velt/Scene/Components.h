@@ -59,10 +59,9 @@ namespace Velt
 	struct LightComponent 
 	{
 		HVector Color{};
-		float EmissionStrength;
+		float Intensity{};
 	
 		const ComponentType Type = VT_COMPONENT_TYPE_LIGHT;
-
 	};
 
 	struct ModelComponent 

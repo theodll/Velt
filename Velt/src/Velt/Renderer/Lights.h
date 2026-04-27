@@ -4,15 +4,17 @@
 
 namespace Velt 
 {
-	struct Light 
+	struct alignas(16) Light 
 	{
-		alignas(16) Vector4 Color;
-		float Intensity;
+		Vector4 Color = Vector4(1.0f);
+		Vector Position = Vector(1.0f);
+		float Intensity = 0;
 	};
 
-	struct LightData 
+	struct LightUBO
 	{
 		Light Lights[MAX_LIGHTS];
+		int _pad01[3];
 		int Count;
 	};
 }

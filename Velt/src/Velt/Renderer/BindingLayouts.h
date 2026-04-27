@@ -93,11 +93,13 @@ namespace Velt
 	enum DefferedSetBinding : u32
 	{
 		VT_DEFFERED_SET_BINDING_ALBEDO_AO = 0,
-		VT_DEFFERED_SET_BINDING_NORMAL_ROUGH = 1,
-		VT_DEFFERED_SET_BINDING_METAL_EMIT = 2,
-		VT_DEFFERED_SET_BINDING_DEPTH = 3,
-		VT_DEFFERED_SET_BINDING_SAMPLER = 5,
-		VT_DEFFERED_SET_BINDING_UBO = 6
+		VT_DEFFERED_SET_BINDING_NORMAL_ROUGH,
+		VT_DEFFERED_SET_BINDING_METAL_EMIT,
+		VT_DEFFERED_SET_BINDING_DEPTH,
+		VT_DEFFERED_SET_BINDING_SAMPLER,
+		VT_DEFFERED_SET_BINDING_CAMERA_BO,
+		VT_DEFFERED_SET_BINDING_LIGHT_UBO,
+		VT_DEFFERED_SET_BINDING_COUNT
 	};
 
 	static std::vector<RHI::DescriptorBinding> GetDefferedSetBindings()
@@ -139,12 +141,19 @@ namespace Velt
 		sampler.stage = RHI::ShaderStage::FRAGMENT;
 		bindings.push_back(sampler);
 
-		RHI::DescriptorBinding ubo{};
-		ubo.type = RHI::DescriptorType::UNIFORM_BUFFER;
-		ubo.binding = VT_DEFFERED_SET_BINDING_UBO;
-		ubo.count = 1;
-		ubo.stage = RHI::ShaderStage::FRAGMENT;
-		bindings.push_back(ubo);
+		RHI::DescriptorBinding cameraUbo{};
+		cameraUbo.type = RHI::DescriptorType::UNIFORM_BUFFER;
+		cameraUbo.binding = VT_DEFFERED_SET_BINDING_CAMERA_BO;
+		cameraUbo.count = 1;
+		cameraUbo.stage = RHI::ShaderStage::FRAGMENT;
+		bindings.push_back(cameraUbo);
+
+		RHI::DescriptorBinding lightUbo{};
+		lightUbo.type = RHI::DescriptorType::UNIFORM_BUFFER;
+		lightUbo.binding = VT_DEFFERED_SET_BINDING_CAMERA_BO;
+		lightUbo.count = 1;
+		lightUbo.stage = RHI::ShaderStage::FRAGMENT;
+		bindings.push_back(lightUbo);
 
 		return bindings;
 	}

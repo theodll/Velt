@@ -5,14 +5,14 @@
 #include "Platform/Vulkan/VulkanContext.h"
 #include "Platform/Vulkan/DescriptorSetManager.h"
 #include "BindingLayouts.h"
-
+#include "Lights.h"
 #include "../../../VeltEditor/src/EditorLayer.h"
 
 namespace Velt 
 {
 	Ref<Pipeline> DefferedRenderer::s_DefferedPipeline = nullptr;
 
-	void DefferedRenderer::Init(Ref<Camera> pCamera)
+	void DefferedRenderer::Init(Ref<Camera> pCamera, const Ref<Scene>& pActiveScene)
 	{
 		VT_PROFILE_FUNCTION();
 		{
@@ -36,6 +36,7 @@ namespace Velt
 		}
 
 		m_ShaderInput = CreateRef<DefferedShaderInput>(pCamera);
+		SetActiveScene(pActiveScene);
 	}
 
 	void DefferedRenderer::Shutdown()
@@ -44,6 +45,14 @@ namespace Velt
 		VT_CORE_INFO("Shutdown Deffered Renderer");
 		s_DefferedPipeline->Shutdown();
 		s_DefferedPipeline.reset();
+	}
+
+	void DefferedRenderer::SetActiveScene(const Ref<Scene>& pActiveScene)
+	{
+		VT_PROFILE_FUNCTION();
+
+		VT_CORE_INFO("Set Deffered Renderer Scene");
+		m_ShaderInput->m_ActiveScene = pActiveScene;
 	}
 
 	void DefferedRenderer::ExecuteDefferedPass(VkCommandBuffer cmd)
@@ -67,14 +76,17 @@ namespace Velt
 		m_MetalEmitBinding = VT_DEFFERED_SET_BINDING_METAL_EMIT;
 		m_DepthBinding = VT_DEFFERED_SET_BINDING_DEPTH;
 		m_SamplerBinding = VT_DEFFERED_SET_BINDING_SAMPLER;
-		m_UBOBinding = VT_DEFFERED_SET_BINDING_UBO;
+		m_CameraUBOBinding = VT_DEFFERED_SET_BINDING_CAMERA_BO;
+		m_LightUBOBinding = VT_DEFFERED_SET_BINDING_LIGHT_UBO;
+
 		
 		m_ValidBindings.emplace(m_AlbedoAOBinding);
 		m_ValidBindings.emplace(m_NormalRoughBinding);
 		m_ValidBindings.emplace(m_MetalEmitBinding);
 		m_ValidBindings.emplace(m_DepthBinding);
 		m_ValidBindings.emplace(m_SamplerBinding);
-		m_ValidBindings.emplace(m_UBOBinding);
+		m_ValidBindings.emplace(m_CameraUBOBinding);
+		m_ValidBindings.emplace(m_LightUBOBinding);
 
 		m_CameraUBOs.resize(MAX_FRAMES_IN_FLIGHT);
 		for (u32 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
@@ -91,10 +103,19 @@ namespace Velt
 
 			RHI::VulkanContext::GetSetManager()->WriteBuffer(
 				m_Sets[i],
-				m_UBOBinding,
+				m_CameraUBOBinding,
 				m_CameraUBOs[i]->GetVulkanBuffer(),
 				sizeof(CameraUBO)
 			);
+
+
+			RHI::VulkanContext::GetSetManager()->WriteBuffer(
+				m_Sets[i],
+				m_LightUBOBinding,
+				m_LightUBOs[i]->GetVulkanBuffer(),
+				sizeof(LightUBO)
+			);
+
 
 			if (m_TextureSampler) 
 			{
@@ -166,21 +187,50 @@ namespace Velt
 		updateImageBinding(m_MetalEmitBinding, renderTargets[VT_RENDER_TARGET_METAL_EMIT]);
 		updateImageBinding(m_DepthBinding, renderTargets[VT_RENDER_TARGET_DEPTH]);
 
-		CameraUBO ubo{};
+		CameraUBO camUBO{};
 		// TODO [01.04.26]: Change this
-		ubo.viewProj = m_Camera->GetViewProjection();
-		ubo.invViewProj = m_Camera->GetInverseViewProjection();
-		ubo.cameraPos = m_Camera->GetPosition();
+		camUBO.viewProj = m_Camera->GetViewProjection();
+		camUBO.invViewProj = m_Camera->GetInverseViewProjection();
+		camUBO.cameraPos = m_Camera->GetPosition();
 
-		m_CameraUBOs[frameIndex]->SetData(&ubo, sizeof(CameraUBO), 0);
+		LightUBO lightUBO;
+		int count = 0;
+
+		auto group = m_ActiveScene->m_Registry.group<TransformComponent>(entt::get<LightComponent>);
+		for (auto entity : group)
+		{
+			auto&& [transform, lightComponent] = group.get<TransformComponent, LightComponent>(entity);
+
+			if (count > MAX_LIGHTS)
+				VT_CORE_WARN("Light Count in Scene ({0}) exceeding Max Light Count ({1})", count, MAX_LIGHTS);
+				break;
+
+			auto& light = lightUBO.Lights[count];
+			light.Position = transform.Translation;
+			light.Color = lightComponent.Color;
+			light.Intensity = lightComponent.Intensity;
+
+			count++;	
+		}
+
+		lightUBO.Count = count;
+
+		m_CameraUBOs[frameIndex]->SetData(&camUBO, sizeof(CameraUBO), 0);
+		m_LightUBOs[frameIndex]->SetData(&lightUBO, sizeof(LightUBO), 0);
 
 		RHI::VulkanContext::GetSetManager()->WriteBuffer(
 			m_Sets[frameIndex],
-			m_UBOBinding,
+			m_CameraUBOBinding,
 			m_CameraUBOs[frameIndex]->GetVulkanBuffer(),
 			sizeof(CameraUBO)
 		);
 
+		RHI::VulkanContext::GetSetManager()->WriteBuffer(
+			m_Sets[frameIndex],
+			m_LightUBOBinding,
+			m_LightUBOs[frameIndex]->GetVulkanBuffer(),
+			sizeof(LightUBO)
+		);
 	}
 
 	const VkDescriptorSet& DefferedShaderInput::GetSet() const 

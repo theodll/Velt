@@ -30,6 +30,7 @@ namespace Velt
 
 	friend class Entity;
 	friend class SceneSerializer;
+	friend class DefferedShaderInput;
 	friend class Velt::Editor::SceneHierarchyPanel;
 	};
 }

@@ -1,9 +1,13 @@
 #pragma once
 #include "Core/Core.h"
 #include "Core/Math.h"
+
 #include "Texture.h"
 #include "Pipeline.h"
 #include "Camera.h"
+
+#include "Scene/Scene.h"
+
 #include <vulkan/vulkan.h>
 
 namespace Velt
@@ -23,8 +27,10 @@ namespace Velt
 	class VELT_API DefferedRenderer 
 	{
 	public:
-		void Init(Ref<Camera> pCamera);
+		void Init(Ref<Camera> pCamera, const Ref<Scene>& pActiveScene);
 		void Shutdown();
+
+		void SetActiveScene(const Ref<Scene>& pActiveScene);
 
 		void ExecuteDefferedPass(VkCommandBuffer cmd);
 
@@ -53,6 +59,7 @@ namespace Velt
 		const VkDescriptorSet& GetSet() const; 
 		void UpdateData();
 
+		friend class DefferedRenderer;
 	private:
 		
 		Ref<Camera> m_Camera;
@@ -62,6 +69,7 @@ namespace Velt
 
 		Ref<Texture2D> m_TextureSampler;
 
+		Ref<Scene> m_ActiveScene;
 
 		struct alignas(16) CameraUBO
 		{
@@ -71,7 +79,10 @@ namespace Velt
 		};
 
 		std::vector<Ref<UniformBuffer>> m_CameraUBOs;
-		u32 m_UBOBinding{};
+		u32 m_CameraUBOBinding{};
+
+		std::vector<Ref<UniformBuffer>> m_LightUBOs;
+		u32 m_LightUBOBinding{};
 
 		u32 m_AlbedoAOBinding{};
 		u32 m_NormalRoughBinding{};
