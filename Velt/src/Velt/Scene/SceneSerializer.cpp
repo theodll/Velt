@@ -164,17 +164,16 @@ namespace Velt
 				}
 
 				auto modelComponent = entity["ModelComponent"];
-				if (transformComponent)
+				if (modelComponent)
 				{
-					ModelComponent mc;
 					std::filesystem::path path = modelComponent["MeshPath"].as<std::string>();
-					if (deserializedEntity.HasComponent<ModelComponent>())
+					if (!deserializedEntity.HasComponent<ModelComponent>())
+						deserializedEntity.AddComponent<ModelComponent>(path);
+					else
 					{
 						deserializedEntity.RemoveComponent<ModelComponent>();
-						mc = deserializedEntity.AddComponent<ModelComponent>(path);
+						deserializedEntity.AddComponent<ModelComponent>(path);
 					}
-					else
-						mc = deserializedEntity.AddComponent<ModelComponent>(path);	
 				}
 			}
 		}

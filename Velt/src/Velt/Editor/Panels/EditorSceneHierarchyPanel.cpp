@@ -100,7 +100,7 @@ namespace Velt::Editor
 
 			if (ImGui::BeginPopup("AddComponent"))
 			{
-				if (ImGui::MenuItem("Model"))
+				if (ImGui::MenuItem("Model Component"))
 				{
 					if (!m_SelectionContext.HasComponent<ModelComponent>())
 						m_SelectionContext.AddComponent<ModelComponent>("Assets/Models/error.glb");
@@ -110,7 +110,19 @@ namespace Velt::Editor
 					ImGui::CloseCurrentPopup();
 				}
 
+				
+				if (ImGui::MenuItem("Light Component"))
+				{
+					if (!m_SelectionContext.HasComponent<LightComponent>())
+						m_SelectionContext.AddComponent<LightComponent>();
+					else
+						VT_CORE_WARN("Failed to add Component to Entity with ID {0}: An Entity cannot have a Light Component Twice", (u32)m_SelectionContext);
+					ImGui::CloseCurrentPopup();
+					
+				}
+				
 				ImGui::EndPopup();
+				
 			}
 		}
 
@@ -259,6 +271,61 @@ namespace Velt::Editor
 							m_QueueRecreateModelComponents.push(std::string(buffer));
 						}
 						ImGui::PopItemWidth();
+
+						ImGui::TableNextColumn();
+						ImGui::PushItemWidth(-1);
+
+						ImGui::PopItemWidth();
+
+						ImGui::EndTable();
+					}
+
+				}
+			}, treeFlags);
+
+		DrawSingleComponent<LightComponent>("Light", m_SelectionContext, [&](const LightComponent& light)
+			{
+				FontLibrary::Get().Push(VT_FONT_TYPE_ICON);
+				//ImGui::Text(VT_ICON_FA_);
+				FontLibrary::Get().Pop();
+
+
+				FontLibrary::Get().Push(VT_FONT_TYPE_SPECIAL_BOLD);
+				bool open = ImGui::TreeNodeEx("Light", treeFlags);
+				FontLibrary::Get().Pop();
+
+
+				FontLibrary::Get().Push(VT_FONT_TYPE_ICON);
+				ImGui::SameLine(ImGui::GetWindowWidth() - 30);
+				bool openButton = ImGui::Button("\xef\x83\x89");
+				FontLibrary::Get().Pop();
+
+				if (openButton)
+				{
+					ImGui::OpenPopup("ComponentSettings");
+				}
+
+				if (ImGui::BeginPopup("ComponentSettings"))
+				{
+					if (ImGui::MenuItem("Remove Component"))
+						m_QueueDeleteComponents.push(VT_COMPONENT_TYPE_LIGHT);
+
+					ImGui::EndPopup();
+				}
+
+				if (open)
+				{
+					
+					if (ImGui::BeginTable("LightTable", 2))
+					{
+						ImGui::TableNextRow();
+						ImGui::TableNextColumn();
+						
+						Vector vec3Color = Vector(light.Color); 
+						float* intensity = (float*)&light.Intensity;
+
+						Shared::DrawVec3Control("Color", vec3Color);
+						ImGui::SliderFloat("Intensity", intensity, 0.0f, 1.0f);
 
 						ImGui::TableNextColumn();
 						ImGui::PushItemWidth(-1);

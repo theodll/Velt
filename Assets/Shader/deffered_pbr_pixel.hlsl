@@ -33,6 +33,7 @@ struct LIGHT
 struct LIGHT_UBO
 {
     LIGHT Lights[MAX_LIGHTS];
+    float3 _pad01;
     int Count;
 };
 
@@ -40,10 +41,10 @@ struct LIGHT_UBO
 [[vk::binding(1, 2)]] Texture2D t_RenderTargetNormalRough;
 [[vk::binding(2, 2)]] Texture2D t_RenderTargetMetallicEmit;
 [[vk::binding(3, 2)]] Texture2D t_RenderTargetDepth;
-[[vk::binding(5, 2)]] SamplerState s_RenderTargetSampler;
+[[vk::binding(4, 2)]] SamplerState s_RenderTargetSampler;
 
-[[vk::binding(6, 2)]] ConstantBuffer<CAMERA_UBO> u_CameraUBO;
-[[vk::binding(7, 2)]] ConstantBuffer<LIGHT_UBO> u_LightUBO;
+[[vk::binding(5, 2)]] ConstantBuffer<CAMERA_UBO> u_CameraUBO;
+[[vk::binding(6, 2)]] ConstantBuffer<LIGHT_UBO> u_LightUBO;
 
 float3 ReconstructWorldPosition(float2 uv, float depth, float4x4 invViewProj);
 float NormalDistributionFunction(float alpha, float3 N, float3 H); // GGX/Towbridge-Reitz

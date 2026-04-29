@@ -33,7 +33,7 @@ namespace Velt::Editor
 		m_SceneRenderer->Init();
 
 		m_DefferedRenderer = CreateRef<DefferedRenderer>();
-		m_DefferedRenderer->Init(m_EditorCamera);
+		m_DefferedRenderer->Init(m_EditorCamera, m_ActiveScene);
 
 		ImGui::SetCurrentContext(GetCurrentImGuiContext());
 

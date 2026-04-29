@@ -20,9 +20,9 @@ namespace Velt
 	struct TagComponent
 	{
 		std::string Tag;
-		const ComponentType Type = VT_COMPONENT_TYPE_TAG;
+		ComponentType Type = VT_COMPONENT_TYPE_TAG;
 
-		TagComponent() = default; 
+		TagComponent() = default;
 		TagComponent(const TagComponent&) = default;
 		TagComponent(const std::string& tag) : Tag(tag) {}
 	};
@@ -32,7 +32,7 @@ namespace Velt
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
 
-		const ComponentType Type = VT_COMPONENT_TYPE_TRANSFORM;
+		ComponentType Type = VT_COMPONENT_TYPE_TRANSFORM;
 
 		Vector Translation{ 0.0f };
 		Quaternion Rotation{ 1.0f, 0.0f, 0.0f, 0.0f };
@@ -61,7 +61,7 @@ namespace Velt
 		HVector Color{};
 		float Intensity{};
 	
-		const ComponentType Type = VT_COMPONENT_TYPE_LIGHT;
+		ComponentType Type = VT_COMPONENT_TYPE_LIGHT;
 	};
 
 	struct ModelComponent 
@@ -71,7 +71,7 @@ namespace Velt
 
 		std::filesystem::path Path;
 
-		const ComponentType Type = VT_COMPONENT_TYPE_MODEL;
+		ComponentType Type = VT_COMPONENT_TYPE_MODEL;
 
 		ModelComponent(const std::filesystem::path& path) 
 		{
