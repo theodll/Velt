@@ -8,7 +8,7 @@ namespace Velt
 	{
 		Vector4 Color = Vector4(1.0f);
 		Vector Position = Vector(1.0f);
-		float Intensity = 0;
+		float Intensity = 0.0f;
 	};
 
 	struct LightUBO

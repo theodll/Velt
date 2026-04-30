@@ -135,7 +135,6 @@ namespace Velt
 	void DefferedShaderInput::UpdateData()
 	{
 		VT_PROFILE_FUNCTION();
-		VT_CORE_TRACE("GOON");
 		auto&& renderTargets = Renderer::GetRenderTargets();
 		auto frameIndex = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex();
 		/*
@@ -169,9 +168,11 @@ namespace Velt
 		auto updateImageBinding = [&](u32 binding, Ref<Texture2D> pTexture)
 			{
 				if (m_ValidBindings.find(binding) == m_ValidBindings.end() || !pTexture)
+				{
 					VT_CORE_ERROR("");
 					return;
-
+				}
+				
 				m_GeometryBuffers[frameIndex]->Targets[binding] = pTexture;
 
 				VkDescriptorImageInfo info{};
@@ -222,7 +223,7 @@ namespace Velt
 		}
 
 		lightUBO.Count = count;
-
+	
 		m_CameraUBOs[frameIndex]->SetData(&camUBO, sizeof(CameraUBO), 0);
 		m_LightUBOs[frameIndex]->SetData(&lightUBO, sizeof(LightUBO), 0);
 
