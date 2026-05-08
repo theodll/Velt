@@ -211,9 +211,9 @@ namespace Velt::Editor
 
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 1.0f, 1.0f });
 
-				Shared::DrawVec3Control("Translation", tc.Translation);
-				Shared::DrawVec3Control("Rotation", tc.EulerDegrees);
-				Shared::DrawVec3Control("Scale", tc.Scale);
+				Shared::DrawVec3Control("Translation", &tc.Translation);
+				Shared::DrawVec3Control("Rotation", &tc.EulerDegrees);
+				Shared::DrawVec3Control("Scale", &tc.Scale);
 
 				ImGui::PopStyleVar();
 
@@ -321,10 +321,10 @@ namespace Velt::Editor
 						ImGui::TableNextRow();
 						ImGui::TableNextColumn();
 						
-						Vector vec3Color = Vector(light.Color); 
+						
 						float* intensity = (float*)&light.Intensity;
 
-						Shared::DrawVec3Control("Color", vec3Color);
+						Shared::DrawVec4Control("Color", (Vector4*)&light.Color);
 						ImGui::SliderFloat("Intensity", intensity, 0.0f, 1.0f);
 
 						ImGui::TableNextColumn();

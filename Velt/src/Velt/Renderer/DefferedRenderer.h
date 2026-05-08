@@ -34,6 +34,8 @@ namespace Velt
 
 		void ExecuteDefferedPass(VkCommandBuffer cmd);
 
+		void OnImGuiRender2();  
+
 		static Ref<Pipeline> GetPipeline() { return s_DefferedPipeline; }
 	private:
 		static Ref<Pipeline> s_DefferedPipeline;
@@ -84,6 +86,11 @@ namespace Velt
 		std::vector<Ref<UniformBuffer>> m_LightUBOs;
 		u32 m_LightUBOBinding{};
 
+
+#if DEBUG
+		LightUBO d_LightUBO;
+#endif
+
 		u32 m_AlbedoAOBinding{};
 		u32 m_NormalRoughBinding{};
 		u32 m_MetalEmitBinding{};
@@ -91,5 +98,7 @@ namespace Velt
 		u32 m_CompositeBinding{};
 		u32 m_SamplerBinding{};
 		std::unordered_set<u32> m_ValidBindings;
+
+		friend class DefferedRenderer;
 	};
 }

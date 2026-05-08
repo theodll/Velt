@@ -63,6 +63,16 @@ namespace Velt
 		Renderer::SubmitFullscreenTriangle(cmd, s_DefferedPipeline, m_ShaderInput);
 	}
 
+	void DefferedRenderer::OnImGuiRender2()
+	{
+		VT_PROFILE_FUNCTION();
+
+		// ImGui::Begin("Deffered Renderer");
+
+		//ImGui::Text("Light Count %i", m_ShaderInput->);
+
+	}
+
 	DefferedShaderInput::DefferedShaderInput(Ref<Camera> pCamera)
 	{
 		VT_PROFILE_FUNCTION();

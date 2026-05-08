@@ -72,6 +72,19 @@ namespace Velt
 			out << YAML::EndMap; 
 		}
 
+		if (ent.HasComponent<LightComponent>())
+		{
+			out << YAML::Key << "LightComponent";
+			out << YAML::BeginMap;
+
+			const auto& light = ent.GetComponent<LightComponent>();
+
+			out << YAML::Key << "Color" << YAML::Value << light.Color;
+			out << YAML::Key << "Intensity" << YAML::Value << light.Intensity;
+
+			out << YAML::EndMap;
+		}
+
 		out << YAML::EndMap;
 	}
 
@@ -175,6 +188,20 @@ namespace Velt
 						deserializedEntity.AddComponent<ModelComponent>(path);
 					}
 				}
+				
+				auto lightComponent = entity["LightComponent"];
+				if (lightComponent)
+				{
+					if (!deserializedEntity.HasComponent<LightComponent>())
+						deserializedEntity.AddComponent<LightComponent>();
+					
+					auto& light = deserializedEntity.GetComponent<LightComponent>();
+
+					light.Color = lightComponent["Color"].as<Vector4>();
+					light.Intensity = lightComponent["Intensity"].as<float>();
+					
+				}
+
 			}
 		}
 	}

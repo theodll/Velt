@@ -1,5 +1,5 @@
-#define MAX_LIGHTS 32
 #define PI 3.14159265359
+#define MAX_LIGHTS 1024
 
 struct PS_INPUT
 {
@@ -28,6 +28,16 @@ struct LIGHT_UBO
     int Count;
 };
 
+
+[[vk::binding(0, 2)]] Texture2D t_RenderTargetAlbedoAO;
+[[vk::binding(1, 2)]] Texture2D t_RenderTargetNormalRough;
+[[vk::binding(2, 2)]] Texture2D t_RenderTargetMetallicEmit;
+[[vk::binding(4, 2)]] Texture2D t_RenderTargetDepth;
+[[vk::binding(5, 2)]] SamplerState s_RenderTargetSampler;
+
+[[vk::binding(5, 2)]] ConstantBuffer<CAMERA_UBO> u_CameraUBO;
+[[vk::binding(6, 2)]] ConstantBuffer<LIGHT_UBO> u_LightUBO;
+
 // GBUFFER LAYOUT
 // | Texture          | R (8Bit)      | G (8Bit)   | B (8Bit)   | A (8Bit)          |
 // |------------------|---------------|------------|------------|-------------------|
@@ -36,18 +46,10 @@ struct LIGHT_UBO
 // | Metal Emission   | Metallicness  | Emission R | Emission G | Emission B        |
 // | Depth            | Depth (32Bit) |            |            |                   |
 
-[[vk::binding(0, 2)]] Texture2D t_RenderTargetAlbedoAO;
-[[vk::binding(1, 2)]] Texture2D t_RenderTargetNormalRough;
-[[vk::binding(2, 2)]] Texture2D t_RenderTargetMetallicEmit;
-[[vk::binding(3, 2)]] Texture2D t_RenderTargetDepth;
-[[vk::binding(4, 2)]] SamplerState s_RenderTargetSampler;
-
-[[vk::binding(5, 2)]] ConstantBuffer<CAMERA_UBO> u_CameraUBO;
-[[vk::binding(6, 2)]] ConstantBuffer<LIGHT_UBO> u_LightUBO;
 
 float3 ReconstructWorldPosition(float2 uv, float depth, float4x4 invViewProj);
-float NormalDistributionFunction(float alpha, float3 N, float3 H);
-float GeometryShadowingFunction(float alpha, float3 N, float3 X);
+float NormalDistributionFunction(float alpha, float3 N, float3 H); // GGX/Towbridge-Reitz
+float GeometryShadowingFunction(float alpha, float3 N, float3 X); // Schlick-Beckmann
 float SmithModel(float alpha, float3 N, float3 V, float3 L);
 float3 FresnelSchlickFunction(float3 F0, float3 V, float3 H);
 
@@ -71,47 +73,47 @@ float4 main(PS_INPUT input) : SV_TARGET
     float3 pixelPos = ReconstructWorldPosition(uv, depth, u_CameraUBO.invViewProj);
     float3 V = normalize(u_CameraUBO.cameraPos - pixelPos);
     
-    float3 F0 = lerp(float3(0.04, 0.04, 0.04), albedo, metallicness);
-    
-    float3 totalLighting = float3(0.0, 0.0, 0.0);
+   
 
-    int lightCount = min(u_LightUBO.Count, MAX_LIGHTS);
+    float3 outgoingLight = float3(0.0f, 0.0f, 0.0f);
     
-    for (int i = 0; i < lightCount; i++)
+    for (int i = 0; i < u_LightUBO.Count; i++)
     {
-        LIGHT light = u_LightUBO.Lights[i];
+    
+        float3 lightPos = u_LightUBO.Lights[i].Position;
+        float3 lightColor = u_LightUBO.Lights[i].Color;
+        float lightIntensity = u_LightUBO.Lights[i].Intensity;
         
-        float3 unnormalizedL = light.Position - pixelPos;
-        float distance = length(unnormalizedL);
-        float3 L = unnormalizedL / distance;
+        float3 L = normalize(lightPos - pixelPos);
         float3 H = normalize(V + L);
+        
+        float distance = length(lightPos - pixelPos);
+        float attenuation = 1.0f / (distance * distance);
+        float3 radiance = lightColor * attenuation * attenuation;
 
-        float attenuation = 1.0 / (distance * distance + 0.0001);
-        float3 radiance = light.Color.rgb * light.Intensity * attenuation;
-
+        float3 F0 = lerp(float3(0.04, 0.04, 0.04), albedo, metallicness); // interpolate to get the the reflectance or metallic im not sure
         float3 F = FresnelSchlickFunction(F0, V, H);
+    
         float3 Ks = F;
         float3 Kd = (float3(1.0, 1.0, 1.0) - Ks) * (1.0 - metallicness);
 
         float D = NormalDistributionFunction(alphaGGX, N, H);
         float G = SmithModel(alphaGGX, N, V, L);
-        
-        float NdotL = max(dot(N, L), 0.0);
-        float NdotV = max(dot(N, V), 0.0);
-        
-        float denom = 4.0 * NdotV * NdotL + 0.0001;
+    
+        float denom = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
         float3 specular = (D * G * F) / denom;
-        
+    
         float3 diffuse = Kd * albedo / PI;
 
-        totalLighting += (diffuse + specular) * radiance * NdotL;
+        float NdotL = max(dot(N, L), 0.0);
+        float3 outgoingLight = (diffuse + specular) * radiance * NdotL + (emission * 2.0);
+
+        outgoingLight = outgoingLight / (outgoingLight + float3(1.0, 1.0, 1.0));
+
     }
-
-    totalLighting += (emission * 2.0);
-
-    totalLighting = totalLighting / (totalLighting + float3(1.0, 1.0, 1.0));
-
-    return float4(totalLighting, 1.0);
+    
+    
+    return float4(outgoingLight, 1.0);
 }
 
 float3 ReconstructWorldPosition(float2 uv, float depth, float4x4 invViewProj)
@@ -129,6 +131,7 @@ float3 ReconstructWorldPosition(float2 uv, float depth, float4x4 invViewProj)
 
 float NormalDistributionFunction(float alpha, float3 N, float3 H)
 {
+    // GGX/Towbridge-Reitz
     float numerator = pow(alpha, 2.0f);
     
     float NdotH = max(dot(N, H), 0.0f);
@@ -140,6 +143,7 @@ float NormalDistributionFunction(float alpha, float3 N, float3 H)
 
 float GeometryShadowingFunction(float alpha, float3 N, float3 X)
 {
+    // Schlick-Beckmann
     float numerator = max(dot(N, X), 0.0f);
     
     float k = alpha / 2.0f;
@@ -156,5 +160,5 @@ float SmithModel(float alpha, float3 N, float3 V, float3 L)
 
 float3 FresnelSchlickFunction(float3 F0, float3 V, float3 H)
 {
-    return F0 + (float3(1.0f, 1.0f, 1.0f) - F0) * pow(1.0f - max(dot(V, H), 0.0f), 5.0f);
+    return F0 + (float3(1.0f, 1.0f, 1.0f) - F0) * pow(1 - max(dot(V, H), 0.0f), 5.0);
 }

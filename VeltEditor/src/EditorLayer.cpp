@@ -190,7 +190,7 @@ namespace Velt::Editor
 		m_ViewportPanel->OnImGuiRender2();
 		m_EditorGuizmos->OnImGuiRender2();
 		m_SceneHierarchyPanel->OnImGuiRender2();
-
+		m_DefferedRenderer->OnImGuiRender2();
 
 		ImGui::Begin("Statistics");
 		ImGui::Text("Velt Engine v0.0");
