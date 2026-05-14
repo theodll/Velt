@@ -32,8 +32,8 @@ struct LIGHT_UBO
 [[vk::binding(0, 2)]] Texture2D t_RenderTargetAlbedoAO;
 [[vk::binding(1, 2)]] Texture2D t_RenderTargetNormalRough;
 [[vk::binding(2, 2)]] Texture2D t_RenderTargetMetallicEmit;
-[[vk::binding(4, 2)]] Texture2D t_RenderTargetDepth;
-[[vk::binding(5, 2)]] SamplerState s_RenderTargetSampler;
+[[vk::binding(3, 2)]] Texture2D t_RenderTargetDepth;
+[[vk::binding(4, 2)]] SamplerState s_RenderTargetSampler;
 
 [[vk::binding(5, 2)]] ConstantBuffer<CAMERA_UBO> u_CameraUBO;
 [[vk::binding(6, 2)]] ConstantBuffer<LIGHT_UBO> u_LightUBO;
@@ -75,11 +75,11 @@ float4 main(PS_INPUT input) : SV_TARGET
     
    
 
-    float3 outgoingLight = float3(0.0f, 0.0f, 0.0f);
+    float3 totalRadiance = float3(0.0f, 0.0f, 0.0f);
+    
     
     for (int i = 0; i < u_LightUBO.Count; i++)
     {
-    
         float3 lightPos = u_LightUBO.Lights[i].Position;
         float3 lightColor = u_LightUBO.Lights[i].Color;
         float lightIntensity = u_LightUBO.Lights[i].Intensity;
@@ -88,7 +88,7 @@ float4 main(PS_INPUT input) : SV_TARGET
         float3 H = normalize(V + L);
         
         float distance = length(lightPos - pixelPos);
-        float attenuation = 1.0f / (distance * distance);
+        float attenuation = 1.0f / (distance * distance + 0.000000000000001);
         float3 radiance = lightColor * attenuation * attenuation;
 
         float3 F0 = lerp(float3(0.04, 0.04, 0.04), albedo, metallicness); // interpolate to get the the reflectance or metallic im not sure
@@ -106,11 +106,14 @@ float4 main(PS_INPUT input) : SV_TARGET
         float3 diffuse = Kd * albedo / PI;
 
         float NdotL = max(dot(N, L), 0.0);
-        float3 outgoingLight = (diffuse + specular) * radiance * NdotL + (emission * 2.0);
-
-        outgoingLight = outgoingLight / (outgoingLight + float3(1.0, 1.0, 1.0));
-
+        totalRadiance += (diffuse + specular) * radiance * NdotL + (emission * 2.0);
     }
+    
+    float3 outgoingLight = totalRadiance + (emission * 2.0f); 
+    
+    outgoingLight = outgoingLight / (outgoingLight + float3(1.0, 1.0, 1.0)); // Tonemapping
+
+    
     
     
     return float4(outgoingLight, 1.0);

@@ -67,9 +67,14 @@ namespace Velt
 	{
 		VT_PROFILE_FUNCTION();
 
-		// ImGui::Begin("Deffered Renderer");
+		ImGui::Begin("Deffered Renderer");
 
-		//ImGui::Text("Light Count %i", m_ShaderInput->);
+		int count = m_ShaderInput->d_LightUBO.Count;
+
+		ImGui::Text("Light Count: %i", count);
+		ImGui::Text("Intensity of Light %i: %f", count, m_ShaderInput->d_LightUBO.Lights[count - 1].Intensity);
+		
+		ImGui::End();
 
 	}
 
@@ -234,6 +239,8 @@ namespace Velt
 
 		lightUBO.Count = count;
 	
+		d_LightUBO = lightUBO;
+
 		m_CameraUBOs[frameIndex]->SetData(&camUBO, sizeof(CameraUBO), 0);
 		m_LightUBOs[frameIndex]->SetData(&lightUBO, sizeof(LightUBO), 0);
 

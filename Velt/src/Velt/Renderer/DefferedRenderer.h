@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "Pipeline.h"
 #include "Camera.h"
+#include "Lights.h"
 
 #include "Scene/Scene.h"
 
@@ -40,6 +41,7 @@ namespace Velt
 	private:
 		static Ref<Pipeline> s_DefferedPipeline;
 	
+		
 
 		Ref<DefferedShaderInput> m_ShaderInput;
 	};
@@ -86,10 +88,8 @@ namespace Velt
 		std::vector<Ref<UniformBuffer>> m_LightUBOs;
 		u32 m_LightUBOBinding{};
 
-
-#if DEBUG
 		LightUBO d_LightUBO;
-#endif
+
 
 		u32 m_AlbedoAOBinding{};
 		u32 m_NormalRoughBinding{};

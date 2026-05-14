@@ -321,7 +321,6 @@ namespace Velt::Editor
 						ImGui::TableNextRow();
 						ImGui::TableNextColumn();
 						
-						
 						float* intensity = (float*)&light.Intensity;
 
 						Shared::DrawVec4Control("Color", (Vector4*)&light.Color);
