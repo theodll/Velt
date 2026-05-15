@@ -323,7 +323,7 @@ namespace Velt::Editor
 						
 						float* intensity = (float*)&light.Intensity;
 
-						Shared::DrawVec4Control("Color", (Vector4*)&light.Color);
+						Shared::DrawVec3Control("Color", (Vector*)&light.Color);
 						ImGui::SliderFloat("Intensity", intensity, 0.0f, 1.0f);
 
 						ImGui::TableNextColumn();

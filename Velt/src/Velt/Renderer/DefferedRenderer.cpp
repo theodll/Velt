@@ -63,19 +63,66 @@ namespace Velt
 		Renderer::SubmitFullscreenTriangle(cmd, s_DefferedPipeline, m_ShaderInput);
 	}
 
-	void DefferedRenderer::OnImGuiRender2()
+	void DefferedRenderer::OnImGuiRender2(const Ref<Editor::ViewportPanel>& viewportPanel, float timestep)
 	{
 		VT_PROFILE_FUNCTION();
 
-		ImGui::Begin("Deffered Renderer");
+		auto RenderTargetToString = [&](RenderTarget rt)
+			{
+				switch (rt)
+				{
+				case VT_RENDER_TARGET_ALBEDO_AO:   return "Albedo + Ambient Occlusion";
+				case VT_RENDER_TARGET_NORMAL_ROUGH:   return "Normal + Roughness";
+				case VT_RENDER_TARGET_METAL_EMIT:    return "Metal + Emit";
+				case VT_RENDER_TARGET_DEPTH:		return "Depth";
+				case VT_RENDER_TARGET_COMPOSITE: return "Composite";
+				case VT_RENDER_TARGET_MOUSE_PICKING: return "Mouse Picking";
+				default: return "Unknown";
+				}
+			};
+
+
+		ImGui::Begin("Renderer");
 
 		int count = m_ShaderInput->d_LightUBO.Count;
 
 		ImGui::Text("Light Count: %i", count);
 		ImGui::Text("Intensity of Light %i: %f", count, m_ShaderInput->d_LightUBO.Lights[count - 1].Intensity);
 		
-		ImGui::End();
+		ImGui::Separator();
+		float v = std::round(1 / timestep);
+		static float s = v; s += (v - s) * (1.0f - std::exp(-timestep / 0.12f)); // Smoothes the fps display
+		ImGui::Text("Frames per Second: %.0fFPS", s);
+		ImGui::Dummy({ 500, 3 });
+		ImGui::Text("Delta Time (s): %fs", timestep);
+		ImGui::Text("Delta Time (ms): %.4gms", timestep * 1000);
+		ImGui::Dummy({ 500, 3 });
+		ImGui::Separator();
+		ImGui::Text("Draw Calls: %i", Renderer::GetDrawCallCount());
 
+		static RenderTarget currentRT = (RenderTarget)Application::Get()->SelectedRenderTarget;
+
+		if (ImGui::BeginCombo("Render Target", RenderTargetToString(currentRT)))
+		{
+			for (int i = 0; i < 6; i++)
+			{
+				RenderTarget rt = (RenderTarget)i;
+				bool selected = (currentRT == rt);
+
+				if (ImGui::Selectable(RenderTargetToString(rt), selected))
+				{
+					currentRT = rt;
+					viewportPanel->PendingRenderTarget = rt;
+					viewportPanel->RenderTargetChangePending = true;
+				}
+
+				if (selected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
+		ImGui::End();
 	}
 
 	DefferedShaderInput::DefferedShaderInput(Ref<Camera> pCamera)
@@ -152,19 +199,7 @@ namespace Velt
 		VT_PROFILE_FUNCTION();
 		auto&& renderTargets = Renderer::GetRenderTargets();
 		auto frameIndex = Velt::Application::Get()->GetWindow()->GetSwapchain()->GetCurrentFrameIndex();
-		/*
-		if (!m_TextureSampler)
-		{
-			if (renderTargets[VT_RENDER_TARGET_SAMPLER]) {
-				m_TextureSampler = renderTargets[VT_RENDER_TARGET_SAMPLER];
-				RHI::VulkanContext::GetSetManager()->WriteSampler(
-					m_Sets[frameIndex],
-					m_SamplerBinding,
-					m_TextureSampler->GetSampler()
-				);
-			}
-		}
-		*/
+		
 		if (!m_TextureSampler)
 		{
 			if (renderTargets[VT_RENDER_TARGET_SAMPLER]) {
@@ -208,7 +243,6 @@ namespace Velt
 		updateImageBinding(m_DepthBinding, renderTargets[VT_RENDER_TARGET_DEPTH]);
 
 		CameraUBO camUBO{};
-		// TODO [01.04.26]: Change this
 		camUBO.viewProj = m_Camera->GetViewProjection();
 		camUBO.invViewProj = m_Camera->GetInverseViewProjection();
 		camUBO.cameraPos = m_Camera->GetPosition();

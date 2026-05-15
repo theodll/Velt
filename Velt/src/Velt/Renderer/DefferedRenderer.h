@@ -13,6 +13,11 @@
 
 namespace Velt
 {
+	namespace Editor
+	{
+		class ViewportPanel;
+	};
+
 	struct GBuffer 
 	{
 		std::unordered_map<u32, Ref<Texture2D>> Targets;
@@ -35,7 +40,7 @@ namespace Velt
 
 		void ExecuteDefferedPass(VkCommandBuffer cmd);
 
-		void OnImGuiRender2();  
+		void OnImGuiRender2(const Ref<Editor::ViewportPanel>& viewportPanel, float timestep);  
 
 		static Ref<Pipeline> GetPipeline() { return s_DefferedPipeline; }
 	private:

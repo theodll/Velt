@@ -109,19 +109,6 @@ namespace Velt::Editor
 		m_SceneRenderer->EndScene();
 	}
 
-	static const char* RenderTargetToString(RenderTarget rt)
-	{
-		switch (rt)
-		{
-		case VT_RENDER_TARGET_ALBEDO_AO:   return "Albedo + Ambient Occlusion";
-		case VT_RENDER_TARGET_NORMAL_ROUGH:   return "Normal + Roughness";
-		case VT_RENDER_TARGET_METAL_EMIT:    return "Metal + Emit";
-		case VT_RENDER_TARGET_DEPTH:		return "Depth";
-		case VT_RENDER_TARGET_COMPOSITE: return "Composite";
-		case VT_RENDER_TARGET_MOUSE_PICKING: return "Mouse Picking";
-		default: return "Unknown";
-		}
-	}
 
 	void EditorLayer::OnImGuiRender()
 	{
@@ -190,45 +177,7 @@ namespace Velt::Editor
 		m_ViewportPanel->OnImGuiRender2();
 		m_EditorGuizmos->OnImGuiRender2();
 		m_SceneHierarchyPanel->OnImGuiRender2();
-		m_DefferedRenderer->OnImGuiRender2();
-
-		ImGui::Begin("Statistics");
-		ImGui::Text("Velt Engine v0.0");
-		ImGui::Separator();
-		float v = std::round(1 / m_Timestep);
-		static float s = v; s += (v - s) * (1.0f - std::exp(-m_Timestep / 0.12f)); // Smothes the fps display
-		ImGui::Text("Frames per Second: %.0fFPS", s);
-		ImGui::Dummy({ 500, 3 });
-		ImGui::Text("Deltatime (s): %fs", m_Timestep);
-		ImGui::Text("Deltatime (ms): %.4gms", m_Timestep.GetMilliseconds());
-		ImGui::Dummy({ 500, 3 });
-		ImGui::Separator();
-		ImGui::Text("Draw Calls: %i", Renderer::GetDrawCallCount());
-
-		static RenderTarget currentRT = (RenderTarget)Application::Get()->SelectedRenderTarget;
-
-		if (ImGui::BeginCombo("Render Target", RenderTargetToString(currentRT)))
-		{
-			for (int i = 0; i < 6; i++)
-			{
-				RenderTarget rt = (RenderTarget)i;
-				bool selected = (currentRT == rt);
-
-				if (ImGui::Selectable(RenderTargetToString(rt), selected))
-				{
-					currentRT = rt;
-					m_ViewportPanel->PendingRenderTarget = rt;
-					m_ViewportPanel->RenderTargetChangePending = true;
-				}
-
-				if (selected)
-					ImGui::SetItemDefaultFocus();
-			}
-
-			ImGui::EndCombo();
-		}
-		//		ImGui::Text("Camera Position: X: %.2f Y: %.2f Z: %.2f", SceneRenderer::GetCamera()->GetPosition().x, SceneRenderer::GetCamera()->GetPosition().y, SceneRenderer::GetCamera()->GetPosition().z);
-		ImGui::End(); 
+		m_DefferedRenderer->OnImGuiRender2(m_ViewportPanel, m_Timestep);
 	}
 
 	void EditorLayer::OnDefferedRender(VkCommandBuffer commandBuffer)
