@@ -24,6 +24,23 @@ namespace Velt::Editor
 	void EditorGuizmos::OnImGuiRender2()
 	{
 		VT_PROFILE_FUNCTION();
+		ImGui::Begin("Tool Selection");
+		if (ImGui::Button("Move Tool"))
+		{
+			m_SelectedOperation = ImGuizmo::OPERATION::TRANSLATE;
+		}
+
+		if (ImGui::Button("Scale Tool"))
+		{
+			m_SelectedOperation = ImGuizmo::OPERATION::SCALE;
+		}
+
+		if (ImGui::Button("Rotate Tool"))
+		{
+			m_SelectedOperation = ImGuizmo::OPERATION::ROTATE;
+		}
+
+		ImGui::End();
 	}
 
 	void EditorGuizmos::OnImGuiRender()
@@ -91,7 +108,7 @@ namespace Velt::Editor
 				auto& tc = m_SelectedEntity.GetComponent<TransformComponent>();
 				glm::mat4 transform = tc.ToMatrix();
 
-				ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(transform));
+				ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), m_SelectedOperation, ImGuizmo::LOCAL, glm::value_ptr(transform));
 
 				if (ImGuizmo::IsUsing())
 				{

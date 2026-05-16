@@ -33,6 +33,8 @@ namespace Velt::Editor
 		Ref<Texture2D> m_MousePickingRenderTarget;
 		Ref<Scene> m_SceneContext;
 
+		ImGuizmo::OPERATION m_SelectedOperation = ImGuizmo::OPERATION::TRANSLATE;
+
 		Ref<SceneHierarchyPanel> m_SceneHierarchyPanel;
 		Entity m_SelectedEntity;
 	};
