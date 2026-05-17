@@ -25,7 +25,8 @@ namespace Velt::Editor
 	{
 		VT_PROFILE_FUNCTION();
 		ImGui::Begin("Tool Selection");
-		if (ImGui::Button("Move Tool"))
+		FontLibrary::Get().Push(VT_FONT_TYPE_ICON);
+		if (ImGui::Button((const char*)u8"\U000f01be"))
 		{
 			m_SelectedOperation = ImGuizmo::OPERATION::TRANSLATE;
 		}
@@ -39,6 +40,7 @@ namespace Velt::Editor
 		{
 			m_SelectedOperation = ImGuizmo::OPERATION::ROTATE;
 		}
+		FontLibrary::Get().Pop();
 
 		ImGui::End();
 	}
